@@ -2,6 +2,23 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import {
   GripVertical,
   Plus,
   Trash2,
@@ -39,26 +56,6 @@ interface FormPreviewProps {
 }
 
 /* ========== Helpers ========== */
-
-function getQuestionIcon(type: string) {
-  const iconMap: Record<string, React.ReactNode> = {
-    short_text: <Type className="h-4 w-4" />,
-    long_text: <AlignRight className="h-4 w-4" />,
-    multiple_choice: <CircleDot className="h-4 w-4" />,
-    multiple_select: <CheckSquare className="h-4 w-4" />,
-    dropdown: <ChevronDown className="h-4 w-4" />,
-    number: <Hash className="h-4 w-4" />,
-    email: <Mail className="h-4 w-4" />,
-    phone: <Phone className="h-4 w-4" />,
-    date: <Calendar className="h-4 w-4" />,
-    scale: <Minus className="h-4 w-4" />,
-    rating: <Star className="h-4 w-4" />,
-    yes_no: <ToggleLeft className="h-4 w-4" />,
-    file_upload: <Upload className="h-4 w-4" />,
-    statement: <FileText className="h-4 w-4" />,
-  };
-  return iconMap[type] || <Type className="h-4 w-4" />;
-}
 
 function getQuestionTypeLabel(type: string): string {
   const labels: Record<string, string> = {
@@ -320,9 +317,9 @@ function EditableDescription({
   );
 }
 
-/* ========== Question Card ========== */
+/* ========== Sortable Question Card ========== */
 
-function QuestionCard({
+function SortableQuestionCard({
   question,
   index,
   isSelected,
@@ -341,11 +338,47 @@ function QuestionCard({
 }) {
   const isStatement = question.type === 'statement';
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: question.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+    opacity: isDragging ? 0.85 : 1,
+  };
+
   return (
-    <div className="group/card relative flex gap-2">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="group/card relative flex gap-2"
+    >
       {/* Drag handle area */}
-      <div className="flex flex-col items-center pt-3 opacity-0 transition-opacity group-hover/card:opacity-100">
-        <GripVertical className="h-5 w-5 cursor-grab text-muted-foreground/50 hover:text-muted-foreground" />
+      <div
+        className={cn(
+          'flex flex-col items-center pt-3 transition-opacity cursor-grab active:cursor-grabbing',
+          isDragging ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'
+        )}
+        {...attributes}
+        {...listeners}
+      >
+        <div
+          className={cn(
+            'rounded-md p-1 transition-colors',
+            isDragging
+              ? 'bg-primary/10 text-primary'
+              : 'hover:bg-muted text-muted-foreground/50 hover:text-muted-foreground'
+          )}
+        >
+          <GripVertical className="h-5 w-5" />
+        </div>
       </div>
 
       {/* Question card */}
@@ -353,6 +386,7 @@ function QuestionCard({
         onClick={onSelect}
         className={cn(
           'relative flex-1 cursor-pointer border-2 p-5 transition-all duration-200',
+          isDragging && 'shadow-lg ring-2 ring-primary/20',
           isSelected
             ? 'shadow-sm ring-1'
             : 'border-transparent bg-white hover:border-muted hover:shadow-sm dark:bg-zinc-900/50'
@@ -436,6 +470,49 @@ function QuestionCard({
   );
 }
 
+/* ========== Drag Overlay Card ========== */
+
+function DragOverlayCard({ question, primaryColor }: { question: FormQuestion; primaryColor: string }) {
+  return (
+    <div className="flex gap-2 opacity-90">
+      <div className="flex flex-col items-center pt-3">
+        <div className="rounded-md p-1 bg-primary/10 text-primary">
+          <GripVertical className="h-5 w-5" />
+        </div>
+      </div>
+      <div
+        className="relative flex-1 border-2 p-5 shadow-xl ring-2 ring-primary/20"
+        style={{
+          borderColor: primaryColor,
+          backgroundColor: `${primaryColor}08`,
+        }}
+      >
+        <div className="flex items-start gap-2">
+          <span
+            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+            style={{
+              backgroundColor: `${primaryColor}1a`,
+              color: primaryColor,
+            }}
+          >
+            {question.order + 1}
+          </span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-medium" style={{ color: primaryColor }}>
+                {getQuestionTypeLabel(question.type)}
+              </span>
+            </div>
+            <h4 className="text-[15px] font-semibold leading-relaxed text-foreground break-words">
+              {question.title}
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ========== Add Separator ========== */
 
 function AddSeparator({ onClick, primaryColor }: { onClick: () => void; primaryColor: string }) {
@@ -462,12 +539,51 @@ export default function FormPreview({
   formTheme,
   onDescriptionChange,
 }: FormPreviewProps) {
-  const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion } = useAppStore();
+  const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion, setQuestions, reorderQuestions } = useAppStore();
   const [showTypeMenu, setShowTypeMenu] = React.useState<number | 'end' | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const primaryColor = formTheme.primaryColor;
   const bgColor = formTheme.backgroundColor;
   const borderRadius = formTheme.borderRadius;
+
+  const questionIds = questions.map((q) => q.id);
+  const activeQuestion = activeId ? questions.find((q) => q.id === activeId) : null;
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragStart = useCallback((event: { active: { id: string | number } }) => {
+    setActiveId(String(event.active.id));
+  }, []);
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      setActiveId(null);
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      const oldIndex = questions.findIndex((q) => q.id === active.id);
+      const newIndex = questions.findIndex((q) => q.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const reordered = arrayMove(questions, oldIndex, newIndex).map((q, i) => ({
+          ...q,
+          order: i,
+        }));
+        reorderQuestions(reordered);
+      }
+    },
+    [questions, reorderQuestions]
+  );
 
   const handleDelete = useCallback(
     (id: string) => {
@@ -510,41 +626,56 @@ export default function FormPreview({
         </div>
       </div>
 
-      {/* Questions list */}
+      {/* Questions list with drag-and-drop */}
       <ScrollArea className="flex-1" style={{ backgroundColor: bgColor === '#ffffff' ? undefined : bgColor }}>
         <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">
           {questions.length === 0 ? (
             <EmptyState onAdd={() => handleAddAt('end')} primaryColor={primaryColor} />
           ) : (
-            <>
-              {questions.map((q, idx) => (
-                <React.Fragment key={q.id}>
-                  {idx > 0 && (
-                    <AddSeparator onClick={() => handleAddAt(idx)} primaryColor={primaryColor} />
-                  )}
-                  <QuestionCard
-                    question={q}
-                    index={idx}
-                    isSelected={selectedQuestionId === q.id}
-                    onSelect={() => setSelectedQuestionId(q.id)}
-                    onDelete={() => handleDelete(q.id)}
-                    onAddAfter={() => handleAddAt(idx + 1)}
-                    primaryColor={primaryColor}
-                  />
-                </React.Fragment>
-              ))}
-              {/* Bottom add card */}
-              <div className="mt-4">
-                <button
-                  onClick={() => handleAddAt('end')}
-                  className="group w-full flex items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/20 py-6 text-muted-foreground/50 transition-all hover:text-foreground"
-                  style={{ borderRadius: `${borderRadius}px` }}
-                >
-                  <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" />
-                  <span className="text-sm font-medium">افزودن سؤال</span>
-                </button>
-              </div>
-            </>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={questionIds} strategy={verticalListSortingStrategy}>
+                {questions.map((q, idx) => (
+                  <React.Fragment key={q.id}>
+                    {idx > 0 && (
+                      <AddSeparator onClick={() => handleAddAt(idx)} primaryColor={primaryColor} />
+                    )}
+                    <SortableQuestionCard
+                      question={q}
+                      index={idx}
+                      isSelected={selectedQuestionId === q.id}
+                      onSelect={() => setSelectedQuestionId(q.id)}
+                      onDelete={() => handleDelete(q.id)}
+                      onAddAfter={() => handleAddAt(idx + 1)}
+                      primaryColor={primaryColor}
+                    />
+                  </React.Fragment>
+                ))}
+              </SortableContext>
+
+              {/* Drag overlay */}
+              {activeQuestion && (
+                <DragOverlayCard question={activeQuestion} primaryColor={primaryColor} />
+              )}
+            </DndContext>
+          )}
+
+          {/* Bottom add card */}
+          {questions.length > 0 && (
+            <div className="mt-4">
+              <button
+                onClick={() => handleAddAt('end')}
+                className="group w-full flex items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/20 py-6 text-muted-foreground/50 transition-all hover:text-foreground"
+                style={{ borderRadius: `${borderRadius}px` }}
+              >
+                <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" />
+                <span className="text-sm font-medium">افزودن سؤال</span>
+              </button>
+            </div>
           )}
           <div className="h-12" />
         </div>
@@ -567,7 +698,11 @@ function EmptyState({ onAdd, primaryColor }: { onAdd: () => void; primaryColor: 
       </div>
       <h3 className="text-lg font-semibold text-foreground mb-2">فرم خود را بسازید</h3>
       <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-        از پنل سمت راست نوع سؤال مورد نظر خود را انتخاب و به فرم اضافه کنید
+        از پنل سمت راست نوع سؤال مورد نظر خود را انتخاب و به فرم اضافه کنید.
+        <br />
+        <span className="text-xs text-muted-foreground/70 mt-1 inline-block">
+          سؤالات را با کشیدن جابجا کنید
+        </span>
       </p>
       <Button
         onClick={onAdd}

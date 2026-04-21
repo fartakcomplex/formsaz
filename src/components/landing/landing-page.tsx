@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import {
   Accordion,
   AccordionContent,
@@ -36,6 +37,14 @@ import {
   MousePointerClick,
   Share2,
   TrendingUp,
+  Check,
+  Crown,
+  Building2,
+  Quote,
+  Sparkles,
+  CheckCircle2,
+  CircleDot,
+  Rocket,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -322,7 +331,7 @@ function HeroSection() {
           </Button>
         </motion.div>
 
-        {/* Stats */}
+        {/* Stats — with floating animation */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -331,14 +340,27 @@ function HeroSection() {
         >
           <div className="grid grid-cols-3 gap-4 sm:gap-8">
             {stats.map((stat, i) => (
-              <div key={i} className="text-center">
+              <motion.div
+                key={i}
+                className="text-center"
+                animate={{
+                  y: [0, -6, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  delay: i * 0.4,
+                  repeat: Infinity,
+                  repeatType: 'loop',
+                  ease: 'easeInOut',
+                }}
+              >
                 <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-l from-indigo-600 to-violet-600 bg-clip-text text-transparent">
                   {stat.value}
                 </div>
                 <div className="mt-1 text-xs sm:text-sm text-gray-500 font-medium">
                   {stat.label}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
@@ -696,6 +718,157 @@ function HowItWorksSection() {
   );
 }
 
+/* ──────────────────────────── Testimonials Section ──────────────────────────── */
+
+function TestimonialsSection() {
+  const testimonials = [
+    {
+      name: 'سارا محمدی',
+      role: 'مدیر بازاریابی',
+      company: 'شرکت نوآوران',
+      quote: 'با فرم‌ساز، نظرسنجی‌های ما ۳ برابر بیشتر پاسخ دریافت می‌کنند. رابط کاربری فوق‌العاده ساده و نتایج خیلی سریع آماده می‌شود.',
+      rating: 5,
+      initials: 'سم',
+      color: 'bg-gradient-to-br from-rose-400 to-pink-500',
+    },
+    {
+      name: 'علی رضایی',
+      role: 'مدیر منابع انسانی',
+      company: 'گروه صنعتی پارس',
+      quote: 'ارزیابی عملکرد سالانه کارکنان با این ابزار بسیار ساده‌تر شد. گزارش‌های تحلیلی دقیقی به ما میده و زمانمان خیلی کمتر شده.',
+      rating: 5,
+      initials: 'عر',
+      color: 'bg-gradient-to-br from-indigo-400 to-violet-500',
+    },
+    {
+      name: 'مریم احمدی',
+      role: 'استاد دانشگاه',
+      company: 'دانشگاه تهران',
+      quote: 'آزمون‌های آنلاین دانشجویان را به راحتی مدیریت می‌کنم. امکان امتیازدهی خودکار و خروجی اکسل واقعاً کار ما را راحت کرده.',
+      rating: 5,
+      initials: 'ما',
+      color: 'bg-gradient-to-br from-emerald-400 to-teal-500',
+    },
+    {
+      name: 'رضا کریمی',
+      role: 'صاحب فروشگاه آنلاین',
+      company: 'دیجی‌مارکت',
+      quote: 'فرم ثبت سفارش و پیگیری مشتریان ما حرفه‌ای‌تر شد. مشتریان هم از تجربه کاربری جدید خیلی راضی‌اند.',
+      rating: 4,
+      initials: 'رک',
+      color: 'bg-gradient-to-br from-amber-400 to-orange-500',
+    },
+    {
+      name: 'نازنین حسینی',
+      role: 'مدیر رویداد',
+      company: 'آژانس رویداد ستاره',
+      quote: 'ثبت‌نام در رویدادها و نظرسنجی حضار خیلی راحت شده. بیش از ۵۰۰ شرکت‌کننده تونستیم بدون مشکل مدیریت کنیم.',
+      rating: 5,
+      initials: 'نح',
+      color: 'bg-gradient-to-br from-cyan-400 to-sky-500',
+    },
+    {
+      name: 'محمد جعفری',
+      role: 'پژوهشگر',
+      company: 'موسسه تحقیقاتی آینده',
+      quote: 'برای تحقیقات بازار ابزار فوق‌العاده‌ای است. نمودارها و تحلیل‌های آماری به من کمک می‌کنه سریع‌تر به نتیجه برسم.',
+      rating: 5,
+      initials: 'مج',
+      color: 'bg-gradient-to-br from-violet-400 to-purple-500',
+    },
+  ];
+
+  return (
+    <section className="relative py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 to-white overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-10 right-[5%] w-64 h-64 bg-indigo-100/40 rounded-full blur-3xl" />
+      <div className="absolute bottom-10 left-[5%] w-80 h-80 bg-violet-100/40 rounded-full blur-3xl" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <FadeInSection className="text-center mb-16 sm:mb-20">
+          <Badge
+            variant="secondary"
+            className="mb-4 px-3 py-1 text-xs font-medium bg-rose-100/80 text-rose-700 border-rose-200/50"
+          >
+            <Quote className="h-3 w-3 ml-1" />
+            نظرات کاربران
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            کاربران ما چه می‌گویند؟
+          </h2>
+          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 leading-relaxed">
+            بیش از ۵۰,۰۰۰ کاربر حرفه‌ای به ما اعتماد کرده‌اند. نظرات واقعی آن‌ها را بخوانید.
+          </p>
+        </FadeInSection>
+
+        {/* Testimonials Grid — horizontal scroll on mobile, grid on desktop */}
+        <StaggerContainer
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory md:snap-none"
+          staggerDelay={0.08}
+        >
+          {testimonials.map((testimonial, i) => (
+            <motion.div
+              key={i}
+              variants={staggerChild}
+              className="snap-start min-w-[300px] md:min-w-0"
+            >
+              <Card className="group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:shadow-xl hover:shadow-indigo-500/[0.06] transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                <CardContent className="p-6">
+                  {/* Quote icon */}
+                  <div className="mb-4">
+                    <Quote className="h-8 w-8 text-indigo-200 dark:text-indigo-800" />
+                  </div>
+
+                  {/* Star rating */}
+                  <div className="flex gap-0.5 mb-4" dir="ltr">
+                    {Array.from({ length: 5 }).map((_, starIdx) => (
+                      <Star
+                        key={starIdx}
+                        className={`h-4 w-4 ${
+                          starIdx < testimonial.rating
+                            ? 'text-yellow-400 fill-yellow-400'
+                            : 'text-gray-200 dark:text-gray-700'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Quote text */}
+                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                    &ldquo;{testimonial.quote}&rdquo;
+                  </p>
+
+                  {/* Author info */}
+                  <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+                    {/* Avatar */}
+                    <div
+                      className={`flex h-11 w-11 items-center justify-center rounded-full text-white text-sm font-bold shrink-0 shadow-lg ${testimonial.color}`}
+                    >
+                      {testimonial.initials}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                        {testimonial.name}
+                      </div>
+                      <div className="text-xs text-gray-500 truncate">
+                        {testimonial.role} · {testimonial.company}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+
+                {/* Gradient overlay on hover */}
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-500/[0.02] to-violet-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              </Card>
+            </motion.div>
+          ))}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
 /* ──────────────────────────── FAQ Section ──────────────────────────── */
 
 function FAQSection() {
@@ -775,6 +948,258 @@ function FAQSection() {
   );
 }
 
+/* ──────────────────────────── Pricing Section ──────────────────────────── */
+
+function PricingSection() {
+  const [isYearly, setIsYearly] = useState(false);
+  const setCurrentView = useAppStore((s) => s.setCurrentView);
+
+  const plans = [
+    {
+      name: 'رایگان',
+      icon: CircleDot,
+      priceMonthly: 'رایگان همیشگی',
+      priceYearly: 'رایگان همیشگی',
+      description: 'مناسب برای شروع و استفاده شخصی',
+      features: [
+        { text: 'تا ۵ فرم فعال', included: true },
+        { text: '۱۰۰ پاسخ در هر فرم', included: true },
+        { text: 'تم‌های پایه', included: true },
+        { text: 'خروجی CSV', included: true },
+        { text: 'آمار اولیه', included: true },
+        { text: 'منطق شرطی', included: false },
+        { text: 'خروجی اکسل', included: false },
+        { text: 'پشتیبانی اولویت‌دار', included: false },
+      ],
+      buttonLabel: 'شروع رایگان',
+      buttonVariant: 'outline' as const,
+      highlight: false,
+    },
+    {
+      name: 'حرفه‌ای',
+      icon: Crown,
+      priceMonthly: '۴۹,۰۰۰ تومان / ماه',
+      priceYearly: '۳۹,۰۰۰ تومان / ماه',
+      description: 'مناسب برای کسب‌وکارهای در حال رشد',
+      features: [
+        { text: 'فرم نامحدود', included: true },
+        { text: '۱۰,۰۰۰ پاسخ در هر فرم', included: true },
+        { text: 'تم‌های سفارشی', included: true },
+        { text: 'خروجی CSV و اکسل', included: true },
+        { text: 'آمار پیشرفته', included: true },
+        { text: 'منطق شرطی و شاخه‌ای', included: true },
+        { text: 'پشتیبانی اولویت‌دار', included: true },
+        { text: 'دامنه سفارشی', included: false },
+      ],
+      buttonLabel: 'شروع دوره آزمایشی',
+      buttonVariant: 'default' as const,
+      highlight: true,
+      badge: 'محبوب‌ترین',
+    },
+    {
+      name: 'سازمانی',
+      icon: Building2,
+      priceMonthly: 'تماس بگیرید',
+      priceYearly: 'تماس بگیرید',
+      description: 'مناسب برای سازمان‌ها و تیم‌های بزرگ',
+      features: [
+        { text: 'همه امکانات حرفه‌ای', included: true },
+        { text: 'پاسخ نامحدود', included: true },
+        { text: 'همکاری تیمی', included: true },
+        { text: 'دامنه سفارشی', included: true },
+        { text: 'دسترسی API', included: true },
+        { text: 'ورود یکپارچه (SSO)', included: true },
+        { text: 'پشتیبانی اختصاصی', included: true },
+        { text: 'SLA تضمین‌شده', included: true },
+      ],
+      buttonLabel: 'تماس با فروش',
+      buttonVariant: 'outline' as const,
+      highlight: false,
+    },
+  ];
+
+  return (
+    <section id="pricing" className="relative py-24 sm:py-32 bg-white dark:bg-gray-950 overflow-hidden">
+      {/* Particle/dot pattern background */}
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: `radial-gradient(circle, #8b5cf6 1px, transparent 1px)`,
+          backgroundSize: '28px 28px',
+        }}
+      />
+
+      {/* Decorative glows */}
+      <div className="absolute top-0 left-1/4 w-72 h-72 bg-indigo-200/30 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-200/30 rounded-full blur-3xl" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <FadeInSection className="text-center mb-12 sm:mb-16">
+          <Badge
+            variant="secondary"
+            className="mb-4 px-3 py-1 text-xs font-medium bg-indigo-100/80 text-indigo-700 border-indigo-200/50"
+          >
+            <Sparkles className="h-3 w-3 ml-1" />
+            قیمت‌گذاری
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            پلن مناسب خود را انتخاب کنید
+          </h2>
+          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 leading-relaxed">
+            بدون هزینه پنهان. هر زمان که بخواهید ارتقا یا لغو کنید.
+          </p>
+
+          {/* Monthly / Yearly Toggle */}
+          <div className="mt-8 inline-flex items-center gap-3 bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-1.5">
+            <span
+              className={`text-sm font-medium px-3 py-1 rounded-full transition-colors ${
+                !isYearly
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-500'
+              }`}
+            >
+              ماهانه
+            </span>
+            <Switch
+              checked={isYearly}
+              onCheckedChange={setIsYearly}
+              className="data-[state=checked]:bg-indigo-600"
+            />
+            <span
+              className={`text-sm font-medium px-3 py-1 rounded-full transition-colors ${
+                isYearly
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-500'
+              }`}
+            >
+              سالانه
+              <Badge className="mr-1.5 px-1.5 py-0 text-[10px] bg-emerald-100 text-emerald-700 border-emerald-200/50">
+                ۲۰٪ تخفیف
+              </Badge>
+            </span>
+          </div>
+        </FadeInSection>
+
+        {/* Pricing Cards */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+          {plans.map((plan, i) => (
+            <motion.div key={i} variants={staggerChild} className="relative">
+              {/* Popular badge */}
+              {plan.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                  <Badge className="px-4 py-1 text-xs font-semibold bg-gradient-to-l from-indigo-600 to-violet-600 text-white border-0 shadow-lg shadow-indigo-500/25">
+                    <Rocket className="h-3 w-3 ml-1" />
+                    {plan.badge}
+                  </Badge>
+                </div>
+              )}
+
+              <Card
+                className={`group relative h-full transition-all duration-300 hover:-translate-y-1 overflow-hidden ${
+                  plan.highlight
+                    ? 'border-indigo-200 dark:border-indigo-800 shadow-xl shadow-indigo-500/10 hover:shadow-2xl hover:shadow-indigo-500/20 bg-gradient-to-b from-white via-indigo-50/30 to-white dark:from-gray-900 dark:via-indigo-950/20 dark:to-gray-900'
+                    : 'border-gray-200 dark:border-gray-800 hover:border-indigo-100 dark:hover:border-indigo-800 hover:shadow-xl hover:shadow-indigo-500/[0.06] bg-white dark:bg-gray-900'
+                }`}
+              >
+                {/* Gradient border glow on hover for highlighted card */}
+                {plan.highlight && (
+                  <div className="absolute -inset-px rounded-xl bg-gradient-to-b from-indigo-500/20 via-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                )}
+
+                <CardContent className="p-6 lg:p-8 flex flex-col h-full">
+                  {/* Plan icon + name */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                        plan.highlight
+                          ? 'bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/25'
+                          : 'bg-gray-100 dark:bg-gray-800'
+                      }`}
+                    >
+                      <plan.icon
+                        className={`h-5 w-5 ${
+                          plan.highlight ? 'text-white' : 'text-gray-600 dark:text-gray-400'
+                        }`}
+                      />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                      {plan.name}
+                    </h3>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-sm text-gray-500 mb-4">{plan.description}</p>
+
+                  {/* Price */}
+                  <div className="mb-6">
+                    <div className="text-2xl font-extrabold text-gray-900 dark:text-white">
+                      {isYearly ? plan.priceYearly : plan.priceMonthly}
+                    </div>
+                    {isYearly && plan.name !== 'رایگان' && plan.name !== 'سازمانی' && (
+                      <div className="mt-1 text-xs text-emerald-600 font-medium">
+                        صرفه‌جویی سالانه ≈ ۱۲۰,۰۰۰ تومان
+                      </div>
+                    )}
+                  </div>
+
+                  <Separator className="mb-6" />
+
+                  {/* Features list */}
+                  <ul className="space-y-3 flex-1 mb-8">
+                    {plan.features.map((feature, fIdx) => (
+                      <li key={fIdx} className="flex items-start gap-2.5">
+                        {feature.included ? (
+                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        ) : (
+                          <CircleDot className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0 mt-0.5" />
+                        )}
+                        <span
+                          className={`text-sm ${
+                            feature.included
+                              ? 'text-gray-700 dark:text-gray-300'
+                              : 'text-gray-400 dark:text-gray-600 line-through'
+                          }`}
+                        >
+                          {feature.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA Button */}
+                  <Button
+                    size="lg"
+                    variant={plan.buttonVariant}
+                    onClick={() => setCurrentView('dashboard')}
+                    className={`w-full rounded-xl font-semibold transition-all ${
+                      plan.highlight
+                        ? 'bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5'
+                        : plan.name === 'سازمانی'
+                        ? 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600'
+                        : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600'
+                    }`}
+                  >
+                    {plan.buttonLabel}
+                    <ArrowLeft className="h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </StaggerContainer>
+
+        {/* Bottom note */}
+        <FadeInSection delay={0.4} className="mt-12 text-center">
+          <p className="text-sm text-gray-500">
+            تمام پلن‌ها شامل رمزنگاری SSL، پشتیبانی فارسی و آپتایم ۹۹.۹٪ هستند.
+          </p>
+        </FadeInSection>
+      </div>
+    </section>
+  );
+}
+
 /* ──────────────────────────── CTA Section ──────────────────────────── */
 
 function CTASection() {
@@ -782,47 +1207,90 @@ function CTASection() {
 
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
-      {/* Background */}
+      {/* Background — more vibrant gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700" />
+      <div className="absolute inset-0 bg-gradient-to-t from-indigo-800/40 to-transparent" />
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
         backgroundSize: '32px 32px',
       }} />
 
-      {/* Glow effects */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-violet-400/20 rounded-full blur-3xl" />
+      {/* Glow effects — more vibrant */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-violet-300/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-400/10 rounded-full blur-3xl" />
+
+      {/* Animated floating orbs */}
+      <motion.div
+        className="absolute top-[20%] right-[10%] w-4 h-4 bg-yellow-300/60 rounded-full"
+        animate={{ y: [0, -20, 0], x: [0, 10, 0], opacity: [0.4, 0.8, 0.4] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute bottom-[30%] left-[15%] w-3 h-3 bg-pink-300/60 rounded-full"
+        animate={{ y: [0, 15, 0], x: [0, -8, 0], opacity: [0.3, 0.7, 0.3] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+      />
+      <motion.div
+        className="absolute top-[40%] left-[25%] w-2 h-2 bg-emerald-300/60 rounded-full"
+        animate={{ y: [0, -12, 0], opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+      />
 
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
         <FadeInSection>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-8 backdrop-blur-sm">
-            <Star className="h-4 w-4 text-yellow-300" />
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium mb-8 backdrop-blur-sm shadow-lg shadow-black/5"
+          >
+            <Star className="h-4 w-4 text-yellow-300 fill-yellow-300" />
             عضو بیش از ۵۰,۰۰۰ کاربر خوشحال شوید
-          </div>
+          </motion.div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">
+          <motion.h2
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight"
+          >
             همین حالا شروع کنید!
-          </h2>
-          <p className="mt-6 mx-auto max-w-xl text-lg text-indigo-100 leading-relaxed">
+          </motion.h2>
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-6 mx-auto max-w-xl text-lg text-indigo-100 leading-relaxed"
+          >
             ثبت‌نام در کمتر از ۳۰ ثانیه. بدون نیاز به کارت بانکی.
             <br />
             اولین فرم خود را همین امروز بسازید.
-          </p>
+          </motion.p>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
             <Button
               size="lg"
               onClick={() => setCurrentView('dashboard')}
-              className="w-full sm:w-auto min-w-[220px] h-14 text-base font-bold bg-white text-indigo-600 hover:bg-indigo-50 shadow-xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-0.5 transition-all rounded-xl px-10"
+              className="w-full sm:w-auto min-w-[220px] h-14 text-base font-bold bg-white text-indigo-600 hover:bg-indigo-50 shadow-xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-0.5 transition-all rounded-xl px-10 group"
             >
               شروع رایگان
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Button>
             <div className="flex items-center gap-2 text-white/70 text-sm">
               <Shield className="h-4 w-4" />
               بدون نیاز به کارت بانکی
             </div>
-          </div>
+          </motion.div>
         </FadeInSection>
       </div>
     </section>
@@ -911,7 +1379,9 @@ export default function LandingPage() {
         <FeaturesSection />
         <UseCasesSection />
         <HowItWorksSection />
+        <TestimonialsSection />
         <FAQSection />
+        <PricingSection />
         <CTASection />
       </main>
       <Footer />

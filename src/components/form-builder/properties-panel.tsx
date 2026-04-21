@@ -12,8 +12,10 @@ import {
   Type,
   Hash,
   Calendar,
+  GitBranch,
+  ChevronDown,
 } from 'lucide-react';
-import { useAppStore, FormQuestion, QuestionConfig, QuestionOption } from '@/lib/store';
+import { useAppStore, FormQuestion, QuestionConfig, QuestionOption, QuestionLogic, ConditionRule } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +25,11 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import {
   Select,
   SelectContent,
@@ -450,6 +457,229 @@ function TypeConfigSection({ question }: { question: FormQuestion }) {
 }
 
 /* =============================== */
+/* Conditional Logic Builder        */
+/* =============================== */
+function ConditionalLogicSection({ question, otherQuestions }: { question: FormQuestion; otherQuestions: FormQuestion[] }) {
+  const { updateQuestion } = useAppStore();
+  const [logicOpen, setLogicOpen] = useState(false);
+
+  const logic: QuestionLogic = question.logic || {
+    enabled: false,
+    action: 'show',
+    conditions: [],
+  };
+
+  const updateLogic = (newLogic: QuestionLogic) => {
+    updateQuestion(question.id, { logic: newLogic });
+  };
+
+  const handleToggleEnabled = () => {
+    const newEnabled = !logic.enabled;
+    const newLogic: QuestionLogic = {
+      ...logic,
+      enabled: newEnabled,
+      conditions: newEnabled && logic.conditions.length === 0
+        ? [{ questionId: '', operator: 'equals', value: '' }]
+        : logic.conditions,
+    };
+    updateLogic(newLogic);
+    if (newEnabled && !logicOpen) setLogicOpen(true);
+  };
+
+  const handleActionChange = (action: 'show' | 'hide') => {
+    updateLogic({ ...logic, action });
+  };
+
+  const addCondition = () => {
+    updateLogic({
+      ...logic,
+      conditions: [...logic.conditions, { questionId: '', operator: 'equals', value: '' }],
+    });
+  };
+
+  const removeCondition = (index: number) => {
+    const newConditions = logic.conditions.filter((_, i) => i !== index);
+    updateLogic({ ...logic, conditions: newConditions });
+  };
+
+  const updateCondition = (index: number, updates: Partial<ConditionRule>) => {
+    const newConditions = logic.conditions.map((c, i) =>
+      i === index ? { ...c, ...updates } : c
+    );
+    updateLogic({ ...logic, conditions: newConditions });
+  };
+
+  const operatorLabels: Record<string, string> = {
+    equals: 'برابر با',
+    not_equals: 'نامساوی با',
+    contains: 'شامل',
+    not_contains: 'شامل نشود',
+    is_answered: 'پاسخ داده شده',
+    is_not_answered: 'پاسخ داده نشده',
+  };
+
+  const needsValue = (op: string) => op !== 'is_answered' && op !== 'is_not_answered';
+
+  return (
+    <div className="space-y-3">
+      {!logic.enabled ? (
+        <div className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-3">
+          <div className="flex items-center gap-2">
+            <GitBranch className="h-4 w-4 text-muted-foreground" />
+            <Label className="text-sm cursor-pointer" htmlFor="logic-toggle">
+              منطق شرطی
+            </Label>
+          </div>
+          <Switch id="logic-toggle" checked={false} onCheckedChange={handleToggleEnabled} />
+        </div>
+      ) : (
+        <Collapsible open={logicOpen} onOpenChange={setLogicOpen}>
+          <div className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-3">
+            <div className="flex items-center gap-2">
+              <GitBranch className="h-4 w-4 text-purple-600" />
+              <Label className="text-sm cursor-pointer">منطق شرطی</Label>
+              {logic.conditions.length > 0 && (
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
+                  {logic.conditions.length} شرط
+                </Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch checked={logic.enabled} onCheckedChange={handleToggleEnabled} />
+              <CollapsibleTrigger asChild>
+                <button className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                  <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", logicOpen && "rotate-180")} />
+                </button>
+              </CollapsibleTrigger>
+            </div>
+          </div>
+          <CollapsibleContent>
+            <div className="mt-3 space-y-4 rounded-lg border bg-muted/10 p-4">
+              {/* Action selector */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold text-muted-foreground">
+                  عملکرد
+                </Label>
+                <Select value={logic.action} onValueChange={(v) => handleActionChange(v as 'show' | 'hide')}>
+                  <SelectTrigger className="w-full text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="show">نمایش سؤال</SelectItem>
+                    <SelectItem value="hide">مخفی کردن سؤال</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Separator />
+
+              {/* Conditions builder */}
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold text-muted-foreground">
+                  شرایط
+                </Label>
+
+                {logic.conditions.length === 0 ? (
+                  <div className="text-center py-3 text-xs text-muted-foreground">
+                    هیچ شرطی تعریف نشده است
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {logic.conditions.map((condition, idx) => (
+                      <div key={idx} className="group/cond space-y-2 rounded-lg border border-purple-200 dark:border-purple-800/50 bg-background p-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[10px] font-bold text-muted-foreground">
+                            شرط {idx + 1}
+                          </span>
+                          <button
+                            onClick={() => removeCondition(idx)}
+                            className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground/40 hover:bg-red-100 hover:text-red-500 transition-all"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                        <div className="space-y-1.5">
+                          <span className="text-xs text-muted-foreground">اگر سؤال</span>
+                          <Select
+                            value={condition.questionId}
+                            onValueChange={(v) => updateCondition(idx, { questionId: v })}
+                          >
+                            <SelectTrigger className="w-full text-sm">
+                              <SelectValue placeholder="انتخاب سؤال..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {otherQuestions.map((q) => (
+                                <SelectItem key={q.id} value={q.id}>
+                                  {q.title.length > 35 ? q.title.slice(0, 35) + '...' : q.title}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <span className="text-xs text-muted-foreground">عملگر</span>
+                          <Select
+                            value={condition.operator}
+                            onValueChange={(v) => {
+                              const op = v as ConditionRule['operator'];
+                              updateCondition(idx, {
+                                operator: op,
+                                ...(needsValue(op) ? {} : { value: undefined }),
+                              });
+                            }}
+                          >
+                            <SelectTrigger className="w-full text-sm">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Object.entries(operatorLabels).map(([key, label]) => (
+                                <SelectItem key={key} value={key}>
+                                  {label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {needsValue(condition.operator) && (
+                            <>
+                              <span className="text-xs text-muted-foreground">مقدار</span>
+                              <Input
+                                value={condition.value || ''}
+                                onChange={(e) => updateCondition(idx, { value: e.target.value })}
+                                placeholder="مقدار مقایسه..."
+                                className="text-sm"
+                                dir="rtl"
+                              />
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-full gap-2 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 border-dashed border-purple-300 dark:hover:bg-purple-950/30 dark:border-purple-700"
+                  onClick={addCondition}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  افزودن شرط
+                </Button>
+
+                {/* Helper text */}
+                <p className="text-[11px] text-muted-foreground leading-relaxed text-center">
+                  سؤال فقط زمانی نمایش داده می‌شود که تمام شرایط برقرار باشند
+                </p>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      )}
+    </div>
+  );
+}
+
+/* =============================== */
 /* Question type selector           */
 /* =============================== */
 function QuestionTypeSelector({ question }: { question: FormQuestion }) {
@@ -616,6 +846,16 @@ export default function PropertiesPanel() {
               تنظیمات
             </Label>
             <TypeConfigSection question={selectedQuestion} />
+          </div>
+
+          <Separator />
+
+          {/* Conditional Logic */}
+          <div>
+            <ConditionalLogicSection
+              question={selectedQuestion}
+              otherQuestions={questions.filter((q) => q.id !== selectedQuestion.id)}
+            />
           </div>
 
           <Separator />

@@ -15,21 +15,25 @@ import {
   ListChecks,
   TrendingUp,
   Star,
+  PieChart as PieChartIcon,
 } from 'lucide-react';
 import {
   BarChart,
   Bar,
+  PieChart,
+  Pie,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
   Cell,
 } from 'recharts';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
   type ChartConfig,
 } from '@/components/ui/chart';
 import { Button } from '@/components/ui/button';
@@ -50,6 +54,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useAppStore, type FormQuestion, type Submission } from '@/lib/store';
 
 const COLORS = [
@@ -82,15 +87,15 @@ function StatCard({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-4 rounded-2xl border bg-white p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow"
+      className="flex items-center gap-4 rounded-2xl border bg-white dark:bg-gray-900 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow dark:border-gray-800"
     >
-      <div className={`flex size-12 items-center justify-center rounded-xl ${color}`}>
+      <div className={`flex size-12 items-center justify-center rounded-xl ${color} dark:opacity-80`}>
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-2xl font-bold text-gray-900 truncate">{value}</p>
-        <p className="text-sm text-gray-500">{label}</p>
-        {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
+        <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{value}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+        {subtitle && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{subtitle}</p>}
       </div>
     </motion.div>
   );
@@ -103,6 +108,8 @@ function ChoiceQuestionChart({
   question: FormQuestion;
   submissions: Submission[];
 }) {
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+
   const options = question.config.options || [];
   const counts: Record<string, number> = {};
 
@@ -144,16 +151,92 @@ function ChoiceQuestionChart({
     };
   });
 
+  // Pie chart data with nameKey matching config keys
+  const pieData = options.map((opt, idx) => ({
+    name: opt.id,
+    value: counts[opt.id] || 0,
+    fill: COLORS[idx % COLORS.length],
+    label: opt.text,
+  }));
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-700">{question.title}</h4>
-        <span className="text-xs text-gray-400">{totalResponses} پاسخ</span>
+        <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
+        <div className="flex items-center gap-3">
+          {totalResponses > 0 && (
+            <ToggleGroup
+              type="single"
+              value={chartType}
+              onValueChange={(v) => v && setChartType(v as 'bar' | 'pie')}
+              className="bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5 h-7"
+            >
+              <ToggleGroupItem
+                value="bar"
+                className="rounded-md px-2 h-6 text-xs data-[state=on]:bg-white dark:data-[state=on]:bg-gray-700 data-[state=on]:shadow-sm"
+              >
+                <BarChart3 className="size-3 ml-1" />
+                ستونی
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="pie"
+                className="rounded-md px-2 h-6 text-xs data-[state=on]:bg-white dark:data-[state=on]:bg-gray-700 data-[state=on]:shadow-sm"
+              >
+                <PieChartIcon className="size-3 ml-1" />
+                دایره‌ای
+              </ToggleGroupItem>
+            </ToggleGroup>
+          )}
+          <span className="text-xs text-gray-400 dark:text-gray-500">{totalResponses} پاسخ</span>
+        </div>
       </div>
       {totalResponses === 0 ? (
-        <div className="flex items-center justify-center py-8 text-gray-400 text-sm">
+        <div className="flex items-center justify-center py-8 text-gray-400 dark:text-gray-500 text-sm">
           هنوز پاسخی ثبت نشده
         </div>
+      ) : chartType === 'pie' ? (
+        <>
+          <ChartContainer config={chartConfig} className="h-64 w-full">
+            <PieChart>
+              <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={90}
+                innerRadius={45}
+                paddingAngle={2}
+                strokeWidth={2}
+                stroke="white"
+                className="dark:stroke-gray-900"
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+              </Pie>
+              <ChartLegend content={<ChartLegendContent nameKey="name" />} />
+            </PieChart>
+          </ChartContainer>
+          <div className="flex flex-wrap gap-3">
+            {chartData.map((entry) => (
+              <div key={entry.name} className="flex items-center gap-2 text-xs">
+                <div
+                  className="size-3 rounded-sm"
+                  style={{ backgroundColor: entry.fill }}
+                />
+                <span className="text-gray-600 dark:text-gray-400">{entry.name}</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {totalResponses > 0
+                    ? Math.round((entry.count / totalResponses) * 100)
+                    : 0}
+                  %
+                </span>
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
         <>
           <ChartContainer config={chartConfig} className="h-56 w-full">
@@ -181,8 +264,8 @@ function ChoiceQuestionChart({
                   className="size-3 rounded-sm"
                   style={{ backgroundColor: entry.fill }}
                 />
-                <span className="text-gray-600">{entry.name}</span>
-                <span className="font-semibold text-gray-900">
+                <span className="text-gray-600 dark:text-gray-400">{entry.name}</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
                   {totalResponses > 0
                     ? Math.round((entry.count / totalResponses) * 100)
                     : 0}
@@ -230,12 +313,12 @@ function RatingQuestionChart({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-700">{question.title}</h4>
-        <span className="text-xs text-gray-400">{totalResponses} پاسخ</span>
+        <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
+        <span className="text-xs text-gray-400 dark:text-gray-500">{totalResponses} پاسخ</span>
       </div>
-      <div className="flex items-center gap-4 rounded-xl bg-amber-50 p-4 border border-amber-100">
+      <div className="flex items-center gap-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-100 dark:border-amber-900/50">
         <div className="text-center">
-          <div className="text-3xl font-bold text-amber-600">{avgRating.toFixed(1)}</div>
+          <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">{avgRating.toFixed(1)}</div>
           <div className="flex items-center gap-0.5 mt-1 justify-center">
             {Array.from({ length: maxRating }, (_, i) => (
               <Star
@@ -243,20 +326,20 @@ function RatingQuestionChart({
                 className={`size-4 ${
                   i < Math.round(avgRating)
                     ? 'text-amber-400 fill-amber-400'
-                    : 'text-gray-300'
+                    : 'text-gray-300 dark:text-gray-600'
                 }`}
               />
             ))}
           </div>
-          <div className="text-xs text-amber-500 mt-1">میانگین امتیاز</div>
+          <div className="text-xs text-amber-500 dark:text-amber-400 mt-1">میانگین امتیاز</div>
         </div>
         <div className="flex-1 space-y-1.5">
           {Object.entries(counts).map(([rating, count]) => {
             const percent = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
             return (
               <div key={rating} className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 w-4">{rating}</span>
-                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <span className="text-xs text-gray-500 dark:text-gray-400 w-4">{rating}</span>
+                <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${percent}%` }}
@@ -264,7 +347,7 @@ function RatingQuestionChart({
                     className="h-full bg-amber-400 rounded-full"
                   />
                 </div>
-                <span className="text-xs text-gray-400 w-6 text-left">{count}</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500 w-6 text-left">{count}</span>
               </div>
             );
           })}
@@ -318,16 +401,16 @@ function ScaleQuestionChart({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-700">{question.title}</h4>
+        <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-400">{totalResponses} پاسخ</span>
-          <Badge variant="outline" className="text-xs font-medium text-indigo-600 border-indigo-200 bg-indigo-50">
+          <span className="text-xs text-gray-400 dark:text-gray-500">{totalResponses} پاسخ</span>
+          <Badge variant="outline" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/30">
             میانگین: {avgValue.toFixed(1)}
           </Badge>
         </div>
       </div>
       {totalResponses === 0 ? (
-        <div className="flex items-center justify-center py-8 text-gray-400 text-sm">
+        <div className="flex items-center justify-center py-8 text-gray-400 dark:text-gray-500 text-sm">
           هنوز پاسخی ثبت نشده
         </div>
       ) : (
@@ -366,8 +449,8 @@ function TextQuestionSummary({
   if (responses.length === 0) {
     return (
       <div className="space-y-2">
-        <h4 className="text-sm font-semibold text-gray-700">{question.title}</h4>
-        <p className="text-sm text-gray-400 py-4 text-center">هنوز پاسخی ثبت نشده</p>
+        <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
+        <p className="text-sm text-gray-400 dark:text-gray-500 py-4 text-center">هنوز پاسخی ثبت نشده</p>
       </div>
     );
   }
@@ -375,19 +458,19 @@ function TextQuestionSummary({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-700">{question.title}</h4>
-        <span className="text-xs text-gray-400">{responses.length} پاسخ</span>
+        <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
+        <span className="text-xs text-gray-400 dark:text-gray-500">{responses.length} پاسخ</span>
       </div>
-      <div className="space-y-2 max-h-48 overflow-y-auto rounded-xl border bg-gray-50/50 p-3">
+      <div className="space-y-2 max-h-48 overflow-y-auto rounded-xl border bg-gray-50/50 dark:bg-gray-900/50 p-3 dark:border-gray-800">
         {responses.map((response, idx) => (
           <div
             key={idx}
-            className="flex items-start gap-2 text-sm p-2 rounded-lg hover:bg-white transition-colors"
+            className="flex items-start gap-2 text-sm p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 transition-colors"
           >
-            <div className="flex size-5 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-[10px] font-bold shrink-0 mt-0.5">
+            <div className="flex size-5 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold shrink-0 mt-0.5">
               {idx + 1}
             </div>
-            <span className="text-gray-600 leading-relaxed">{response}</span>
+            <span className="text-gray-600 dark:text-gray-300 leading-relaxed">{response}</span>
           </div>
         ))}
       </div>
@@ -413,26 +496,88 @@ function YesNoQuestionChart({
 
   const total = yesCount + noCount;
   const yesPercent = total > 0 ? Math.round((yesCount / total) * 100) : 0;
+  const noPercent = total > 0 ? 100 - yesPercent : 0;
+
+  const donutData = total > 0
+    ? [
+        { name: 'yes', value: yesCount, fill: '#10b981' },
+        { name: 'no', value: noCount, fill: '#ef4444' },
+      ]
+    : [];
+
+  const donutConfig: ChartConfig = {
+    yes: { label: 'بله', color: '#10b981' },
+    no: { label: 'خیر', color: '#ef4444' },
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-700">{question.title}</h4>
-        <span className="text-xs text-gray-400">{total} پاسخ</span>
+        <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
+        <span className="text-xs text-gray-400 dark:text-gray-500">{total} پاسخ</span>
       </div>
       {total === 0 ? (
-        <div className="flex items-center justify-center py-8 text-gray-400 text-sm">
+        <div className="flex items-center justify-center py-8 text-gray-400 dark:text-gray-500 text-sm">
           هنوز پاسخی ثبت نشده
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-center">
-            <div className="text-2xl font-bold text-emerald-600">{yesPercent}%</div>
-            <div className="text-sm text-emerald-500 mt-1">بله ({yesCount})</div>
+        <div className="flex flex-col sm:flex-row items-center gap-6">
+          {/* Donut Chart */}
+          <div className="relative flex-shrink-0">
+            <ChartContainer config={donutConfig} className="h-40 w-40">
+              <PieChart>
+                <Pie
+                  data={donutData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={70}
+                  innerRadius={42}
+                  startAngle={90}
+                  endAngle={-270}
+                  strokeWidth={2}
+                  stroke="white"
+                  className="dark:stroke-gray-900"
+                >
+                  {donutData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ChartContainer>
+            {/* Center text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{yesPercent}%</span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500">بله</span>
+            </div>
           </div>
-          <div className="rounded-xl bg-red-50 border border-red-100 p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{100 - yesPercent}%</div>
-            <div className="text-sm text-red-500 mt-1">خیر ({noCount})</div>
+          {/* Stats Cards */}
+          <div className="flex-1 w-full grid grid-cols-2 gap-3">
+            <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 p-4 text-center">
+              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{yesPercent}%</div>
+              <div className="text-sm text-emerald-500 dark:text-emerald-400 mt-1">بله ({yesCount})</div>
+              <div className="mt-2 h-1.5 bg-emerald-200 dark:bg-emerald-900 rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${yesPercent}%` }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="h-full bg-emerald-500 rounded-full"
+                />
+              </div>
+            </div>
+            <div className="rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 p-4 text-center">
+              <div className="text-2xl font-bold text-red-600 dark:text-red-400">{noPercent}%</div>
+              <div className="text-sm text-red-500 dark:text-red-400 mt-1">خیر ({noCount})</div>
+              <div className="mt-2 h-1.5 bg-red-200 dark:bg-red-900 rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${noPercent}%` }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="h-full bg-red-500 rounded-full"
+                />
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -469,6 +614,180 @@ function QuestionSummary({
   return null;
 }
 
+// ── Mini Pie Card for the overview tab ──────────────────────────────────────
+function MiniPieCard({
+  question,
+  submissions,
+}: {
+  question: FormQuestion;
+  submissions: Submission[];
+}) {
+  const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown'];
+
+  if (!choiceTypes.includes(question.type) && question.type !== 'yes_no') {
+    return null;
+  }
+
+  if (question.type === 'yes_no') {
+    let yesCount = 0;
+    let noCount = 0;
+    submissions.forEach((sub) => {
+      const response = sub.responses.find((r) => r.questionId === question.id);
+      if (response?.value === 'yes') yesCount++;
+      if (response?.value === 'no') noCount++;
+    });
+    const total = yesCount + noCount;
+    if (total === 0) {
+      return (
+        <Card className="border-gray-200 dark:border-gray-800 shadow-sm">
+          <CardContent className="p-4">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{question.title}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-6">بدون پاسخ</p>
+          </CardContent>
+        </Card>
+      );
+    }
+    const data = [
+      { name: 'yes', value: yesCount, fill: '#10b981' },
+      { name: 'no', value: noCount, fill: '#ef4444' },
+    ];
+    const config: ChartConfig = {
+      yes: { label: 'بله', color: '#10b981' },
+      no: { label: 'خیر', color: '#ef4444' },
+    };
+    return (
+      <Card className="border-gray-200 dark:border-gray-800 shadow-sm">
+        <CardContent className="p-4 space-y-3">
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 line-clamp-2">{question.title}</p>
+          <div className="relative">
+            <ChartContainer config={config} className="h-28 w-28 mx-auto">
+              <PieChart>
+                <Pie
+                  data={data}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={50}
+                  innerRadius={28}
+                  startAngle={90}
+                  endAngle={-270}
+                  strokeWidth={2}
+                  stroke="white"
+                  className="dark:stroke-gray-900"
+                >
+                  {data.map((entry, i) => (
+                    <Cell key={i} fill={entry.fill} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ChartContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
+                {Math.round((yesCount / total) * 100)}%
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+            <span>بله: {yesCount}</span>
+            <span>خیر: {noCount}</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Choice question pie
+  const options = question.config.options || [];
+  const counts: Record<string, number> = {};
+  options.forEach((opt) => { counts[opt.id] = 0; });
+  submissions.forEach((sub) => {
+    const response = sub.responses.find((r) => r.questionId === question.id);
+    if (response?.value) {
+      if (question.type === 'multiple_select') {
+        response.value.split(',').filter(Boolean).forEach((id) => {
+          if (counts[id] !== undefined) counts[id]++;
+        });
+      } else {
+        if (counts[response.value] !== undefined) counts[response.value]++;
+      }
+    }
+  });
+
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  if (total === 0) {
+    return (
+      <Card className="border-gray-200 dark:border-gray-800 shadow-sm">
+        <CardContent className="p-4">
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{question.title}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-6">بدون پاسخ</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const pieData = options.map((opt, idx) => ({
+    name: opt.id,
+    value: counts[opt.id] || 0,
+    fill: COLORS[idx % COLORS.length],
+  }));
+  const config: ChartConfig = {};
+  options.forEach((opt, idx) => {
+    config[opt.id] = { label: opt.text, color: COLORS[idx % COLORS.length] };
+  });
+
+  return (
+    <Card className="border-gray-200 dark:border-gray-800 shadow-sm">
+      <CardContent className="p-4 space-y-3">
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 line-clamp-2">{question.title}</p>
+        <div className="relative">
+          <ChartContainer config={config} className="h-28 w-28 mx-auto">
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={50}
+                innerRadius={28}
+                startAngle={90}
+                endAngle={-270}
+                paddingAngle={2}
+                strokeWidth={2}
+                stroke="white"
+                className="dark:stroke-gray-900"
+              >
+                {pieData.map((entry, i) => (
+                  <Cell key={i} fill={entry.fill} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span className="text-base font-bold text-gray-900 dark:text-gray-100">{total}</span>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {options.slice(0, 3).map((opt, idx) => {
+            const pct = total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0;
+            return (
+              <div key={opt.id} className="flex items-center gap-1 text-[10px]">
+                <div className="size-2 rounded-sm" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
+                <span className="text-gray-500 dark:text-gray-400">{opt.text.length > 12 ? opt.text.slice(0, 12) + '…' : opt.text}</span>
+                <span className="font-medium text-gray-700 dark:text-gray-300">{pct}%</span>
+              </div>
+            );
+          })}
+          {options.length > 3 && (
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">+{options.length - 3} مورد</span>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function IndividualResponse({
   submission,
   questions,
@@ -479,34 +798,34 @@ function IndividualResponse({
   index: number;
 }) {
   return (
-    <AccordionItem value={submission.id} className="border-gray-200">
-      <AccordionTrigger className="hover:bg-gray-50 rounded-lg px-4">
+    <AccordionItem value={submission.id} className="border-gray-200 dark:border-gray-800">
+      <AccordionTrigger className="hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg px-4">
         <div className="flex items-center gap-3 text-right">
-          <div className="flex size-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold shrink-0">
+          <div className="flex size-8 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold shrink-0">
             {index + 1}
           </div>
           <div>
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               پاسخ‌دهنده {index + 1}
             </span>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
               {formatDate(submission.createdAt)}
             </p>
           </div>
         </div>
       </AccordionTrigger>
       <AccordionContent className="px-4">
-        <div className="space-y-3 rounded-xl border bg-gray-50/50 p-4">
+        <div className="space-y-3 rounded-xl border bg-gray-50/50 dark:bg-gray-900/50 p-4 dark:border-gray-800">
           {questions.map((q) => {
             const response = submission.responses.find((r) => r.questionId === q.id);
             return (
               <div key={q.id} className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-gray-500">{q.title}</span>
-                <span className="text-sm text-gray-800">
+                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{q.title}</span>
+                <span className="text-sm text-gray-800 dark:text-gray-200">
                   {response?.value || '—'}
                 </span>
                 {q !== questions[questions.length - 1] && (
-                  <Separator className="mt-2 bg-gray-200" />
+                  <Separator className="mt-2 bg-gray-200 dark:bg-gray-700" />
                 )}
               </div>
             );
@@ -585,6 +904,15 @@ export default function ResultsView() {
     return Math.round((completed.length / submissions.length) * 100);
   }, [submissions, inputQuestions]);
 
+  // Questions that can show pie charts (choice + yes_no)
+  const pieEligibleQuestions = useMemo(
+    () => inputQuestions.filter((q) => {
+      const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown'];
+      return choiceTypes.includes(q.type) || q.type === 'yes_no';
+    }),
+    [inputQuestions]
+  );
+
   const handleExport = () => {
     // Placeholder for export functionality
     const csvRows: string[] = [];
@@ -611,14 +939,14 @@ export default function ResultsView() {
 
   if (!currentForm) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50/50 flex items-center justify-center">
-        <p className="text-gray-400">فرمی انتخاب نشده</p>
+      <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-gray-950 flex items-center justify-center">
+        <p className="text-gray-400 dark:text-gray-500">فرمی انتخاب نشده</p>
       </div>
     );
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50/50">
+    <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-gray-950">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
         <motion.div
@@ -631,22 +959,22 @@ export default function ResultsView() {
               variant="ghost"
               size="icon"
               onClick={() => setCurrentView('dashboard')}
-              className="rounded-full hover:bg-gray-100"
+              className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               <ArrowRight className="size-5" />
             </Button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                 <BarChart3 className="size-6 text-indigo-500" />
                 نتایج فرم
               </h1>
-              <p className="text-sm text-gray-500 mt-0.5">{currentForm.title}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{currentForm.title}</p>
             </div>
           </div>
           <Button
             variant="outline"
             onClick={handleExport}
-            className="rounded-xl border-gray-200 hover:bg-indigo-50 hover:border-indigo-200"
+            className="rounded-xl border-gray-200 dark:border-gray-700 hover:bg-indigo-50 hover:border-indigo-200 dark:hover:bg-indigo-950/30 dark:hover:border-indigo-800"
             disabled={submissions.length === 0}
           >
             <Download className="size-4 ml-2" />
@@ -662,11 +990,11 @@ export default function ResultsView() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center py-20"
           >
-            <div className="flex size-20 items-center justify-center rounded-3xl bg-gray-100 mb-6">
-              <ListChecks className="size-10 text-gray-300" />
+            <div className="flex size-20 items-center justify-center rounded-3xl bg-gray-100 dark:bg-gray-800 mb-6">
+              <ListChecks className="size-10 text-gray-300 dark:text-gray-600" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">هنوز پاسخی ثبت نشده</h3>
-            <p className="text-sm text-gray-400 max-w-sm text-center">
+            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">هنوز پاسخی ثبت نشده</h3>
+            <p className="text-sm text-gray-400 dark:text-gray-500 max-w-sm text-center">
               با به اشتراک‌گذاری لینک فرم، پاسخ‌دهندگان می‌توانند فرم شما را پر کنند.
             </p>
           </motion.div>
@@ -675,20 +1003,20 @@ export default function ResultsView() {
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
               <StatCard
-                icon={<Users className="size-6 text-indigo-600" />}
+                icon={<Users className="size-6 text-indigo-600 dark:text-indigo-400" />}
                 label="کل پاسخ‌ها"
                 value={submissions.length}
-                color="bg-indigo-100"
+                color="bg-indigo-100 dark:bg-indigo-900/50"
               />
               <StatCard
-                icon={<TrendingUp className="size-6 text-emerald-600" />}
+                icon={<TrendingUp className="size-6 text-emerald-600 dark:text-emerald-400" />}
                 label="نرخ تکمیل"
                 value={`${completionRate}%`}
                 subtitle={`${submissions.length} پاسخ‌دهنده`}
-                color="bg-emerald-100"
+                color="bg-emerald-100 dark:bg-emerald-900/50"
               />
               <StatCard
-                icon={<Clock className="size-6 text-purple-600" />}
+                icon={<Clock className="size-6 text-purple-600 dark:text-purple-400" />}
                 label="آخرین پاسخ"
                 value={
                   submissions.length > 0
@@ -703,16 +1031,20 @@ export default function ResultsView() {
                       )
                     : '—'
                 }
-                color="bg-purple-100"
+                color="bg-purple-100 dark:bg-purple-900/50"
               />
             </div>
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="bg-gray-100 rounded-xl p-1 h-10 mb-6">
+              <TabsList className="bg-gray-100 dark:bg-gray-800 rounded-xl p-1 h-10 mb-6">
                 <TabsTrigger value="summary" className="rounded-lg text-sm font-medium">
                   <BarChart3 className="size-4 ml-1.5" />
                   خلاصه سؤالات
+                </TabsTrigger>
+                <TabsTrigger value="pie-overview" className="rounded-lg text-sm font-medium">
+                  <PieChartIcon className="size-4 ml-1.5" />
+                  نمودار دایره‌ای
                 </TabsTrigger>
                 <TabsTrigger value="individual" className="rounded-lg text-sm font-medium">
                   <Users className="size-4 ml-1.5" />
@@ -730,7 +1062,7 @@ export default function ResultsView() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                       >
-                        <Card className="border-gray-200 shadow-sm overflow-hidden">
+                        <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
                           <CardContent className="p-5 sm:p-6">
                             <QuestionSummary
                               question={question}
@@ -743,13 +1075,43 @@ export default function ResultsView() {
                 </div>
               </TabsContent>
 
+              <TabsContent value="pie-overview">
+                {pieEligibleQuestions.length === 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-col items-center justify-center py-16"
+                  >
+                    <div className="flex size-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800 mb-4">
+                      <PieChartIcon className="size-8 text-gray-300 dark:text-gray-600" />
+                    </div>
+                    <p className="text-sm text-gray-400 dark:text-gray-500">
+                      سؤالی با گزینه‌های انتخابی یا بله/خیر یافت نشد
+                    </p>
+                  </motion.div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {pieEligibleQuestions.map((question, idx) => (
+                      <motion.div
+                        key={question.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                      >
+                        <MiniPieCard question={question} submissions={submissions} />
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
               <TabsContent value="individual">
-                <Card className="border-gray-200 shadow-sm overflow-hidden">
+                <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-base">
+                    <CardTitle className="text-base text-gray-900 dark:text-gray-100">
                       لیست پاسخ‌ها ({submissions.length})
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-gray-500 dark:text-gray-400">
                       برای مشاهده جزئیات هر پاسخ روی آن کلیک کنید
                     </CardDescription>
                   </CardHeader>

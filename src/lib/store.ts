@@ -25,6 +25,18 @@ export interface QuestionConfig {
   pattern?: string;
 }
 
+export interface ConditionRule {
+  questionId: string;
+  operator: 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'is_answered' | 'is_not_answered';
+  value?: string;
+}
+
+export interface QuestionLogic {
+  enabled: boolean;
+  action: 'show' | 'hide';
+  conditions: ConditionRule[];
+}
+
 export interface FormQuestion {
   id: string;
   type: string;
@@ -32,6 +44,7 @@ export interface FormQuestion {
   required: boolean;
   order: number;
   config: QuestionConfig;
+  logic?: QuestionLogic;
 }
 
 export interface FormTheme {
