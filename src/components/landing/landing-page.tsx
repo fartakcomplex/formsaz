@@ -124,7 +124,7 @@ function Navbar() {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-gray-100'
+          ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-gray-100 dark:border-gray-800'
           : 'bg-transparent'
       }`}
     >
@@ -149,7 +149,7 @@ function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="relative px-4 py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors rounded-lg hover:bg-indigo-50/60"
+                className="relative px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-indigo-50/60 dark:hover:bg-indigo-950/50"
               >
                 {link.label}
               </a>
@@ -190,7 +190,7 @@ function Navbar() {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          className="md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100"
+          className="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-100 dark:border-gray-800"
         >
           <div className="px-4 py-4 space-y-2">
             {navLinks.map((link) => (
@@ -240,7 +240,7 @@ function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background decorations */}
-      <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/80 via-violet-50/50 to-white" />
+      <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/80 via-violet-50/50 to-white dark:from-indigo-950/50 dark:via-violet-950/30 dark:to-gray-950" />
       <div className="absolute top-20 right-[10%] w-72 h-72 bg-indigo-300/20 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-[10%] w-96 h-96 bg-violet-300/20 rounded-full blur-3xl" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-indigo-200/10 to-violet-200/10 rounded-full blur-3xl" />
@@ -277,7 +277,7 @@ function HeroSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight"
         >
-          <span className="text-gray-900">فرم‌ساز آنلاین</span>
+          <span className="text-gray-900 dark:text-white">فرم‌ساز آنلاین</span>
           <br />
           <span className="bg-gradient-to-l from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
             حرفه‌ای و هوشمند
@@ -289,7 +289,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-gray-500 leading-relaxed"
+          className="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-gray-500 dark:text-gray-400 leading-relaxed"
         >
           ساخت فرم، پرسشنامه و نظرسنجی آنلاین به صورت رایگان.
           <br className="hidden sm:block" />
@@ -466,7 +466,7 @@ function FeaturesSection() {
   ];
 
   return (
-    <section id="features" className="relative py-24 sm:py-32 bg-white">
+    <section id="features" className="relative py-24 sm:py-32 bg-white dark:bg-gray-950">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <FadeInSection className="text-center mb-16 sm:mb-20">
@@ -476,7 +476,7 @@ function FeaturesSection() {
           >
             ویژگی‌ها
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             همه‌چیز برای ساخت فرم‌های حرفه‌ای
           </h2>
           <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 leading-relaxed">
@@ -488,14 +488,14 @@ function FeaturesSection() {
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, i) => (
             <motion.div key={i} variants={staggerChild}>
-              <Card className="group relative h-full border-gray-100 bg-white hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-500/[0.06] transition-all duration-300 hover:-translate-y-1 cursor-default overflow-hidden">
+              <Card className="group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-indigo-100 dark:hover:border-indigo-800 hover:shadow-xl hover:shadow-indigo-500/[0.06] transition-all duration-300 hover:-translate-y-1 cursor-default overflow-hidden">
                 <CardContent className="p-6">
                   <div
                     className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} mb-5`}
                   >
                     <feature.icon className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{feature.description}</p>
                 </CardContent>
 
