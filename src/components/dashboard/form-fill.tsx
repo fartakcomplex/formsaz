@@ -615,7 +615,7 @@ function SuccessScreen() {
 }
 
 export default function FormFill() {
-  const { fillForm, setCurrentView, setFillForm } = useAppStore();
+  const { fillForm, setCurrentView, setFillForm, previousView } = useAppStore();
   const [currentPage, setCurrentPage] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -755,6 +755,23 @@ export default function FormFill() {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/50">
       <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
+        {/* Back button */}
+        <motion.div
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="mb-4"
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => { setFillForm(null); setCurrentView(previousView || 'dashboard'); }}
+            className="text-gray-500 hover:text-gray-900 gap-1.5 rounded-lg"
+          >
+            <ArrowRight className="size-4" />
+            بازگشت
+          </Button>
+        </motion.div>
+
         {/* Form Header */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}

@@ -14,6 +14,7 @@ import {
   Undo2,
   Redo2,
   Menu,
+  Settings,
 } from 'lucide-react';
 import {
   ResizablePanelGroup,
@@ -39,10 +40,11 @@ import { useAppStore } from '@/lib/store';
 import QuestionTypes from './question-types';
 import FormPreview from './form-preview';
 import PropertiesPanel from './properties-panel';
+import FormSettingsDialog from './form-settings-dialog';
 import { toast } from 'sonner';
 
 export default function FormBuilder() {
-  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setCurrentView } = useAppStore();
+  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView } = useAppStore();
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [mobileLeftOpen, setMobileLeftOpen] = useState(false);
@@ -296,6 +298,31 @@ export default function FormBuilder() {
             <TooltipContent>مشاهده پیش‌نمایش فرم</TooltipContent>
           </Tooltip>
 
+          <FormSettingsDialog
+            formTitle={formTitle}
+            formDescription={formDescription}
+            formTheme={formTheme}
+            onTitleChange={setFormTitle}
+            onDescriptionChange={setFormDescription}
+            onThemeChange={setFormTheme}
+          >
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  asChild
+                >
+                  <span>
+                    <Settings className="h-4 w-4" />
+                  </span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>تنظیمات فرم</TooltipContent>
+            </Tooltip>
+          </FormSettingsDialog>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -360,7 +387,12 @@ export default function FormBuilder() {
             {/* Center Panel - Form Preview */}
             <ResizablePanel defaultSize={56} minSize={40}>
               <div className="h-full bg-muted/30">
-                <FormPreview />
+                <FormPreview
+                  formTitle={formTitle}
+                  formDescription={formDescription}
+                  formTheme={formTheme}
+                  onDescriptionChange={setFormDescription}
+                />
               </div>
             </ResizablePanel>
 
@@ -386,7 +418,12 @@ export default function FormBuilder() {
 
         {/* Mobile layout */}
         <div className="sm:hidden h-full">
-          <FormPreview />
+          <FormPreview
+            formTitle={formTitle}
+            formDescription={formDescription}
+            formTheme={formTheme}
+            onDescriptionChange={setFormDescription}
+          />
         </div>
       </div>
 

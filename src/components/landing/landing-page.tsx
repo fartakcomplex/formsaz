@@ -166,10 +166,10 @@ function Navbar() {
               ورود
             </Button>
             <Button
-              onClick={() => setCurrentView('builder')}
+              onClick={() => setCurrentView('dashboard')}
               className="bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all"
             >
-              ثبت‌نام رایگان
+              شروع رایگان
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </div>
@@ -214,9 +214,9 @@ function Navbar() {
               </Button>
               <Button
                 className="w-full bg-gradient-to-l from-indigo-600 to-violet-600 text-white"
-                onClick={() => setCurrentView('builder')}
+                onClick={() => setCurrentView('dashboard')}
               >
-                ثبت‌نام رایگان
+                شروع رایگان
               </Button>
             </div>
           </div>
@@ -305,7 +305,7 @@ function HeroSection() {
         >
           <Button
             size="lg"
-            onClick={() => setCurrentView('builder')}
+            onClick={() => setCurrentView('dashboard')}
             className="w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all rounded-xl px-8"
           >
             شروع رایگان
@@ -315,6 +315,7 @@ function HeroSection() {
             size="lg"
             variant="outline"
             className="w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold rounded-xl px-8 border-gray-200 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-600 transition-all"
+            onClick={() => setCurrentView('dashboard')}
           >
             مشاهده نمونه‌ها
             <ChevronDown className="h-4 w-4" />
@@ -811,7 +812,7 @@ function CTASection() {
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="lg"
-              onClick={() => setCurrentView('builder')}
+              onClick={() => setCurrentView('dashboard')}
               className="w-full sm:w-auto min-w-[220px] h-14 text-base font-bold bg-white text-indigo-600 hover:bg-indigo-50 shadow-xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-0.5 transition-all rounded-xl px-10"
             >
               شروع رایگان

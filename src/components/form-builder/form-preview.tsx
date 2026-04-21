@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   GripVertical,
   Plus,
@@ -20,11 +20,25 @@ import {
   Upload,
   FileText,
   ImageIcon,
+  Pencil,
+  CheckIcon,
 } from 'lucide-react';
-import { useAppStore, FormQuestion } from '@/lib/store';
+import { useAppStore, FormQuestion, FormTheme } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+/* ========== Types ========== */
+
+interface FormPreviewProps {
+  formTitle: string;
+  formDescription: string;
+  formTheme: FormTheme;
+  onDescriptionChange: (description: string) => void;
+}
+
+/* ========== Helpers ========== */
 
 function getQuestionIcon(type: string) {
   const iconMap: Record<string, React.ReactNode> = {
@@ -66,7 +80,8 @@ function getQuestionTypeLabel(type: string): string {
   return labels[type] || type;
 }
 
-/* --- Render the "answer" preview for each question type --- */
+/* ========== Question Answer Preview ========== */
+
 function QuestionAnswerPreview({ question }: { question: FormQuestion }) {
   const { config, type } = question;
 
@@ -210,7 +225,103 @@ function QuestionAnswerPreview({ question }: { question: FormQuestion }) {
   }
 }
 
-/* --- Individual Question Card --- */
+/* ========== Editable Description Component ========== */
+
+function EditableDescription({
+  description,
+  onChange,
+  primaryColor,
+}: {
+  description: string;
+  onChange: (value: string) => void;
+  primaryColor: string;
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftValue, setDraftValue] = useState(description);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    setDraftValue(description);
+  }, [description]);
+
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [isEditing]);
+
+  const handleSave = () => {
+    onChange(draftValue);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setDraftValue(description);
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleCancel();
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className="relative mt-2 w-full max-w-lg">
+        <Textarea
+          ref={textareaRef}
+          value={draftValue}
+          onChange={(e) => setDraftValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="توضیحات فرم را وارد کنید..."
+          className="text-sm text-white/90 placeholder:text-white/40 bg-white/10 border-white/20 resize-none min-h-[60px]"
+          dir="rtl"
+        />
+        <div className="flex items-center gap-2 mt-2">
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium bg-white/20 text-white hover:bg-white/30 transition-colors"
+          >
+            <CheckIcon className="h-3 w-3" />
+            ذخیره
+          </button>
+          <button
+            onClick={handleCancel}
+            className="rounded-md px-2.5 py-1 text-xs text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors"
+          >
+            انصراف
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => setIsEditing(true)}
+      className="group/desc flex items-start gap-2 mt-2 w-full max-w-lg text-right"
+    >
+      {description ? (
+        <p className="text-sm text-white/70 leading-relaxed">{description}</p>
+      ) : (
+        <p className="text-sm text-white/40 flex items-center gap-1.5">
+          <Pencil className="h-3 w-3" />
+          افزودن توضیحات فرم...
+        </p>
+      )}
+      {description && (
+        <Pencil className="h-3 w-3 mt-1 text-white/40 opacity-0 group-hover/desc:opacity-100 transition-opacity shrink-0" />
+      )}
+    </button>
+  );
+}
+
+/* ========== Question Card ========== */
+
 function QuestionCard({
   question,
   index,
@@ -218,6 +329,7 @@ function QuestionCard({
   onSelect,
   onDelete,
   onAddAfter,
+  primaryColor,
 }: {
   question: FormQuestion;
   index: number;
@@ -225,6 +337,7 @@ function QuestionCard({
   onSelect: () => void;
   onDelete: () => void;
   onAddAfter: () => void;
+  primaryColor: string;
 }) {
   const isStatement = question.type === 'statement';
 
@@ -239,23 +352,38 @@ function QuestionCard({
       <div
         onClick={onSelect}
         className={cn(
-          'relative flex-1 cursor-pointer rounded-xl border-2 p-5 transition-all duration-200',
+          'relative flex-1 cursor-pointer border-2 p-5 transition-all duration-200',
           isSelected
-            ? 'border-purple-500 bg-purple-50/50 shadow-sm ring-1 ring-purple-500/20 dark:bg-purple-950/20 dark:ring-purple-400/20'
+            ? 'shadow-sm ring-1'
             : 'border-transparent bg-white hover:border-muted hover:shadow-sm dark:bg-zinc-900/50'
         )}
+        style={
+          isSelected
+            ? {
+                borderColor: primaryColor,
+                backgroundColor: `${primaryColor}08`,
+                ringColor: `${primaryColor}33`,
+              }
+            : undefined
+        }
       >
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-2 flex-1 min-w-0">
             {!isStatement && (
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+              <span
+                className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                style={{
+                  backgroundColor: `${primaryColor}1a`,
+                  color: primaryColor,
+                }}
+              >
                 {index + 1}
               </span>
             )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
+                <span className="text-xs font-medium" style={{ color: primaryColor }}>
                   {getQuestionTypeLabel(question.type)}
                 </span>
                 {question.required && (
@@ -298,21 +426,26 @@ function QuestionCard({
 
         {/* Selected indicator */}
         {isSelected && (
-          <div className="absolute top-0 right-0 h-full w-1 rounded-l bg-purple-500" />
+          <div
+            className="absolute top-0 right-0 h-full w-1 rounded-l"
+            style={{ backgroundColor: primaryColor }}
+          />
         )}
       </div>
     </div>
   );
 }
 
-/* --- Add question separator between questions --- */
-function AddSeparator({ onClick }: { onClick: () => void }) {
+/* ========== Add Separator ========== */
+
+function AddSeparator({ onClick, primaryColor }: { onClick: () => void; primaryColor: string }) {
   return (
     <div className="group/sep flex items-center justify-center py-1">
       <div className="h-px flex-1 bg-transparent transition-colors group-hover/sep:bg-muted" />
       <button
         onClick={onClick}
-        className="mx-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/20 text-muted-foreground/40 opacity-0 transition-all hover:border-purple-400 hover:bg-purple-50 hover:text-purple-600 group-hover/sep:opacity-100 dark:hover:bg-purple-950 dark:hover:text-purple-400"
+        className="mx-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/20 text-muted-foreground/40 opacity-0 transition-all hover:text-foreground group-hover/sep:opacity-100"
+        style={{ hoverColor: primaryColor }}
       >
         <Plus className="h-3.5 w-3.5" />
       </button>
@@ -321,10 +454,20 @@ function AddSeparator({ onClick }: { onClick: () => void }) {
   );
 }
 
-/* --- Main Form Preview Component --- */
-export default function FormPreview() {
+/* ========== Main Form Preview Component ========== */
+
+export default function FormPreview({
+  formTitle,
+  formDescription,
+  formTheme,
+  onDescriptionChange,
+}: FormPreviewProps) {
   const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion } = useAppStore();
   const [showTypeMenu, setShowTypeMenu] = React.useState<number | 'end' | null>(null);
+
+  const primaryColor = formTheme.primaryColor;
+  const bgColor = formTheme.backgroundColor;
+  const borderRadius = formTheme.borderRadius;
 
   const handleDelete = useCallback(
     (id: string) => {
@@ -333,41 +476,51 @@ export default function FormPreview() {
     [removeQuestion]
   );
 
-  const handleAddAt = useCallback(
-    (position: number | 'end') => {
-      setShowTypeMenu(position);
-    },
-    []
-  );
+  const handleAddAt = useCallback((position: number | 'end') => {
+    setShowTypeMenu(position);
+  }, []);
+
+  /* Gradient helpers for header banner */
+  const headerGradientStyle: React.CSSProperties = {
+    background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`,
+    borderRadius: `${borderRadius}px`,
+  };
 
   return (
     <div className="h-full flex flex-col">
       {/* Form header preview */}
-      <div className="border-b bg-white px-8 pt-8 pb-6 dark:bg-zinc-900/50">
-        <div className="rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 p-6 text-white shadow-lg">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20 backdrop-blur">
+      <div
+        className="border-b px-8 pt-8 pb-6"
+        style={{ backgroundColor: bgColor === '#ffffff' ? 'white' : bgColor }}
+      >
+        <div className="p-6 text-white shadow-lg" style={headerGradientStyle}>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="flex h-12 w-12 items-center justify-center bg-white/20 backdrop-blur" style={{ borderRadius: `${Math.max(borderRadius - 4, 4)}px` }}>
               <ImageIcon className="h-6 w-6" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold">فرم بدون عنوان</h1>
-              <p className="text-sm text-white/70 mt-0.5">عنوان و توضیحات فرم خود را ویرایش کنید</p>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl font-bold truncate">{formTitle || 'فرم بدون عنوان'}</h1>
             </div>
           </div>
+          <EditableDescription
+            description={formDescription}
+            onChange={onDescriptionChange}
+            primaryColor={primaryColor}
+          />
         </div>
       </div>
 
       {/* Questions list */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1" style={{ backgroundColor: bgColor === '#ffffff' ? undefined : bgColor }}>
         <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">
           {questions.length === 0 ? (
-            <EmptyState onAdd={() => handleAddAt('end')} />
+            <EmptyState onAdd={() => handleAddAt('end')} primaryColor={primaryColor} />
           ) : (
             <>
               {questions.map((q, idx) => (
                 <React.Fragment key={q.id}>
                   {idx > 0 && (
-                    <AddSeparator onClick={() => handleAddAt(idx)} />
+                    <AddSeparator onClick={() => handleAddAt(idx)} primaryColor={primaryColor} />
                   )}
                   <QuestionCard
                     question={q}
@@ -376,6 +529,7 @@ export default function FormPreview() {
                     onSelect={() => setSelectedQuestionId(q.id)}
                     onDelete={() => handleDelete(q.id)}
                     onAddAfter={() => handleAddAt(idx + 1)}
+                    primaryColor={primaryColor}
                   />
                 </React.Fragment>
               ))}
@@ -383,7 +537,8 @@ export default function FormPreview() {
               <div className="mt-4">
                 <button
                   onClick={() => handleAddAt('end')}
-                  className="group w-full flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted-foreground/20 py-6 text-muted-foreground/50 transition-all hover:border-purple-400 hover:bg-purple-50/50 hover:text-purple-600 dark:hover:bg-purple-950/30 dark:hover:text-purple-400"
+                  className="group w-full flex items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/20 py-6 text-muted-foreground/50 transition-all hover:text-foreground"
+                  style={{ borderRadius: `${borderRadius}px` }}
                 >
                   <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" />
                   <span className="text-sm font-medium">افزودن سؤال</span>
@@ -398,11 +553,17 @@ export default function FormPreview() {
   );
 }
 
-function EmptyState({ onAdd }: { onAdd: () => void }) {
+function EmptyState({ onAdd, primaryColor }: { onAdd: () => void; primaryColor: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-100 dark:bg-purple-900/30 mb-4">
-        <FileText className="h-8 w-8 text-purple-500" />
+      <div
+        className="flex h-16 w-16 items-center justify-center mb-4"
+        style={{
+          backgroundColor: `${primaryColor}1a`,
+          borderRadius: '16px',
+        }}
+      >
+        <FileText className="h-8 w-8" style={{ color: primaryColor }} />
       </div>
       <h3 className="text-lg font-semibold text-foreground mb-2">فرم خود را بسازید</h3>
       <p className="text-sm text-muted-foreground mb-6 max-w-xs">
@@ -410,7 +571,11 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       </p>
       <Button
         onClick={onAdd}
-        className="bg-purple-600 hover:bg-purple-700 text-white gap-2 rounded-lg"
+        className="text-white gap-2"
+        style={{
+          backgroundColor: primaryColor,
+          borderRadius: '8px',
+        }}
       >
         <Plus className="h-4 w-4" />
         افزودن اولین سؤال

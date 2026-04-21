@@ -19,6 +19,7 @@ import {
   CircleDot,
   Lock,
   FilePlus,
+  LayoutTemplate,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,6 +59,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useAppStore, type Form } from '@/lib/store';
+import TemplateGallery from './template-gallery';
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   draft: {
@@ -321,6 +323,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
+  const [templateGalleryOpen, setTemplateGalleryOpen] = useState(false);
 
   const fetchForms = useCallback(async () => {
     try {
@@ -422,13 +425,23 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold text-gray-900">فرم‌های من</h1>
             <p className="text-sm text-gray-500 mt-0.5">مدیریت و مشاهده تمام فرم‌های خود</p>
           </div>
-          <Button
-            onClick={handleCreateNew}
-            className="bg-gradient-to-l from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 rounded-xl px-5 font-medium w-full sm:w-auto"
-          >
-            <Plus className="size-4 ml-2" />
-            ایجاد فرم جدید
-          </Button>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button
+              variant="outline"
+              onClick={() => setTemplateGalleryOpen(true)}
+              className="border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 rounded-xl px-5 font-medium w-full sm:w-auto h-10 transition-colors"
+            >
+              <LayoutTemplate className="size-4 ml-2 text-purple-500" />
+              الگوهای آماده
+            </Button>
+            <Button
+              onClick={handleCreateNew}
+              className="bg-gradient-to-l from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 rounded-xl px-5 font-medium w-full sm:w-auto h-10"
+            >
+              <Plus className="size-4 ml-2" />
+              ایجاد فرم جدید
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -497,6 +510,11 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      <TemplateGallery
+        open={templateGalleryOpen}
+        onOpenChange={setTemplateGalleryOpen}
+      />
     </div>
   );
 }
