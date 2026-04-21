@@ -7,6 +7,7 @@ import FormBuilder from '@/components/form-builder/form-builder';
 import Dashboard from '@/components/dashboard/dashboard';
 import FormFill from '@/components/dashboard/form-fill';
 import ResultsView from '@/components/dashboard/results-view';
+import TemplateLibraryPage from '@/components/dashboard/template-library-page';
 import AppHeader from '@/components/app-header';
 
 const pageVariants = {
@@ -42,6 +43,7 @@ export default function Home() {
           {currentView === 'dashboard' && <Dashboard />}
           {currentView === 'fill' && <FormFill />}
           {currentView === 'results' && <ResultsView />}
+          {currentView === 'templates' && <TemplateLibraryPage />}
         </motion.div>
       </AnimatePresence>
     </div>

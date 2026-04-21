@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type ViewType = 'landing' | 'builder' | 'dashboard' | 'fill' | 'results';
+export type ViewType = 'landing' | 'builder' | 'dashboard' | 'fill' | 'results' | 'templates';
 
 export interface QuestionOption {
   id: string;

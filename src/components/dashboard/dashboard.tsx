@@ -72,7 +72,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppStore, type Form } from '@/lib/store';
-import TemplateGallery from './template-gallery';
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   draft: {
@@ -632,7 +631,6 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
-  const [templateGalleryOpen, setTemplateGalleryOpen] = useState(false);
   const [duplicating, setDuplicating] = useState<string | null>(null);
   const [shareForm, setShareForm] = useState<Form | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -796,7 +794,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
-              onClick={() => setTemplateGalleryOpen(true)}
+              onClick={() => setCurrentView('templates')
               className="border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 rounded-xl px-5 font-medium w-full sm:w-auto h-10 transition-colors text-gray-700 dark:text-gray-300"
             >
               <LayoutTemplate className="size-4 ml-2 text-purple-500" />
@@ -880,11 +878,6 @@ export default function Dashboard() {
           </div>
         )}
       </div>
-
-      <TemplateGallery
-        open={templateGalleryOpen}
-        onOpenChange={setTemplateGalleryOpen}
-      />
 
       <ShareFormDialog
         form={shareForm}

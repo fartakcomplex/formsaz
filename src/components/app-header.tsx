@@ -27,18 +27,25 @@ import { useAppStore, type ViewType } from '@/lib/store';
 const navItems: Record<string, { label: string; icon: React.ReactNode; view?: ViewType }[]> = {
   landing: [
     { label: 'ویژگی‌ها', icon: <ListChecks className="size-4" /> },
-    { label: 'الگوها', icon: <FileText className="size-4" /> },
+    { label: 'الگوها', icon: <FileText className="size-4" />, view: 'templates' },
   ],
   dashboard: [
     { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
     { label: 'فرم‌های من', icon: <ListChecks className="size-4" />, view: 'dashboard' },
+    { label: 'الگوهای آماده', icon: <FileText className="size-4" />, view: 'templates' },
   ],
   builder: [
     { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
     { label: 'فرم‌های من', icon: <ListChecks className="size-4" />, view: 'dashboard' },
+    { label: 'الگوهای آماده', icon: <FileText className="size-4" />, view: 'templates' },
   ],
   fill: [],
   results: [
+    { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
+    { label: 'فرم‌های من', icon: <ListChecks className="size-4" />, view: 'dashboard' },
+    { label: 'الگوهای آماده', icon: <FileText className="size-4" />, view: 'templates' },
+  ],
+  templates: [
     { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
     { label: 'فرم‌های من', icon: <ListChecks className="size-4" />, view: 'dashboard' },
   ],
@@ -97,9 +104,9 @@ export default function AppHeader() {
   const { currentView, previousView, setCurrentView, currentForm } = useAppStore();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const showBackButton = currentView === 'builder' || currentView === 'fill' || currentView === 'results';
+  const showBackButton = currentView === 'builder' || currentView === 'fill' || currentView === 'results' || currentView === 'templates';
   const showAuthButton = currentView === 'landing';
-  const showUserAvatar = currentView !== 'landing';
+  const showUserAvatar = currentView !== 'landing' && currentView !== 'templates';
 
   const currentNavKey = navItems[currentView] ? currentView : 'dashboard';
   const items = navItems[currentNavKey];
