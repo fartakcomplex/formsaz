@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Form {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  theme       String     @default("{\"primaryColor\":\"#6366f1\",\"backgroundColor\":\"#ffffff\",\"fontFamily\":\"Vazirmatn\"}")
+  status      String     @default("draft") // draft, published, closed
+  viewCount   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  questions   Question[]
+  submissions Submission[]
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  formId    String
+  type      String   // short_text, long_text, multiple_choice, multiple_select, dropdown, number, email, phone, date, scale, rating, yes_no, file_upload, matrix, image_choice, statement
+  title     String
+  required  Boolean  @default(false)
+  order     Int      @default(0)
+  config    String   @default("{}") // JSON: options, placeholder, min, max, scale range, etc.
+  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  responses Response[]
+}
+
+model Submission {
+  id         String     @id @default(cuid())
+  formId     String
+  respondent String?
+  createdAt  DateTime   @default(now())
+  form       Form       @relation(fields: [formId], references: [id], onDelete: Cascade)
+  responses  Response[]
+}
+
+model Response {
+  id           String     @id @default(cuid())
+  submissionId String
+  questionId   String
+  value        String     // JSON string for flexibility
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  question     Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}

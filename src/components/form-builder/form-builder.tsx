@@ -1,0 +1,415 @@
+'use client';
+
+import React, { useState } from 'react';
+import {
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelRightClose,
+  PanelRightOpen,
+  Eye,
+  Save,
+  Send,
+  ChevronRight,
+  ArrowRight,
+  Undo2,
+  Redo2,
+  Menu,
+} from 'lucide-react';
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from '@/components/ui/resizable';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
+import { useAppStore } from '@/lib/store';
+import QuestionTypes from './question-types';
+import FormPreview from './form-preview';
+import PropertiesPanel from './properties-panel';
+import { toast } from 'sonner';
+
+export default function FormBuilder() {
+  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setCurrentView } = useAppStore();
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
+  const [rightCollapsed, setRightCollapsed] = useState(false);
+  const [mobileLeftOpen, setMobileLeftOpen] = useState(false);
+  const [mobileRightOpen, setMobileRightOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [formTitle, setFormTitle] = useState(currentForm?.title || 'فرم بدون عنوان');
+  const [formDescription, setFormDescription] = useState(currentForm?.description || '');
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const payload = {
+        title: formTitle,
+        description: formDescription || null,
+        theme: formTheme,
+        status: currentForm?.status || 'draft',
+        questions: questions.map((q, i) => ({
+          type: q.type,
+          title: q.title,
+          required: q.required,
+          order: i,
+          config: q.config,
+        })),
+      };
+
+      let res;
+      if (currentForm?.id) {
+        res = await fetch(`/api/forms/${currentForm.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        res = await fetch('/api/forms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (res.ok) {
+        const savedForm = await res.json();
+        setCurrentForm(savedForm);
+        toast.success('فرم با موفقیت ذخیره شد');
+      } else {
+        toast.error('خطا در ذخیره فرم');
+      }
+    } catch {
+      toast.error('خطا در ذخیره فرم');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePublish = async () => {
+    if (questions.length === 0) {
+      toast.error('لطفاً حداقل یک سؤال اضافه کنید');
+      return;
+    }
+    setIsPublishing(true);
+    try {
+      // Save first if new form
+      const payload = {
+        title: formTitle,
+        description: formDescription || null,
+        theme: formTheme,
+        status: 'published',
+        questions: questions.map((q, i) => ({
+          type: q.type,
+          title: q.title,
+          required: q.required,
+          order: i,
+          config: q.config,
+        })),
+      };
+
+      let res;
+      if (currentForm?.id) {
+        res = await fetch(`/api/forms/${currentForm.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        res = await fetch('/api/forms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (res.ok) {
+        const savedForm = await res.json();
+        setCurrentForm(savedForm);
+        setFillForm(savedForm);
+        toast.success('فرم با موفقیت منتشر شد!');
+        setCurrentView('fill');
+      } else {
+        toast.error('خطا در انتشار فرم');
+      }
+    } catch {
+      toast.error('خطا در انتشار فرم');
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  const handlePreview = () => {
+    const previewForm = {
+      id: currentForm?.id || 'preview',
+      title: formTitle,
+      description: formDescription || null,
+      theme: JSON.stringify(formTheme),
+      status: 'draft',
+      viewCount: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      questions,
+    };
+    setFillForm(previewForm);
+    setCurrentView('fill');
+  };
+
+  const hasQuestions = questions.length > 0;
+  const hasSelection = selectedQuestionId !== null;
+
+  return (
+    <div className="flex h-screen flex-col bg-muted/30 overflow-hidden" dir="rtl">
+      {/* ============ TOOLBAR ============ */}
+      <header className="flex h-14 items-center justify-between border-b bg-white px-3 sm:px-4 shrink-0 z-20 dark:bg-zinc-950">
+        {/* Right section (RTL - logo/nav) */}
+        <div className="flex items-center gap-2">
+          {/* Mobile menu buttons */}
+          <div className="flex items-center gap-1 sm:hidden">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setMobileLeftOpen(true)}
+                >
+                  <Menu className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>انواع سؤال</TooltipContent>
+            </Tooltip>
+            {hasSelection && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setMobileRightOpen(true)}
+                  >
+                    <PanelLeftOpen className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>تنظیمات سؤال</TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+
+          {/* Desktop collapse buttons */}
+          <div className="hidden sm:flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setLeftCollapsed(!leftCollapsed)}
+                >
+                  {leftCollapsed ? (
+                    <PanelLeftOpen className="h-4 w-4" />
+                  ) : (
+                    <PanelLeftClose className="h-4 w-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{leftCollapsed ? 'نمایش پنل سؤال‌ها' : 'بستن پنل سؤال‌ها'}</TooltipContent>
+            </Tooltip>
+          </div>
+
+          <Separator orientation="vertical" className="h-6 mx-1 hidden sm:block" />
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => useAppStore.getState().setCurrentView('dashboard')}
+              className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowRight className="h-4 w-4" />
+              <span className="text-sm hidden sm:inline">بازگشت</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Center - Form title */}
+        <div className="hidden md:flex items-center gap-3 flex-1 justify-center max-w-md mx-4">
+          <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-1.5 flex-1 justify-center">
+            <input
+              value={formTitle}
+              onChange={(e) => setFormTitle(e.target.value)}
+              className="text-sm font-medium text-foreground bg-transparent border-none outline-none w-full text-center truncate"
+              placeholder="عنوان فرم..."
+            />
+            <span className="text-[10px] text-muted-foreground shrink-0">
+              ({questions.length} سؤال)
+            </span>
+          </div>
+        </div>
+
+        {/* Left section (RTL - actions) */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Undo/Redo - decorative for now */}
+          <div className="hidden lg:flex items-center gap-0.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                  <Undo2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>برگشت</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                  <Redo2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>دوباره</TooltipContent>
+            </Tooltip>
+          </div>
+
+          <Separator orientation="vertical" className="h-6 mx-0.5 hidden lg:block" />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 text-xs sm:text-sm text-muted-foreground hover:text-foreground"
+                onClick={handlePreview}
+              >
+                <Eye className="h-4 w-4" />
+                <span className="hidden sm:inline">پیش‌نمایش</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>مشاهده پیش‌نمایش فرم</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5 text-xs sm:text-sm"
+                onClick={handleSave}
+                disabled={isSaving}
+              >
+                <Save className="h-4 w-4" />
+                <span className="hidden sm:inline">{isSaving ? 'در حال ذخیره...' : 'ذخیره'}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>ذخیره فرم</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                className="h-8 gap-1.5 text-xs sm:text-sm bg-purple-600 hover:bg-purple-700 text-white shadow-sm"
+                disabled={!hasQuestions || isPublishing}
+                onClick={handlePublish}
+              >
+                <Send className="h-4 w-4" />
+                <span className="hidden sm:inline">{isPublishing ? 'در حال انتشار...' : 'انتشار'}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>انتشار فرم</TooltipContent>
+          </Tooltip>
+        </div>
+      </header>
+
+      {/* ============ MAIN CONTENT ============ */}
+      <div className="flex-1 overflow-hidden">
+        {/* Desktop layout */}
+        <div className="hidden sm:block h-full">
+          <ResizablePanelGroup direction="horizontal" className="h-full">
+            {/* Left Panel - Question Types */}
+            <ResizablePanel
+              defaultSize={18}
+              minSize={12}
+              maxSize={25}
+              collapsedSize={4}
+              collapsible
+              collapsed={leftCollapsed}
+              onCollapse={() => setLeftCollapsed(true)}
+              onExpand={() => setLeftCollapsed(false)}
+            >
+              <div
+                className={cn(
+                  'h-full border-l bg-white transition-all dark:bg-zinc-950',
+                  leftCollapsed ? 'w-full' : 'w-full'
+                )}
+              >
+                <QuestionTypes collapsed={leftCollapsed} />
+              </div>
+            </ResizablePanel>
+
+            <ResizableHandle withHandle />
+
+            {/* Center Panel - Form Preview */}
+            <ResizablePanel defaultSize={56} minSize={40}>
+              <div className="h-full bg-muted/30">
+                <FormPreview />
+              </div>
+            </ResizablePanel>
+
+            <ResizableHandle withHandle />
+
+            {/* Right Panel - Properties */}
+            <ResizablePanel
+              defaultSize={26}
+              minSize={20}
+              maxSize={35}
+              collapsedSize={0}
+              collapsible
+              collapsed={rightCollapsed || !hasSelection}
+              onCollapse={() => setRightCollapsed(true)}
+              onExpand={() => setRightCollapsed(false)}
+            >
+              <div className="h-full border-r bg-white dark:bg-zinc-950">
+                <PropertiesPanel />
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+
+        {/* Mobile layout */}
+        <div className="sm:hidden h-full">
+          <FormPreview />
+        </div>
+      </div>
+
+      {/* ============ MOBILE SHEETS ============ */}
+      {/* Left sheet - Question types */}
+      <Sheet open={mobileLeftOpen} onOpenChange={setMobileLeftOpen}>
+        <SheetContent side="right" className="w-[280px] p-0">
+          <SheetHeader className="px-4 py-3 border-b">
+            <SheetTitle className="text-right text-sm">انواع سؤال</SheetTitle>
+          </SheetHeader>
+          <QuestionTypes collapsed={false} />
+        </SheetContent>
+      </Sheet>
+
+      {/* Right sheet - Properties */}
+      <Sheet open={mobileRightOpen} onOpenChange={setMobileRightOpen}>
+        <SheetContent side="left" className="w-[320px] p-0">
+          <SheetHeader className="px-4 py-3 border-b">
+            <SheetTitle className="text-right text-sm">تنظیمات سؤال</SheetTitle>
+          </SheetHeader>
+          <PropertiesPanel />
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
