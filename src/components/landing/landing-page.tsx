@@ -407,6 +407,16 @@ function HeroSection() {
         }}
       />
 
+      {/* Noise texture overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '256px 256px',
+        }}
+      />
+
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 text-center">
         {/* Badge */}
         <motion.div
@@ -1166,6 +1176,137 @@ function FAQSection() {
   );
 }
 
+/* ──────────────────────────── Integrations Section ───────────────────────── */
+
+function IntegrationsSection() {
+  const integrations = [
+    {
+      name: 'Google Sheets',
+      description: 'ارسال خودکار پاسخ‌ها به گوگل شیت',
+      color: 'from-emerald-400 to-green-600',
+      bgColor: 'bg-emerald-50 dark:bg-emerald-950/30',
+      icon: (
+        <svg className="size-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Slack',
+      description: 'دریافت نوتیفیکیشن در کانال‌های اسلک',
+      color: 'from-violet-500 to-purple-700',
+      bgColor: 'bg-violet-50 dark:bg-violet-950/30',
+      icon: (
+        <svg className="size-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52zm1.271 0a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.528 2.528 0 012.521 2.522v2.52H8.834zm0 1.271a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312zm10.122 2.521a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.528 2.528 0 01-2.522 2.521h-2.522V8.834zm-1.27 0a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.163 0a2.528 2.528 0 012.523 2.522v6.312zM15.163 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.163 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52zm0-1.27a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.315A2.528 2.528 0 0124 15.163a2.528 2.528 0 01-2.522 2.523h-6.315z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Telegram',
+      description: 'ارسال پاسخ‌ها به ربات تلگرام',
+      color: 'from-sky-400 to-blue-600',
+      bgColor: 'bg-sky-50 dark:bg-sky-950/30',
+      icon: (
+        <svg className="size-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'ایمیل',
+      description: 'ارسال خودکار ایمیل پس از هر پاسخ',
+      color: 'from-rose-400 to-red-600',
+      bgColor: 'bg-rose-50 dark:bg-rose-950/30',
+      icon: <Send className="size-5 text-white" />,
+    },
+    {
+      name: 'Zapier',
+      description: 'اتصال به بیش از ۵۰۰۰ اپلیکیشن',
+      color: 'from-orange-400 to-amber-600',
+      bgColor: 'bg-orange-50 dark:bg-orange-950/30',
+      icon: <Zap className="size-5 text-white" />,
+    },
+    {
+      name: 'تحلیل داده',
+      description: 'گزارش‌های تحلیلی پیشرفته',
+      color: 'from-cyan-400 to-teal-600',
+      bgColor: 'bg-cyan-50 dark:bg-cyan-950/30',
+      icon: <BarChart3 className="size-5 text-white" />,
+    },
+    {
+      name: 'CRM',
+      description: 'همگام‌سازی با سیستم‌های مدیریت مشتری',
+      color: 'from-pink-400 to-fuchsia-600',
+      bgColor: 'bg-pink-50 dark:bg-pink-950/30',
+      icon: <Users className="size-5 text-white" />,
+    },
+    {
+      name: 'وب‌هوک',
+      description: 'دریافت داده‌ها با API سفارشی',
+      color: 'from-gray-500 to-gray-700',
+      bgColor: 'bg-gray-50 dark:bg-gray-900/50',
+      icon: <Share2 className="size-5 text-white" />,
+    },
+  ];
+
+  return (
+    <section className="relative py-24 sm:py-32 bg-gray-50 dark:bg-gray-950 overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-30 dark:opacity-10">
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+      </div>
+
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeInSection>
+          <div className="text-center mb-16">
+            <Badge variant="secondary" className="mb-4 px-4 py-1.5 text-xs font-medium rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800">
+              <Sparkles className="size-3 ml-1.5" />
+              یکپارچه‌سازی
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+              اتصال به{' '}
+              <span className="bg-gradient-to-l from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                ابزارهای مورد علاقه
+              </span>
+            </h2>
+            <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+              فرمساز با بیش از ۵۰۰۰ ابزار و سرویس محبوب یکپارچه می‌شود
+            </p>
+          </div>
+        </FadeInSection>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {integrations.map((integration, index) => (
+            <motion.div
+              key={integration.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ delay: index * 0.06, duration: 0.4 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className="group relative p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg hover:shadow-violet-100/50 dark:hover:shadow-violet-900/20 transition-all duration-300 cursor-pointer"
+            >
+              {/* Colored icon circle */}
+              <div className={`flex items-center justify-center size-12 rounded-xl bg-gradient-to-br ${integration.color} shadow-lg mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                {integration.icon}
+              </div>
+              {/* Name */}
+              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
+                {integration.name}
+              </h3>
+              {/* Description */}
+              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                {integration.description}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ──────────────────────────── Pricing Section ──────────────────────────── */
 
 function PricingSection() {
@@ -1719,6 +1860,7 @@ export default function LandingPage() {
         <HowItWorksSection />
         <TestimonialsSection />
         <FAQSection />
+        <IntegrationsSection />
         <PricingSection />
         <CTASection />
       </main>

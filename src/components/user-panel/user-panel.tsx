@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
@@ -325,12 +325,16 @@ export default function UserPanel() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const fetchProfile = useCallback(async () => {
+    try {
+      const res = await fetch('/api/user/profile');
+      if (res.ok) setProfile(await res.json());
+    } catch { /* silent */ }
+  }, []);
+
   useEffect(() => {
     const load = async () => {
-      try {
-        const res = await fetch('/api/user/profile');
-        if (res.ok) setProfile(await res.json());
-      } catch { /* silent */ }
+      await fetchProfile();
       try {
         const res = await fetch('/api/user/notifications');
         if (res.ok) {
@@ -340,7 +344,7 @@ export default function UserPanel() {
       } catch { /* silent */ }
     };
     load();
-  }, []);
+  }, [fetchProfile]);
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50 dark:bg-gray-950 flex">

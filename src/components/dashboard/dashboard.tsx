@@ -962,6 +962,140 @@ function QuickStatsBar({
   );
 }
 
+// ─── Activity Feed Widget ──────────────────────────────────────────────────
+
+interface ActivityItem {
+  id: string;
+  type: string;
+  formTitle: string;
+  createdAt: string;
+}
+
+function ActivityFeedWidget() {
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActivity = async () => {
+      try {
+        const res = await fetch('/api/user/activity');
+        if (res.ok) {
+          const data = await res.json();
+          setActivities((data.activities || []).slice(0, 5));
+        }
+      } catch {
+        // silent fail
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchActivity();
+  }, []);
+
+  const getActivityMeta = (type: string) => {
+    switch (type) {
+      case 'new_form':
+        return {
+          icon: <FilePlus className="size-4 text-violet-500" />,
+          description: (title: string) => `فرم «${title}» ایجاد شد`,
+          bgColor: 'bg-violet-100 dark:bg-violet-900/40',
+        };
+      case 'publish_form':
+        return {
+          icon: <Rocket className="size-4 text-emerald-500" />,
+          description: (title: string) => `فرم «${title}» منتشر شد`,
+          bgColor: 'bg-emerald-100 dark:bg-emerald-900/40',
+        };
+      case 'new_response':
+        return {
+          icon: <Send className="size-4 text-fuchsia-500" />,
+          description: (title: string) => `پاسخ جدید برای «${title}»`,
+          bgColor: 'bg-fuchsia-100 dark:bg-fuchsia-900/40',
+        };
+      default:
+        return {
+          icon: <CircleDot className="size-4 text-gray-400" />,
+          description: (title: string) => title,
+          bgColor: 'bg-gray-100 dark:bg-gray-800',
+        };
+    }
+  };
+
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Skeleton className="size-5 rounded" />
+          <Skeleton className="h-5 w-32" />
+        </div>
+        <div className="space-y-3">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <Skeleton className="size-8 rounded-lg" />
+              <div className="flex-1 space-y-1.5">
+                <Skeleton className="h-4 w-48" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (activities.length === 0) {
+    return null;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
+    >
+      <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+        <Clock className="size-4 text-violet-500" />
+        <h3 className="text-sm font-bold text-gray-900 dark:text-white">فعالیت‌های اخیر</h3>
+        <Badge variant="secondary" className="text-[10px] h-5 mr-auto">
+          {activities.length} مورد
+        </Badge>
+      </div>
+      <div className="divide-y divide-gray-50 dark:divide-gray-800/50 max-h-80 overflow-y-auto scrollbar-thin">
+        {activities.map((activity, index) => {
+          const meta = getActivityMeta(activity.type);
+          return (
+            <motion.div
+              key={activity.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.05 * index }}
+              className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+            >
+              <div className={`flex items-center justify-center size-8 rounded-lg shrink-0 ${meta.bgColor}`}>
+                {meta.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                  {meta.description(activity.formTitle)}
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                  {formatRelativeTime(activity.createdAt)}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Form Card Skeleton ────────────────────────────────────────────────────
 
 function FormCardSkeleton() {
@@ -1025,11 +1159,17 @@ function FormCard({
       whileHover={selectMode ? {} : { y: -3, scale: 1.01 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
-      <Card className={`overflow-hidden transition-all duration-300 group bg-white dark:bg-gray-900 ${
+      <Card className={`overflow-hidden transition-all duration-300 group relative bg-white dark:bg-gray-900 ${
         selected
           ? 'border-violet-400 dark:border-violet-600 ring-2 ring-violet-200 dark:ring-violet-800 shadow-lg shadow-violet-100/50 dark:shadow-violet-900/30'
           : 'border-gray-200 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg'
       }`}>
+        {/* Shimmer hover effect */}
+        {!selectMode && (
+          <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-xl">
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+          </div>
+        )}
         {/* Status color top stripe */}
         <div className={`h-1 bg-gradient-to-l ${borderGradient}`} />
 
@@ -1695,6 +1835,9 @@ export default function Dashboard() {
               totalSubmissions={totalSubmissions}
               totalViews={totalViews}
             />
+
+            {/* Activity Feed Widget */}
+            <ActivityFeedWidget />
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               <AnimatePresence mode="popLayout">

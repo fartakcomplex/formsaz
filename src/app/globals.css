@@ -380,10 +380,25 @@
   }
 }
 
+/* Focus ring scale-in animation */
+@keyframes focus-ring-in {
+  0% {
+    outline-offset: 4px;
+    opacity: 0.5;
+  }
+  100% {
+    outline-offset: 2px;
+    opacity: 1;
+  }
+}
+
 @layer base {
   input:focus-visible,
   textarea:focus-visible {
     animation: input-focus-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  :focus-visible {
+    animation: focus-ring-in 0.25s ease-out;
   }
 }
 

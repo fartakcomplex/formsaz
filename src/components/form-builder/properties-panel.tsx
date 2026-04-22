@@ -1103,7 +1103,7 @@ export default function PropertiesPanel() {
           <div className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-3 transition-all duration-200 hover:border-violet-200 dark:hover:border-violet-800/50">
             <div className="flex items-center gap-2">
               <Label className="text-sm cursor-pointer" htmlFor="required-toggle">
-                پاسخ دادن الزامی است
+                پاسخدهی اجباری
               </Label>
               {selectedQuestion.required && (
                 <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-5">

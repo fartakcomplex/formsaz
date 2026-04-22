@@ -50,7 +50,6 @@ import {
   RefreshCw,
   UserPlus,
   Zap,
-  FileText,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -353,7 +352,7 @@ function AdminWelcomeState({ onCreateUser, onGoTemplates }: { onCreateUser: () =
       />
       <div className="relative mb-8">
         <svg viewBox="0 0 200 160" fill="none" className="w-48 h-38 drop-shadow-xl" xmlns="http://www.w3.org/2000/svg">
-          <rect x="10" y="10" width="180" height="140" rx="16" fill="white" className="dark:fill-gray-800" stroke="currentColor" strokeWidth="1.5" className="text-gray-200 dark:text-gray-700" />
+          <rect x="10" y="10" width="180" height="140" rx="16" fill="white" className="dark:fill-gray-800 text-gray-200 dark:text-gray-700" stroke="currentColor" strokeWidth="1.5" />
           <defs>
             <linearGradient id="adminWelcomeGrad" x1="10" y1="10" x2="190" y2="50" gradientUnits="userSpaceOnUse">
               <stop stopColor="#8b5cf6" />

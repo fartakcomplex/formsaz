@@ -489,8 +489,9 @@ export default function FormBuilder() {
             >
               <div
                 className={cn(
-                  'h-full border-l bg-white transition-all dark:bg-zinc-950',
-                  leftCollapsed ? 'w-full' : 'w-full'
+                  'h-full border-l transition-all dark:border-zinc-800',
+                  leftCollapsed ? 'w-full' : 'w-full',
+                  'bg-gradient-to-b from-violet-50 via-white to-purple-50 dark:from-violet-950/20 dark:via-zinc-950 dark:to-purple-950/20'
                 )}
               >
                 <QuestionTypes collapsed={leftCollapsed} />
