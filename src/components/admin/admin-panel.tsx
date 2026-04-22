@@ -48,6 +48,9 @@ import {
   Star,
   Loader2,
   RefreshCw,
+  UserPlus,
+  Zap,
+  FileText,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -156,6 +159,13 @@ interface AdminForm {
 interface ChartDataPoint {
   date: string;
   count: number;
+}
+
+interface ActivityItem {
+  type: 'form_created' | 'submission_received';
+  title: string;
+  userName: string;
+  time: string;
 }
 
 // ─── Template Categories (static) ──────────────────────────────────────
@@ -320,9 +330,275 @@ function ChartSkeleton() {
   );
 }
 
+// ─── Welcome Empty State for Admin ──────────────────────────────────
+
+function AdminWelcomeState({ onCreateUser, onGoTemplates }: { onCreateUser: () => void; onGoTemplates: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col items-center justify-center py-12 px-4"
+    >
+      {/* Illustration */}
+      <motion.div
+        animate={{ scale: [1, 1.04, 1], opacity: [0.4, 0.7, 0.4] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute -top-8 -left-8 w-40 h-40 rounded-full bg-gradient-to-br from-violet-200 to-purple-300 dark:from-violet-900/20 dark:to-purple-900/20 blur-2xl"
+      />
+      <motion.div
+        animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+        className="absolute -bottom-4 -right-4 w-48 h-48 rounded-full bg-gradient-to-br from-fuchsia-200 to-pink-300 dark:from-fuchsia-900/15 dark:to-pink-900/15 blur-2xl"
+      />
+      <div className="relative mb-8">
+        <svg viewBox="0 0 200 160" fill="none" className="w-48 h-38 drop-shadow-xl" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="180" height="140" rx="16" fill="white" className="dark:fill-gray-800" stroke="currentColor" strokeWidth="1.5" className="text-gray-200 dark:text-gray-700" />
+          <defs>
+            <linearGradient id="adminWelcomeGrad" x1="10" y1="10" x2="190" y2="50" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#8b5cf6" />
+              <stop offset="1" stopColor="#a855f7" />
+            </linearGradient>
+          </defs>
+          <rect x="10" y="10" width="180" height="38" rx="16" fill="url(#adminWelcomeGrad)" />
+          <rect x="10" y="32" width="180" height="16" fill="url(#adminWelcomeGrad)" />
+          <circle cx="30" cy="30" r="3.5" fill="rgba(255,255,255,0.5)" />
+          <circle cx="42" cy="30" r="3.5" fill="rgba(255,255,255,0.5)" />
+          <circle cx="54" cy="30" r="3.5" fill="rgba(255,255,255,0.5)" />
+          <rect x="80" y="25" width="90" height="8" rx="4" fill="rgba(255,255,255,0.6)" />
+          <rect x="30" y="62" width="140" height="6" rx="3" fill="currentColor" className="text-gray-200 dark:text-gray-600" />
+          <rect x="30" y="76" width="100" height="24" rx="6" fill="currentColor" className="text-gray-100 dark:text-gray-700" stroke="currentColor" strokeWidth="0.5" />
+          <rect x="30" y="110" width="120" height="6" rx="3" fill="currentColor" className="text-gray-200 dark:text-gray-600" />
+          <circle cx="38" cy="130" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" className="text-gray-200 dark:text-gray-700" />
+          <circle cx="38" cy="130" r="2" fill="#8b5cf6" />
+          <rect x="52" y="125" width="40" height="10" rx="3" fill="currentColor" className="text-gray-200 dark:text-gray-600" />
+          <circle cx="100" cy="130" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" className="text-gray-200 dark:text-gray-700" />
+          <rect x="114" y="125" width="30" height="10" rx="3" fill="currentColor" className="text-gray-200 dark:text-gray-600" />
+        </svg>
+      </div>
+
+      {/* Welcome text */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="text-center mb-8 max-w-md"
+      >
+        <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-2">
+          خوش آمدید!
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          هنوز داده‌ای ثبت نشده است. سیستم آماده به کار است.
+        </p>
+      </motion.div>
+
+      {/* Quick-start cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
+        <motion.button
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          whileHover={{ y: -3 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onCreateUser}
+          className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg transition-all cursor-pointer"
+        >
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
+            <UserPlus className="size-5 text-white" />
+          </div>
+          <div className="text-right">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">ایجاد کاربر جدید</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400">اولین کاربر را اضافه کنید</p>
+          </div>
+        </motion.button>
+        <motion.button
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+          whileHover={{ y: -3 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onGoTemplates}
+          className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-fuchsia-200 dark:hover:border-fuchsia-800 hover:shadow-lg transition-all cursor-pointer"
+        >
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-600 shadow-lg shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20">
+            <LayoutTemplate className="size-5 text-white" />
+          </div>
+          <div className="text-right">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">مشاهده الگوها</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400">۱۰۰ الگوی آماده</p>
+          </div>
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Quick Actions Widget ──────────────────────────────────────────────
+
+function QuickActionsWidget({ onCreateUser, onSwitchTab, onGoTemplates }: {
+  onCreateUser: () => void;
+  onSwitchTab: (tab: AdminTab) => void;
+  onGoTemplates: () => void;
+}) {
+  const actions = [
+    { label: 'ایجاد کاربر جدید', icon: <UserPlus className="size-5" />, gradient: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-200/50 dark:shadow-violet-500/20', onClick: onCreateUser },
+    { label: 'مشاهده گزارش‌ها', icon: <FileText className="size-5" />, gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-200/50 dark:shadow-emerald-500/20', onClick: () => onSwitchTab('reports') },
+    { label: 'تنظیمات سیستم', icon: <Settings className="size-5" />, gradient: 'from-amber-500 to-orange-600', shadow: 'shadow-amber-200/50 dark:shadow-amber-500/20', onClick: () => onSwitchTab('settings') },
+    { label: 'مشاهده الگوها', icon: <LayoutTemplate className="size-5" />, gradient: 'from-fuchsia-500 to-pink-600', shadow: 'shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20', onClick: onGoTemplates },
+  ];
+
+  return (
+    <motion.div variants={itemVariants}>
+      <Card className="border-gray-200 dark:border-gray-800">
+        <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-3">
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
+              <Zap className="size-4 text-violet-600 dark:text-violet-400" />
+            </div>
+            <div>
+              <CardTitle className="text-base">دسترسی سریع</CardTitle>
+              <CardDescription className="text-xs">عملیات پرکاربرد</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-3">
+          <div className="grid grid-cols-2 gap-3">
+            {actions.map((action, index) => (
+              <motion.button
+                key={index}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.05 + index * 0.05 }}
+                whileHover={{ y: -2, scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={action.onClick}
+                className="group flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 hover:bg-white dark:hover:bg-gray-800 hover:border-gray-200 dark:hover:border-gray-700 transition-all cursor-pointer"
+              >
+                <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${action.gradient} shadow-md ${action.shadow} transition-transform group-hover:scale-110`}>
+                  <span className="text-white">{action.icon}</span>
+                </div>
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300 text-center">{action.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
+// ─── Activity Feed Widget ───────────────────────────────────────────────
+
+function ActivityFeedWidget() {
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/admin/activity')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => setActivities(data))
+      .catch(() => setActivities([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <motion.div variants={itemVariants}>
+        <Card className="border-gray-200 dark:border-gray-800">
+          <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-3">
+            <div className="flex items-center gap-3">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-fuchsia-100 dark:bg-fuchsia-900/30">
+                <Activity className="size-4 text-fuchsia-600 dark:text-fuchsia-400" />
+              </div>
+              <div>
+                <CardTitle className="text-base">فعالیت‌های اخیر</CardTitle>
+                <CardDescription className="text-xs">آخرین رویدادها</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3 pt-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <Skeleton className="size-8 rounded-full shrink-0 mt-0.5" />
+                <div className="space-y-1.5 flex-1">
+                  <Skeleton className="h-3.5 w-48" />
+                  <Skeleton className="h-3 w-24" />
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  }
+
+  const isFormCreated = (a: ActivityItem) => a.type === 'form_created';
+  const iconConfig = {
+    form_created: { icon: <FileText className="size-3.5" />, bg: 'bg-violet-100 dark:bg-violet-900/30', color: 'text-violet-600 dark:text-violet-400' },
+    submission_received: { icon: <Send className="size-3.5" />, bg: 'bg-emerald-100 dark:bg-emerald-900/30', color: 'text-emerald-600 dark:text-emerald-400' },
+  };
+
+  return (
+    <motion.div variants={itemVariants}>
+      <Card className="border-gray-200 dark:border-gray-800">
+        <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-3">
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-fuchsia-100 dark:bg-fuchsia-900/30">
+              <Activity className="size-4 text-fuchsia-600 dark:text-fuchsia-400" />
+            </div>
+            <div>
+              <CardTitle className="text-base">فعالیت‌های اخیر</CardTitle>
+              <CardDescription className="text-xs">آخرین رویدادها</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-2">
+          {activities.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-gray-400 dark:text-gray-500">
+              <Clock className="size-8 mb-2 opacity-50" />
+              <p className="text-xs">هنوز فعالیتی ثبت نشده</p>
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-80 overflow-y-auto">
+              {activities.map((activity, index) => {
+                const config = iconConfig[activity.type];
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.04 }}
+                    className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  >
+                    <div className={`flex size-8 shrink-0 items-center justify-center rounded-full ${config.bg} mt-0.5`}>
+                      <span className={config.color}>{config.icon}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 leading-relaxed">{activity.title}</p>
+                      <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+                        {timeAgo(activity.time)}
+                        <span className="mx-1">·</span>
+                        {activity.userName}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
 // ─── Overview Section (Real DB) ─────────────────────────────────────────
 
-function OverviewSection() {
+function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
+  onSwitchTab: (tab: AdminTab) => void;
+  onCreateUser: () => void;
+  onGoTemplates: () => void;
+}) {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
@@ -341,6 +617,9 @@ function OverviewSection() {
     });
     return () => { cancelled = true; };
   }, []);
+
+  const isAllZero = stats && stats.users === 0 && stats.forms === 0 && stats.submissions === 0 && stats.totalViews === 0;
+  const isChartEmpty = !loading && chartData.length > 0 && chartData.every((d) => d.count === 0);
 
   const statCards = stats
     ? [
@@ -363,32 +642,46 @@ function OverviewSection() {
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
-      {/* Stat Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {loading
-          ? Array.from({ length: 6 }).map((_, i) => <StatCardSkeleton key={i} />)
-          : statCards.map((stat, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm hover:shadow-lg transition-all"
-              >
-                {/* Gradient border effect */}
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-[1px] -z-10`} />
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-[0.03]`} />
-                <div className="flex items-center gap-4">
-                  <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg ${stat.shadowColor} transition-transform duration-300 group-hover:scale-110`}>
-                    <span className="text-white">{stat.icon}</span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
-                  </div>
+      {/* Welcome Empty State when all stats are 0 */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => <StatCardSkeleton key={i} />)}
+        </div>
+      ) : isAllZero ? (
+        <AdminWelcomeState onCreateUser={onCreateUser} onGoTemplates={onGoTemplates} />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {statCards.map((stat, index) => (
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              whileHover={{ y: -3, transition: { duration: 0.2 } }}
+              className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm hover:shadow-lg transition-all"
+            >
+              {/* Gradient border effect */}
+              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-[1px] -z-10`} />
+              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-[0.03]`} />
+              <div className="flex items-center gap-4">
+                <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg ${stat.shadowColor} transition-transform duration-300 group-hover:scale-110`}>
+                  <span className="text-white">{stat.icon}</span>
                 </div>
-              </motion.div>
-            ))}
-      </div>
+                <div className="min-w-0">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Quick Actions Widget + Activity Feed (shown when not in empty state) */}
+      {!isAllZero && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <QuickActionsWidget onCreateUser={onCreateUser} onSwitchTab={onSwitchTab} onGoTemplates={onGoTemplates} />
+          <ActivityFeedWidget />
+        </div>
+      )}
 
       {/* Chart Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -415,52 +708,60 @@ function OverviewSection() {
                 </div>
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
-                <ResponsiveContainer width="100%" height={260}>
-                  <AreaChart data={formattedChartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="adminAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.02} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(156,163,175,0.15)" />
-                    <XAxis
-                      dataKey="dateLabel"
-                      tick={{ fontSize: 10, fill: '#9ca3af' }}
-                      axisLine={false}
-                      tickLine={false}
-                      interval="preserveStartEnd"
-                    />
-                    <YAxis
-                      tick={{ fontSize: 10, fill: '#9ca3af' }}
-                      axisLine={false}
-                      tickLine={false}
-                      allowDecimals={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'rgba(255,255,255,0.95)',
-                        border: '1px solid rgba(229,231,235,0.8)',
-                        borderRadius: '12px',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                        fontSize: '12px',
-                        fontFamily: 'Vazirmatn, sans-serif',
-                        direction: 'rtl',
-                      }}
-                      labelStyle={{ fontWeight: 'bold', marginBottom: '4px' }}
-                      formatter={(value: number) => [`${value} پاسخ`, 'تعداد']}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="count"
-                      stroke="#8b5cf6"
-                      strokeWidth={2.5}
-                      fill="url(#adminAreaGradient)"
-                      dot={false}
-                      activeDot={{ r: 4, fill: '#8b5cf6', stroke: '#fff', strokeWidth: 2 }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                {isChartEmpty ? (
+                  <div className="flex flex-col items-center justify-center h-[260px] text-gray-400 dark:text-gray-500">
+                    <BarChart3 className="size-12 mb-3 opacity-30" />
+                    <p className="text-sm font-medium">هنوز پاسخی ثبت نشده</p>
+                    <p className="text-xs mt-1">با دریافت اولین پاسخ، نمودار نمایش داده می‌شود</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={260}>
+                    <AreaChart data={formattedChartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="adminAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.02} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(156,163,175,0.15)" />
+                      <XAxis
+                        dataKey="dateLabel"
+                        tick={{ fontSize: 10, fill: '#9ca3af' }}
+                        axisLine={false}
+                        tickLine={false}
+                        interval="preserveStartEnd"
+                      />
+                      <YAxis
+                        tick={{ fontSize: 10, fill: '#9ca3af' }}
+                        axisLine={false}
+                        tickLine={false}
+                        allowDecimals={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'rgba(255,255,255,0.95)',
+                          border: '1px solid rgba(229,231,235,0.8)',
+                          borderRadius: '12px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                          fontSize: '12px',
+                          fontFamily: 'Vazirmatn, sans-serif',
+                          direction: 'rtl',
+                        }}
+                        labelStyle={{ fontWeight: 'bold', marginBottom: '4px' }}
+                        formatter={(value: number) => [`${value} پاسخ`, 'تعداد']}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="count"
+                        stroke="#8b5cf6"
+                        strokeWidth={2.5}
+                        fill="url(#adminAreaGradient)"
+                        dot={false}
+                        activeDot={{ r: 4, fill: '#8b5cf6', stroke: '#fff', strokeWidth: 2 }}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )}
               </CardContent>
             </Card>
           )}

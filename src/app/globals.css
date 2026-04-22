@@ -334,3 +334,75 @@
   background-size: 200% 200%;
   animation: gradient-shift 6s ease infinite;
 }
+
+/* ─── Task 5: Global micro-interaction polish ──────────────────────────────── */
+
+/* Better text rendering */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Smooth 200ms transition on ALL interactive elements */
+@layer base {
+  a, button, input, textarea, select,
+  [role="button"], [role="tab"], [role="link"],
+  [role="menuitem"], [role="option"], [role="switch"],
+  label[for], summary, details,
+  .cursor-pointer {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Cursor pointer on all clickable elements */
+@layer base {
+  a, button, [role="button"], [role="tab"], [role="link"],
+  [role="menuitem"], [role="option"], [role="switch"],
+  [type="button"], [type="submit"], [type="reset"],
+  summary, label[for], select,
+  .cursor-pointer, [data-radix-collection-item] {
+    cursor: pointer;
+  }
+}
+
+/* Violet pulse gradient border animation on focused inputs */
+@keyframes input-focus-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 3px oklch(0.55 0.24 270 / 12%),
+                0 0 0 1px oklch(0.55 0.24 270 / 25%);
+  }
+  50% {
+    box-shadow: 0 0 0 4px oklch(0.55 0.24 270 / 18%),
+                0 0 0 1px oklch(0.55 0.24 270 / 35%);
+  }
+}
+
+@layer base {
+  input:focus-visible,
+  textarea:focus-visible {
+    animation: input-focus-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+/* Enhanced selection colors */
+@layer base {
+  ::selection {
+    background: oklch(0.7 0.18 293 / 30%);
+    color: oklch(0.15 0.02 270);
+  }
+  .dark ::selection {
+    background: oklch(0.55 0.2 293 / 40%);
+    color: oklch(0.98 0.005 270);
+  }
+  ::-moz-selection {
+    background: oklch(0.7 0.18 293 / 30%);
+    color: oklch(0.15 0.02 270);
+  }
+  .dark ::-moz-selection {
+    background: oklch(0.55 0.2 293 / 40%);
+    color: oklch(0.98 0.005 270);
+  }
+}
