@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { TemplateData } from './templates-data';
 
-export type ViewType = 'landing' | 'builder' | 'dashboard' | 'fill' | 'results' | 'templates';
+export type ViewType = 'landing' | 'builder' | 'dashboard' | 'fill' | 'results' | 'templates' | 'admin' | 'user-panel';
 
 export interface QuestionOption {
   id: string;

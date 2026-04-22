@@ -1,0 +1,13 @@
+{
+  "siteName": "فرمساز",
+  "siteDescription": "ساخت فرم‌های آنلاین حرفه‌ای",
+  "allowRegistration": true,
+  "maxFormsPerUser": 50,
+  "maxQuestionsPerForm": 100,
+  "maintenanceMode": false,
+  "defaultFormTheme": {
+    "primaryColor": "#6366f1",
+    "backgroundColor": "#ffffff",
+    "fontFamily": "Vazirmatn"
+  }
+}

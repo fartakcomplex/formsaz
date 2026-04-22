@@ -833,3 +833,52 @@ Stage Summary:
 - Files modified: `src/components/dashboard/form-fill.tsx`
 - File upload question type now fully functional with backend support
 - All UI text in Persian with dark mode support
+---
+Task ID: 9
+Agent: main
+Task: Build Admin Panel and User Panel
+
+Work Log:
+- Updated Prisma schema: Added User model (name, email, password, avatar, bio, role, status, phone, lastLoginAt), Notification model (userId, title, message, type, read, createdAt), userId relation on Form model
+- Pushed schema to database with `bun run db:push`
+- Updated Zustand store: Added 'admin' and 'user-panel' to ViewType union
+- Built Admin Panel (`src/components/admin/admin-panel.tsx`, ~80KB):
+  - 6-tab sidebar navigation: داشبورد, کاربران, فرم‌ها, الگوها, تنظیمات سیستم, گزارش‌ها
+  - Dashboard overview: 6 stat cards (users, forms, responses, views, active forms, templates), recent activity timeline (8 items), system health panel (database, server, storage, uptime)
+  - User management: Search + role/status filters, table with 10 mock users, role/status badges, action buttons (edit/suspend/delete with AlertDialog)
+  - Forms management: Search + status filter, bulk select with checkboxes, floating action bar, 8 mock forms, bulk delete confirmation
+  - Templates overview: 3 stat cards, 10 category cards with icons and counts, quick add button
+  - System settings: General (site name, description, logo), Email (SMTP config), Limits (forms/user, questions/form, submissions/form), Maintenance mode toggle
+  - Reports: 10 mock log entries with type badges, filter by action type, CSV export button
+  - Fixed framer-motion Variants TypeScript error with `as const` on ease strings
+- Built User Panel (`src/components/user-panel/user-panel.tsx`, ~73KB):
+  - 6-tab sidebar navigation: پروفایل من, فرم‌های من, فعالیت‌ها, اعلان‌ها, تنظیمات, اشتراک من
+  - Profile: Gradient banner with floating shapes, avatar with camera overlay, user info with role badge, editable profile form (name, email, phone, bio), quick stats
+  - My Forms: 4 stats cards, 6 mock form cards with status badges and action buttons (edit, results, share)
+  - Activity: Timeline with colored icons, filter dropdown (5 types), 10 mock activities with relative timestamps
+  - Notifications: 8 mock notifications (4 types: info/success/warning/error), unread state with left border accent, "خواندن همه" button, individual mark-read and delete
+  - Settings: Password change form, delete account danger zone with AlertDialog, 4 notification toggles, display settings (language/theme) with live preview
+  - Subscription: Current plan card with features, animated usage progress bars, gradient upgrade CTA, 3-plan comparison table
+  - Fixed `Infinity` lucide-react import collision (replaced with Number.MAX_SAFE_INTEGER)
+- Built API routes:
+  - `/api/admin/stats/route.ts` - GET: Aggregate counts (users, forms, submissions, publishedForms, totalViews)
+  - `/api/admin/users/route.ts` - GET: User list with search, role, status filters
+  - `/api/admin/users/[id]/route.ts` - PUT: Update user fields; DELETE: Remove user
+  - `/api/admin/settings/route.ts` - GET/PUT: File-based settings storage (data/settings.json)
+  - `/api/user/profile/route.ts` - GET/PUT: User profile management (hardcoded default user)
+  - `/api/user/notifications/route.ts` - GET/PUT: Notification management (read all, read one)
+  - Created `data/settings.json` with default system settings
+- Updated `page.tsx`: Dynamic imports for AdminPanel and UserPanel (with loading spinners), conditional AppHeader rendering
+- Updated `app-header.tsx`: Added Shield/Settings imports, admin/user-panel nav items for dashboard/admin/user-panel views, user avatar button navigates to user panel
+- Fixed TypeScript errors: framer-motion Variants type with `as const`, `Infinity` naming collision
+- Clean ESLint: 0 errors, 0 warnings
+- Dev server compiles and responds with HTTP 200
+
+Stage Summary:
+- Files created: src/components/admin/admin-panel.tsx, src/components/user-panel/user-panel.tsx
+- Files created (API): api/admin/stats/route.ts, api/admin/users/route.ts, api/admin/users/[id]/route.ts, api/admin/settings/route.ts, api/user/profile/route.ts, api/user/notifications/route.ts
+- Files created (data): data/settings.json
+- Files modified: prisma/schema.prisma, src/lib/store.ts, src/app/page.tsx, src/components/app-header.tsx
+- 2 new views: Admin Panel (6 sections), User Panel (6 sections)
+- 6 new API routes for admin/user data
+- Full dark mode support, RTL Persian, framer-motion animations throughout both panels

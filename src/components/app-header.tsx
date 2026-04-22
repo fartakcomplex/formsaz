@@ -13,6 +13,8 @@ import {
   LogIn,
   Sun,
   Moon,
+  Shield,
+  Settings,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,6 +34,8 @@ const navItems: Record<string, { label: string; icon: React.ReactNode; view?: Vi
     { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
     { label: 'فرم‌های من', icon: <ListChecks className="size-4" />, view: 'dashboard' },
     { label: 'الگوهای آماده', icon: <FileText className="size-4" />, view: 'templates' },
+    { label: 'پنل ادمین', icon: <Shield className="size-4" />, view: 'admin' },
+    { label: 'پنل کاربری', icon: <User className="size-4" />, view: 'user-panel' },
   ],
   builder: [
     { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
@@ -47,6 +51,16 @@ const navItems: Record<string, { label: string; icon: React.ReactNode; view?: Vi
   templates: [
     { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
     { label: 'فرم‌های من', icon: <ListChecks className="size-4" />, view: 'dashboard' },
+    ],
+  admin: [
+    { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
+    { label: 'پنل ادمین', icon: <Shield className="size-4" />, view: 'admin' },
+    { label: 'پنل کاربری', icon: <User className="size-4" />, view: 'user-panel' },
+  ],
+  'user-panel': [
+    { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
+    { label: 'پنل ادمین', icon: <Shield className="size-4" />, view: 'admin' },
+    { label: 'پنل کاربری', icon: <User className="size-4" />, view: 'user-panel' },
   ],
 };
 
@@ -223,14 +237,18 @@ export default function AppHeader() {
           )}
 
           {showUserAvatar && (
-            <motion.div
+            <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.15 }}
-              className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setCurrentView('user-panel')}
+              className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md cursor-pointer hover:shadow-lg transition-all duration-300"
+              title="پنل کاربری"
             >
               <User className="size-4" />
-            </motion.div>
+            </motion.button>
           )}
 
           {/* Mobile hamburger */}
