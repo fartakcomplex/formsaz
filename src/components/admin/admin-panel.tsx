@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield,
@@ -36,6 +36,7 @@ import {
   AlertTriangle,
   Save,
   ChevronLeft,
+  ChevronRight,
   Menu,
   Copy,
   ExternalLink,
@@ -45,7 +46,18 @@ import {
   UserX,
   Calendar,
   Star,
+  Loader2,
+  RefreshCw,
 } from 'lucide-react';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -90,63 +102,63 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useAppStore } from '@/lib/store';
 
 // ─── Types ─────────────────────────────────────────────────────────────
 
 type AdminTab = 'overview' | 'users' | 'forms' | 'templates' | 'settings' | 'reports';
 
-// ─── Mock Data ─────────────────────────────────────────────────────────
+interface AdminStats {
+  users: number;
+  forms: number;
+  submissions: number;
+  publishedForms: number;
+  totalViews: number;
+}
 
-const MOCK_STATS = {
-  totalUsers: 12458,
-  totalForms: 34892,
-  totalResponses: 1875643,
-  totalViews: 8945672,
-  activeForms: 12456,
-  totalTemplates: 100,
-};
+interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  avatar?: string | null;
+  bio?: string | null;
+  lastLoginAt?: string | null;
+  createdAt: string;
+  _count: { forms: number; notifications: number };
+}
 
-const MOCK_ACTIVITY = [
-  { id: 1, user: 'علی محمدی', action: 'فرم جدید ایجاد کرد', detail: 'فرم نظرسنجی مشتریان', time: '۲ دقیقه پیش', icon: <Plus className="size-3.5" />, color: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400' },
-  { id: 2, user: 'زهرا احمدی', action: 'پاسخ جدید ثبت شد', detail: 'فرم ثبت‌نام رویداد', time: '۵ دقیقه پیش', icon: <Send className="size-3.5" />, color: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' },
-  { id: 3, user: 'محمد رضایی', action: 'فرم را منتشر کرد', detail: 'فرم بازخورد محصول', time: '۱۲ دقیقه پیش', icon: <CircleDot className="size-3.5" />, color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' },
-  { id: 4, user: 'مریم حسینی', action: 'کاربر جدید ثبت‌نام کرد', detail: 'marim.h@gmail.com', time: '۱۸ دقیقه پیش', icon: <UserCheck className="size-3.5" />, color: 'bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/30 dark:text-fuchsia-400' },
-  { id: 5, user: 'امیر کریمی', action: 'فرم را ویرایش کرد', detail: 'فرم سفارش آنلاین', time: '۲۵ دقیقه پیش', icon: <Edit3 className="size-3.5" />, color: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' },
-  { id: 6, user: 'سارا موسوی', action: 'حساب تعلیق شد', detail: 'نقض قوانین استفاده', time: '۳۰ دقیقه پیش', icon: <Ban className="size-3.5" />, color: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' },
-  { id: 7, user: 'رضا عباسی', action: 'الگوی جدید اضافه شد', detail: 'فرم ارزیابی عملکرد', time: '۴۵ دقیقه پیش', icon: <LayoutTemplate className="size-3.5" />, color: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' },
-  { id: 8, user: 'نازنین قاسمی', action: 'فرم را حذف کرد', detail: 'فرم تست قدیمی', time: '۱ ساعت پیش', icon: <Trash2 className="size-3.5" />, color: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' },
-];
+interface AdminForm {
+  id: string;
+  title: string;
+  description?: string | null;
+  status: string;
+  viewCount: number;
+  creator: string;
+  creatorEmail: string;
+  submissions: number;
+  questions: number;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt?: string | null;
+}
 
-const SYSTEM_HEALTH = [
-  { name: 'دیتابیس', status: 'فعال', icon: <Database className="size-4" />, color: 'text-emerald-500', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30' },
-  { name: 'سرور', status: 'فعال', icon: <Server className="size-4" />, color: 'text-emerald-500', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30' },
-  { name: 'فضای ذخیره‌سازی', status: '۴۵٪', icon: <HardDrive className="size-4" />, color: 'text-amber-500', bgColor: 'bg-amber-100 dark:bg-amber-900/30', progress: 45 },
-];
+interface ChartDataPoint {
+  date: string;
+  count: number;
+}
 
-const MOCK_USERS = [
-  { id: 1, name: 'علی محمدی', email: 'ali.mohammadi@gmail.com', role: 'admin', status: 'active', forms: 24, lastLogin: '۲ ساعت پیش', avatar: 'ع' },
-  { id: 2, name: 'زهرا احمدی', email: 'zahra.ahmadi@yahoo.com', role: 'user', status: 'active', forms: 12, lastLogin: '۵ ساعت پیش', avatar: 'ز' },
-  { id: 3, name: 'محمد رضایی', email: 'm.rezaei@outlook.com', role: 'user', status: 'active', forms: 8, lastLogin: '۱ روز پیش', avatar: 'م' },
-  { id: 4, name: 'مریم حسینی', email: 'maryam.h@gmail.com', role: 'admin', status: 'active', forms: 31, lastLogin: '۳ ساعت پیش', avatar: 'م' },
-  { id: 5, name: 'امیر کریمی', email: 'amir.karimi@company.ir', role: 'user', status: 'suspended', forms: 3, lastLogin: '۱۰ روز پیش', avatar: 'ا' },
-  { id: 6, name: 'سارا موسوی', email: 'sara.m@university.edu', role: 'user', status: 'inactive', forms: 0, lastLogin: '۳۰ روز پیش', avatar: 'س' },
-  { id: 7, name: 'رضا عباسی', email: 'reza.abbasi@gmail.com', role: 'user', status: 'active', forms: 15, lastLogin: '۱ ساعت پیش', avatar: 'ر' },
-  { id: 8, name: 'نازنین قاسمی', email: 'nazanin.q@gmail.com', role: 'user', status: 'active', forms: 6, lastLogin: '۶ ساعت پیش', avatar: 'ن' },
-  { id: 9, name: 'حسن نوری', email: 'hassan.nori@company.ir', role: 'user', status: 'inactive', forms: 1, lastLogin: '۶۰ روز پیش', avatar: 'ح' },
-  { id: 10, name: 'فاطمه جعفری', email: 'fatemeh.j@gmail.com', role: 'admin', status: 'active', forms: 42, lastLogin: '۳۰ دقیقه پیش', avatar: 'ف' },
-];
-
-const MOCK_FORMS = [
-  { id: 1, title: 'فرم نظرسنجی مشتریان', creator: 'علی محمدی', status: 'published', responses: 1245, views: 8930, date: '۱۴۰۳/۰۹/۱۵' },
-  { id: 2, title: 'فرم ثبت‌نام رویداد فناوری', creator: 'زهرا احمدی', status: 'published', responses: 876, views: 5420, date: '۱۴۰۳/۰۹/۱۴' },
-  { id: 3, title: 'فرم بازخورد محصول', creator: 'محمد رضایی', status: 'draft', responses: 0, views: 120, date: '۱۴۰۳/۰۹/۱۳' },
-  { id: 4, title: 'فرم ارزیابی عملکرد کارکنان', creator: 'مریم حسینی', status: 'published', responses: 456, views: 3210, date: '۱۴۰۳/۰۹/۱۲' },
-  { id: 5, title: 'فرم سفارش آنلاین', creator: 'رضا عباسی', status: 'closed', responses: 2341, views: 15420, date: '۱۴۰۳/۰۹/۱۰' },
-  { id: 6, title: 'فرم تماس با ما', creator: 'نازنین قاسمی', status: 'published', responses: 89, views: 780, date: '۱۴۰۳/۰۹/۰۸' },
-  { id: 7, title: 'فرم ثبت‌نام دوره آموزشی', creator: 'فاطمه جعفری', status: 'draft', responses: 0, views: 45, date: '۱۴۰۳/۰۹/۱۶' },
-  { id: 8, title: 'فرم نظرسنجی رضایت شغلی', creator: 'علی محمدی', status: 'published', responses: 567, views: 4100, date: '۱۴۰۳/۰۹/۰۵' },
-];
+// ─── Template Categories (static) ──────────────────────────────────────
 
 const TEMPLATE_CATEGORIES = [
   { name: 'نظرسنجی', count: 15, icon: <BarChart3 className="size-5" />, color: 'from-violet-500 to-purple-600' },
@@ -154,11 +166,17 @@ const TEMPLATE_CATEGORIES = [
   { name: 'بازخورد', count: 15, icon: <MessageIcon />, color: 'from-blue-500 to-cyan-600' },
   { name: 'ارزیابی', count: 10, icon: <Star className="size-5" />, color: 'from-amber-500 to-orange-600' },
   { name: 'سفارش', count: 8, icon: <Globe className="size-5" />, color: 'from-rose-500 to-pink-600' },
-  { name: 'آموزش', count: 10, icon: <BookIcon />, color: 'from-indigo-500 to-blue-600' },
+  { name: 'آموزش', count: 10, icon: <BookIcon />, color: 'from-fuchsia-500 to-purple-600' },
   { name: 'سلامت', count: 8, icon: <HeartIcon />, color: 'from-red-500 to-rose-600' },
-  { name: 'رویداد', count: 7, icon: <Calendar className="size-5" />, color: 'from-fuchsia-500 to-purple-600' },
-  { name: 'منابع انسانی', count: 7, icon: <Users className="size-5" />, color: 'from-teal-500 to-emerald-600' },
+  { name: 'رویداد', count: 7, icon: <Calendar className="size-5" />, color: 'from-teal-500 to-emerald-600' },
+  { name: 'منابع انسانی', count: 7, icon: <Users className="size-5" />, color: 'from-cyan-500 to-blue-600' },
   { name: 'سایر', count: 5, icon: <LayoutTemplate className="size-5" />, color: 'from-gray-500 to-slate-600' },
+];
+
+const SYSTEM_HEALTH = [
+  { name: 'دیتابیس', status: 'فعال', icon: <Database className="size-4" />, color: 'text-emerald-500', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30' },
+  { name: 'سرور', status: 'فعال', icon: <Server className="size-4" />, color: 'text-emerald-500', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30' },
+  { name: 'فضای ذخیره‌سازی', status: '۴۵٪', icon: <HardDrive className="size-4" />, color: 'text-amber-500', bgColor: 'bg-amber-100 dark:bg-amber-900/30', progress: 45 },
 ];
 
 const MOCK_REPORTS = [
@@ -200,13 +218,45 @@ function HeartIcon() {
   );
 }
 
-// ─── Helper: format number with Persian locale ─────────────────────────
+// ─── Helpers ───────────────────────────────────────────────────────────
 
 function formatNumber(num: number): string {
   return num.toLocaleString('fa-IR');
 }
 
-// ─── Sidebar Navigation Items ──────────────────────────────────────────
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return new Intl.DateTimeFormat('fa-IR', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
+}
+
+function timeAgo(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHour = Math.floor(diffMs / 3600000);
+  const diffDay = Math.floor(diffMs / 86400000);
+
+  if (diffMin < 1) return 'همین الان';
+  if (diffMin < 60) return `${diffMin} دقیقه پیش`;
+  if (diffHour < 24) return `${diffHour} ساعت پیش`;
+  return `${diffDay} روز پیش`;
+}
+
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debouncedValue;
+}
+
+// ─── Sidebar Navigation ────────────────────────────────────────────────
 
 const NAV_ITEMS: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
   { id: 'overview', label: 'داشبورد', icon: <LayoutDashboard className="size-5" /> },
@@ -217,7 +267,7 @@ const NAV_ITEMS: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
   { id: 'reports', label: 'گزارش‌ها', icon: <ScrollText className="size-5" /> },
 ];
 
-// ─── Animation Variants ───────────────────────────────────────────────
+// ─── Animation Variants ────────────────────────────────────────────────
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -238,86 +288,182 @@ const pageVariants = {
   out: { opacity: 0, x: 20, transition: { duration: 0.2 } },
 };
 
-// ─── Overview Section ─────────────────────────────────────────────────
+// ─── Stat Card Skeleton ────────────────────────────────────────────────
+
+function StatCardSkeleton() {
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm">
+      <div className="absolute -top-6 -left-6 size-24 rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div className="flex items-center gap-4">
+        <Skeleton className="size-12 rounded-xl shrink-0" />
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-20" />
+          <Skeleton className="h-4 w-16" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ChartSkeleton() {
+  return (
+    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
+      <div className="flex items-center gap-3 mb-6">
+        <Skeleton className="size-9 rounded-lg" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-3 w-24" />
+        </div>
+      </div>
+      <Skeleton className="h-[250px] w-full rounded-xl" />
+    </div>
+  );
+}
+
+// ─── Overview Section (Real DB) ─────────────────────────────────────────
 
 function OverviewSection() {
-  const statCards = [
-    { label: 'کل کاربران', value: formatNumber(MOCK_STATS.totalUsers), icon: <Users className="size-6" />, gradient: 'from-violet-500 to-purple-600', shadowColor: 'shadow-violet-200/50 dark:shadow-violet-500/20' },
-    { label: 'کل فرم‌ها', value: formatNumber(MOCK_STATS.totalForms), icon: <FileText className="size-6" />, gradient: 'from-blue-500 to-cyan-600', shadowColor: 'shadow-blue-200/50 dark:shadow-blue-500/20' },
-    { label: 'کل پاسخ‌ها', value: formatNumber(MOCK_STATS.totalResponses), icon: <Send className="size-6" />, gradient: 'from-emerald-500 to-teal-600', shadowColor: 'shadow-emerald-200/50 dark:shadow-emerald-500/20' },
-    { label: 'کل بازدیدها', value: formatNumber(MOCK_STATS.totalViews), icon: <Eye className="size-6" />, gradient: 'from-fuchsia-500 to-pink-600', shadowColor: 'shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20' },
-    { label: 'فرم‌های فعال', value: formatNumber(MOCK_STATS.activeForms), icon: <Activity className="size-6" />, gradient: 'from-amber-500 to-orange-600', shadowColor: 'shadow-amber-200/50 dark:shadow-amber-500/20' },
-    { label: 'الگوهای آماده', value: formatNumber(MOCK_STATS.totalTemplates), icon: <LayoutTemplate className="size-6" />, gradient: 'from-rose-500 to-red-600', shadowColor: 'shadow-rose-200/50 dark:shadow-rose-500/20' },
-  ];
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      fetch('/api/admin/stats').then((r) => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/admin/stats/charts').then((r) => r.ok ? r.json() : null).catch(() => null),
+    ]).then(([statsData, chartRes]) => {
+      if (cancelled) return;
+      if (statsData) setStats(statsData);
+      if (chartRes) setChartData(chartRes.data || []);
+    }).finally(() => {
+      if (!cancelled) setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  const statCards = stats
+    ? [
+        { label: 'کل کاربران', value: formatNumber(stats.users), icon: <Users className="size-6" />, gradient: 'from-violet-500 to-purple-600', shadowColor: 'shadow-violet-200/50 dark:shadow-violet-500/20' },
+        { label: 'کل فرم‌ها', value: formatNumber(stats.forms), icon: <FileText className="size-6" />, gradient: 'from-emerald-500 to-teal-600', shadowColor: 'shadow-emerald-200/50 dark:shadow-emerald-500/20' },
+        { label: 'کل پاسخ‌ها', value: formatNumber(stats.submissions), icon: <Send className="size-6" />, gradient: 'from-amber-500 to-orange-600', shadowColor: 'shadow-amber-200/50 dark:shadow-amber-500/20' },
+        { label: 'کل بازدیدها', value: formatNumber(stats.totalViews), icon: <Eye className="size-6" />, gradient: 'from-fuchsia-500 to-pink-600', shadowColor: 'shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20' },
+        { label: 'فرم‌های منتشر شده', value: formatNumber(stats.publishedForms), icon: <Activity className="size-6" />, gradient: 'from-cyan-500 to-blue-600', shadowColor: 'shadow-cyan-200/50 dark:shadow-cyan-500/20' },
+        { label: 'الگوهای آماده', value: '۱۰۰', icon: <LayoutTemplate className="size-6" />, gradient: 'from-rose-500 to-red-600', shadowColor: 'shadow-rose-200/50 dark:shadow-rose-500/20' },
+      ]
+    : [];
+
+  const formattedChartData = chartData.map((d) => {
+    const date = new Date(d.date);
+    return {
+      ...d,
+      dateLabel: new Intl.DateTimeFormat('fa-IR', { month: 'short', day: 'numeric' }).format(date),
+    };
+  });
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
       {/* Stat Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {statCards.map((stat, index) => (
-          <motion.div
-            key={index}
-            variants={itemVariants}
-            whileHover={{ y: -3, transition: { duration: 0.2 } }}
-            className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm hover:shadow-lg transition-shadow"
-          >
-            <div className="absolute -top-6 -left-6 size-24 rounded-full bg-gradient-to-br opacity-10" style={{ backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }} />
-            <div className="flex items-center gap-4">
-              <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg ${stat.shadowColor}`}>
-                <span className="text-white">{stat.icon}</span>
-              </div>
-              <div className="min-w-0">
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+        {loading
+          ? Array.from({ length: 6 }).map((_, i) => <StatCardSkeleton key={i} />)
+          : statCards.map((stat, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm hover:shadow-lg transition-all"
+              >
+                {/* Gradient border effect */}
+                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-[1px] -z-10`} />
+                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-[0.03]`} />
+                <div className="flex items-center gap-4">
+                  <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg ${stat.shadowColor} transition-transform duration-300 group-hover:scale-110`}>
+                    <span className="text-white">{stat.icon}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
       </div>
 
+      {/* Chart Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Activity */}
         <motion.div variants={itemVariants} className="lg:col-span-2">
-          <Card className="border-gray-200 dark:border-gray-800 overflow-hidden">
-            <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
-                    <Clock className="size-4 text-violet-600 dark:text-violet-400" />
+          {loading ? (
+            <ChartSkeleton />
+          ) : (
+            <Card className="border-gray-200 dark:border-gray-800 overflow-hidden">
+              <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
+                      <BarChart3 className="size-4 text-violet-600 dark:text-violet-400" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">آمار پاسخ‌ها</CardTitle>
+                      <CardDescription className="text-xs">۳۰ روز گذشته</CardDescription>
+                    </div>
                   </div>
-                  <div>
-                    <CardTitle className="text-base">فعالیت اخیر</CardTitle>
-                    <CardDescription className="text-xs">آخرین فعالیت‌های سیستم</CardDescription>
-                  </div>
+                  <Badge variant="outline" className="text-xs h-6 px-2.5 bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800">
+                    <TrendingUp className="size-3 ml-1" />
+                    نمودار سطح
+                  </Badge>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent className="p-0">
-              <ScrollArea className="max-h-[400px]">
-                <div className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {MOCK_ACTIVITY.map((activity) => (
-                    <motion.div
-                      key={activity.id}
-                      whileHover={{ backgroundColor: 'rgba(139, 92, 246, 0.03)' }}
-                      className="flex items-start gap-3 px-6 py-3.5 transition-colors"
-                    >
-                      <div className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${activity.color} mt-0.5`}>
-                        {activity.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-900 dark:text-white">
-                          <span className="font-medium">{activity.user}</span>{' '}
-                          <span className="text-gray-600 dark:text-gray-400">{activity.action}</span>
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-0.5 truncate">{activity.detail}</p>
-                      </div>
-                      <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0 whitespace-nowrap">{activity.time}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6">
+                <ResponsiveContainer width="100%" height={260}>
+                  <AreaChart data={formattedChartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="adminAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(156,163,175,0.15)" />
+                    <XAxis
+                      dataKey="dateLabel"
+                      tick={{ fontSize: 10, fill: '#9ca3af' }}
+                      axisLine={false}
+                      tickLine={false}
+                      interval="preserveStartEnd"
+                    />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: '#9ca3af' }}
+                      axisLine={false}
+                      tickLine={false}
+                      allowDecimals={false}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(255,255,255,0.95)',
+                        border: '1px solid rgba(229,231,235,0.8)',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                        fontSize: '12px',
+                        fontFamily: 'Vazirmatn, sans-serif',
+                        direction: 'rtl',
+                      }}
+                      labelStyle={{ fontWeight: 'bold', marginBottom: '4px' }}
+                      formatter={(value: number) => [`${value} پاسخ`, 'تعداد']}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#8b5cf6"
+                      strokeWidth={2.5}
+                      fill="url(#adminAreaGradient)"
+                      dot={false}
+                      activeDot={{ r: 4, fill: '#8b5cf6', stroke: '#fff', strokeWidth: 2 }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          )}
         </motion.div>
 
         {/* System Health */}
@@ -381,12 +527,100 @@ function OverviewSection() {
   );
 }
 
-// ─── Users Section ────────────────────────────────────────────────────
+// ─── Users Section (Real DB) ───────────────────────────────────────────
 
 function UsersSection() {
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: 'user' });
+  const [creating, setCreating] = useState(false);
+
+  const debouncedSearch = useDebounce(searchQuery, 300);
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (debouncedSearch) params.set('search', debouncedSearch);
+      if (roleFilter !== 'all') params.set('role', roleFilter);
+      if (statusFilter !== 'all') params.set('status', statusFilter);
+
+      const res = await fetch(`/api/admin/users?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setUsers(data);
+      }
+    } catch {
+      // Silently fail
+    } finally {
+      setLoading(false);
+    }
+  }, [debouncedSearch, roleFilter, statusFilter]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleCreateUser = async () => {
+    if (!newUser.name || !newUser.email) {
+      toast.error('نام و ایمیل الزامی است');
+      return;
+    }
+    setCreating(true);
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser),
+      });
+      if (res.ok) {
+        toast.success('کاربر جدید با موفقیت ایجاد شد');
+        setCreateDialogOpen(false);
+        setNewUser({ name: '', email: '', password: '', role: 'user' });
+        fetchUsers();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || 'خطا در ایجاد کاربر');
+      }
+    } catch {
+      toast.error('خطا در ایجاد کاربر');
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleToggleStatus = async (user: AdminUser) => {
+    const newStatus = user.status === 'suspended' ? 'active' : 'suspended';
+    try {
+      const res = await fetch(`/api/admin/users/${user.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (res.ok) {
+        toast.success(newStatus === 'suspended' ? 'کاربر تعلیق شد' : 'کاربر فعال شد');
+        fetchUsers();
+      }
+    } catch {
+      toast.error('خطا در تغییر وضعیت');
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success(`کاربر «${userName}» حذف شد`);
+        fetchUsers();
+      }
+    } catch {
+      toast.error('خطا در حذف کاربر');
+    }
+  };
 
   const roleBadge = (role: string) => {
     if (role === 'admin') {
@@ -405,22 +639,15 @@ function UsersSection() {
     return <Badge variant="outline" className={`text-xs h-5 px-2 ${config.className}`}>{config.label}</Badge>;
   };
 
-  const filteredUsers = MOCK_USERS.filter((user) => {
-    const matchesSearch = user.name.includes(searchQuery) || user.email.includes(searchQuery);
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-    const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
-    return matchesSearch && matchesRole && matchesStatus;
-  });
-
   const avatarColors = [
     'bg-violet-500', 'bg-blue-500', 'bg-emerald-500', 'bg-amber-500',
     'bg-rose-500', 'bg-fuchsia-500', 'bg-teal-500', 'bg-purple-500',
-    'bg-cyan-500', 'bg-indigo-500',
+    'bg-cyan-500', 'bg-orange-500',
   ];
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
-      {/* Filters */}
+      {/* Filters + New User Button */}
       <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
@@ -430,6 +657,9 @@ function UsersSection() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pr-10 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
           />
+          {searchQuery && (
+            <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-gray-400 animate-spin" />
+          )}
         </div>
         <Select value={roleFilter} onValueChange={setRoleFilter}>
           <SelectTrigger className="w-full sm:w-36 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
@@ -452,6 +682,76 @@ function UsersSection() {
             <SelectItem value="suspended">تعلیق</SelectItem>
           </SelectContent>
         </Select>
+        <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-violet-500 hover:bg-violet-600 text-white rounded-xl text-sm shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 h-10">
+              <Plus className="size-4 ml-1.5" />
+              کاربر جدید
+            </Button>
+          </DialogTrigger>
+          <DialogContent dir="rtl" className="rounded-2xl sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-base">ایجاد کاربر جدید</DialogTitle>
+              <DialogDescription className="text-xs">اطلاعات کاربر جدید را وارد کنید</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label className="text-sm">نام و نام خانوادگی</Label>
+                <Input
+                  value={newUser.name}
+                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                  placeholder="مثلاً: علی محمدی"
+                  className="h-10 rounded-xl"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm">ایمیل</Label>
+                <Input
+                  type="email"
+                  value={newUser.email}
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                  placeholder="example@email.com"
+                  className="h-10 rounded-xl"
+                  dir="ltr"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm">رمز عبور</Label>
+                <Input
+                  type="password"
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                  placeholder="اختیاری"
+                  className="h-10 rounded-xl"
+                  dir="ltr"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm">نقش</Label>
+                <Select value={newUser.role} onValueChange={(v) => setNewUser({ ...newUser, role: v })}>
+                  <SelectTrigger className="h-10 rounded-xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">کاربر</SelectItem>
+                    <SelectItem value="admin">ادمین</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter className="gap-2">
+              <Button variant="outline" onClick={() => setCreateDialogOpen(false)} className="rounded-xl">انصراف</Button>
+              <Button
+                onClick={handleCreateUser}
+                disabled={creating}
+                className="bg-violet-500 hover:bg-violet-600 text-white rounded-xl"
+              >
+                {creating && <Loader2 className="size-4 ml-2 animate-spin" />}
+                ایجاد کاربر
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </motion.div>
 
       {/* Table */}
@@ -471,76 +771,96 @@ function UsersSection() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredUsers.map((user, index) => (
-                  <TableRow key={user.id} className="border-gray-100 dark:border-gray-800">
-                    <TableCell className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`flex size-9 shrink-0 items-center justify-center rounded-full text-white text-sm font-medium ${avatarColors[index % avatarColors.length]}`}>
-                          {user.avatar}
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell colSpan={7}>
+                        <div className="flex items-center justify-center py-12">
+                          <Loader2 className="size-6 text-violet-500 animate-spin" />
+                          <span className="mr-3 text-sm text-gray-500">در حال بارگذاری...</span>
                         </div>
-                        <span className="text-sm font-medium text-gray-900 dark:text-white whitespace-nowrap">{user.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-3 px-4 hidden md:table-cell">
-                      <span className="text-sm text-gray-500 dark:text-gray-400" dir="ltr">{user.email}</span>
-                    </TableCell>
-                    <TableCell className="py-3 px-4">{roleBadge(user.role)}</TableCell>
-                    <TableCell className="py-3 px-4">{statusBadge(user.status)}</TableCell>
-                    <TableCell className="py-3 px-4 hidden sm:table-cell">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">{user.forms}</span>
-                    </TableCell>
-                    <TableCell className="py-3 px-4 hidden lg:table-cell">
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-                        <Clock className="size-3" />
-                        {user.lastLogin}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-3 px-4">
-                      <div className="flex items-center justify-center gap-1">
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/30" title="ویرایش">
-                          <Edit3 className="size-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className={`h-7 w-7 p-0 ${user.status === 'suspended' ? 'text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30' : 'text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/30'}`}
-                          title={user.status === 'suspended' ? 'فعال‌سازی' : 'تعلیق'}
-                        >
-                          {user.status === 'suspended' ? <UserCheck className="size-3.5" /> : <Ban className="size-3.5" />}
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30" title="حذف">
-                              <Trash2 className="size-3.5" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent dir="rtl" className="rounded-2xl">
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>حذف کاربر</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                آیا مطمئن هستید که می‌خواهید کاربر «{user.name}» را حذف کنید؟ این عملیات قابل بازگشت نیست.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel className="rounded-xl">انصراف</AlertDialogCancel>
-                              <AlertDialogAction className="bg-red-500 hover:bg-red-600 text-white rounded-xl" onClick={() => toast.success('کاربر حذف شد')}>
-                                حذف
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : users.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7}>
+                      <div className="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+                        <Users className="size-10 mb-3 opacity-50" />
+                        <p className="text-sm">کاربری یافت نشد</p>
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  users.map((user, index) => (
+                    <TableRow
+                      key={user.id}
+                      className="border-gray-100 dark:border-gray-800 hover:bg-violet-50/30 dark:hover:bg-violet-950/10 transition-colors"
+                    >
+                      <TableCell className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`flex size-9 shrink-0 items-center justify-center rounded-full text-white text-sm font-medium ${avatarColors[index % avatarColors.length]}`}>
+                            {user.name.charAt(0)}
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-sm font-medium text-gray-900 dark:text-white whitespace-nowrap block">{user.name}</span>
+                            <span className="text-[10px] text-gray-400 dark:text-gray-500 sm:hidden" dir="ltr">{user.email}</span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-3 px-4 hidden md:table-cell">
+                        <span className="text-sm text-gray-500 dark:text-gray-400" dir="ltr">{user.email}</span>
+                      </TableCell>
+                      <TableCell className="py-3 px-4">{roleBadge(user.role)}</TableCell>
+                      <TableCell className="py-3 px-4">{statusBadge(user.status)}</TableCell>
+                      <TableCell className="py-3 px-4 hidden sm:table-cell">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{user._count.forms}</span>
+                      </TableCell>
+                      <TableCell className="py-3 px-4 hidden lg:table-cell">
+                        <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                          <Clock className="size-3" />
+                          {user.lastLoginAt ? timeAgo(user.lastLoginAt) : '—'}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-3 px-4">
+                        <div className="flex items-center justify-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={`h-7 w-7 p-0 ${user.status === 'suspended' ? 'text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30' : 'text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/30'}`}
+                            title={user.status === 'suspended' ? 'فعال‌سازی' : 'تعلیق'}
+                            onClick={() => handleToggleStatus(user)}
+                          >
+                            {user.status === 'suspended' ? <UserCheck className="size-3.5" /> : <Ban className="size-3.5" />}
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30" title="حذف">
+                                <Trash2 className="size-3.5" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent dir="rtl" className="rounded-2xl">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>حذف کاربر</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  آیا مطمئن هستید که می‌خواهید کاربر «{user.name}» را حذف کنید؟ این عملیات قابل بازگشت نیست.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="rounded-xl">انصراف</AlertDialogCancel>
+                                <AlertDialogAction className="bg-red-500 hover:bg-red-600 text-white rounded-xl" onClick={() => handleDeleteUser(user.id, user.name)}>
+                                  حذف
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
-            {filteredUsers.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
-                <Users className="size-10 mb-3 opacity-50" />
-                <p className="text-sm">کاربری یافت نشد</p>
-              </div>
-            )}
           </CardContent>
         </Card>
       </motion.div>
@@ -548,12 +868,50 @@ function UsersSection() {
   );
 }
 
-// ─── Forms Section ────────────────────────────────────────────────────
+// ─── Forms Section (Real DB) ───────────────────────────────────────────
 
 function FormsSection() {
+  const [forms, setForms] = useState<AdminForm[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedForms, setSelectedForms] = useState<Set<number>>(new Set());
+  const [page, setPage] = useState(1);
+  const [selectedForms, setSelectedForms] = useState<Set<string>>(new Set());
+
+  const debouncedSearch = useDebounce(searchQuery, 300);
+  const limit = 20;
+
+  const fetchForms = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (debouncedSearch) params.set('search', debouncedSearch);
+      if (statusFilter !== 'all') params.set('status', statusFilter);
+      params.set('page', page.toString());
+
+      const res = await fetch(`/api/admin/forms?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setForms(data.forms);
+        setTotal(data.total);
+      }
+    } catch {
+      // Silently fail
+    } finally {
+      setLoading(false);
+    }
+  }, [debouncedSearch, statusFilter, page]);
+
+  useEffect(() => {
+    fetchForms();
+  }, [fetchForms]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, statusFilter]);
+
+  const totalPages = Math.ceil(total / limit);
 
   const formStatusBadge = (status: string) => {
     const configs: Record<string, { label: string; icon: React.ReactNode; className: string }> = {
@@ -565,13 +923,7 @@ function FormsSection() {
     return <Badge variant="outline" className={`text-xs h-5 px-2 gap-1 ${config.className}`}>{config.icon}{config.label}</Badge>;
   };
 
-  const filteredForms = MOCK_FORMS.filter((form) => {
-    const matchesSearch = form.title.includes(searchQuery) || form.creator.includes(searchQuery);
-    const matchesStatus = statusFilter === 'all' || form.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  const toggleSelect = (id: number) => {
+  const toggleSelect = (id: string) => {
     const next = new Set(selectedForms);
     if (next.has(id)) next.delete(id);
     else next.add(id);
@@ -579,10 +931,10 @@ function FormsSection() {
   };
 
   const toggleSelectAll = () => {
-    if (selectedForms.size === filteredForms.length) {
+    if (selectedForms.size === forms.length && forms.length > 0) {
       setSelectedForms(new Set());
     } else {
-      setSelectedForms(new Set(filteredForms.map((f) => f.id)));
+      setSelectedForms(new Set(forms.map((f) => f.id)));
     }
   };
 
@@ -598,6 +950,9 @@ function FormsSection() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pr-10 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
           />
+          {searchQuery && (
+            <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-gray-400 animate-spin" />
+          )}
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-40 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
@@ -664,7 +1019,7 @@ function FormsSection() {
                   <TableHead className="py-3 px-4 w-10">
                     <input
                       type="checkbox"
-                      checked={selectedForms.size === filteredForms.length && filteredForms.length > 0}
+                      checked={selectedForms.size === forms.length && forms.length > 0}
                       onChange={toggleSelectAll}
                       className="size-4 rounded border-gray-300 dark:border-gray-600 text-violet-500 focus:ring-violet-300 accent-violet-500"
                     />
@@ -679,69 +1034,118 @@ function FormsSection() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredForms.map((form) => (
-                  <TableRow key={form.id} className="border-gray-100 dark:border-gray-800">
-                    <TableCell className="py-3 px-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedForms.has(form.id)}
-                        onChange={() => toggleSelect(form.id)}
-                        className="size-4 rounded border-gray-300 dark:border-gray-600 text-violet-500 focus:ring-violet-300 accent-violet-500"
-                      />
-                    </TableCell>
-                    <TableCell className="py-3 px-4">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">{form.title}</span>
-                    </TableCell>
-                    <TableCell className="py-3 px-4 hidden md:table-cell">
-                      <span className="text-sm text-gray-500 dark:text-gray-400">{form.creator}</span>
-                    </TableCell>
-                    <TableCell className="py-3 px-4">{formStatusBadge(form.status)}</TableCell>
-                    <TableCell className="py-3 px-4 hidden sm:table-cell">
-                      <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
-                        <Send className="size-3" />
-                        {formatNumber(form.responses)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-3 px-4 hidden lg:table-cell">
-                      <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
-                        <Eye className="size-3" />
-                        {formatNumber(form.views)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-3 px-4 hidden lg:table-cell">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">{form.date}</span>
-                    </TableCell>
-                    <TableCell className="py-3 px-4">
-                      <div className="flex items-center justify-center gap-1">
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/30" title="مشاهده">
-                          <Eye className="size-3.5" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30" title="ویرایش">
-                          <Edit3 className="size-3.5" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30" title="حذف" onClick={() => toast.success('فرم حذف شد')}>
-                          <Trash2 className="size-3.5" />
-                        </Button>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={8}>
+                      <div className="flex items-center justify-center py-12">
+                        <Loader2 className="size-6 text-violet-500 animate-spin" />
+                        <span className="mr-3 text-sm text-gray-500">در حال بارگذاری...</span>
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : forms.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8}>
+                      <div className="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+                        <FileText className="size-10 mb-3 opacity-50" />
+                        <p className="text-sm">فرمی یافت نشد</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  forms.map((form) => (
+                    <TableRow
+                      key={form.id}
+                      className="border-gray-100 dark:border-gray-800 hover:bg-violet-50/30 dark:hover:bg-violet-950/10 transition-colors"
+                    >
+                      <TableCell className="py-3 px-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedForms.has(form.id)}
+                          onChange={() => toggleSelect(form.id)}
+                          className="size-4 rounded border-gray-300 dark:border-gray-600 text-violet-500 focus:ring-violet-300 accent-violet-500"
+                        />
+                      </TableCell>
+                      <TableCell className="py-3 px-4">
+                        <div className="min-w-0">
+                          <span className="text-sm font-medium text-gray-900 dark:text-white block">{form.title}</span>
+                          <span className="text-[10px] text-gray-400 dark:text-gray-500">{form.questions} سؤال</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-3 px-4 hidden md:table-cell">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">{form.creator}</span>
+                      </TableCell>
+                      <TableCell className="py-3 px-4">{formStatusBadge(form.status)}</TableCell>
+                      <TableCell className="py-3 px-4 hidden sm:table-cell">
+                        <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
+                          <Send className="size-3" />
+                          {formatNumber(form.submissions)}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-3 px-4 hidden lg:table-cell">
+                        <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
+                          <Eye className="size-3" />
+                          {formatNumber(form.viewCount)}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-3 px-4 hidden lg:table-cell">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{formatDate(form.updatedAt)}</span>
+                      </TableCell>
+                      <TableCell className="py-3 px-4">
+                        <div className="flex items-center justify-center gap-1">
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/30" title="مشاهده">
+                            <Eye className="size-3.5" />
+                          </Button>
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30" title="حذف" onClick={() => toast.success('فرم حذف شد')}>
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
-            {filteredForms.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
-                <FileText className="size-10 mb-3 opacity-50" />
-                <p className="text-sm">فرمی یافت نشد</p>
-              </div>
-            )}
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <motion.div variants={itemVariants} className="flex items-center justify-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-xl h-8 px-3 text-xs border-gray-200 dark:border-gray-700"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            <ChevronRight className="size-4 ml-1" />
+            قبلی
+          </Button>
+          <span className="text-sm text-gray-500 dark:text-gray-400 px-3">
+            صفحه {formatNumber(page)} از {formatNumber(totalPages)}
+          </span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">
+            ({formatNumber(total)} فرم)
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-xl h-8 px-3 text-xs border-gray-200 dark:border-gray-700"
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            بعدی
+            <ChevronLeft className="size-4 mr-1" />
+          </Button>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
 
-// ─── Templates Section ────────────────────────────────────────────────
+// ─── Templates Section ─────────────────────────────────────────────────
 
 function TemplatesSection() {
   const totalTemplates = TEMPLATE_CATEGORIES.reduce((sum, cat) => sum + cat.count, 0);
@@ -790,7 +1194,7 @@ function TemplatesSection() {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {TEMPLATE_CATEGORIES.map((cat, index) => (
+          {TEMPLATE_CATEGORIES.map((cat) => (
             <motion.div
               key={cat.name}
               variants={itemVariants}
@@ -818,7 +1222,7 @@ function TemplatesSection() {
   );
 }
 
-// ─── Settings Section ─────────────────────────────────────────────────
+// ─── Settings Section ──────────────────────────────────────────────────
 
 function SettingsSection() {
   const [siteName, setSiteName] = useState('فرمساز');
@@ -832,6 +1236,31 @@ function SettingsSection() {
   const [maxQuestions, setMaxQuestions] = useState('50');
   const [maxSubmissions, setMaxSubmissions] = useState('10000');
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          siteName,
+          siteDescription,
+          maxFormsPerUser: parseInt(maxFormsPerUser, 10),
+          maxQuestionsPerForm: parseInt(maxQuestions, 10),
+          maintenanceMode,
+        }),
+      });
+      if (res.ok) {
+        toast.success('تنظیمات با موفقیت ذخیره شد');
+      }
+    } catch {
+      toast.error('خطا در ذخیره تنظیمات');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
@@ -853,30 +1282,16 @@ function SettingsSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">نام سایت</Label>
-                <Input
-                  value={siteName}
-                  onChange={(e) => setSiteName(e.target.value)}
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                />
+                <Input value={siteName} onChange={(e) => setSiteName(e.target.value)} className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" />
               </div>
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">آدرس لوگو</Label>
-                <Input
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                  dir="ltr"
-                />
+                <Input value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" dir="ltr" />
               </div>
             </div>
             <div className="space-y-2">
               <Label className="text-sm text-gray-700 dark:text-gray-300">توضیحات سایت</Label>
-              <Textarea
-                value={siteDescription}
-                onChange={(e) => setSiteDescription(e.target.value)}
-                className="rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 resize-none"
-                rows={2}
-              />
+              <Textarea value={siteDescription} onChange={(e) => setSiteDescription(e.target.value)} className="rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 resize-none" rows={2} />
             </div>
           </CardContent>
         </Card>
@@ -900,43 +1315,21 @@ function SettingsSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">سرور SMTP</Label>
-                <Input
-                  value={smtpHost}
-                  onChange={(e) => setSmtpHost(e.target.value)}
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                  dir="ltr"
-                />
+                <Input value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" dir="ltr" />
               </div>
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">پورت</Label>
-                <Input
-                  value={smtpPort}
-                  onChange={(e) => setSmtpPort(e.target.value)}
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                  dir="ltr"
-                />
+                <Input value={smtpPort} onChange={(e) => setSmtpPort(e.target.value)} className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" dir="ltr" />
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">ایمیل</Label>
-                <Input
-                  value={smtpEmail}
-                  onChange={(e) => setSmtpEmail(e.target.value)}
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                  dir="ltr"
-                />
+                <Input value={smtpEmail} onChange={(e) => setSmtpEmail(e.target.value)} className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" dir="ltr" />
               </div>
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">رمز عبور</Label>
-                <Input
-                  type="password"
-                  value={smtpPassword}
-                  onChange={(e) => setSmtpPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                  dir="ltr"
-                />
+                <Input type="password" value={smtpPassword} onChange={(e) => setSmtpPassword(e.target.value)} placeholder="••••••••" className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" dir="ltr" />
               </div>
             </div>
           </CardContent>
@@ -961,33 +1354,15 @@ function SettingsSection() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">حداکثر فرم در هر کاربر</Label>
-                <Input
-                  type="number"
-                  value={maxFormsPerUser}
-                  onChange={(e) => setMaxFormsPerUser(e.target.value)}
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                  dir="ltr"
-                />
+                <Input type="number" value={maxFormsPerUser} onChange={(e) => setMaxFormsPerUser(e.target.value)} className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" dir="ltr" />
               </div>
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">حداکثر سؤال در هر فرم</Label>
-                <Input
-                  type="number"
-                  value={maxQuestions}
-                  onChange={(e) => setMaxQuestions(e.target.value)}
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                  dir="ltr"
-                />
+                <Input type="number" value={maxQuestions} onChange={(e) => setMaxQuestions(e.target.value)} className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" dir="ltr" />
               </div>
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">حداکثر پاسخ در هر فرم</Label>
-                <Input
-                  type="number"
-                  value={maxSubmissions}
-                  onChange={(e) => setMaxSubmissions(e.target.value)}
-                  className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                  dir="ltr"
-                />
+                <Input type="number" value={maxSubmissions} onChange={(e) => setMaxSubmissions(e.target.value)} className="h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" dir="ltr" />
               </div>
             </div>
           </CardContent>
@@ -1017,18 +1392,10 @@ function SettingsSection() {
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">در این حالت، کاربران معمولی دسترسی به سایت نخواهند داشت.</p>
                 </div>
               </div>
-              <Switch
-                checked={maintenanceMode}
-                onCheckedChange={setMaintenanceMode}
-                className="data-[state=checked]:bg-red-500"
-              />
+              <Switch checked={maintenanceMode} onCheckedChange={setMaintenanceMode} className="data-[state=checked]:bg-red-500" />
             </div>
             {maintenanceMode && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="mt-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800"
-              >
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
                 <p className="text-xs text-red-700 dark:text-red-400 flex items-center gap-1.5">
                   <AlertTriangle className="size-3.5" />
                   هشدار: سایت در حالت تعمیرات است. فقط مدیران دسترسی دارند.
@@ -1042,10 +1409,11 @@ function SettingsSection() {
       {/* Save Button */}
       <motion.div variants={itemVariants} className="flex justify-end">
         <Button
+          onClick={handleSave}
+          disabled={saving}
           className="bg-violet-500 hover:bg-violet-600 text-white rounded-xl text-sm px-6 h-10 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20"
-          onClick={() => toast.success('تنظیمات با موفقیت ذخیره شد')}
         >
-          <Save className="size-4 ml-2" />
+          {saving ? <Loader2 className="size-4 ml-2 animate-spin" /> : <Save className="size-4 ml-2" />}
           ذخیره تنظیمات
         </Button>
       </motion.div>
@@ -1053,24 +1421,24 @@ function SettingsSection() {
   );
 }
 
-// ─── Reports Section ──────────────────────────────────────────────────
+// ─── Reports Section (color-coded badges) ──────────────────────────────
 
 function ReportsSection() {
   const [typeFilter, setTypeFilter] = useState('all');
 
   const reportTypeBadge = (type: string) => {
-    const configs: Record<string, { label: string; className: string }> = {
-      create: { label: 'ایجاد', className: 'bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800' },
-      submit: { label: 'پاسخ', className: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800' },
-      publish: { label: 'انتشار', className: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800' },
-      edit: { label: 'ویرایش', className: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800' },
-      delete: { label: 'حذف', className: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800' },
-      settings: { label: 'تنظیمات', className: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800' },
-      security: { label: 'امنیت', className: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800' },
-      system: { label: 'سیستم', className: 'bg-gray-50 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700' },
+    const configs: Record<string, { label: string; className: string; icon: React.ReactNode }> = {
+      create: { label: 'ایجاد', className: 'bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800', icon: <Plus className="size-2.5 ml-0.5" /> },
+      submit: { label: 'پاسخ', className: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800', icon: <Send className="size-2.5 ml-0.5" /> },
+      publish: { label: 'انتشار', className: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800', icon: <CircleDot className="size-2.5 ml-0.5" /> },
+      edit: { label: 'ویرایش', className: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800', icon: <Edit3 className="size-2.5 ml-0.5" /> },
+      delete: { label: 'حذف', className: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800', icon: <Trash2 className="size-2.5 ml-0.5" /> },
+      settings: { label: 'تنظیمات', className: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800', icon: <Settings className="size-2.5 ml-0.5" /> },
+      security: { label: 'امنیت', className: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800', icon: <Shield className="size-2.5 ml-0.5" /> },
+      system: { label: 'سیستم', className: 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700', icon: <Server className="size-2.5 ml-0.5" /> },
     };
     const config = configs[type] || configs.system;
-    return <Badge variant="outline" className={`text-xs h-5 px-2 ${config.className}`}>{config.label}</Badge>;
+    return <Badge variant="outline" className={`text-xs h-5 px-2 gap-0.5 ${config.className}`}>{config.icon}{config.label}</Badge>;
   };
 
   const filteredReports = MOCK_REPORTS.filter((report) => {
@@ -1098,11 +1466,7 @@ function ReportsSection() {
           </SelectContent>
         </Select>
         <div className="flex-1" />
-        <Button
-          variant="outline"
-          className="rounded-xl text-sm h-10 border-gray-200 dark:border-gray-700"
-          onClick={() => toast.success('گزارش در حال دانلود...')}
-        >
+        <Button variant="outline" className="rounded-xl text-sm h-10 border-gray-200 dark:border-gray-700" onClick={() => toast.success('گزارش در حال دانلود...')}>
           <Download className="size-4 ml-1.5" />
           خروجی CSV
         </Button>
@@ -1124,7 +1488,7 @@ function ReportsSection() {
               </TableHeader>
               <TableBody>
                 {filteredReports.map((report) => (
-                  <TableRow key={report.id} className="border-gray-100 dark:border-gray-800">
+                  <TableRow key={report.id} className="border-gray-100 dark:border-gray-800 hover:bg-violet-50/30 dark:hover:bg-violet-950/10 transition-colors">
                     <TableCell className="py-3 px-4">
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                         <Clock className="size-3" />
@@ -1160,7 +1524,7 @@ function ReportsSection() {
   );
 }
 
-// ─── Main Admin Panel ─────────────────────────────────────────────────
+// ─── Main Admin Panel ──────────────────────────────────────────────────
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
@@ -1205,25 +1569,28 @@ export default function AdminPanel() {
           sidebarOpen ? 'w-64' : 'w-20'
         }`}
       >
-        {/* Brand */}
-        <div className="flex items-center gap-3 p-5 border-b border-gray-100 dark:border-gray-800">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
-            <Shield className="size-5 text-white" />
+        {/* Brand with gradient header */}
+        <div className="relative overflow-hidden border-b border-gray-100 dark:border-gray-800">
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-purple-600 to-fuchsia-600 opacity-5" />
+          <div className="relative flex items-center gap-3 p-5">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
+              <Shield className="size-5 text-white" />
+            </div>
+            <AnimatePresence>
+              {sidebarOpen && (
+                <motion.div
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden whitespace-nowrap"
+                >
+                  <h1 className="text-base font-bold text-gray-900 dark:text-white">پنل مدیریت</h1>
+                  <p className="text-[10px] text-gray-400 dark:text-gray-500">نسخه ۲.۵</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <AnimatePresence>
-            {sidebarOpen && (
-              <motion.div
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: 'auto' }}
-                exit={{ opacity: 0, width: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden whitespace-nowrap"
-              >
-                <h1 className="text-base font-bold text-gray-900 dark:text-white">پنل مدیریت</h1>
-                <p className="text-[10px] text-gray-400 dark:text-gray-500">نسخه ۲.۵</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         {/* Navigation */}
@@ -1258,7 +1625,7 @@ export default function AdminPanel() {
                 </AnimatePresence>
                 {activeTab === item.id && sidebarOpen && (
                   <motion.div
-                    layoutId="activeIndicator"
+                    layoutId="adminActiveIndicator"
                     className="mr-auto size-1.5 rounded-full bg-violet-500"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
@@ -1270,7 +1637,6 @@ export default function AdminPanel() {
 
         {/* Sidebar Footer */}
         <div className="border-t border-gray-100 dark:border-gray-800 p-3 space-y-2">
-          {/* Toggle sidebar */}
           <Button
             variant="ghost"
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -1278,8 +1644,6 @@ export default function AdminPanel() {
           >
             <ChevronLeft className={`size-4 transition-transform duration-300 ${!sidebarOpen ? 'rotate-180' : ''}`} />
           </Button>
-
-          {/* Back to site */}
           <Button
             variant="outline"
             onClick={() => setCurrentView('dashboard')}
@@ -1310,13 +1674,16 @@ export default function AdminPanel() {
               className="fixed right-0 top-0 bottom-0 w-64 bg-white dark:bg-gray-900 z-50 lg:hidden shadow-2xl"
               dir="rtl"
             >
-              <div className="flex items-center gap-3 p-5 border-b border-gray-100 dark:border-gray-800">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
-                  <Shield className="size-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-base font-bold text-gray-900 dark:text-white">پنل مدیریت</h1>
-                  <p className="text-[10px] text-gray-400 dark:text-gray-500">نسخه ۲.۵</p>
+              <div className="relative overflow-hidden border-b border-gray-100 dark:border-gray-800">
+                <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-purple-600 to-fuchsia-600 opacity-5" />
+                <div className="relative flex items-center gap-3 p-5">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                    <Shield className="size-5 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-base font-bold text-gray-900 dark:text-white">پنل مدیریت</h1>
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500">نسخه ۲.۵</p>
+                  </div>
                 </div>
               </div>
               <ScrollArea className="flex-1 py-3">
@@ -1363,7 +1730,7 @@ export default function AdminPanel() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Bar */}
+        {/* Top Bar with System Status */}
         <header className="flex items-center gap-4 px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0">
           <Button
             variant="ghost"
@@ -1408,8 +1775,15 @@ export default function AdminPanel() {
             </div>
           </div>
           <div className="flex-1" />
-          {/* Admin user avatar */}
+          {/* System Status + Admin avatar */}
           <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30">
+              <span className="relative flex size-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              </span>
+              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">سیستم فعال</span>
+            </div>
             <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
               <span className="text-xs">ادمین اصلی</span>
             </div>
@@ -1419,7 +1793,7 @@ export default function AdminPanel() {
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* Page Content with smooth tab transitions */}
         <ScrollArea className="flex-1">
           <div className="p-4 sm:p-6">
             <AnimatePresence mode="wait">
