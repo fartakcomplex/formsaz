@@ -16,6 +16,7 @@ import {
   AlertCircle,
   Eye,
   Activity,
+  FileSpreadsheet,
 } from 'lucide-react';
 import {
   BarChart,
@@ -65,6 +66,30 @@ const COLORS = [
   '#6d28d9', '#4f46e5', '#4338ca', '#3730a3', '#312e81',
 ];
 
+// Stagger animation variants
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};
+
 interface AnalyticsData {
   submissionCount: number;
   dailyCounts: { date: string; count: number }[];
@@ -90,24 +115,100 @@ function formatDate(dateStr: string): string {
   }
 }
 
+// ── Empty State SVG Illustration ──────────────────────────────────────────────
+function EmptyStateIllustration() {
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-48 h-48 sm:w-56 sm:h-56"
+    >
+      {/* Background glow */}
+      <defs>
+        <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="oklch(0.75 0.15 293 / 20%)" />
+          <stop offset="100%" stopColor="oklch(0.75 0.15 293 / 0%)" />
+        </radialGradient>
+        <linearGradient id="docGrad" x1="60" y1="40" x2="140" y2="160" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="oklch(0.92 0.04 293)" />
+          <stop offset="100%" stopColor="oklch(0.95 0.02 293)" />
+        </linearGradient>
+        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#8b5cf6" />
+          <stop offset="100%" stopColor="#6366f1" />
+        </linearGradient>
+      </defs>
+
+      {/* Glow circle */}
+      <circle cx="100" cy="100" r="90" fill="url(#glow1)" />
+
+      {/* Document shape */}
+      <rect x="55" y="35" width="90" height="120" rx="10" fill="url(#docGrad)" stroke="oklch(0.82 0.08 293 / 40%)" strokeWidth="1.5" />
+
+      {/* Folded corner */}
+      <path d="M120 35 L145 35 Q145 35 145 60 L125 60 Q120 60 120 55 Z" fill="oklch(0.88 0.06 293)" stroke="oklch(0.82 0.08 293 / 30%)" strokeWidth="1" />
+      <path d="M120 35 L120 55 Q120 60 125 60 L145 60" fill="none" stroke="oklch(0.82 0.08 293 / 40%)" strokeWidth="1.5" />
+
+      {/* Document lines (question marks) */}
+      <rect x="72" y="70" width="56" height="4" rx="2" fill="oklch(0.82 0.06 293 / 35%)" />
+      <rect x="72" y="82" width="40" height="4" rx="2" fill="oklch(0.82 0.06 293 / 25%)" />
+      <rect x="72" y="94" width="50" height="4" rx="2" fill="oklch(0.82 0.06 293 / 35%)" />
+      <rect x="72" y="106" width="36" height="4" rx="2" fill="oklch(0.82 0.06 293 / 25%)" />
+
+      {/* Checkbox row */}
+      <rect x="72" y="122" width="14" height="14" rx="3" fill="none" stroke="oklch(0.65 0.15 293 / 50%)" strokeWidth="1.5" />
+      <rect x="92" y="125" width="30" height="3" rx="1.5" fill="oklch(0.82 0.06 293 / 30%)" />
+
+      {/* Mini bar chart overlay */}
+      <rect x="75" y="142" width="8" height="8" rx="2" fill="url(#barGrad)" opacity="0.8" />
+      <rect x="88" y="138" width="8" height="12" rx="2" fill="url(#barGrad)" opacity="0.9" />
+      <rect x="101" y="135" width="8" height="15" rx="2" fill="url(#barGrad)" />
+      <rect x="114" y="140" width="8" height="10" rx="2" fill="url(#barGrad)" opacity="0.7" />
+
+      {/* Floating question mark */}
+      <g transform="translate(155, 50)">
+        <circle cx="0" cy="0" r="14" fill="#8b5cf6" opacity="0.12" />
+        <text x="0" y="5" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#8b5cf6" opacity="0.7">?</text>
+      </g>
+
+      {/* Floating star */}
+      <g transform="translate(40, 55)">
+        <circle cx="0" cy="0" r="10" fill="#f59e0b" opacity="0.1" />
+        <path d="M0,-6 L1.5,-2 L6,-2 L2.5,1 L4,5.5 L0,3 L-4,5.5 L-2.5,1 L-6,-2 L-1.5,-2 Z" fill="#f59e0b" opacity="0.4" />
+      </g>
+
+      {/* Pulse ring (animated via CSS) */}
+      <circle cx="100" cy="165" r="8" fill="#8b5cf6" opacity="0.15">
+        <animate attributeName="r" values="6;14;6" dur="3s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="100" cy="165" r="6" fill="#8b5cf6" opacity="0.5">
+        <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2s" repeatCount="indefinite" />
+      </circle>
+    </svg>
+  );
+}
+
 function StatCard({
   icon,
   label,
   value,
   subtitle,
   color,
+  delay,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string | number;
   subtitle?: string;
   color: string;
+  delay: number;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="relative flex items-center gap-4 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/20 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 sm:p-5 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
+      variants={staggerItem}
+      className="relative flex items-center gap-4 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/20 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 sm:p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 dark:border-gray-800 overflow-hidden"
     >
       <div className={`relative flex size-12 items-center justify-center rounded-xl ${color} dark:opacity-80`}>
         {icon}
@@ -424,7 +525,7 @@ function ScaleQuestionChart({
         <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-400 dark:text-gray-500">{totalResponses} پاسخ</span>
-          <Badge variant="outline" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/30">
+          <Badge variant="outline" className="text-xs font-medium text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-950/30">
             میانگین: {avgValue.toFixed(1)}
           </Badge>
         </div>
@@ -487,7 +588,7 @@ function TextQuestionSummary({
             key={idx}
             className="flex items-start gap-2 text-sm p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 transition-colors"
           >
-            <div className="flex size-5 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold shrink-0 mt-0.5">
+            <div className="flex size-5 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 text-[10px] font-bold shrink-0 mt-0.5">
               {idx + 1}
             </div>
             <span className="text-gray-600 dark:text-gray-300 leading-relaxed">{response}</span>
@@ -614,7 +715,7 @@ function QuestionSummary({
 }) {
   const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown'];
   const textTypes = ['short_text', 'long_text', 'email', 'phone', 'file_upload'];
-  const otherTypes = ['statement', 'number', 'date'];
+  const otherTypes = ['statement', 'number', 'date', 'section_divider'];
 
   if (choiceTypes.includes(question.type)) {
     return <ChoiceQuestionChart question={question} submissions={submissions} />;
@@ -659,7 +760,7 @@ function MiniPieCard({
     const total = yesCount + noCount;
     if (total === 0) {
       return (
-        <Card className="border-gray-200 dark:border-gray-800 shadow-sm">
+        <Card className="border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
           <CardContent className="p-4">
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{question.title}</p>
             <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-6">بدون پاسخ</p>
@@ -676,7 +777,7 @@ function MiniPieCard({
       no: { label: 'خیر', color: '#ef4444' },
     };
     return (
-      <Card className="border-gray-200 dark:border-gray-800 shadow-sm">
+      <Card className="border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4 space-y-3">
           <p className="text-sm font-medium text-gray-700 dark:text-gray-300 line-clamp-2">{question.title}</p>
           <div className="relative">
@@ -737,7 +838,7 @@ function MiniPieCard({
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
   if (total === 0) {
     return (
-      <Card className="border-gray-200 dark:border-gray-800 shadow-sm">
+      <Card className="border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
         <CardContent className="p-4">
           <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{question.title}</p>
           <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-6">بدون پاسخ</p>
@@ -757,7 +858,7 @@ function MiniPieCard({
   });
 
   return (
-    <Card className="border-gray-200 dark:border-gray-800 shadow-sm">
+    <Card className="border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
       <CardContent className="p-4 space-y-3">
         <p className="text-sm font-medium text-gray-700 dark:text-gray-300 line-clamp-2">{question.title}</p>
         <div className="relative">
@@ -818,10 +919,10 @@ function IndividualResponse({
   index: number;
 }) {
   return (
-    <AccordionItem value={submission.id} className="border-gray-200 dark:border-gray-800">
-      <AccordionTrigger className="hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg px-4">
+    <AccordionItem value={submission.id} className="border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden transition-shadow duration-200 hover:shadow-sm">
+      <AccordionTrigger className="hover:bg-violet-50/50 dark:hover:bg-violet-950/20 rounded-lg px-4 transition-colors duration-200">
         <div className="flex items-center gap-3 text-right">
-          <div className="flex size-8 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold shrink-0">
+          <div className="flex size-8 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 text-xs font-bold shrink-0">
             {index + 1}
           </div>
           <div>
@@ -834,8 +935,8 @@ function IndividualResponse({
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="px-4">
-        <div className="space-y-3 rounded-xl border bg-gray-50/50 dark:bg-gray-900/50 p-4 dark:border-gray-800">
+      <AccordionContent className="px-4 pb-4">
+        <div className="space-y-3 rounded-xl border bg-gray-50/50 dark:bg-gray-900/50 p-4 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800/50 transition-colors duration-200">
           {questions.map((q) => {
             const response = submission.responses.find((r) => r.questionId === q.id);
             return (
@@ -942,18 +1043,31 @@ export default function ResultsView() {
   );
 
   const handleExport = () => {
-    // Placeholder for export functionality
     const csvRows: string[] = [];
-    const headers = questions.map((q) => `"${q.title}"`);
+    // Add timestamp row
+    csvRows.push(`"تاریخ دانلود","${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}"`);
+
+    // Add headers with question titles
+    const headers = ['شماره', ...questions.map((q) => `"${q.title.replace(/"/g, '""')}"`)];
     csvRows.push(headers.join(','));
 
-    submissions.forEach((sub) => {
-      const row = questions.map((q) => {
-        const response = sub.responses.find((r) => r.questionId === q.id);
-        return `"${response?.value || ''}"`;
-      });
+    // Add data rows
+    submissions.forEach((sub, idx) => {
+      const row = [
+        (idx + 1).toString(),
+        ...questions.map((q) => {
+          const response = sub.responses.find((r) => r.questionId === q.id);
+          const value = response?.value || '';
+          return `"${value.replace(/"/g, '""')}"`;
+        }),
+      ];
       csvRows.push(row.join(','));
     });
+
+    // Add summary row
+    csvRows.push('');
+    csvRows.push(`"تعداد کل پاسخ‌ها","${submissions.length}"`);
+    csvRows.push(`"نرخ تکمیل","${completionRate}%"`);
 
     const csvContent = '\uFEFF' + csvRows.join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -978,6 +1092,15 @@ export default function ResultsView() {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-gray-950">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Gradient accent bar at top */}
+        <div
+          className="h-1 rounded-full mb-6 sm:mb-8"
+          style={{
+            background: 'linear-gradient(90deg, #8b5cf6, #6366f1, #a78bfa, #7c3aed, #8b5cf6)',
+            backgroundSize: '200% 100%',
+          }}
+        />
+
         {/* Expiration Warning */}
         {isExpired && (
           <motion.div
@@ -1020,15 +1143,28 @@ export default function ResultsView() {
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{currentForm.title}</p>
             </div>
           </div>
-          <Button
-            variant="outline"
-            onClick={handleExport}
-            className="rounded-xl border-gray-200 dark:border-gray-700 hover:bg-indigo-50 hover:border-indigo-200 dark:hover:bg-indigo-950/30 dark:hover:border-indigo-800"
-            disabled={submissions.length === 0}
-          >
-            <Download className="size-4 ml-2" />
-            دانلود CSV
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExport}
+              className="rounded-xl border-gray-200 dark:border-gray-700 hover:bg-violet-50 hover:border-violet-200 dark:hover:bg-violet-950/30 dark:hover:border-violet-800 transition-colors duration-200"
+              disabled={submissions.length === 0}
+            >
+              <FileSpreadsheet className="size-4 ml-2" />
+              خروجی CSV
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExport}
+              className="rounded-xl border-gray-200 dark:border-gray-700 hover:bg-violet-50 hover:border-violet-200 dark:hover:bg-violet-950/30 dark:hover:border-violet-800 transition-colors duration-200 sm:hidden"
+              disabled={submissions.length === 0}
+            >
+              <Download className="size-4 ml-2" />
+              CSV
+            </Button>
+          </div>
         </motion.div>
 
         {loading ? (
@@ -1037,101 +1173,68 @@ export default function ResultsView() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-24"
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center justify-center py-16 sm:py-24"
           >
-            {/* Decorative background */}
-            <div className="relative mb-8">
-              <div className="absolute -inset-6 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-200/40 dark:from-violet-900/30 dark:to-purple-900/30 blur-2xl" />
-              <div className="relative flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/40 dark:to-purple-900/40 border border-violet-200/50 dark:border-violet-700/30">
-                <ListChecks className="size-12 text-violet-400 dark:text-violet-500" />
-              </div>
+            {/* SVG Illustration */}
+            <div className="relative mb-6">
+              <EmptyStateIllustration />
             </div>
             <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">هنوز پاسخی ثبت نشده</h3>
             <p className="text-sm text-gray-400 dark:text-gray-500 max-w-sm text-center leading-relaxed">
               با به اشتراک‌گذاری لینک فرم، پاسخ‌دهندگان می‌توانند فرم شما را پر کنند.
             </p>
             <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
-              <div className="size-1.5 rounded-full bg-violet-400" />
+              <div className="size-1.5 rounded-full bg-violet-400 animate-pulse" />
               <span>منتظر اولین پاسخ باشید</span>
             </div>
           </motion.div>
         ) : (
-          <>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+          >
             {/* Analytics Overview Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0 }}
-                className="relative flex items-center gap-3 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/30 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
-              >
-                <div className="relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700">
-                  <Users className="size-5 text-white" />
-                </div>
-                <div className="relative flex-1 min-w-0">
-                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
-                    {analytics?.submissionCount ?? submissions.length}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">کل پاسخ‌ها</p>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 }}
-                className="relative flex items-center gap-3 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/30 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
-              >
-                <div className="relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700">
-                  <Eye className="size-5 text-white" />
-                </div>
-                <div className="relative flex-1 min-w-0">
-                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
-                    {analytics?.totalViews ?? 0}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">کل بازدیدها</p>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="relative flex items-center gap-3 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/30 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
-              >
-                <div className="relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700">
-                  <TrendingUp className="size-5 text-white" />
-                </div>
-                <div className="relative flex-1 min-w-0">
-                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
-                    {analytics?.completionRate ?? 0}%
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">نرخ تکمیل</p>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-                className="relative flex items-center gap-3 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/30 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
-              >
-                <div className="relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700">
-                  <Activity className="size-5 text-white" />
-                </div>
-                <div className="relative flex-1 min-w-0">
-                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
-                    {analytics?.avgPerDay ?? 0}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">میانگین روزانه</p>
-                </div>
-              </motion.div>
-            </div>
+            <motion.div
+              variants={staggerContainer}
+              className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6"
+            >
+              <StatCard
+                icon={<Users className="size-5 text-white" />}
+                label="کل پاسخ‌ها"
+                value={analytics?.submissionCount ?? submissions.length}
+                color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
+                delay={0}
+              />
+              <StatCard
+                icon={<Eye className="size-5 text-white" />}
+                label="کل بازدیدها"
+                value={analytics?.totalViews ?? 0}
+                color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
+                delay={0.05}
+              />
+              <StatCard
+                icon={<TrendingUp className="size-5 text-white" />}
+                label="نرخ تکمیل"
+                value={`${analytics?.completionRate ?? completionRate}%`}
+                color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
+                delay={0.1}
+              />
+              <StatCard
+                icon={<Activity className="size-5 text-white" />}
+                label="میانگین روزانه"
+                value={analytics?.avgPerDay ?? 0}
+                color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
+                delay={0.15}
+              />
+            </motion.div>
 
             {/* Submission Timeline Chart */}
             {analytics?.dailyCounts && analytics.dailyCounts.length > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mb-6 sm:mb-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gradient-to-bl from-white via-violet-50/10 to-purple-50/5 dark:from-gray-900 dark:via-violet-950/10 dark:to-purple-950/5 p-5 sm:p-6 shadow-sm"
+                variants={staggerItem}
+                className="mb-6 sm:mb-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gradient-to-bl from-white via-violet-50/10 to-purple-50/5 dark:from-gray-900 dark:via-violet-950/10 dark:to-purple-950/5 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
               >
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex size-8 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/40">
@@ -1211,16 +1314,20 @@ export default function ResultsView() {
               </TabsList>
 
               <TabsContent value="summary">
-                <div className="space-y-4">
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="show"
+                  className="space-y-4"
+                >
                   {questions
                     .filter((q) => q.type !== 'statement')
                     .map((question) => (
                       <motion.div
                         key={question.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        variants={staggerItem}
                       >
-                        <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
+                        <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                           <CardContent className="p-5 sm:p-6">
                             <QuestionSummary
                               question={question}
@@ -1230,7 +1337,7 @@ export default function ResultsView() {
                         </Card>
                       </motion.div>
                     ))}
-                </div>
+                </motion.div>
               </TabsContent>
 
               <TabsContent value="pie-overview">
@@ -1248,23 +1355,26 @@ export default function ResultsView() {
                     </p>
                   </motion.div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {pieEligibleQuestions.map((question, idx) => (
+                  <motion.div
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                  >
+                    {pieEligibleQuestions.map((question) => (
                       <motion.div
                         key={question.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
+                        variants={staggerItem}
                       >
                         <MiniPieCard question={question} submissions={submissions} />
                       </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 )}
               </TabsContent>
 
               <TabsContent value="individual">
-                <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+                <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base text-gray-900 dark:text-gray-100">
                       لیست پاسخ‌ها ({submissions.length})
@@ -1288,7 +1398,7 @@ export default function ResultsView() {
                 </Card>
               </TabsContent>
             </Tabs>
-          </>
+          </motion.div>
         )}
       </div>
     </div>

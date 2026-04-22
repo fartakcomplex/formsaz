@@ -14,6 +14,8 @@ import {
   FileText,
   ImageIcon,
   Check,
+  Loader2,
+  Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -467,70 +469,273 @@ function FileUploadQuestion({
   onChange: (val: string) => void;
 }) {
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadedInfo, setUploadedInfo] = useState<{ filename: string; size: string } | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const handleDragOver = (e: React.DragEvent) => {
+  // Parse stored value to recover upload info
+  const parseStoredValue = useCallback((storedValue: string) => {
+    try {
+      const parsed = JSON.parse(storedValue);
+      if (parsed && typeof parsed === 'object' && parsed.url && parsed.filename) {
+        setUploadedInfo({ filename: parsed.filename, size: parsed.size || '' });
+        return true;
+      }
+    } catch {
+      // Legacy value was just a filename
+    }
+    return false;
+  }, []);
+
+  // Sync uploadedInfo from stored value on mount
+  useEffect(() => {
+    if (value && !uploadedInfo) {
+      parseStoredValue(value);
+    }
+  }, [value, uploadedInfo, parseStoredValue]);
+
+  const uploadFile = useCallback(async (file: File) => {
+    setIsUploading(true);
+    setUploadError(null);
+    setUploadProgress(0);
+
+    // Simulate progress animation
+    const progressInterval = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 85) return prev;
+        return prev + Math.random() * 15;
+      });
+    }, 200);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setUploadError(data.error || 'خطا در آپلود فایل');
+        setIsUploading(false);
+        return;
+      }
+
+      // Store JSON with url, filename, and size
+      const storedValue = JSON.stringify({
+        url: data.url,
+        filename: data.filename,
+        size: data.size,
+      });
+      onChange(storedValue);
+      setUploadedInfo({ filename: data.filename, size: data.size });
+    } catch {
+      clearInterval(progressInterval);
+      setUploadError('خطا در آپلود فایل. لطفاً اتصال اینترنت خود را بررسی کنید.');
+    } finally {
+      setIsUploading(false);
+      setTimeout(() => setUploadProgress(0), 500);
+    }
+  }, [onChange]);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(true);
-  };
+  }, []);
 
-  const handleDragLeave = () => {
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
     const files = e.dataTransfer.files;
     if (files.length > 0) {
-      onChange(files[0].name);
+      uploadFile(files[0]);
     }
-  };
+  }, [uploadFile]);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      onChange(files[0].name);
+      uploadFile(files[0]);
     }
-  };
+    // Reset input so same file can be re-selected
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  }, [uploadFile]);
+
+  const handleRemove = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange('');
+    setUploadedInfo(null);
+    setUploadError(null);
+  }, [onChange]);
+
+  const hasFile = value && uploadedInfo;
 
   return (
     <div>
       <motion.div
-        whileHover={{ scale: 1.01 }}
+        whileHover={!hasFile && !isUploading ? { scale: 1.01 } : undefined}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 transition-all duration-200 cursor-pointer ${
+        className={`relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 transition-all duration-200 ${
           isDragOver
             ? 'border-violet-400 bg-violet-50 dark:bg-violet-950/30'
-            : value
+            : hasFile
             ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 dark:border-emerald-700'
+            : uploadError
+            ? 'border-red-300 bg-red-50 dark:bg-red-950/30 dark:border-red-700'
             : 'border-gray-300 dark:border-zinc-600 bg-gray-50 dark:bg-zinc-900 hover:border-violet-300 dark:hover:border-violet-700 hover:bg-violet-50/50 dark:hover:bg-violet-950/20'
-        }`}
-        onClick={() => document.getElementById(`file-${question.id}`)?.click()}
+        } ${!isUploading && !hasFile ? 'cursor-pointer' : ''}`}
+        onClick={() => {
+          if (!isUploading && !hasFile) {
+            inputRef.current?.click();
+          }
+        }}
       >
         <input
+          ref={inputRef}
           id={`file-${question.id}`}
           type="file"
           className="hidden"
           onChange={handleFileSelect}
+          accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip"
         />
-        <Upload
-          className={`size-10 mb-3 ${
-            value ? 'text-emerald-500' : isDragOver ? 'text-violet-500' : 'text-gray-400 dark:text-zinc-500'
-          }`}
-        />
-        {value ? (
-          <div className="text-center">
-            <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">{value}</p>
-            <p className="text-xs text-emerald-500 mt-1">فایل انتخاب شد</p>
-          </div>
-        ) : (
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-600 dark:text-zinc-400">
-              فایل خود را اینجا بکشید و رها کنید
-            </p>
-            <p className="text-xs text-gray-400 dark:text-zinc-500 mt-1">یا کلیک کنید تا فایل انتخاب شود</p>
+
+        {/* Uploading State */}
+        {isUploading && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center gap-3"
+          >
+            <div className="relative">
+              <Loader2 className="size-10 text-violet-500 animate-spin" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-violet-700 dark:text-violet-300">
+                در حال آپلود فایل...
+              </p>
+              <p className="text-xs text-violet-500 dark:text-violet-400 mt-1">
+                لطفاً صبر کنید
+              </p>
+            </div>
+            {/* Progress bar */}
+            <div className="w-full max-w-[200px] h-1.5 bg-violet-100 dark:bg-violet-900/50 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-l from-violet-500 to-purple-500 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${uploadProgress}%` }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Success State */}
+        {!isUploading && hasFile && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center gap-3 w-full"
+          >
+            <div className="flex size-12 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/40">
+              <CheckCircle2 className="size-6 text-emerald-500" />
+            </div>
+            <div className="text-center flex-1 min-w-0">
+              <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400 truncate max-w-full px-4">
+                {uploadedInfo!.filename}
+              </p>
+              {uploadedInfo!.size && (
+                <p className="text-xs text-emerald-500 dark:text-emerald-400/70 mt-1">
+                  {uploadedInfo!.size}
+                </p>
+              )}
+            </div>
+            {/* Remove button */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleRemove}
+              type="button"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-950/60 transition-colors"
+            >
+              <Trash2 className="size-3.5" />
+              حذف فایل
+            </motion.button>
+          </motion.div>
+        )}
+
+        {/* Error State */}
+        {!isUploading && uploadError && !hasFile && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center gap-3"
+          >
+            <div className="flex size-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40">
+              <AlertCircle className="size-5 text-red-500" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-red-700 dark:text-red-400">
+                آپلود ناموفق
+              </p>
+              <p className="text-xs text-red-500 dark:text-red-400/70 mt-1 max-w-[250px]">
+                {uploadError}
+              </p>
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setUploadError(null);
+                inputRef.current?.click();
+              }}
+              type="button"
+              className="rounded-lg px-4 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 transition-colors"
+            >
+              تلاش مجدد
+            </motion.button>
+          </motion.div>
+        )}
+
+        {/* Empty State */}
+        {!isUploading && !hasFile && !uploadError && (
+          <div className="flex flex-col items-center">
+            <Upload
+              className={`size-10 mb-3 transition-colors ${
+                isDragOver ? 'text-violet-500' : 'text-gray-400 dark:text-zinc-500'
+              }`}
+            />
+            <div className="text-center">
+              <p className="text-sm font-medium text-gray-600 dark:text-zinc-400">
+                فایل خود را اینجا بکشید و رها کنید
+              </p>
+              <p className="text-xs text-gray-400 dark:text-zinc-500 mt-1">
+                یا کلیک کنید تا فایل انتخاب شود
+              </p>
+              <p className="text-xs text-gray-400 dark:text-zinc-500 mt-2">
+                حداکثر ۱۰ مگابایت - فرمت‌های مجاز: JPG, PNG, GIF, PDF, DOC, XLS, TXT, ZIP
+              </p>
+            </div>
           </div>
         )}
       </motion.div>
@@ -777,6 +982,22 @@ function QuestionRenderer({
       return <MatrixQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
     case 'statement':
       return <StatementQuestion question={question} />;
+    case 'section_divider':
+      return (
+        <div className="py-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div
+              className="h-8 w-1 rounded-full"
+              style={{ backgroundColor: themeColor }}
+            />
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{question.title}</h3>
+          </div>
+          {question.config.description && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 pr-4">{question.config.description}</p>
+          )}
+          <div className="mt-4 h-px bg-gradient-to-l from-transparent via-muted-foreground/20 to-transparent" />
+        </div>
+      );
     default:
       return (
         <div className="text-sm text-gray-400 dark:text-zinc-500">نوع سؤال پشتیبانی نمی‌شود</div>

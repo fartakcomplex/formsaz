@@ -18,6 +18,8 @@ import {
   FileText,
   ImageIcon,
   LayoutGrid,
+  Minus as SectionMinus,
+  Heading,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -53,6 +55,7 @@ const questionTypes: QuestionTypeItem[] = [
   { type: 'yes_no', label: 'بله/خیر', icon: <ToggleLeft className="h-4 w-4" />, category: 'ارزیابی' },
   { type: 'file_upload', label: 'آپلود فایل', icon: <Upload className="h-4 w-4" />, category: 'متفرقه' },
   { type: 'statement', label: 'عبارت توضیحی', icon: <FileText className="h-4 w-4" />, category: 'متفرقه' },
+  { type: 'section_divider', label: 'جداکننده بخش', icon: <Heading className="h-4 w-4" />, category: 'متفرقه' },
 ];
 
 function getDefaultConfig(type: string): FormQuestion['config'] {
@@ -118,6 +121,8 @@ function getDefaultConfig(type: string): FormQuestion['config'] {
       };
     case 'statement':
       return {};
+    case 'section_divider':
+      return { description: '' };
     default:
       return {};
   }
@@ -139,6 +144,7 @@ function getDefaultTitle(type: string): string {
     yes_no: 'سؤال بله/خیر',
     file_upload: 'آپلود فایل',
     statement: 'عنوان بخش',
+    section_divider: 'بخش جدید',
     image_choice: 'سؤال انتخاب تصویری',
     matrix: 'سؤال ماتریسی',
   };

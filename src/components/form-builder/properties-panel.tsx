@@ -710,6 +710,24 @@ function TypeConfigSection({ question }: { question: FormQuestion }) {
           تنظیمات خاصی برای این نوع سؤال وجود ندارد.
         </div>
       );
+    case 'section_divider':
+      return (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">توضیحات بخش</Label>
+            <Textarea
+              value={question.config.description || ''}
+              onChange={(e) => handleConfigUpdate({ description: e.target.value })}
+              placeholder="توضیحات اختیاری برای این بخش..."
+              className="text-sm min-h-[80px] resize-none"
+              dir="rtl"
+            />
+            <p className="text-xs text-muted-foreground">
+              این توضیحات در زیر عنوان بخش نمایش داده می‌شود.
+            </p>
+          </div>
+        </div>
+      );
     default:
       return null;
   }
@@ -959,6 +977,7 @@ function QuestionTypeSelector({ question }: { question: FormQuestion }) {
     yes_no: 'بله/خیر',
     file_upload: 'آپلود فایل',
     statement: 'عبارت توضیحی',
+    section_divider: 'جداکننده بخش',
     image_choice: 'انتخاب تصویری',
     matrix: 'ماتریس',
   };

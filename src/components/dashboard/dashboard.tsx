@@ -37,6 +37,7 @@ import {
   CheckSquare,
   Square,
   X,
+  Download,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -161,8 +162,11 @@ function ShareFormDialog({
   onPublish: (form: Form) => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const [qrLoaded, setQrLoaded] = useState(false);
+  const [qrError, setQrError] = useState(false);
 
   const formLink = form ? `formsaz.ir/f/${form.id}` : '';
+  const qrKey = form?.id || 'none';
   const isPublished = form?.status === 'published';
   const isDraft = form?.status === 'draft';
   const isClosed = form?.status === 'closed';
@@ -336,7 +340,7 @@ function ShareFormDialog({
             </div>
           </div>
 
-          {/* QR Code Placeholder */}
+          {/* QR Code */}
           {(isPublished || isClosed) && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -347,43 +351,45 @@ function ShareFormDialog({
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 کد QR
               </label>
-              <div className="flex items-center justify-center rounded-xl border border-dashed border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 p-6">
-                <div className="flex flex-col items-center gap-3">
-                  {/* QR Placeholder Grid */}
-                  <div className="size-32 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center overflow-hidden p-2">
-                    <div className="grid grid-cols-7 gap-[2px]">
-                      {Array.from({ length: 49 }).map((_, i) => {
-                        const row = Math.floor(i / 7);
-                        const col = i % 7;
-                        const isCorner =
-                          (row < 2 && col < 2) ||
-                          (row < 2 && col > 4) ||
-                          (row > 4 && col < 2);
-                        const isFilled =
-                          isCorner ||
-                          (i % 3 === 0 && !isCorner) ||
-                          (row === 3 && col > 1 && col < 5);
-                        return (
-                          <motion.div
-                            key={i}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: i * 0.01 }}
-                            className={`size-3.5 rounded-[2px] ${
-                              isFilled
-                                ? 'bg-gray-800 dark:bg-gray-200'
-                                : 'bg-white dark:bg-gray-700'
-                            }`}
-                          />
-                        );
-                      })}
+              <div className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5">
+                <div className="relative size-44 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center">
+                  {!qrError ? (
+                    <>
+                      {!qrLoaded && (
+                        <Skeleton className="absolute inset-0 size-full rounded-xl" />
+                      )}
+                      <img
+                        key={qrKey}
+                        src={`/api/qr?data=${encodeURIComponent(formLink)}`}
+                        alt="کد QR فرم"
+                        className={`size-full object-contain p-2 transition-opacity duration-300 ${qrLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        onLoad={() => setQrLoaded(true)}
+                        onError={() => setQrError(true)}
+                      />
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 text-gray-400 dark:text-gray-500">
+                      <QrCode className="size-10" />
+                      <span className="text-xs">خطا در بارگذاری</span>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
-                    <QrCode className="size-3.5" />
-                    <span>کد QR فرم</span>
-                  </div>
+                  )}
                 </div>
+                <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+                  <QrCode className="size-3.5" />
+                  <span>کد QR فرم</span>
+                </div>
+                {qrLoaded && !qrError && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(`/api/qr?data=${encodeURIComponent(formLink)}`, '_blank')}
+                    className="rounded-lg text-xs gap-1.5 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <Download className="size-3.5" />
+                    دانلود QR
+                  </Button>
+                )}
               </div>
             </motion.div>
           )}

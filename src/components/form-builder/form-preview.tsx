@@ -76,6 +76,7 @@ function getQuestionTypeLabel(type: string): string {
     statement: 'عبارت توضیحی',
     image_choice: 'انتخاب تصویری',
     matrix: 'ماتریس',
+    section_divider: 'جداکننده بخش',
   };
   return labels[type] || type;
 }
@@ -272,6 +273,15 @@ function QuestionAnswerPreview({ question }: { question: FormQuestion }) {
     }
     case 'statement':
       return null;
+    case 'section_divider':
+      return (
+        <div className="mt-3">
+          <div className="h-px bg-gradient-to-l from-transparent via-muted-foreground/30 to-transparent" />
+          {config.description && (
+            <p className="text-xs text-muted-foreground/60 mt-2 italic">{config.description}</p>
+          )}
+        </div>
+      );
     default:
       return null;
   }
@@ -394,6 +404,7 @@ function SortableQuestionCard({
   primaryColor: string;
 }) {
   const isStatement = question.type === 'statement';
+  const isSectionDivider = question.type === 'section_divider';
 
   const {
     attributes,
@@ -410,6 +421,38 @@ function SortableQuestionCard({
     zIndex: isDragging ? 50 : undefined,
     opacity: isDragging ? 0.85 : 1,
   };
+
+  if (isSectionDivider) {
+    return (
+      <div ref={setNodeRef} style={style} className="group/card relative">
+        <div className={cn('flex items-center gap-2 transition-opacity cursor-grab active:cursor-grabbing', isDragging ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100 px-2')} {...attributes} {...listeners}>
+          <div className={cn('rounded-md p-1 transition-colors', isDragging ? 'bg-primary/10 text-primary' : 'hover:bg-muted text-muted-foreground/50 hover:text-muted-foreground')}>
+            <GripVertical className="h-4 w-4" />
+          </div>
+        </div>
+        <div onClick={onSelect} className={cn('relative cursor-pointer py-3 px-5 transition-all duration-200', isSelected ? 'shadow-sm ring-1' : 'hover:bg-muted/50')} style={isSelected ? { borderColor: primaryColor, backgroundColor: `${primaryColor}08` } : undefined}>
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${primaryColor}1a` }}>
+              <Minus className="h-4 w-4" style={{ color: primaryColor }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="text-base font-bold text-foreground break-words">{question.title}</h4>
+              {question.config.description && (
+                <p className="text-xs text-muted-foreground mt-0.5">{question.config.description}</p>
+              )}
+            </div>
+          </div>
+          <div className="mt-3 h-px bg-gradient-to-l from-transparent via-muted-foreground/25 to-transparent" />
+          <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/card:opacity-100 absolute top-3 left-2">
+            <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/50 dark:hover:text-red-400 transition-colors">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          {isSelected && <div className="absolute top-0 right-0 h-full w-1 rounded-l" style={{ backgroundColor: primaryColor }} />}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -589,7 +632,7 @@ function AddSeparator({ onClick, primaryColor }: { onClick: () => void; primaryC
       <button
         onClick={onClick}
         className="mx-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/20 text-muted-foreground/40 opacity-0 transition-all hover:text-foreground group-hover/sep:opacity-100"
-        style={{ hoverColor: primaryColor }}
+        style={{ ['--hover-color' as string]: primaryColor } as React.CSSProperties}
       >
         <Plus className="h-3.5 w-3.5" />
       </button>
