@@ -9,6 +9,16 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetClose,
+  SheetFooter,
+} from '@/components/ui/sheet';
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -45,6 +55,7 @@ import {
   CheckCircle2,
   CircleDot,
   Rocket,
+  Send,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -195,6 +206,15 @@ function Navbar() {
     { label: 'قیمت‌گذاری', href: '#pricing' },
   ];
 
+  const handleNavClick = (href?: string) => {
+    setMobileOpen(false);
+    if (!href) return;
+    const el = document.querySelector(href);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <motion.header
       initial={{ y: -80 }}
@@ -252,54 +272,84 @@ function Navbar() {
             </Button>
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          {/* Mobile menu button - hamburger */}
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden h-9 w-9"
+              asChild
+            >
+              <SheetTrigger asChild>
+                <button>
+                  <Menu className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                </button>
+              </SheetTrigger>
+            </Button>
+            <SheetContent side="right" className="w-[300px] sm:w-[350px] bg-white dark:bg-gray-900 border-l-gray-200 dark:border-l-gray-800 p-0">
+              <SheetHeader className="px-6 pt-8 pb-4">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600">
+                    <ClipboardList className="h-5 w-5 text-white" />
+                  </div>
+                  <SheetTitle className="text-lg font-bold bg-gradient-to-l from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                    فرم‌ساز
+                  </SheetTitle>
+                </div>
+                <SheetDescription className="text-xs text-gray-500 dark:text-gray-400">
+                  ساخت فرم آنلاین حرفه‌ای و هوشمند
+                </SheetDescription>
+              </SheetHeader>
+
+              <div className="flex-1 overflow-y-auto px-4">
+                <nav className="space-y-1 mt-2">
+                  {navLinks.map((link, idx) => (
+                    <motion.div
+                      key={link.href}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 * idx }}
+                    >
+                      <a
+                        href={link.href}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleNavClick(link.href);
+                        }}
+                        className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
+                      >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+                          {idx === 0 && <FileQuestion className="h-4 w-4" />}
+                          {idx === 1 && <BarChart3 className="h-4 w-4" />}
+                          {idx === 2 && <Sparkles className="h-4 w-4" />}
+                        </div>
+                        {link.label}
+                      </a>
+                    </motion.div>
+                  ))}
+                </nav>
+              </div>
+
+              <SheetFooter className="border-t border-gray-100 dark:border-gray-800 px-4 pb-6 pt-4 gap-3">
+                <Button
+                  variant="outline"
+                  className="w-full justify-center"
+                  onClick={() => { setMobileOpen(false); setCurrentView('dashboard'); }}
+                >
+                  ورود
+                </Button>
+                <Button
+                  className="w-full justify-center bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25"
+                  onClick={() => { setMobileOpen(false); setCurrentView('dashboard'); }}
+                >
+                  شروع رایگان
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-100 dark:border-gray-800"
-        >
-          <div className="px-4 py-4 space-y-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="block px-4 py-3 text-sm font-medium text-gray-600 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
-            <Separator className="my-3" />
-            <div className="flex flex-col gap-2 px-4">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => setCurrentView('dashboard')}
-              >
-                ورود
-              </Button>
-              <Button
-                className="w-full bg-gradient-to-l from-indigo-600 to-violet-600 text-white"
-                onClick={() => setCurrentView('dashboard')}
-              >
-                شروع رایگان
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-      )}
     </motion.header>
   );
 }
@@ -1524,8 +1574,56 @@ function CTASection() {
 /* ──────────────────────────── Footer ──────────────────────────── */
 
 function Footer() {
+  const socialLinks = [
+    {
+      name: 'تلگرام',
+      icon: (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+        </svg>
+      ),
+      href: '#',
+      hoverColor: 'hover:text-sky-400 hover:bg-sky-400/10',
+    },
+    {
+      name: 'اینستاگرام',
+      icon: (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+          <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+        </svg>
+      ),
+      href: '#',
+      hoverColor: 'hover:text-pink-400 hover:bg-pink-400/10',
+    },
+    {
+      name: 'توییتر',
+      icon: (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      ),
+      href: '#',
+      hoverColor: 'hover:text-gray-300 hover:bg-gray-300/10',
+    },
+    {
+      name: 'لینکدین',
+      icon: (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        </svg>
+      ),
+      href: '#',
+      hoverColor: 'hover:text-blue-400 hover:bg-blue-400/10',
+    },
+  ];
+
   return (
-    <footer className="bg-gray-900 text-gray-400">
+    <footer className="bg-gray-900 text-gray-400 mt-auto">
+      {/* Gradient top border */}
+      <div className="h-px bg-gradient-to-l from-indigo-500 via-violet-500 to-purple-500" />
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
@@ -1539,6 +1637,22 @@ function Footer() {
             <p className="text-sm leading-relaxed max-w-xs">
               ساخت فرم، پرسشنامه و نظرسنجی آنلاین به صورت رایگان و حرفه‌ای.
             </p>
+
+            {/* Social Media Icons */}
+            <div className="flex items-center gap-2 mt-5">
+              {socialLinks.map((social) => (
+                <motion.a
+                  key={social.name}
+                  href={social.href}
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-all duration-200 ${social.hoverColor}`}
+                  title={social.name}
+                >
+                  {social.icon}
+                </motion.a>
+              ))}
+            </div>
           </div>
 
           {/* Product */}

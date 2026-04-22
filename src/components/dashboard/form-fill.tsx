@@ -12,6 +12,8 @@ import {
   X,
   AlertCircle,
   FileText,
+  ImageIcon,
+  Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,14 +33,40 @@ import { useAppStore, type FormQuestion, type QuestionConfig } from '@/lib/store
 
 const QUESTIONS_PER_PAGE = 1;
 
-function QuestionTitle({ question, index }: { question: FormQuestion; index: number }) {
+/* ========== Theme Color Helper ========== */
+
+function useFormTheme(fillForm: ReturnType<typeof useAppStore>['fillForm']) {
+  return useMemo(() => {
+    if (!fillForm?.theme) return { primaryColor: '#7c3aed', welcomeMessage: '', submitButtonText: 'ارسال پاسخ', thankYouMessage: '', progressStyle: 'bar' as const };
+    try {
+      const parsed = JSON.parse(fillForm.theme);
+      return {
+        primaryColor: parsed.primaryColor || '#7c3aed',
+        welcomeMessage: parsed.welcomeMessage || '',
+        submitButtonText: parsed.submitButtonText || 'ارسال پاسخ',
+        thankYouMessage: parsed.thankYouMessage || '',
+        progressStyle: parsed.progressStyle || 'bar',
+      };
+    } catch {
+      return { primaryColor: '#7c3aed', welcomeMessage: '', submitButtonText: 'ارسال پاسخ', thankYouMessage: '', progressStyle: 'bar' as const };
+    }
+  }, [fillForm?.theme]);
+}
+
+function QuestionTitle({ question, index, themeColor }: { question: FormQuestion; index: number; themeColor: string }) {
   return (
     <div className="mb-4">
       <div className="flex items-start gap-2">
-        <span className="flex items-center justify-center size-7 rounded-full bg-indigo-100 text-indigo-600 text-sm font-bold shrink-0 mt-0.5">
+        <span
+          className="flex items-center justify-center size-7 rounded-full text-sm font-bold shrink-0 mt-0.5"
+          style={{
+            backgroundColor: `${themeColor}1a`,
+            color: themeColor,
+          }}
+        >
           {index + 1}
         </span>
-        <Label className="text-base font-semibold text-gray-900 leading-relaxed">
+        <Label className="text-base font-semibold text-gray-900 dark:text-white leading-relaxed">
           {question.title}
           {question.required && <span className="text-red-500 mr-1">*</span>}
         </Label>
@@ -63,7 +91,7 @@ function ShortTextQuestion({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         maxLength={question.config.maxLength}
-        className="h-12 rounded-xl border-gray-200 bg-white text-right text-base focus:border-indigo-400 focus:ring-indigo-100"
+        className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
         dir="rtl"
       />
     </div>
@@ -87,7 +115,7 @@ function LongTextQuestion({
         onChange={(e) => onChange(e.target.value)}
         maxLength={question.config.maxLength}
         rows={5}
-        className="rounded-xl border-gray-200 bg-white text-right text-base resize-none focus:border-indigo-400 focus:ring-indigo-100"
+        className="rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white resize-none focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
         dir="rtl"
       />
     </div>
@@ -98,10 +126,12 @@ function MultipleChoiceQuestion({
   question,
   value,
   onChange,
+  themeColor,
 }: {
   question: FormQuestion;
   value: string;
   onChange: (val: string) => void;
+  themeColor: string;
 }) {
   const options = question.config.options || [];
   return (
@@ -114,12 +144,13 @@ function MultipleChoiceQuestion({
           htmlFor={`radio-${option.id}`}
           className={`flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-all duration-200 ${
             value === option.id
-              ? 'border-indigo-300 bg-indigo-50 shadow-sm'
-              : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
+              ? 'border-violet-300 bg-violet-50 dark:bg-violet-950/40 dark:border-violet-700 shadow-sm'
+              : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800'
           }`}
+          style={value === option.id ? { borderColor: themeColor, backgroundColor: `${themeColor}0d` } : undefined}
         >
           <RadioGroupItem value={option.id} id={`radio-${option.id}`} />
-          <span className="text-sm font-medium text-gray-700">{option.text}</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">{option.text}</span>
         </motion.label>
       ))}
     </RadioGroup>
@@ -130,10 +161,12 @@ function MultipleSelectQuestion({
   question,
   value,
   onChange,
+  themeColor,
 }: {
   question: FormQuestion;
   value: string;
   onChange: (val: string) => void;
+  themeColor: string;
 }) {
   const options = question.config.options || [];
   const selected: string[] = value ? value.split(',').filter(Boolean) : [];
@@ -155,16 +188,17 @@ function MultipleSelectQuestion({
           htmlFor={`checkbox-${option.id}`}
           className={`flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-all duration-200 ${
             selected.includes(option.id)
-              ? 'border-indigo-300 bg-indigo-50 shadow-sm'
-              : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
+              ? 'border-violet-300 bg-violet-50 dark:bg-violet-950/40 dark:border-violet-700 shadow-sm'
+              : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800'
           }`}
+          style={selected.includes(option.id) ? { borderColor: themeColor, backgroundColor: `${themeColor}0d` } : undefined}
         >
           <Checkbox
             id={`checkbox-${option.id}`}
             checked={selected.includes(option.id)}
             onCheckedChange={() => toggleOption(option.id)}
           />
-          <span className="text-sm font-medium text-gray-700">{option.text}</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">{option.text}</span>
         </motion.label>
       ))}
     </div>
@@ -183,7 +217,7 @@ function DropdownQuestion({
   const options = question.config.options || [];
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-full h-12 rounded-xl border-gray-200 bg-white text-right">
+      <SelectTrigger className="w-full h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-gray-900 dark:text-white">
         <SelectValue placeholder={question.config.placeholder || 'یک گزینه انتخاب کنید...'} />
       </SelectTrigger>
       <SelectContent>
@@ -215,7 +249,7 @@ function NumberQuestion({
       min={question.config.min}
       max={question.config.max}
       step={question.config.step || 1}
-      className="h-12 rounded-xl border-gray-200 bg-white text-right text-lg focus:border-indigo-400 focus:ring-indigo-100"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-lg text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
       dir="ltr"
       style={{ textAlign: 'right' }}
     />
@@ -238,7 +272,7 @@ function EmailQuestion({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       dir="ltr"
-      className="h-12 rounded-xl border-gray-200 bg-white text-left text-base focus:border-indigo-400 focus:ring-indigo-100"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-left text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
     />
   );
 }
@@ -259,7 +293,7 @@ function PhoneQuestion({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       dir="ltr"
-      className="h-12 rounded-xl border-gray-200 bg-white text-left text-base focus:border-indigo-400 focus:ring-indigo-100"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-left text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
     />
   );
 }
@@ -278,7 +312,7 @@ function DateQuestion({
       type="date"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-12 rounded-xl border-gray-200 bg-white text-right text-base focus:border-indigo-400 focus:ring-indigo-100"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
       dir="ltr"
     />
   );
@@ -288,10 +322,12 @@ function ScaleQuestion({
   question,
   value,
   onChange,
+  themeColor,
 }: {
   question: FormQuestion;
   value: string;
   onChange: (val: string) => void;
+  themeColor: string;
 }) {
   const min = question.config.scaleMin ?? 1;
   const max = question.config.scaleMax ?? 10;
@@ -311,16 +347,17 @@ function ScaleQuestion({
             onClick={() => onChange(String(num))}
             className={`flex size-10 sm:size-12 items-center justify-center rounded-xl text-sm font-bold transition-all duration-200 ${
               selectedValue === num
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-200 scale-110'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'text-white shadow-lg scale-110'
+                : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700'
             }`}
+            style={selectedValue === num ? { backgroundColor: themeColor, boxShadow: `0 10px 15px -3px ${themeColor}33` } : undefined}
           >
             {num}
           </motion.button>
         ))}
       </div>
       {(minLabel || maxLabel) && (
-        <div className="flex justify-between text-xs text-gray-400 px-1">
+        <div className="flex justify-between text-xs text-gray-400 dark:text-zinc-500 px-1">
           <span>{maxLabel}</span>
           <span>{minLabel}</span>
         </div>
@@ -358,7 +395,7 @@ function RatingQuestion({
               className={`size-9 sm:size-10 transition-colors duration-200 ${
                 starNum <= ratingValue
                   ? 'text-amber-400 fill-amber-400'
-                  : 'text-gray-300'
+                  : 'text-gray-300 dark:text-zinc-600'
               }`}
             />
           </motion.button>
@@ -368,7 +405,7 @@ function RatingQuestion({
         <motion.span
           initial={{ opacity: 0, x: -5 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mr-3 text-sm font-medium text-gray-500"
+          className="mr-3 text-sm font-medium text-gray-500 dark:text-zinc-400"
         >
           {ratingValue} از {maxRating}
         </motion.span>
@@ -395,8 +432,8 @@ function YesNoQuestion({
         type="button"
         className={`flex items-center justify-center gap-2 rounded-2xl border-2 p-5 text-base font-bold transition-all duration-200 ${
           value === 'yes'
-            ? 'border-emerald-400 bg-emerald-50 text-emerald-700 shadow-md shadow-emerald-100'
-            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+            ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 shadow-md shadow-emerald-100 dark:shadow-emerald-900/30'
+            : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-600 dark:text-zinc-400 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800'
         }`}
       >
         <CheckCircle2 className="size-5" />
@@ -409,8 +446,8 @@ function YesNoQuestion({
         type="button"
         className={`flex items-center justify-center gap-2 rounded-2xl border-2 p-5 text-base font-bold transition-all duration-200 ${
           value === 'no'
-            ? 'border-red-400 bg-red-50 text-red-700 shadow-md shadow-red-100'
-            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+            ? 'border-red-400 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 shadow-md shadow-red-100 dark:shadow-red-900/30'
+            : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-600 dark:text-zinc-400 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800'
         }`}
       >
         <X className="size-5" />
@@ -465,10 +502,10 @@ function FileUploadQuestion({
         onDrop={handleDrop}
         className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 transition-all duration-200 cursor-pointer ${
           isDragOver
-            ? 'border-indigo-400 bg-indigo-50'
+            ? 'border-violet-400 bg-violet-50 dark:bg-violet-950/30'
             : value
-            ? 'border-emerald-300 bg-emerald-50'
-            : 'border-gray-300 bg-gray-50 hover:border-indigo-300 hover:bg-indigo-50/50'
+            ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 dark:border-emerald-700'
+            : 'border-gray-300 dark:border-zinc-600 bg-gray-50 dark:bg-zinc-900 hover:border-violet-300 dark:hover:border-violet-700 hover:bg-violet-50/50 dark:hover:bg-violet-950/20'
         }`}
         onClick={() => document.getElementById(`file-${question.id}`)?.click()}
       >
@@ -480,20 +517,20 @@ function FileUploadQuestion({
         />
         <Upload
           className={`size-10 mb-3 ${
-            value ? 'text-emerald-500' : isDragOver ? 'text-indigo-500' : 'text-gray-400'
+            value ? 'text-emerald-500' : isDragOver ? 'text-violet-500' : 'text-gray-400 dark:text-zinc-500'
           }`}
         />
         {value ? (
           <div className="text-center">
-            <p className="text-sm font-medium text-emerald-700">{value}</p>
+            <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">{value}</p>
             <p className="text-xs text-emerald-500 mt-1">فایل انتخاب شد</p>
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-sm font-medium text-gray-600">
+            <p className="text-sm font-medium text-gray-600 dark:text-zinc-400">
               فایل خود را اینجا بکشید و رها کنید
             </p>
-            <p className="text-xs text-gray-400 mt-1">یا کلیک کنید تا فایل انتخاب شود</p>
+            <p className="text-xs text-gray-400 dark:text-zinc-500 mt-1">یا کلیک کنید تا فایل انتخاب شود</p>
           </div>
         )}
       </motion.div>
@@ -501,10 +538,197 @@ function FileUploadQuestion({
   );
 }
 
+function ImageChoiceQuestion({
+  question,
+  value,
+  onChange,
+  themeColor,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+  themeColor: string;
+}) {
+  const imageOptions = question.config.imageOptions || [];
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {imageOptions.map((opt) => {
+        const isSelected = value === opt.id;
+        return (
+          <motion.button
+            key={opt.id}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => onChange(opt.id)}
+            type="button"
+            className={`relative flex flex-col items-center rounded-xl border-2 overflow-hidden transition-all duration-200 ${
+              isSelected
+                ? 'shadow-lg'
+                : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:border-gray-300 dark:hover:border-zinc-600'
+            }`}
+            style={isSelected ? { borderColor: themeColor, boxShadow: `0 10px 15px -3px ${themeColor}33` } : undefined}
+          >
+            {/* Image or placeholder */}
+            <div className="w-full aspect-square flex items-center justify-center overflow-hidden">
+              {opt.imageUrl ? (
+                <img
+                  src={opt.imageUrl}
+                  alt={opt.text}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+              ) : null}
+              <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/40 dark:to-purple-900/40 ${opt.imageUrl ? 'hidden' : ''}`}>
+                <ImageIcon className="size-10 text-violet-300 dark:text-violet-700" />
+              </div>
+            </div>
+            {/* Label */}
+            <div className="w-full py-2.5 px-3 bg-white dark:bg-zinc-900 border-t border-gray-100 dark:border-zinc-800">
+              <span className="text-sm font-medium text-gray-700 dark:text-zinc-300 text-center block truncate">
+                {opt.text}
+              </span>
+            </div>
+            {/* Selected overlay */}
+            {isSelected && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="absolute top-2 left-2 flex items-center justify-center size-7 rounded-full"
+                style={{ backgroundColor: themeColor }}
+              >
+                <Check className="size-4 text-white" />
+              </motion.div>
+            )}
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
 function StatementQuestion({ question }: { question: FormQuestion }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-gradient-to-l from-gray-50 to-white p-5">
-      <p className="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">{question.title}</p>
+    <div className="rounded-xl border border-gray-200 dark:border-zinc-700 bg-gradient-to-l from-gray-50 to-white dark:from-zinc-800 dark:to-zinc-900 p-5">
+      <p className="text-sm leading-relaxed text-gray-700 dark:text-zinc-300 whitespace-pre-wrap">{question.title}</p>
+    </div>
+  );
+}
+
+function MatrixQuestion({
+  question,
+  value,
+  onChange,
+  themeColor,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+  themeColor: string;
+}) {
+  const rows = question.config.matrixRows || [];
+  const cols = question.config.matrixCols || [];
+
+  // Parse value: "rowIndex-colIndex"
+  const selectedCell = useMemo(() => {
+    if (!value) return null;
+    const parts = value.split('-');
+    if (parts.length !== 2) return null;
+    return { row: parseInt(parts[0], 10), col: parseInt(parts[1], 10) };
+  }, [value]);
+
+  const handleSelect = (rowIdx: number, colIdx: number) => {
+    const cellKey = `${rowIdx}-${colIdx}`;
+    onChange(cellKey);
+  };
+
+  return (
+    <div className="overflow-x-auto -mx-2 px-2">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="min-w-[400px]"
+      >
+        <table className="w-full border-collapse rounded-xl overflow-hidden border border-gray-200 dark:border-zinc-700">
+          <thead>
+            <tr>
+              <th className="bg-gray-50 dark:bg-zinc-800 p-3 text-sm font-semibold text-gray-700 dark:text-zinc-300 text-right border-b border-gray-200 dark:border-zinc-700 min-w-[120px]">
+                {/* Row header placeholder */}
+              </th>
+              {cols.map((col, ci) => (
+                <th
+                  key={ci}
+                  className="bg-gray-50 dark:bg-zinc-800 p-3 text-xs font-semibold text-gray-600 dark:text-zinc-400 text-center border-b border-gray-200 dark:border-zinc-700 min-w-[80px]"
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, ri) => (
+              <tr key={ri}>
+                <td className="bg-gray-50/50 dark:bg-zinc-800/50 p-3 text-sm font-medium text-gray-700 dark:text-zinc-300 text-right border-b border-gray-100 dark:border-zinc-800 whitespace-nowrap">
+                  {row}
+                </td>
+                {cols.map((_, ci) => {
+                  const isSelected = selectedCell?.row === ri && selectedCell?.col === ci;
+                  return (
+                    <td
+                      key={ci}
+                      className="p-2 text-center border-b border-gray-100 dark:border-zinc-800"
+                    >
+                      <motion.button
+                        whileHover={{ scale: 1.15 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => handleSelect(ri, ci)}
+                        type="button"
+                        className="flex items-center justify-center mx-auto"
+                      >
+                        <motion.div
+                          animate={isSelected ? { scale: [1, 1.2, 1] } : {}}
+                          transition={{ duration: 0.3 }}
+                          className="relative"
+                        >
+                          <div
+                            className={`h-5 w-5 rounded-full border-2 transition-all duration-200 ${
+                              isSelected
+                                ? 'border-transparent'
+                                : 'border-gray-300 dark:border-zinc-600 hover:border-violet-400 dark:hover:border-violet-500'
+                            }`}
+                            style={
+                              isSelected
+                                ? {
+                                    backgroundColor: themeColor,
+                                    boxShadow: `0 2px 8px ${themeColor}40`,
+                                  }
+                                : undefined
+                            }
+                          >
+                            {isSelected && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                                className="absolute inset-0 flex items-center justify-center"
+                              >
+                                <div className="h-2 w-2 rounded-full bg-white" />
+                              </motion.div>
+                            )}
+                          </div>
+                        </motion.div>
+                      </motion.button>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </motion.div>
     </div>
   );
 }
@@ -513,10 +737,12 @@ function QuestionRenderer({
   question,
   value,
   onChange,
+  themeColor,
 }: {
   question: FormQuestion;
   value: string;
   onChange: (val: string) => void;
+  themeColor: string;
 }) {
   switch (question.type) {
     case 'short_text':
@@ -524,9 +750,9 @@ function QuestionRenderer({
     case 'long_text':
       return <LongTextQuestion question={question} value={value} onChange={onChange} />;
     case 'multiple_choice':
-      return <MultipleChoiceQuestion question={question} value={value} onChange={onChange} />;
+      return <MultipleChoiceQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
     case 'multiple_select':
-      return <MultipleSelectQuestion question={question} value={value} onChange={onChange} />;
+      return <MultipleSelectQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
     case 'dropdown':
       return <DropdownQuestion question={question} value={value} onChange={onChange} />;
     case 'number':
@@ -538,18 +764,22 @@ function QuestionRenderer({
     case 'date':
       return <DateQuestion question={question} value={value} onChange={onChange} />;
     case 'scale':
-      return <ScaleQuestion question={question} value={value} onChange={onChange} />;
+      return <ScaleQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
     case 'rating':
       return <RatingQuestion question={question} value={value} onChange={onChange} />;
     case 'yes_no':
       return <YesNoQuestion question={question} value={value} onChange={onChange} />;
     case 'file_upload':
       return <FileUploadQuestion question={question} value={value} onChange={onChange} />;
+    case 'image_choice':
+      return <ImageChoiceQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
+    case 'matrix':
+      return <MatrixQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
     case 'statement':
       return <StatementQuestion question={question} />;
     default:
       return (
-        <div className="text-sm text-gray-400">نوع سؤال پشتیبانی نمی‌شود</div>
+        <div className="text-sm text-gray-400 dark:text-zinc-500">نوع سؤال پشتیبانی نمی‌شود</div>
       );
   }
 }
@@ -597,7 +827,7 @@ function isQuestionVisible(
   }
 }
 
-function SuccessScreen() {
+function SuccessScreen({ customMessage }: { customMessage?: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -609,7 +839,7 @@ function SuccessScreen() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-        className="flex size-24 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-200 mb-8"
+        className="flex size-24 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-200 dark:shadow-emerald-900/40 mb-8"
       >
         <motion.div
           initial={{ scale: 0 }}
@@ -630,7 +860,7 @@ function SuccessScreen() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-2xl font-bold text-gray-900 mb-3"
+        className="text-2xl font-bold text-gray-900 dark:text-white mb-3"
       >
         پاسخ شما با موفقیت ثبت شد!
       </motion.h2>
@@ -638,9 +868,9 @@ function SuccessScreen() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="text-gray-500 max-w-md"
+        className="text-gray-500 dark:text-zinc-400 max-w-md"
       >
-        از وقتی که برای پاسخگویی گذاشتید، سپاسگزاریم. پاسخ شما ثبت و ذخیره شد.
+        {customMessage || 'از وقتی که برای پاسخگویی گذاشتید، سپاسگزاریم. پاسخ شما ثبت و ذخیره شد.'}
       </motion.p>
       <motion.div
         initial={{ opacity: 0 }}
@@ -648,7 +878,7 @@ function SuccessScreen() {
         transition={{ delay: 1 }}
         className="mt-8"
       >
-        <div className="flex items-center gap-2 text-xs text-gray-400">
+        <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-zinc-500">
           <FileText className="size-4" />
           <span>فرم‌ساز</span>
         </div>
@@ -664,6 +894,13 @@ export default function FormFill() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const formThemeData = useFormTheme(fillForm);
+  const themeColor = formThemeData.primaryColor;
+  const customWelcomeMessage = formThemeData.welcomeMessage;
+  const customSubmitText = formThemeData.submitButtonText;
+  const customThankYouMessage = formThemeData.thankYouMessage;
+  const progressStyle = formThemeData.progressStyle;
 
   const questions = useMemo(() => {
     if (!fillForm?.questions) return [];
@@ -797,8 +1034,8 @@ export default function FormFill() {
 
   if (!fillForm) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50/50 flex items-center justify-center">
-        <p className="text-gray-400">فرمی برای نمایش وجود ندارد</p>
+      <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center">
+        <p className="text-gray-400 dark:text-zinc-500">فرمی برای نمایش وجود ندارد</p>
       </div>
     );
   }
@@ -808,7 +1045,7 @@ export default function FormFill() {
 
   if (isExpired) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50/50 flex items-center justify-center px-4">
+      <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -818,7 +1055,7 @@ export default function FormFill() {
             <AlertCircle className="size-10 text-red-500" />
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">این فرم منقضی شده است</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <p className="text-sm text-gray-500 dark:text-zinc-400 mb-6">
             مهلت پاسخگویی به این فرم به پایان رسیده است و دیگر قابل پر کردن نیست.
           </p>
           <Button
@@ -835,16 +1072,16 @@ export default function FormFill() {
 
   if (isSubmitted) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50/50">
+      <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950">
         <div className="mx-auto max-w-xl px-4">
-          <SuccessScreen />
+          <SuccessScreen customMessage={customThankYouMessage} />
         </div>
       </div>
     );
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50/50">
+    <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950">
       <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
         {/* Back button */}
         <motion.div
@@ -856,7 +1093,7 @@ export default function FormFill() {
             variant="ghost"
             size="sm"
             onClick={() => { setFillForm(null); setCurrentView(previousView || 'dashboard'); }}
-            className="text-gray-500 hover:text-gray-900 gap-1.5 rounded-lg"
+            className="text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white gap-1.5 rounded-lg"
           >
             <ArrowRight className="size-4" />
             بازگشت
@@ -869,16 +1106,26 @@ export default function FormFill() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="rounded-2xl border bg-white p-6 sm:p-8 shadow-sm">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{fillForm.title}</h1>
+          {/* Custom Welcome Message */}
+          {customWelcomeMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 rounded-xl border border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-950/30 p-4"
+            >
+              <p className="text-sm leading-relaxed text-violet-700 dark:text-violet-300 whitespace-pre-wrap">{customWelcomeMessage}</p>
+            </motion.div>
+          )}
+          <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{fillForm.title}</h1>
             {fillForm.description && (
-              <p className="text-gray-500 text-sm leading-relaxed">{fillForm.description}</p>
+              <p className="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed">{fillForm.description}</p>
             )}
           </div>
         </motion.div>
 
         {/* Progress Bar */}
-        {totalPages > 0 && (
+        {totalPages > 0 && progressStyle !== 'hidden' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -886,12 +1133,26 @@ export default function FormFill() {
             className="mb-6"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-gray-500">
+              <span className="text-xs font-medium text-gray-500 dark:text-zinc-400">
                 سؤال {currentPage + 1} از {totalPages}
               </span>
-              <span className="text-xs font-bold text-indigo-600">{progressPercent}%</span>
+              {progressStyle === 'bar' && (
+                <span className="text-xs font-bold" style={{ color: themeColor }}>{progressPercent}%</span>
+              )}
             </div>
-            <Progress value={progressPercent} className="h-2 [&>div]:bg-gradient-to-l [&>div]:from-indigo-500 [&>div]:to-purple-500" />
+            {progressStyle === 'bar' ? (
+              <Progress
+                value={progressPercent}
+                className="h-2 [&>div]:bg-gradient-to-l [&>div]:to-purple-500"
+                style={
+                  { '--progress-color': themeColor } as React.CSSProperties
+                }
+              />
+            ) : null}
+            <style>{progressStyle === 'bar' ? `
+              .progress-bar-fill { background: linear-gradient(to left, ${themeColor}, ${themeColor}bb) !important; }
+              [role="progressbar"] > div { background: linear-gradient(to left, ${themeColor}, ${themeColor}bb) !important; }
+            ` : ''}</style>
           </motion.div>
         )}
 
@@ -905,13 +1166,14 @@ export default function FormFill() {
               exit={{ opacity: 0, x: 20 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
-              <div className="rounded-2xl border bg-white p-6 sm:p-8 shadow-sm">
-                <QuestionTitle question={currentQuestion} index={currentPage} />
+              <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm">
+                <QuestionTitle question={currentQuestion} index={currentPage} themeColor={themeColor} />
 
                 <QuestionRenderer
                   question={currentQuestion}
                   value={answers[currentQuestion.id] || ''}
                   onChange={(val) => handleAnswerChange(currentQuestion.id, val)}
+                  themeColor={themeColor}
                 />
 
                 {errors[currentQuestion.id] && (
@@ -935,7 +1197,7 @@ export default function FormFill() {
             variant="outline"
             onClick={handlePrev}
             disabled={currentPage === 0}
-            className="rounded-xl px-6 disabled:opacity-40"
+            className="rounded-xl px-6 disabled:opacity-40 border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
           >
             <ArrowRight className="size-4 ml-2" />
             قبلی
@@ -944,7 +1206,11 @@ export default function FormFill() {
           {currentPage < totalPages - 1 ? (
             <Button
               onClick={handleNext}
-              className="bg-gradient-to-l from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md shadow-indigo-200 rounded-xl px-6"
+              className="text-white shadow-md rounded-xl px-6 hover:opacity-90 transition-opacity"
+              style={{
+                background: `linear-gradient(to left, ${themeColor}, ${themeColor}dd)`,
+                boxShadow: `0 4px 6px -1px ${themeColor}33`,
+              }}
             >
               بعدی
               <ArrowLeft className="size-4 mr-2" />
@@ -953,7 +1219,7 @@ export default function FormFill() {
             <Button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="bg-gradient-to-l from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-md shadow-emerald-200 rounded-xl px-8 font-medium"
+              className="bg-gradient-to-l from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-md shadow-emerald-200 dark:shadow-emerald-900/40 rounded-xl px-8 font-medium"
             >
               {isSubmitting ? (
                 <motion.div
@@ -964,7 +1230,7 @@ export default function FormFill() {
               ) : (
                 <>
                   <Send className="size-4 ml-2" />
-                  ارسال پاسخ
+                  {customSubmitText}
                 </>
               )}
             </Button>
@@ -980,11 +1246,18 @@ export default function FormFill() {
                 onClick={() => setCurrentPage(idx)}
                 className={`rounded-full transition-all duration-200 ${
                   idx === currentPage
-                    ? 'size-3 bg-indigo-500'
+                    ? 'size-3'
                     : answers[q.id]
-                    ? 'size-2.5 bg-indigo-300'
-                    : 'size-2.5 bg-gray-300'
+                    ? 'size-2.5'
+                    : 'size-2.5 bg-gray-300 dark:bg-zinc-600'
                 }`}
+                style={
+                  idx === currentPage
+                    ? { backgroundColor: themeColor }
+                    : answers[q.id]
+                    ? { backgroundColor: `${themeColor}66` }
+                    : undefined
+                }
               />
             ))}
           </div>

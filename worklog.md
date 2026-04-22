@@ -569,3 +569,138 @@ Unresolved Issues / Recommendations for Next Phase:
 10. Real-time collaborative form editing (websocket)
 11. Form analytics export to PDF
 12. Multi-language support (currently Persian only)
+
+---
+Task ID: 7
+Agent: main
+Task: New question types, analytics dashboard, form customization, landing polish, styling
+
+Work Log:
+- QA: ESLint passes cleanly (0 errors, 0 warnings), dev server compiles successfully (GET / 200)
+- Dev log verified: No compilation errors, no runtime errors
+
+Feature 1: Image Choice Question Type:
+  - Added ImageOption interface to store.ts ({id, text, imageUrl})
+  - Added imageOptions field to QuestionConfig
+  - Added 'image_choice' to question types sidebar (category: انتخاب) with ImageIcon
+  - Added default config with 2 image options (gradient placeholders)
+  - Added QuestionAnswerPreview in form-preview showing 2-column image grid
+  - Added ImageOptionsEditor in properties-panel (text + URL inputs per option, add/remove)
+  - Added ImageChoiceQuestion renderer in form-fill.tsx:
+    - 2-column grid of clickable image cards
+    - Violet border + checkmark overlay on selection
+    - Gradient placeholder when no image URL provided
+    - Framer-motion hover/tap animations
+
+Feature 2: Question Duplicate in Builder:
+  - Added duplicateQuestion(id) to Zustand store
+  - Creates deep clone with new ID, appends "(کپی)" to title
+  - Generates new IDs for nested options/imageOptions
+  - Inserts after the original question
+  - pushHistory() called before mutation
+  - Added Copy button to question card actions in form-preview.tsx
+  - Violet hover color on the copy button
+
+Feature 3: Form Fill Dark Mode + Theme Color:
+  - Added useThemeColor hook that parses fillForm.theme JSON for primaryColor
+  - Applied theme color to: progress bar, question badges, selected options, scale buttons, nav buttons, page dots
+  - Kept amber for rating stars, emerald/red for yes/no, emerald for submit button
+  - Full dark mode classes throughout:
+    - bg-zinc-900 for cards, bg-zinc-950 for page background
+    - dark:border-zinc-700, dark:border-zinc-800 for borders
+    - dark:text-white, dark:text-zinc-300, dark:text-zinc-400 for text
+    - dark:bg-zinc-800 for inputs and hover states
+
+Feature 4: Matrix/Grid Question Type:
+  - Added 'matrix' to question types sidebar (category: ارزیابی) with LayoutGrid icon
+  - Default config: 3 rows (آیتم ۱-۳) × 4 columns (ضعیف, متوسط, خوب, عالی)
+  - QuestionAnswerPreview in form-preview: bordered table with row/col headers and radio placeholders
+  - MatrixConfigSection in properties-panel: editable row/col text inputs with add/remove buttons
+  - MatrixQuestion renderer in form-fill.tsx:
+    - Clean bordered table with RTL layout
+    - Radio buttons in each cell with animated selection
+    - Selected cell highlighted with theme color + white dot indicator
+    - Value format: "rowIndex-colIndex"
+    - Mobile responsive with horizontal scroll
+
+Feature 5: Landing Page Mobile Menu + Footer Polish:
+  - Mobile hamburger menu using shadcn Sheet (slides from right)
+    - Branded header with gradient logo + description
+    - Animated nav links with icons + smooth scroll-to-section
+    - "ورود" and "شروع رایگان" CTA buttons
+    - Full dark mode support
+  - Footer improvements:
+    - Gradient top border (indigo→violet→purple)
+    - Social media icons row: Telegram, Instagram, Twitter/X, LinkedIn
+    - Each icon with SVG, hover scale+lift animation, colored hover state
+    - mt-auto for sticky footer behavior
+    - Copyright text already present
+
+Feature 6: Submission Analytics Timeline:
+  - Analytics API route already existed at /api/forms/[id]/analytics/route.ts
+  - Enhanced results-view.tsx with:
+    - 4 analytics overview cards: کل پاسخ‌ها, کل بازدیدها, نرخ تکمیل, میانگین روزانه
+    - Violet gradient icon backgrounds on cards
+    - Recharts AreaChart for daily submissions (last 30 days)
+    - Purple gradient fill, responsive container (height: 250px)
+    - Persian date labels on X axis
+    - Custom Persian tooltip (date + count)
+    - "آمار پاسخ‌ها" section title with "۳۰ روز گذشته" badge
+    - Loading skeleton matching new layout (4 cards + chart)
+
+Feature 7: Form Welcome/Thank You Customization:
+  - Added to FormTheme: welcomeMessage, submitButtonText, thankYouMessage, progressStyle
+  - New "صفحه فرم" tab in form-settings-dialog.tsx (3-column tab layout)
+  - Settings: welcome message textarea, submit button text input, thank-you message textarea, progress style select (bar/dots/hidden)
+  - Form fill updates:
+    - useFormTheme() helper to parse theme JSON
+    - Custom welcome message shown above form header when provided (violet-themed card)
+    - Custom submit button text (defaults to "ارسال پاسخ")
+    - Custom thank-you message in SuccessScreen
+    - 3 progress styles supported: bar (current), dots (just dots, no bar), hidden
+
+Stage Summary:
+- Files modified: store.ts, question-types.tsx, form-preview.tsx, properties-panel.tsx, form-fill.tsx, results-view.tsx, form-settings-dialog.tsx, landing-page.tsx
+- 7 major features implemented: Image Choice, Duplicate Question, Form Fill Dark Mode/Theme, Matrix, Mobile Menu/Footer, Analytics Timeline, Welcome Customization
+- 16 total question types now available (was 14)
+- Clean ESLint: 0 warnings, 0 errors
+- Dev server compiles successfully
+
+---
+Current Project Status Assessment:
+- Application is fully functional with no JS errors across all views
+- 6 views: Landing (mobile menu, social footer), Dashboard (batch, undo delete, expiration), Builder (16 question types, undo/redo, shortcuts, duplicate, matrix, image choice), Form Fill (dark mode, theme colors, matrix, image choice, progress styles, welcome/thank-you), Results (analytics timeline, pie charts), Templates (100 templates)
+- 16 question types: short_text, long_text, multiple_choice, multiple_select, dropdown, number, email, phone, date, scale, rating, yes_no, file_upload, statement, image_choice, matrix
+- Dark mode toggle working across all components (including form fill view)
+- Form theme colors dynamically applied during form filling
+- Submission analytics with 30-day timeline chart
+- Form welcome/thank-you message customization
+- 3 progress bar styles (bar, dots, hidden)
+- Clean ESLint - no warnings or errors
+- Dev server compiles without errors
+
+Completed in This Session:
+1. ✅ Image choice question type (16th question type) with image grid renderer
+2. ✅ Duplicate question button in builder (Copy icon, deep clone)
+3. ✅ Form fill dark mode + theme color support
+4. ✅ Matrix/grid question type (17th question type) with table renderer
+5. ✅ Landing page mobile menu (Sheet) + social media footer
+6. ✅ Submission analytics timeline (AreaChart + 4 overview cards)
+7. ✅ Form welcome/thank-you message customization
+8. ✅ 3 progress bar styles (bar, dots, hidden)
+
+Unresolved Issues / Recommendations for Next Phase:
+1. ~~Image choice question type~~ ✅ DONE
+2. ~~Matrix question type~~ ✅ DONE
+3. ~~Batch delete/select multiple forms~~ ✅ DONE (from previous session)
+4. File upload is UI-only (no actual file handling backend)
+5. ~~Form expiration/closing date feature~~ ✅ DONE (from previous session)
+6. ~~Form logic evaluated during form fill~~ ✅ DONE (from previous session)
+7. ~~Undo/redo functionality~~ ✅ DONE (from previous session)
+8. Email notifications on form submission
+9. Custom domain/branding for published forms
+10. Real-time collaborative form editing (websocket)
+11. Form analytics export to PDF
+12. Multi-language support (currently Persian only)
+13. File upload backend implementation
+14. QR code generation (currently placeholder)

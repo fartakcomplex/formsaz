@@ -16,6 +16,8 @@ import {
   ToggleLeft,
   Upload,
   FileText,
+  ImageIcon,
+  LayoutGrid,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -40,6 +42,8 @@ const questionTypes: QuestionTypeItem[] = [
   { type: 'multiple_choice', label: 'تک انتخابی', icon: <CircleDot className="h-4 w-4" />, category: 'انتخاب' },
   { type: 'multiple_select', label: 'چند انتخابی', icon: <CheckSquare className="h-4 w-4" />, category: 'انتخاب' },
   { type: 'dropdown', label: 'لیست کشویی', icon: <ChevronDown className="h-4 w-4" />, category: 'انتخاب' },
+  { type: 'image_choice', label: 'انتخاب تصویری', icon: <ImageIcon className="h-4 w-4" />, category: 'انتخاب' },
+  { type: 'matrix', label: 'ماتریس', icon: <LayoutGrid className="h-4 w-4" />, category: 'ارزیابی' },
   { type: 'number', label: 'عدد', icon: <Hash className="h-4 w-4" />, category: 'ورودی' },
   { type: 'email', label: 'ایمیل', icon: <Mail className="h-4 w-4" />, category: 'ورودی' },
   { type: 'phone', label: 'تلفن', icon: <Phone className="h-4 w-4" />, category: 'ورودی' },
@@ -100,6 +104,18 @@ function getDefaultConfig(type: string): FormQuestion['config'] {
       return {};
     case 'file_upload':
       return {};
+    case 'image_choice':
+      return {
+        imageOptions: [
+          { id: crypto.randomUUID(), text: 'گزینه ۱', imageUrl: '' },
+          { id: crypto.randomUUID(), text: 'گزینه ۲', imageUrl: '' },
+        ],
+      };
+    case 'matrix':
+      return {
+        matrixRows: ['آیتم ۱', 'آیتم ۲', 'آیتم ۳'],
+        matrixCols: ['ضعیف', 'متوسط', 'خوب', 'عالی'],
+      };
     case 'statement':
       return {};
     default:
@@ -123,6 +139,8 @@ function getDefaultTitle(type: string): string {
     yes_no: 'سؤال بله/خیر',
     file_upload: 'آپلود فایل',
     statement: 'عنوان بخش',
+    image_choice: 'سؤال انتخاب تصویری',
+    matrix: 'سؤال ماتریسی',
   };
   return titles[type] || 'سؤال جدید';
 }

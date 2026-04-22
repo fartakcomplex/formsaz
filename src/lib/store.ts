@@ -8,6 +8,12 @@ export interface QuestionOption {
   text: string;
 }
 
+export interface ImageOption {
+  id: string;
+  text: string;
+  imageUrl: string;
+}
+
 export interface QuestionConfig {
   placeholder?: string;
   options?: QuestionOption[];
@@ -24,6 +30,7 @@ export interface QuestionConfig {
   step?: number;
   maxLength?: number;
   pattern?: string;
+  imageOptions?: ImageOption[];
 }
 
 export interface ConditionRule {
@@ -53,6 +60,10 @@ export interface FormTheme {
   backgroundColor: string;
   fontFamily: string;
   borderRadius: number;
+  welcomeMessage?: string;
+  submitButtonText?: string;
+  thankYouMessage?: string;
+  progressStyle?: 'bar' | 'dots' | 'hidden';
 }
 
 export interface Form {
@@ -102,6 +113,7 @@ interface AppState {
   updateQuestion: (id: string, updates: Partial<FormQuestion>) => void;
   removeQuestion: (id: string) => void;
   reorderQuestions: (questions: FormQuestion[]) => void;
+  duplicateQuestion: (id: string) => void;
 
   // History (undo/redo)
   history: FormQuestion[][];
@@ -231,6 +243,28 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ questions });
   },
 
+  duplicateQuestion: (id) => {
+    get().pushHistory();
+    const state = get();
+    const question = state.questions.find((q) => q.id === id);
+    if (!question) return;
+    const cloned: FormQuestion = {
+      ...structuredClone(question),
+      id: crypto.randomUUID(),
+      title: question.title + ' (کپی)',
+      config: {
+        ...question.config,
+        options: question.config.options?.map((o) => ({ ...o, id: crypto.randomUUID() })),
+        imageOptions: question.config.imageOptions?.map((o) => ({ ...o, id: crypto.randomUUID() })),
+      },
+    };
+    const idx = state.questions.findIndex((q) => q.id === id);
+    const newQuestions = [...state.questions];
+    newQuestions.splice(idx + 1, 0, cloned);
+    const reordered = newQuestions.map((q, i) => ({ ...q, order: i }));
+    set({ questions: reordered, selectedQuestionId: cloned.id });
+  },
+
   // History (undo/redo)
   history: [],
   historyIndex: -1,
@@ -321,6 +355,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     backgroundColor: '#ffffff',
     fontFamily: 'Vazirmatn',
     borderRadius: 8,
+    welcomeMessage: '',
+    submitButtonText: 'ارسال پاسخ',
+    thankYouMessage: '',
+    progressStyle: 'bar',
   },
   setFormTheme: (theme) =>
     set((state) => ({

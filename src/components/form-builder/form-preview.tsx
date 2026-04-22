@@ -22,6 +22,7 @@ import {
   GripVertical,
   Plus,
   Trash2,
+  Copy,
   Type,
   AlignRight,
   CircleDot,
@@ -73,6 +74,8 @@ function getQuestionTypeLabel(type: string): string {
     yes_no: 'بله/خیر',
     file_upload: 'آپلود فایل',
     statement: 'عبارت توضیحی',
+    image_choice: 'انتخاب تصویری',
+    matrix: 'ماتریس',
   };
   return labels[type] || type;
 }
@@ -215,6 +218,58 @@ function QuestionAnswerPreview({ question }: { question: FormQuestion }) {
           <span className="text-xs text-muted-foreground/40">حداکثر ۱۰ مگابایت</span>
         </div>
       );
+    case 'image_choice':
+      return (
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          {(config.imageOptions || []).map((opt) => (
+            <div
+              key={opt.id}
+              className="flex flex-col items-center rounded-lg border-2 border-dashed border-muted-foreground/30 overflow-hidden"
+            >
+              <div className="h-16 w-full bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 flex items-center justify-center">
+                <ImageIcon className="h-6 w-6 text-muted-foreground/40" />
+              </div>
+              <span className="text-xs text-foreground/70 py-1.5 px-2 text-center truncate w-full">
+                {opt.text}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    case 'matrix': {
+      const rows = config.matrixRows || [];
+      const cols = config.matrixCols || [];
+      return (
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr>
+                <th className="border border-muted-foreground/20 bg-muted/40 p-2" />
+                {cols.map((col, ci) => (
+                  <th key={ci} className="border border-muted-foreground/20 bg-muted/40 px-3 py-2 text-xs font-medium text-muted-foreground text-center">
+                    {col}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, ri) => (
+                <tr key={ri}>
+                  <td className="border border-muted-foreground/20 bg-muted/20 px-3 py-2 text-xs font-medium text-foreground/70 text-right whitespace-nowrap">
+                    {row}
+                  </td>
+                  {cols.map((_, ci) => (
+                    <td key={ci} className="border border-muted-foreground/20 p-1.5 text-center">
+                      <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-muted-foreground/30 mx-auto" />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
     case 'statement':
       return null;
     default:
@@ -325,6 +380,7 @@ function SortableQuestionCard({
   isSelected,
   onSelect,
   onDelete,
+  onDuplicate,
   onAddAfter,
   primaryColor,
 }: {
@@ -333,6 +389,7 @@ function SortableQuestionCard({
   isSelected: boolean;
   onSelect: () => void;
   onDelete: () => void;
+  onDuplicate: () => void;
   onAddAfter: () => void;
   primaryColor: string;
 }) {
@@ -434,6 +491,16 @@ function SortableQuestionCard({
 
           {/* Actions */}
           <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/card:opacity-100">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDuplicate();
+              }}
+              className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-violet-100 hover:text-violet-600 dark:hover:bg-violet-900/50 dark:hover:text-violet-400 transition-colors"
+              title="کپی سؤال"
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -539,7 +606,7 @@ export default function FormPreview({
   formTheme,
   onDescriptionChange,
 }: FormPreviewProps) {
-  const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion, setQuestions, reorderQuestions } = useAppStore();
+  const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion, duplicateQuestion, setQuestions, reorderQuestions } = useAppStore();
   const [showTypeMenu, setShowTypeMenu] = React.useState<number | 'end' | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -650,6 +717,7 @@ export default function FormPreview({
                       isSelected={selectedQuestionId === q.id}
                       onSelect={() => setSelectedQuestionId(q.id)}
                       onDelete={() => handleDelete(q.id)}
+                      onDuplicate={() => duplicateQuestion(q.id)}
                       onAddAfter={() => handleAddAt(idx + 1)}
                       primaryColor={primaryColor}
                     />

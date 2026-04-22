@@ -8,26 +8,28 @@ import {
   ArrowRight,
   Download,
   Users,
-  CheckCircle2,
-  Clock,
   BarChart3,
-  FileText,
   ListChecks,
   TrendingUp,
   Star,
   PieChart as PieChartIcon,
   AlertCircle,
+  Eye,
+  Activity,
 } from 'lucide-react';
 import {
   BarChart,
   Bar,
   PieChart,
   Pie,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Cell,
+  ResponsiveContainer,
 } from 'recharts';
 import {
   ChartContainer,
@@ -62,6 +64,23 @@ const COLORS = [
   '#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#7c3aed',
   '#6d28d9', '#4f46e5', '#4338ca', '#3730a3', '#312e81',
 ];
+
+interface AnalyticsData {
+  submissionCount: number;
+  dailyCounts: { date: string; count: number }[];
+  avgResponseTime: number | null;
+  totalViews: number;
+  completionRate: number;
+  avgPerDay: number;
+}
+
+function formatPersianDate(dateStr: string): string {
+  try {
+    return format(new Date(dateStr), 'dd MMMM', { locale: faIR });
+  } catch {
+    return dateStr;
+  }
+}
 
 function formatDate(dateStr: string): string {
   try {
@@ -840,12 +859,12 @@ function IndividualResponse({
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-28 rounded-2xl" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 rounded-2xl" />
         ))}
       </div>
-      <Skeleton className="h-12 w-80 rounded-xl" />
+      <Skeleton className="h-72 w-full rounded-2xl" />
       <div className="space-y-4">
         {Array.from({ length: 3 }).map((_, i) => (
           <Skeleton key={i} className="h-64 rounded-2xl" />
@@ -864,6 +883,7 @@ export default function ResultsView() {
   } = useAppStore();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('summary');
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
 
   const questions = useMemo(() => {
     if (!currentForm?.questions) return [];
@@ -879,13 +899,20 @@ export default function ResultsView() {
     if (!currentForm?.id) return;
     try {
       setLoading(true);
-      const res = await fetch(`/api/forms/${currentForm.id}/submissions`);
-      if (res.ok) {
-        const data = await res.json();
+      const [subRes, analyticsRes] = await Promise.all([
+        fetch(`/api/forms/${currentForm.id}/submissions`),
+        fetch(`/api/forms/${currentForm.id}/analytics`),
+      ]);
+      if (subRes.ok) {
+        const data = await subRes.json();
         setSubmissions(data);
       }
+      if (analyticsRes.ok) {
+        const data = await analyticsRes.json();
+        setAnalytics(data);
+      }
     } catch (err) {
-      console.error('Failed to fetch submissions:', err);
+      console.error('Failed to fetch data:', err);
     } finally {
       setLoading(false);
     }
@@ -1030,40 +1057,141 @@ export default function ResultsView() {
           </motion.div>
         ) : (
           <>
-            {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-              <StatCard
-                icon={<Users className="size-6 text-violet-600 dark:text-violet-400" />}
-                label="کل پاسخ‌ها"
-                value={submissions.length}
-                color="bg-violet-100 dark:bg-violet-900/50"
-              />
-              <StatCard
-                icon={<TrendingUp className="size-6 text-emerald-600 dark:text-emerald-400" />}
-                label="نرخ تکمیل"
-                value={`${completionRate}%`}
-                subtitle={`${submissions.length} پاسخ‌دهنده`}
-                color="bg-emerald-100 dark:bg-emerald-900/50"
-              />
-              <StatCard
-                icon={<Clock className="size-6 text-purple-600 dark:text-purple-400" />}
-                label="آخرین پاسخ"
-                value={
-                  submissions.length > 0
-                    ? format(
-                        new Date(
-                          Math.max(
-                            ...submissions.map((s) => new Date(s.createdAt).getTime())
-                          )
-                        ),
-                        'HH:mm - dd MMMM',
-                        { locale: faIR }
-                      )
-                    : '—'
-                }
-                color="bg-purple-100 dark:bg-purple-900/50"
-              />
+            {/* Analytics Overview Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0 }}
+                className="relative flex items-center gap-3 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/30 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
+              >
+                <div className="relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700">
+                  <Users className="size-5 text-white" />
+                </div>
+                <div className="relative flex-1 min-w-0">
+                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
+                    {analytics?.submissionCount ?? submissions.length}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">کل پاسخ‌ها</p>
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 }}
+                className="relative flex items-center gap-3 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/30 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
+              >
+                <div className="relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700">
+                  <Eye className="size-5 text-white" />
+                </div>
+                <div className="relative flex-1 min-w-0">
+                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
+                    {analytics?.totalViews ?? 0}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">کل بازدیدها</p>
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="relative flex items-center gap-3 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/30 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
+              >
+                <div className="relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700">
+                  <TrendingUp className="size-5 text-white" />
+                </div>
+                <div className="relative flex-1 min-w-0">
+                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
+                    {analytics?.completionRate ?? 0}%
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">نرخ تکمیل</p>
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="relative flex items-center gap-3 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/30 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
+              >
+                <div className="relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700">
+                  <Activity className="size-5 text-white" />
+                </div>
+                <div className="relative flex-1 min-w-0">
+                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
+                    {analytics?.avgPerDay ?? 0}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">میانگین روزانه</p>
+                </div>
+              </motion.div>
             </div>
+
+            {/* Submission Timeline Chart */}
+            {analytics?.dailyCounts && analytics.dailyCounts.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mb-6 sm:mb-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gradient-to-bl from-white via-violet-50/10 to-purple-50/5 dark:from-gray-900 dark:via-violet-950/10 dark:to-purple-950/5 p-5 sm:p-6 shadow-sm"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/40">
+                    <BarChart3 className="size-4 text-violet-600 dark:text-violet-400" />
+                  </div>
+                  <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">آمار پاسخ‌ها</h3>
+                  <span className="text-xs text-gray-400 dark:text-gray-500 mr-auto">۳۰ روز گذشته</span>
+                </div>
+                <ResponsiveContainer width="100%" height={250}>
+                  <AreaChart data={analytics.dailyCounts} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="timelineGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" className="dark:opacity-20" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 11, fill: '#9ca3af' }}
+                      tickFormatter={(val: string) => formatPersianDate(val)}
+                      tickLine={false}
+                      axisLine={{ stroke: '#e5e7eb' }}
+                      className="dark:[&]:stroke-gray-700"
+                      interval={4}
+                    />
+                    <YAxis
+                      allowDecimals={false}
+                      tick={{ fontSize: 11, fill: '#9ca3af' }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (!active || !payload?.length) return null;
+                        return (
+                          <div className="rounded-lg border bg-white dark:bg-gray-900 shadow-lg p-3 text-right" dir="rtl">
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                              {formatPersianDate(label as string)}
+                            </p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                              {payload[0].value} پاسخ
+                            </p>
+                          </div>
+                        );
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#8b5cf6"
+                      strokeWidth={2.5}
+                      fill="url(#timelineGradient)"
+                      dot={false}
+                      activeDot={{ r: 5, fill: '#8b5cf6', stroke: '#fff', strokeWidth: 2 }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </motion.div>
+            )}
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

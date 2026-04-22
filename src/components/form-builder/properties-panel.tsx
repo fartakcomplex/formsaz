@@ -15,7 +15,7 @@ import {
   GitBranch,
   ChevronDown,
 } from 'lucide-react';
-import { useAppStore, FormQuestion, QuestionConfig, QuestionOption, QuestionLogic, ConditionRule } from '@/lib/store';
+import { useAppStore, FormQuestion, QuestionConfig, QuestionOption, ImageOption, QuestionLogic, ConditionRule } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -135,6 +135,101 @@ function OptionsEditor({
           />
         </div>
       )}
+    </div>
+  );
+}
+
+/* ======================== */
+/* Image Options Editor Component */
+/* ======================== */
+function ImageOptionsEditor({
+  imageOptions = [],
+  onChange,
+}: {
+  imageOptions: ImageOption[];
+  onChange: (options: ImageOption[]) => void;
+}) {
+  const addImageOption = () => {
+    const newOpt: ImageOption = {
+      id: crypto.randomUUID(),
+      text: `گزینه ${imageOptions.length + 1}`,
+      imageUrl: '',
+    };
+    onChange([...imageOptions, newOpt]);
+  };
+
+  const removeImageOption = (id: string) => {
+    if (imageOptions.length <= 1) return;
+    onChange(imageOptions.filter((o) => o.id !== id));
+  };
+
+  const updateImageOption = (id: string, updates: Partial<ImageOption>) => {
+    onChange(imageOptions.map((o) => (o.id === id ? { ...o, ...updates } : o)));
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          گزینه‌های تصویری
+        </Label>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={addImageOption}
+              className="h-7 gap-1 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              افزودن
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="left">افزودن گزینه تصویری جدید</TooltipContent>
+        </Tooltip>
+      </div>
+
+      <div className="space-y-2">
+        {imageOptions.map((opt, idx) => (
+          <div
+            key={opt.id}
+            className="group/imgopt rounded-lg border bg-muted/30 p-3 transition-all duration-200 hover:bg-violet-50/60 hover:border-violet-200 dark:hover:bg-violet-950/20 dark:hover:border-violet-800/50"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-bold text-muted-foreground">
+                گزینه {idx + 1}
+              </span>
+              <button
+                onClick={() => removeImageOption(opt.id)}
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted-foreground/40 opacity-0 transition-all duration-200 hover:bg-red-100 hover:text-red-500 group-hover/imgopt:opacity-100"
+                disabled={imageOptions.length <= 1}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+            <div className="space-y-2">
+              <Input
+                value={opt.text}
+                onChange={(e) => updateImageOption(opt.id, { text: e.target.value })}
+                className="h-8 text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
+                placeholder="متن گزینه..."
+                dir="rtl"
+              />
+              <Input
+                value={opt.imageUrl}
+                onChange={(e) => updateImageOption(opt.id, { imageUrl: e.target.value })}
+                className="h-8 text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
+                placeholder="آدرس تصویر (URL)..."
+                dir="ltr"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-[11px] text-muted-foreground leading-relaxed text-center">
+        آدرس تصویر را وارد کنید. در صورت خالی بودن، یک نگهدارنده نمایش داده می‌شود.
+      </p>
     </div>
   );
 }
@@ -386,6 +481,144 @@ function DateConfigSection({
   );
 }
 
+function MatrixConfigSection({
+  config,
+  onUpdate,
+}: {
+  config: QuestionConfig;
+  onUpdate: (updates: Partial<QuestionConfig>) => void;
+}) {
+  const rows = config.matrixRows || [];
+  const cols = config.matrixCols || [];
+
+  const updateRow = (index: number, text: string) => {
+    const newRows = [...rows];
+    newRows[index] = text;
+    onUpdate({ matrixRows: newRows });
+  };
+
+  const addRow = () => {
+    onUpdate({ matrixRows: [...rows, `آیتم ${rows.length + 1}`] });
+  };
+
+  const removeRow = (index: number) => {
+    if (rows.length <= 1) return;
+    onUpdate({ matrixRows: rows.filter((_, i) => i !== index) });
+  };
+
+  const updateCol = (index: number, text: string) => {
+    const newCols = [...cols];
+    newCols[index] = text;
+    onUpdate({ matrixCols: newCols });
+  };
+
+  const addCol = () => {
+    onUpdate({ matrixCols: [...cols, `ستون ${cols.length + 1}`] });
+  };
+
+  const removeCol = (index: number) => {
+    if (cols.length <= 1) return;
+    onUpdate({ matrixCols: cols.filter((_, i) => i !== index) });
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Rows */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            سطرها (آیتم‌ها)
+          </Label>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={addRow}
+            className="h-7 gap-1 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            افزودن سطر
+          </Button>
+        </div>
+        <div className="space-y-1.5">
+          {rows.map((row, idx) => (
+            <div
+              key={idx}
+              className="group/matrixrow flex items-center gap-1.5 rounded-lg border bg-muted/30 px-2 py-1.5 transition-all duration-200 hover:bg-violet-50/60 hover:border-violet-200 dark:hover:bg-violet-950/20 dark:hover:border-violet-800/50 hover:shadow-sm"
+            >
+              <span className="shrink-0 text-[10px] font-bold text-muted-foreground w-4 text-center">
+                {idx + 1}
+              </span>
+              <Input
+                value={row}
+                onChange={(e) => updateRow(idx, e.target.value)}
+                className="h-8 flex-1 border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm px-1"
+                placeholder="متن سطر..."
+                dir="rtl"
+              />
+              <button
+                onClick={() => removeRow(idx)}
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted-foreground/40 opacity-0 transition-all duration-200 hover:bg-red-100 hover:text-red-500 group-hover/matrixrow:opacity-100"
+                disabled={rows.length <= 1}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Columns */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            ستون‌ها (گزینه‌ها)
+          </Label>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={addCol}
+            className="h-7 gap-1 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            افزودن ستون
+          </Button>
+        </div>
+        <div className="space-y-1.5">
+          {cols.map((col, idx) => (
+            <div
+              key={idx}
+              className="group/matrixcol flex items-center gap-1.5 rounded-lg border bg-muted/30 px-2 py-1.5 transition-all duration-200 hover:bg-violet-50/60 hover:border-violet-200 dark:hover:bg-violet-950/20 dark:hover:border-violet-800/50 hover:shadow-sm"
+            >
+              <span className="shrink-0 text-[10px] font-bold text-muted-foreground w-4 text-center">
+                {idx + 1}
+              </span>
+              <Input
+                value={col}
+                onChange={(e) => updateCol(idx, e.target.value)}
+                className="h-8 flex-1 border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm px-1"
+                placeholder="متن ستون..."
+                dir="rtl"
+              />
+              <button
+                onClick={() => removeCol(idx)}
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted-foreground/40 opacity-0 transition-all duration-200 hover:bg-red-100 hover:text-red-500 group-hover/matrixcol:opacity-100"
+                disabled={cols.length <= 1}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Preview hint */}
+      <p className="text-[11px] text-muted-foreground leading-relaxed text-center">
+        سطرها آیتم‌های ارزیابی و ستون‌ها گزینه‌های پاسخ هستند.
+      </p>
+    </div>
+  );
+}
+
 /* =============================== */
 /* Type-specific renderer           */
 /* =============================== */
@@ -408,7 +641,14 @@ function TypeConfigSection({ question }: { question: FormQuestion }) {
     [handleConfigUpdate]
   );
 
-  const handleAllowOtherChange = useCallback(
+  const handleImageOptionsChange = useCallback(
+    (imageOptions: ImageOption[]) => {
+      handleConfigUpdate({ imageOptions });
+    },
+    [handleConfigUpdate]
+  );
+
+  const handleAllowOtherChange = useCallback( 
     (val: boolean) => {
       handleConfigUpdate({ allowOther: val });
     },
@@ -444,7 +684,26 @@ function TypeConfigSection({ question }: { question: FormQuestion }) {
     case 'rating':
       return <RatingConfigSection config={question.config} onUpdate={handleConfigUpdate} />;
     case 'yes_no':
+      return (
+        <div className="text-sm text-muted-foreground text-center py-4">
+          تنظیمات خاصی برای این نوع سؤال وجود ندارد.
+        </div>
+      );
     case 'file_upload':
+      return (
+        <div className="text-sm text-muted-foreground text-center py-4">
+          تنظیمات خاصی برای این نوع سؤال وجود ندارد.
+        </div>
+      );
+    case 'image_choice':
+      return (
+        <ImageOptionsEditor
+          imageOptions={question.config.imageOptions || []}
+          onChange={handleImageOptionsChange}
+        />
+      );
+    case 'matrix':
+      return <MatrixConfigSection config={question.config} onUpdate={handleConfigUpdate} />;
     case 'statement':
       return (
         <div className="text-sm text-muted-foreground text-center py-4">
@@ -700,6 +959,8 @@ function QuestionTypeSelector({ question }: { question: FormQuestion }) {
     yes_no: 'بله/خیر',
     file_upload: 'آپلود فایل',
     statement: 'عبارت توضیحی',
+    image_choice: 'انتخاب تصویری',
+    matrix: 'ماتریس',
   };
 
   return (

@@ -9,6 +9,7 @@ import {
   Square,
   Sparkles,
   Check,
+  Layout,
 } from 'lucide-react';
 import {
   Dialog,
@@ -24,6 +25,13 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import type { FormTheme } from '@/lib/store';
 
@@ -140,10 +148,14 @@ export default function FormSettingsDialog({
         </DialogHeader>
 
         <Tabs defaultValue="general" className="px-6 pt-4" dir="rtl">
-          <TabsList className="w-full grid grid-cols-2">
+          <TabsList className="w-full grid grid-cols-3">
             <TabsTrigger value="general" className="gap-1.5 text-xs sm:text-sm">
               <Type className="h-3.5 w-3.5" />
               عمومی
+            </TabsTrigger>
+            <TabsTrigger value="form-page" className="gap-1.5 text-xs sm:text-sm">
+              <Layout className="h-3.5 w-3.5" />
+              صفحه فرم
             </TabsTrigger>
             <TabsTrigger value="theme" className="gap-1.5 text-xs sm:text-sm">
               <Palette className="h-3.5 w-3.5" />
@@ -181,6 +193,102 @@ export default function FormSettingsDialog({
                     placeholder="توضیحات اختیاری فرم را وارد کنید..."
                     className="text-sm min-h-[100px] resize-none focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
                   />
+                </div>
+              </div>
+            </ScrollArea>
+          </TabsContent>
+
+          {/* ---- Form Page Tab ---- */}
+          <TabsContent value="form-page" className="mt-4 pb-6">
+            <ScrollArea className="max-h-[60vh]">
+              <div className="space-y-5 px-1">
+                {/* Welcome Message */}
+                <div className="space-y-2">
+                  <Label htmlFor="settings-welcome" className="text-sm font-medium">
+                    پیام خوش‌آمدگویی
+                  </Label>
+                  <Textarea
+                    id="settings-welcome"
+                    value={draftTheme.welcomeMessage || ''}
+                    onChange={(e) =>
+                      setDraftTheme({ ...draftTheme, welcomeMessage: e.target.value })
+                    }
+                    placeholder="متن خوش‌آمدگویی نمایش داده شود..."
+                    className="text-sm min-h-[80px] resize-none focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
+                  />
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    در صورت خالی بودن، نمایش داده نمی‌شود
+                  </p>
+                </div>
+
+                <Separator />
+
+                {/* Submit Button Text */}
+                <div className="space-y-2">
+                  <Label htmlFor="settings-submit-text" className="text-sm font-medium">
+                    متن دکمه ارسال
+                  </Label>
+                  <Input
+                    id="settings-submit-text"
+                    value={draftTheme.submitButtonText || 'ارسال پاسخ'}
+                    onChange={(e) =>
+                      setDraftTheme({ ...draftTheme, submitButtonText: e.target.value })
+                    }
+                    placeholder="ارسال پاسخ"
+                    className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
+                  />
+                </div>
+
+                <Separator />
+
+                {/* Thank You Message */}
+                <div className="space-y-2">
+                  <Label htmlFor="settings-thankyou" className="text-sm font-medium">
+                    پیام تشکر
+                  </Label>
+                  <Textarea
+                    id="settings-thankyou"
+                    value={draftTheme.thankYouMessage || ''}
+                    onChange={(e) =>
+                      setDraftTheme({ ...draftTheme, thankYouMessage: e.target.value })
+                    }
+                    placeholder="متن تشکر پس از ارسال..."
+                    className="text-sm min-h-[80px] resize-none focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
+                  />
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    در صورت خالی بودن، پیام پیش‌فرض نمایش داده می‌شود
+                  </p>
+                </div>
+
+                <Separator />
+
+                {/* Progress Style */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium flex items-center gap-2">
+                    <Square className="h-3.5 w-3.5" />
+                    سبک نوار پیشرفت
+                  </Label>
+                  <Select
+                    value={draftTheme.progressStyle || 'bar'}
+                    onValueChange={(val) =>
+                      setDraftTheme({
+                        ...draftTheme,
+                        progressStyle: val as 'bar' | 'dots' | 'hidden',
+                      })
+                    }
+                  >
+                    <SelectTrigger className="text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="bar">نوار پیشرفت</SelectItem>
+                      <SelectItem value="dots">نقاط</SelectItem>
+                      <SelectItem value="hidden">مخفی</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    نحوه نمایش پیشرفت فرم در صفحه پر کردن
+                  </p>
                 </div>
               </div>
             </ScrollArea>
