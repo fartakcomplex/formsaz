@@ -28,6 +28,7 @@ import {
   CircleDot,
   CheckSquare,
   ChevronDown,
+  ChevronUp,
   Hash,
   Mail,
   Phone,
@@ -391,8 +392,12 @@ function SortableQuestionCard({
   onSelect,
   onDelete,
   onDuplicate,
+  onMoveUp,
+  onMoveDown,
   onAddAfter,
   primaryColor,
+  isFirst,
+  isLast,
 }: {
   question: FormQuestion;
   index: number;
@@ -400,8 +405,12 @@ function SortableQuestionCard({
   onSelect: () => void;
   onDelete: () => void;
   onDuplicate: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   onAddAfter: () => void;
   primaryColor: string;
+  isFirst: boolean;
+  isLast: boolean;
 }) {
   const isStatement = question.type === 'statement';
   const isSectionDivider = question.type === 'section_divider';
@@ -485,10 +494,10 @@ function SortableQuestionCard({
       <div
         onClick={onSelect}
         className={cn(
-          'relative flex-1 cursor-pointer border-2 p-5 transition-all duration-200',
+          'relative flex-1 cursor-pointer border-2 pl-7 pr-5 transition-all duration-200',
           isDragging && 'shadow-lg ring-2 ring-primary/20',
           isSelected
-            ? 'shadow-sm ring-1'
+            ? 'shadow-lg'
             : 'border-transparent bg-white hover:border-muted hover:shadow-sm dark:bg-zinc-900/50'
         )}
         style={
@@ -496,17 +505,26 @@ function SortableQuestionCard({
             ? {
                 borderColor: primaryColor,
                 backgroundColor: `${primaryColor}08`,
-                ringColor: `${primaryColor}33`,
+                boxShadow: `0 10px 15px -3px ${primaryColor}15, 0 4px 6px -4px ${primaryColor}10`,
               }
             : undefined
         }
       >
+        {/* Question number badge */}
+        {!isStatement && (
+          <div
+            className="absolute -left-3 top-4 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-md z-10"
+            style={{ backgroundColor: primaryColor }}
+          >
+            {index + 1}
+          </div>
+        )}
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-2 flex-1 min-w-0">
             {!isStatement && (
               <span
-                className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded text-[10px] font-bold"
                 style={{
                   backgroundColor: `${primaryColor}1a`,
                   color: primaryColor,
@@ -533,13 +551,42 @@ function SortableQuestionCard({
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/card:opacity-100">
+          <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover/card:opacity-100">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveUp();
+              }}
+              className={cn(
+                'flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-violet-50 hover:text-violet-600 dark:hover:bg-violet-950/30 dark:hover:text-violet-400 transition-colors',
+                isFirst && 'pointer-events-none opacity-30'
+              )}
+              disabled={isFirst}
+              title="جابجایی به بالا"
+            >
+              <ChevronUp className="h-4 w-4" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveDown();
+              }}
+              className={cn(
+                'flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-violet-50 hover:text-violet-600 dark:hover:bg-violet-950/30 dark:hover:text-violet-400 transition-colors',
+                isLast && 'pointer-events-none opacity-30'
+              )}
+              disabled={isLast}
+              title="جابجایی به پایین"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </button>
+            <div className="w-px h-4 bg-border mx-0.5" />
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onDuplicate();
               }}
-              className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-violet-100 hover:text-violet-600 dark:hover:bg-violet-900/50 dark:hover:text-violet-400 transition-colors"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-violet-50 hover:text-violet-600 dark:hover:bg-violet-950/30 dark:hover:text-violet-400 transition-colors"
               title="کپی سؤال"
             >
               <Copy className="h-3.5 w-3.5" />
@@ -568,10 +615,10 @@ function SortableQuestionCard({
         {/* Answer preview */}
         <QuestionAnswerPreview question={question} />
 
-        {/* Selected indicator */}
+        {/* Selected indicator - left border accent */}
         {isSelected && (
           <div
-            className="absolute top-0 right-0 h-full w-1 rounded-l"
+            className="absolute top-0 left-0 h-full w-[3px] rounded-r"
             style={{ backgroundColor: primaryColor }}
           />
         )}
@@ -591,22 +638,20 @@ function DragOverlayCard({ question, primaryColor }: { question: FormQuestion; p
         </div>
       </div>
       <div
-        className="relative flex-1 border-2 p-5 shadow-xl ring-2 ring-primary/20"
+        className="relative flex-1 border-2 pl-7 pr-5 shadow-xl ring-2 ring-primary/20"
         style={{
           borderColor: primaryColor,
           backgroundColor: `${primaryColor}08`,
         }}
       >
+        {/* Question number badge */}
+        <div
+          className="absolute -left-3 top-4 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-md z-10"
+          style={{ backgroundColor: primaryColor }}
+        >
+          {question.order + 1}
+        </div>
         <div className="flex items-start gap-2">
-          <span
-            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-            style={{
-              backgroundColor: `${primaryColor}1a`,
-              color: primaryColor,
-            }}
-          >
-            {question.order + 1}
-          </span>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-medium" style={{ color: primaryColor }}>
@@ -649,7 +694,7 @@ export default function FormPreview({
   formTheme,
   onDescriptionChange,
 }: FormPreviewProps) {
-  const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion, duplicateQuestion, setQuestions, reorderQuestions } = useAppStore();
+  const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion, duplicateQuestion, moveQuestionUp, moveQuestionDown, setQuestions, reorderQuestions } = useAppStore();
   const [showTypeMenu, setShowTypeMenu] = React.useState<number | 'end' | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -761,8 +806,12 @@ export default function FormPreview({
                       onSelect={() => setSelectedQuestionId(q.id)}
                       onDelete={() => handleDelete(q.id)}
                       onDuplicate={() => duplicateQuestion(q.id)}
+                      onMoveUp={() => moveQuestionUp(q.id)}
+                      onMoveDown={() => moveQuestionDown(q.id)}
                       onAddAfter={() => handleAddAt(idx + 1)}
                       primaryColor={primaryColor}
+                      isFirst={idx === 0}
+                      isLast={idx === questions.length - 1}
                     />
                   </React.Fragment>
                 ))}

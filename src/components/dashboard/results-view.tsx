@@ -1044,30 +1044,80 @@ export default function ResultsView() {
 
   const handleExport = () => {
     const csvRows: string[] = [];
-    // Add timestamp row
-    csvRows.push(`"تاریخ دانلود","${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}"`);
 
-    // Add headers with question titles
-    const headers = ['شماره', ...questions.map((q) => `"${q.title.replace(/"/g, '""')}"`)];
+    // Helper: escape CSV value (handle quotes, commas, newlines)
+    const escapeCsv = (val: string) => {
+      if (val.includes(',') || val.includes('"') || val.includes('\n') || val.includes('\r')) {
+        return `"${val.replace(/"/g, '""')}"`;
+      }
+      return val;
+    };
+
+    // Row 1: Form title
+    csvRows.push(`${escapeCsv(currentForm?.title || 'فرم')}`);
+
+    // Row 2: Download date
+    csvRows.push(`تاریخ دانلود,${escapeCsv(format(new Date(), 'yyyy-MM-dd HH:mm:ss'))}`);
+
+    // Row 3: Date range of submissions
+    if (submissions.length > 0) {
+      const sorted = [...submissions].sort(
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+      const firstDate = format(new Date(sorted[0].createdAt), 'yyyy-MM-dd HH:mm');
+      const lastDate = format(new Date(sorted[sorted.length - 1].createdAt), 'yyyy-MM-dd HH:mm');
+      csvRows.push(`بازه زمانی پاسخ‌ها,${firstDate} تا ${lastDate}`);
+    } else {
+      csvRows.push('بازه زمانی پاسخ‌ها,بدون پاسخ');
+    }
+
+    // Empty separator row
+    csvRows.push('');
+
+    // Column headers: question titles
+    const headers = [
+      'شماره',
+      'تاریخ ثبت',
+      ...inputQuestions.map((q) => escapeCsv(q.title)),
+    ];
     csvRows.push(headers.join(','));
 
-    // Add data rows
+    // Data rows: one per submission
     submissions.forEach((sub, idx) => {
       const row = [
         (idx + 1).toString(),
-        ...questions.map((q) => {
+        escapeCsv(format(new Date(sub.createdAt), 'yyyy-MM-dd HH:mm')),
+        ...inputQuestions.map((q) => {
           const response = sub.responses.find((r) => r.questionId === q.id);
-          const value = response?.value || '';
-          return `"${value.replace(/"/g, '""')}"`;
+          let value = response?.value || '';
+          // Resolve option text for choice questions
+          if (value && (q.type === 'multiple_choice' || q.type === 'dropdown')) {
+            const option = q.config.options?.find((opt) => opt.id === value);
+            if (option) value = option.text;
+          } else if (value && q.type === 'multiple_select') {
+            const selectedIds = value.split(',').filter(Boolean);
+            const texts = selectedIds.map((sid) => {
+              const opt = q.config.options?.find((o) => o.id === sid);
+              return opt ? opt.text : sid;
+            });
+            value = texts.join(' | ');
+          } else if (q.type === 'yes_no') {
+            value = value === 'yes' ? 'بله' : value === 'no' ? 'خیر' : value;
+          }
+          return escapeCsv(value);
         }),
       ];
       csvRows.push(row.join(','));
     });
 
-    // Add summary row
+    // Empty separator row
     csvRows.push('');
-    csvRows.push(`"تعداد کل پاسخ‌ها","${submissions.length}"`);
-    csvRows.push(`"نرخ تکمیل","${completionRate}%"`);
+
+    // Summary statistics
+    csvRows.push('خلاصه آمار');
+    csvRows.push(`تعداد کل پاسخ‌ها,${submissions.length}`);
+    csvRows.push(`نرخ تکمیل,${completionRate}%`);
+    csvRows.push(`تعداد سؤالات,${inputQuestions.length}`);
 
     const csvContent = '\uFEFF' + csvRows.join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1141,6 +1191,11 @@ export default function ResultsView() {
                 نتایج فرم
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{currentForm.title}</p>
+              {currentForm.description && (
+                <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1 line-clamp-2">
+                  {currentForm.description}
+                </p>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2">

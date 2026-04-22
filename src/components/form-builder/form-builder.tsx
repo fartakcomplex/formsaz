@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   PanelLeftClose,
   PanelLeftOpen,
@@ -15,6 +15,7 @@ import {
   Redo2,
   Menu,
   Settings,
+  Loader2,
 } from 'lucide-react';
 import {
   ResizablePanelGroup,
@@ -52,11 +53,17 @@ export default function FormBuilder() {
   const [mobileRightOpen, setMobileRightOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [formTitle, setFormTitle] = useState(currentForm?.title || 'فرم بدون عنوان');
   const [formDescription, setFormDescription] = useState(currentForm?.description || '');
+  const hasUnsavedChanges = useRef(false);
 
-  const handleSave = async () => {
-    setIsSaving(true);
+  const handleSave = useCallback(async (isAutoSave = false) => {
+    if (isAutoSave) {
+      setIsAutoSaving(true);
+    } else {
+      setIsSaving(true);
+    }
     try {
       const payload = {
         title: formTitle,
@@ -90,16 +97,33 @@ export default function FormBuilder() {
       if (res.ok) {
         const savedForm = await res.json();
         setCurrentForm(savedForm);
-        toast.success('فرم با موفقیت ذخیره شد');
+        toast.success(isAutoSave ? '✓ ذخیره شد' : 'فرم با موفقیت ذخیره شد');
       } else {
-        toast.error('خطا در ذخیره فرم');
+        toast.error(isAutoSave ? 'خطا در ذخیره خودکار' : 'خطا در ذخیره فرم');
       }
     } catch {
       toast.error('خطا در ذخیره فرم');
     } finally {
       setIsSaving(false);
+      setIsAutoSaving(false);
+      hasUnsavedChanges.current = false;
     }
-  };
+  }, [formTitle, formDescription, formTheme, currentForm, questions, setCurrentForm]);
+
+  // Track unsaved changes
+  useEffect(() => {
+    hasUnsavedChanges.current = true;
+  }, [questions, formTitle, formDescription, formTheme]);
+
+  // Auto-save every 30 seconds when there are unsaved changes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (hasUnsavedChanges.current && questions.length > 0) {
+        handleSave(true);
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [handleSave, questions.length]);
 
   const handlePublish = async () => {
     if (questions.length === 0) {
@@ -231,7 +255,7 @@ export default function FormBuilder() {
       setSelectedQuestionId(null);
       return;
     }
-  }, [canUndo, canRedo, undo, redo, selectedQuestionId, removeQuestion, setSelectedQuestionId]);
+  }, [canUndo, canRedo, undo, redo, selectedQuestionId, removeQuestion, setSelectedQuestionId, handleSave]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -361,6 +385,14 @@ export default function FormBuilder() {
               <TooltipContent>دوباره (Ctrl+Shift+Z)</TooltipContent>
             </Tooltip>
           </div>
+
+          {/* Auto-save indicator */}
+          {isAutoSaving && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground animate-in fade-in duration-300">
+              <Loader2 className="h-3 w-3 animate-spin text-violet-500" />
+              <span className="hidden sm:inline">ذخیره خودکار...</span>
+            </div>
+          )}
 
           <Separator orientation="vertical" className="h-6 mx-0.5 hidden lg:block" />
 

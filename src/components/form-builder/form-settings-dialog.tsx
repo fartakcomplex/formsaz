@@ -10,6 +10,7 @@ import {
   Sparkles,
   Check,
   Layout,
+  Bell,
 } from 'lucide-react';
 import {
   Dialog,
@@ -21,6 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -148,7 +150,7 @@ export default function FormSettingsDialog({
         </DialogHeader>
 
         <Tabs defaultValue="general" className="px-6 pt-4" dir="rtl">
-          <TabsList className="w-full grid grid-cols-3">
+          <TabsList className="w-full grid grid-cols-4">
             <TabsTrigger value="general" className="gap-1.5 text-xs sm:text-sm">
               <Type className="h-3.5 w-3.5" />
               عمومی
@@ -160,6 +162,10 @@ export default function FormSettingsDialog({
             <TabsTrigger value="theme" className="gap-1.5 text-xs sm:text-sm">
               <Palette className="h-3.5 w-3.5" />
               ظاهر و تم
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="gap-1.5 text-xs sm:text-sm">
+              <Bell className="h-3.5 w-3.5" />
+              اعلان‌ها
             </TabsTrigger>
           </TabsList>
 
@@ -289,6 +295,58 @@ export default function FormSettingsDialog({
                   <p className="text-xs text-gray-400 dark:text-gray-500">
                     نحوه نمایش پیشرفت فرم در صفحه پر کردن
                   </p>
+                </div>
+              </div>
+            </ScrollArea>
+          </TabsContent>
+
+          {/* ---- Notifications Tab ---- */}
+          <TabsContent value="notifications" className="mt-4 pb-6">
+            <ScrollArea className="max-h-[60vh]">
+              <div className="space-y-5 px-1">
+                {/* Notification Toggle */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="settings-notif-toggle" className="text-sm font-medium flex items-center gap-2">
+                      <Bell className="h-3.5 w-3.5 text-violet-500" />
+                      اعلان ایمیل هنگام دریافت پاسخ جدید
+                    </Label>
+                    <Switch
+                      id="settings-notif-toggle"
+                      checked={draftTheme.notificationEnabled || false}
+                      onCheckedChange={(checked) =>
+                        setDraftTheme({ ...draftTheme, notificationEnabled: checked })
+                      }
+                      className="data-[state=checked]:bg-violet-500"
+                    />
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Notification Email */}
+                <div className="space-y-2">
+                  <Label htmlFor="settings-notif-email" className="text-sm font-medium">
+                    آدرس ایمیل برای دریافت اعلان‌ها
+                  </Label>
+                  <Input
+                    id="settings-notif-email"
+                    type="email"
+                    value={draftTheme.notificationEmail || ''}
+                    onChange={(e) =>
+                      setDraftTheme({ ...draftTheme, notificationEmail: e.target.value })
+                    }
+                    placeholder="your@email.com"
+                    dir="ltr"
+                    className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
+                    disabled={!draftTheme.notificationEnabled}
+                  />
+                  <div className="flex items-start gap-2 rounded-lg bg-violet-50 dark:bg-violet-950/20 p-3 border border-violet-100 dark:border-violet-900/40">
+                    <Bell className="h-4 w-4 text-violet-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-violet-700 dark:text-violet-300 leading-relaxed">
+                      هر بار که پاسخ جدیدی ثبت شود، ایمیلی حاوی خلاصه پاسخ برای شما ارسال می‌شود
+                    </p>
+                  </div>
                 </div>
               </div>
             </ScrollArea>

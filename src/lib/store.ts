@@ -31,6 +31,7 @@ export interface QuestionConfig {
   maxLength?: number;
   pattern?: string;
   imageOptions?: ImageOption[];
+  description?: string;
 }
 
 export interface ConditionRule {
@@ -64,6 +65,8 @@ export interface FormTheme {
   submitButtonText?: string;
   thankYouMessage?: string;
   progressStyle?: 'bar' | 'dots' | 'hidden';
+  notificationEnabled?: boolean;
+  notificationEmail?: string;
 }
 
 export interface Form {
@@ -114,6 +117,8 @@ interface AppState {
   removeQuestion: (id: string) => void;
   reorderQuestions: (questions: FormQuestion[]) => void;
   duplicateQuestion: (id: string) => void;
+  moveQuestionUp: (id: string) => void;
+  moveQuestionDown: (id: string) => void;
 
   // History (undo/redo)
   history: FormQuestion[][];
@@ -263,6 +268,32 @@ export const useAppStore = create<AppState>((set, get) => ({
     newQuestions.splice(idx + 1, 0, cloned);
     const reordered = newQuestions.map((q, i) => ({ ...q, order: i }));
     set({ questions: reordered, selectedQuestionId: cloned.id });
+  },
+
+  moveQuestionUp: (id) => {
+    const state = get();
+    const idx = state.questions.findIndex((q) => q.id === id);
+    if (idx <= 0) return;
+    get().pushHistory();
+    const newQuestions = [...state.questions];
+    const temp = newQuestions[idx];
+    newQuestions[idx] = newQuestions[idx - 1];
+    newQuestions[idx - 1] = temp;
+    const reordered = newQuestions.map((q, i) => ({ ...q, order: i }));
+    set({ questions: reordered });
+  },
+
+  moveQuestionDown: (id) => {
+    const state = get();
+    const idx = state.questions.findIndex((q) => q.id === id);
+    if (idx === -1 || idx >= state.questions.length - 1) return;
+    get().pushHistory();
+    const newQuestions = [...state.questions];
+    const temp = newQuestions[idx];
+    newQuestions[idx] = newQuestions[idx + 1];
+    newQuestions[idx + 1] = temp;
+    const reordered = newQuestions.map((q, i) => ({ ...q, order: i }));
+    set({ questions: reordered });
   },
 
   // History (undo/redo)

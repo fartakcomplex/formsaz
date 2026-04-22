@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
@@ -16,6 +16,22 @@ import {
   Check,
   Loader2,
   Trash2,
+  Type,
+  AlignLeft,
+  CircleDot,
+  CheckSquare,
+  ChevronDown,
+  Hash,
+  Mail,
+  Phone,
+  Calendar,
+  BarChart3,
+  ToggleLeft,
+  Grid3X3,
+  MessageSquare,
+  Minus,
+  LayoutDashboard,
+  type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,9 +47,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useAppStore, type FormQuestion, type QuestionConfig } from '@/lib/store';
 
 const QUESTIONS_PER_PAGE = 1;
+
+/* ========== Question Type Icon Helper ========== */
+
+function getQuestionTypeIcon(type: string) {
+  const icons: Record<string, LucideIcon> = {
+    short_text: Type,
+    long_text: AlignLeft,
+    multiple_choice: CircleDot,
+    multiple_select: CheckSquare,
+    dropdown: ChevronDown,
+    number: Hash,
+    email: Mail,
+    phone: Phone,
+    date: Calendar,
+    scale: BarChart3,
+    rating: Star,
+    yes_no: ToggleLeft,
+    file_upload: Upload,
+    image_choice: ImageIcon,
+    matrix: Grid3X3,
+    statement: MessageSquare,
+    section_divider: Minus,
+  };
+  return icons[type] || MessageSquare;
+}
 
 /* ========== Theme Color Helper ========== */
 
@@ -55,23 +102,70 @@ function useFormTheme(fillForm: ReturnType<typeof useAppStore>['fillForm']) {
   }, [fillForm?.theme]);
 }
 
+function QuestionTypeIconDisplay({ type, color }: { type: string; color: string }) {
+  const iconProps = { className: 'size-4 shrink-0', style: { color } };
+  switch (type) {
+    case 'short_text': return <Type {...iconProps} />;
+    case 'long_text': return <AlignLeft {...iconProps} />;
+    case 'multiple_choice': return <CircleDot {...iconProps} />;
+    case 'multiple_select': return <CheckSquare {...iconProps} />;
+    case 'dropdown': return <ChevronDown {...iconProps} />;
+    case 'number': return <Hash {...iconProps} />;
+    case 'email': return <Mail {...iconProps} />;
+    case 'phone': return <Phone {...iconProps} />;
+    case 'date': return <Calendar {...iconProps} />;
+    case 'scale': return <BarChart3 {...iconProps} />;
+    case 'rating': return <Star {...iconProps} />;
+    case 'yes_no': return <ToggleLeft {...iconProps} />;
+    case 'file_upload': return <Upload {...iconProps} />;
+    case 'image_choice': return <ImageIcon {...iconProps} />;
+    case 'matrix': return <Grid3X3 {...iconProps} />;
+    case 'statement': return <MessageSquare {...iconProps} />;
+    case 'section_divider': return <Minus {...iconProps} />;
+    default: return <MessageSquare {...iconProps} />;
+  }
+}
+
 function QuestionTitle({ question, index, themeColor }: { question: FormQuestion; index: number; themeColor: string }) {
   return (
     <div className="mb-4">
       <div className="flex items-start gap-2">
-        <span
-          className="flex items-center justify-center size-7 rounded-full text-sm font-bold shrink-0 mt-0.5"
+        <motion.span
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 20, delay: 0.05 }}
+          className="flex items-center justify-center size-8 rounded-full text-sm font-bold shrink-0 mt-0.5"
           style={{
             backgroundColor: `${themeColor}1a`,
             color: themeColor,
           }}
         >
           {index + 1}
-        </span>
-        <Label className="text-base font-semibold text-gray-900 dark:text-white leading-relaxed">
-          {question.title}
-          {question.required && <span className="text-red-500 mr-1">*</span>}
-        </Label>
+        </motion.span>
+        <div className="flex-1 min-w-0">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 24, delay: 0.1 }}
+            className="flex items-center gap-2"
+          >
+            <QuestionTypeIconDisplay type={question.type} color={themeColor} />
+            <Label className="text-base font-semibold text-gray-900 dark:text-white leading-relaxed">
+              {question.title}
+              {question.required && <span className="text-red-500 mr-1">*</span>}
+            </Label>
+          </motion.div>
+          {question.config.description && (
+            <motion.p
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24, delay: 0.18 }}
+              className="text-sm text-gray-500 dark:text-zinc-400 mt-1"
+            >
+              {question.config.description}
+            </motion.p>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -1048,63 +1142,121 @@ function isQuestionVisible(
   }
 }
 
-function SuccessScreen({ customMessage }: { customMessage?: string }) {
+function SuccessScreen({ customMessage, onReturn }: { customMessage?: string; onReturn: () => void }) {
+  const confettiColors = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899'];
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-      className="flex flex-col items-center justify-center py-16 px-4 text-center"
-    >
+    <div className="relative overflow-hidden">
+      {/* Confetti Particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 24 }).map((_, i) => {
+          const color = confettiColors[i % confettiColors.length];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 2;
+          const duration = 2 + Math.random() * 2;
+          const size = 4 + Math.random() * 6;
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 0, scale: 0 }}
+              animate={{
+                opacity: [0, 1, 1, 0],
+                y: [0, -60 - Math.random() * 80, -120 - Math.random() * 60],
+                x: [(Math.random() - 0.5) * 40, (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 60],
+                scale: [0, 1.2, 0.8],
+              }}
+              transition={{
+                duration,
+                delay: 0.5 + delay,
+                ease: 'easeOut',
+              }}
+              className="absolute rounded-full"
+              style={{
+                backgroundColor: color,
+                left: `${left}%`,
+                bottom: '30%',
+                width: size,
+                height: size,
+              }}
+            />
+          );
+        })}
+      </div>
+
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-        className="flex size-24 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-200 dark:shadow-emerald-900/40 mb-8"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+        className="flex flex-col items-center justify-center py-16 px-4 text-center"
       >
+        {/* Pulsing glow behind checkmark */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.1, 0.3] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+          className="absolute top-16 sm:top-20 size-36 rounded-full bg-emerald-400/20 blur-2xl"
+        />
+
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+          className="relative flex size-24 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-200 dark:shadow-emerald-900/40 mb-8"
         >
-          <svg className="size-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <motion.path
-              d="M5 13l4 4L19 7"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            />
-          </svg>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
+          >
+            <svg className="size-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <motion.path
+                d="M5 13l4 4L19 7"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+              />
+            </svg>
+          </motion.div>
+        </motion.div>
+        <motion.h2
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="text-2xl font-bold text-gray-900 dark:text-white mb-3"
+        >
+          پاسخ شما با موفقیت ثبت شد!
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="text-gray-500 dark:text-zinc-400 max-w-md"
+        >
+          {customMessage || 'از وقتی که برای پاسخگویی گذاشتید، سپاسگزاریم. پاسخ شما ثبت و ذخیره شد.'}
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="mt-8 flex flex-col items-center gap-4"
+        >
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={onReturn}
+            className="inline-flex items-center gap-2 rounded-full px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 dark:shadow-violet-900/40 hover:shadow-xl transition-shadow"
+            style={{ backgroundColor: '#7c3aed' }}
+          >
+            <LayoutDashboard className="size-4" />
+            بازگشت به داشبورد
+          </motion.button>
+          <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-zinc-500">
+            <FileText className="size-4" />
+            <span>فرم‌ساز</span>
+          </div>
         </motion.div>
       </motion.div>
-      <motion.h2
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="text-2xl font-bold text-gray-900 dark:text-white mb-3"
-      >
-        پاسخ شما با موفقیت ثبت شد!
-      </motion.h2>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="text-gray-500 dark:text-zinc-400 max-w-md"
-      >
-        {customMessage || 'از وقتی که برای پاسخگویی گذاشتید، سپاسگزاریم. پاسخ شما ثبت و ذخیره شد.'}
-      </motion.p>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="mt-8"
-      >
-        <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-zinc-500">
-          <FileText className="size-4" />
-          <span>فرم‌ساز</span>
-        </div>
-      </motion.div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -1115,6 +1267,9 @@ export default function FormFill() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [navDirection, setNavDirection] = useState<'forward' | 'backward'>('forward');
+  const [showAutoSave, setShowAutoSave] = useState(false);
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const formThemeData = useFormTheme(fillForm);
   const themeColor = formThemeData.primaryColor;
@@ -1162,6 +1317,12 @@ export default function FormFill() {
       delete next[questionId];
       return next;
     });
+    // Show auto-save indicator
+    setShowAutoSave(true);
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(() => {
+      setShowAutoSave(false);
+    }, 2000);
   }, []);
 
   const validateCurrentPage = (): boolean => {
@@ -1190,6 +1351,7 @@ export default function FormFill() {
   const handleNext = () => {
     if (validateCurrentPage()) {
       if (currentPage < totalPages - 1) {
+        setNavDirection('forward');
         setCurrentPage((p) => p + 1);
       }
     }
@@ -1197,6 +1359,7 @@ export default function FormFill() {
 
   const handlePrev = () => {
     if (currentPage > 0) {
+      setNavDirection('backward');
       setCurrentPage((p) => p - 1);
     }
   };
@@ -1295,7 +1458,7 @@ export default function FormFill() {
     return (
       <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950">
         <div className="mx-auto max-w-xl px-4">
-          <SuccessScreen customMessage={customThankYouMessage} />
+          <SuccessScreen customMessage={customThankYouMessage} onReturn={() => { setFillForm(null); setCurrentView('dashboard'); }} />
         </div>
       </div>
     );
@@ -1303,7 +1466,30 @@ export default function FormFill() {
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950">
-      <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
+      <TooltipProvider delayDuration={400}>
+      <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10 relative">
+        {/* Auto-save indicator */}
+        <AnimatePresence>
+          {showAutoSave && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              className="fixed top-4 left-4 z-50 flex items-center gap-2 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 shadow-lg px-4 py-2"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                className="size-5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center"
+              >
+                <Check className="size-3 text-emerald-500" />
+              </motion.div>
+              <span className="text-xs font-medium text-gray-600 dark:text-zinc-300">ذخیره خودکار</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
         {/* Back button */}
         <motion.div
           initial={{ opacity: 0, x: 10 }}
@@ -1357,23 +1543,29 @@ export default function FormFill() {
               <span className="text-xs font-medium text-gray-500 dark:text-zinc-400">
                 سؤال {currentPage + 1} از {totalPages}
               </span>
-              {progressStyle === 'bar' && (
-                <span className="text-xs font-bold" style={{ color: themeColor }}>{progressPercent}%</span>
-              )}
+              <span className="text-xs font-bold" style={{ color: themeColor }}>{progressPercent}٪</span>
             </div>
             {progressStyle === 'bar' ? (
-              <Progress
-                value={progressPercent}
-                className="h-2 [&>div]:bg-gradient-to-l [&>div]:to-purple-500"
-                style={
-                  { '--progress-color': themeColor } as React.CSSProperties
-                }
-              />
+              <div className="relative overflow-hidden rounded-full h-2.5 bg-gray-100 dark:bg-zinc-800">
+                <motion.div
+                  className="absolute inset-y-0 right-0 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercent}%` }}
+                  transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+                  style={{ backgroundColor: themeColor }}
+                >
+                  {/* Shimmer effect */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                    }}
+                    animate={{ x: ['100%', '-100%'] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 2 }}
+                  />
+                </motion.div>
+              </div>
             ) : null}
-            <style>{progressStyle === 'bar' ? `
-              .progress-bar-fill { background: linear-gradient(to left, ${themeColor}, ${themeColor}bb) !important; }
-              [role="progressbar"] > div { background: linear-gradient(to left, ${themeColor}, ${themeColor}bb) !important; }
-            ` : ''}</style>
           </motion.div>
         )}
 
@@ -1382,20 +1574,26 @@ export default function FormFill() {
           {currentQuestion && (
             <motion.div
               key={currentQuestion.id}
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: navDirection === 'forward' ? 40 : -40 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              exit={{ opacity: 0, x: navDirection === 'forward' ? -40 : 40 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
             >
               <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm">
                 <QuestionTitle question={currentQuestion} index={currentPage} themeColor={themeColor} />
 
-                <QuestionRenderer
-                  question={currentQuestion}
-                  value={answers[currentQuestion.id] || ''}
-                  onChange={(val) => handleAnswerChange(currentQuestion.id, val)}
-                  themeColor={themeColor}
-                />
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ type: 'spring', stiffness: 280, damping: 24, delay: 0.2 }}
+                >
+                  <QuestionRenderer
+                    question={currentQuestion}
+                    value={answers[currentQuestion.id] || ''}
+                    onChange={(val) => handleAnswerChange(currentQuestion.id, val)}
+                    themeColor={themeColor}
+                  />
+                </motion.div>
 
                 {errors[currentQuestion.id] && (
                   <motion.div
@@ -1414,76 +1612,122 @@ export default function FormFill() {
 
         {/* Navigation */}
         <div className="flex items-center justify-between mt-6 gap-3">
-          <Button
-            variant="outline"
-            onClick={handlePrev}
-            disabled={currentPage === 0}
-            className="rounded-xl px-6 disabled:opacity-40 border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800"
-          >
-            <ArrowRight className="size-4 ml-2" />
-            قبلی
-          </Button>
+          <motion.div whileTap={{ scale: 0.95 }}>
+            <Button
+              variant="outline"
+              onClick={handlePrev}
+              disabled={currentPage === 0}
+              className="rounded-full px-6 h-11 disabled:opacity-40 border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 shadow-sm hover:shadow-md transition-all"
+            >
+              <motion.span
+                animate={{ rotate: currentPage > 0 ? 0 : 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center gap-2"
+              >
+                <ArrowRight className="size-4" />
+                قبلی
+              </motion.span>
+            </Button>
+          </motion.div>
 
           {currentPage < totalPages - 1 ? (
-            <Button
-              onClick={handleNext}
-              className="text-white shadow-md rounded-xl px-6 hover:opacity-90 transition-opacity"
-              style={{
-                background: `linear-gradient(to left, ${themeColor}, ${themeColor}dd)`,
-                boxShadow: `0 4px 6px -1px ${themeColor}33`,
-              }}
-            >
-              بعدی
-              <ArrowLeft className="size-4 mr-2" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.div whileTap={{ scale: 0.95 }}>
+                  <Button
+                    onClick={handleNext}
+                    className="text-white rounded-full px-6 h-11 shadow-md hover:shadow-lg transition-all hover:brightness-110"
+                    style={{
+                      background: `linear-gradient(to left, ${themeColor}, ${themeColor}dd)`,
+                      boxShadow: `0 4px 14px -3px ${themeColor}44`,
+                    }}
+                  >
+                    <span className="flex items-center gap-2">
+                      بعدی
+                      <motion.span
+                        animate={{ x: [0, 3, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        <ArrowLeft className="size-4" />
+                      </motion.span>
+                    </span>
+                  </Button>
+                </motion.div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                <kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-zinc-700 text-[10px] font-mono ml-1">Enter</kbd>
+                {' '}یا{' '}
+                <kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-zinc-700 text-[10px] font-mono mr-1">Ctrl+Enter</kbd>
+              </TooltipContent>
+            </Tooltip>
           ) : (
-            <Button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="bg-gradient-to-l from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-md shadow-emerald-200 dark:shadow-emerald-900/40 rounded-xl px-8 font-medium"
-            >
-              {isSubmitting ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  className="size-4 border-2 border-white border-t-transparent rounded-full"
-                />
-              ) : (
-                <>
-                  <Send className="size-4 ml-2" />
-                  {customSubmitText}
-                </>
-              )}
-            </Button>
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="bg-gradient-to-l from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-full px-8 h-11 font-medium shadow-lg shadow-emerald-200 dark:shadow-emerald-900/40 hover:shadow-xl hover:brightness-110 transition-all"
+              >
+                {isSubmitting ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className="size-4 border-2 border-white border-t-transparent rounded-full"
+                  />
+                ) : (
+                  <>
+                    <Send className="size-4 ml-2" />
+                    {customSubmitText}
+                  </>
+                )}
+              </Button>
+            </motion.div>
           )}
         </div>
 
         {/* Page dots */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-1.5 mt-6">
+          <div className="flex items-center justify-center mt-6">
             {visibleInputQuestions.map((q, idx) => (
-              <button
-                key={q.id}
-                onClick={() => setCurrentPage(idx)}
-                className={`rounded-full transition-all duration-200 ${
-                  idx === currentPage
-                    ? 'size-3'
-                    : answers[q.id]
-                    ? 'size-2.5'
-                    : 'size-2.5 bg-gray-300 dark:bg-zinc-600'
-                }`}
-                style={
-                  idx === currentPage
-                    ? { backgroundColor: themeColor }
-                    : answers[q.id]
-                    ? { backgroundColor: `${themeColor}66` }
-                    : undefined
-                }
-              />
+              <React.Fragment key={q.id}>
+                <motion.button
+                  whileHover={{ scale: 1.4 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => {
+                    setNavDirection(idx > currentPage ? 'forward' : 'backward');
+                    setCurrentPage(idx);
+                  }}
+                  className="rounded-full transition-all duration-200 relative"
+                  style={{
+                    width: idx === currentPage ? 28 : 10,
+                    height: idx === currentPage ? 10 : 10,
+                    backgroundColor: idx === currentPage ? themeColor : answers[q.id] ? `${themeColor}55` : undefined,
+                  }}
+                  animate={idx === currentPage ? { scale: [1, 1.15, 1] } : {}}
+                  transition={{ duration: 0.3 }}
+                >
+                  {idx === currentPage && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
+                      style={{ backgroundColor: themeColor }}
+                      animate={{ scale: [1, 1.8, 2.5], opacity: [0.3, 0.1, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+                    />
+                  )}
+                </motion.button>
+                {idx < visibleInputQuestions.length - 1 && (
+                  <div
+                    className="w-3 sm:w-6 h-0.5 mx-0.5"
+                    style={{
+                      backgroundColor: idx < currentPage ? themeColor : '#e5e7eb',
+                    }}
+                  />
+                )}
+              </React.Fragment>
             ))}
           </div>
         )}
       </div>
+      </TooltipProvider>
     </div>
   );
 }
