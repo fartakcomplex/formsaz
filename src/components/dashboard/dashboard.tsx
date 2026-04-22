@@ -794,7 +794,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
-              onClick={() => setCurrentView('templates')
+              onClick={() => setCurrentView('templates')}
               className="border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 rounded-xl px-5 font-medium w-full sm:w-auto h-10 transition-colors text-gray-700 dark:text-gray-300"
             >
               <LayoutTemplate className="size-4 ml-2 text-purple-500" />

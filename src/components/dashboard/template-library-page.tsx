@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
@@ -45,13 +46,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
 import {
   templatesData,
   type TemplateData,
@@ -205,29 +199,39 @@ function QuestionPreviewRow({ question, index }: { question: Omit<FormQuestion, 
   );
 }
 
-/* ─── Template Preview Dialog ───────────────────────────────────────────── */
+/* ─── Template Preview Overlay ────────────────────────────────────────────── */
 
-function TemplatePreviewDialog({
+function TemplatePreviewOverlay({
   template,
-  open,
-  onOpenChange,
+  onClose,
   onUse,
   isUsing,
 }: {
-  template: TemplateData | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  template: TemplateData;
+  onClose: () => void;
   onUse: () => void;
   isUsing: boolean;
 }) {
-  if (!template) return null;
+  const colors = categoryColorMap[template.category];
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        dir="rtl"
-        showCloseButton={false}
-        className="max-w-2xl w-[95vw] max-h-[90vh] overflow-hidden flex flex-col p-0 rounded-2xl border-gray-200 dark:border-gray-700"
+  return createPortal(
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+
+      {/* Dialog */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="relative z-10 w-full max-w-2xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden flex flex-col"
       >
         {/* Header */}
         <div className={cn('relative px-6 pt-6 pb-5')}>
@@ -239,19 +243,20 @@ function TemplatePreviewDialog({
                   <TemplateIcon name={template.icon} className="size-6" />
                 </div>
                 <div>
-                  <DialogTitle className="text-lg font-bold text-gray-900 dark:text-white">
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                     {template.name}
-                  </DialogTitle>
-                  <DialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                     {template.description}
-                  </DialogDescription>
+                  </p>
                 </div>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => onOpenChange(false)}
+                onClick={onClose}
                 className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 size-8 shrink-0"
+                aria-label="بستن"
               >
                 <X className="size-4" />
               </Button>
@@ -261,7 +266,7 @@ function TemplatePreviewDialog({
             <div className="flex items-center gap-3 mt-3">
               <Badge
                 variant="outline"
-                className={cn('text-[11px] font-medium border-0', categoryColorMap[template.category].bg, categoryColorMap[template.category].text, categoryColorMap[template.category].darkBg, categoryColorMap[template.category].darkText)}
+                className={cn('text-[11px] font-medium border-0', colors.bg, colors.text, colors.darkBg, colors.darkText)}
               >
                 {template.categoryLabel}
               </Badge>
@@ -314,8 +319,9 @@ function TemplatePreviewDialog({
             )}
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </motion.div>
+    </motion.div>,
+    document.body
   );
 }
 
@@ -335,21 +341,19 @@ function TemplateCard({
   const colors = categoryColorMap[template.category];
 
   return (
-    <motion.div
-      variants={cardVariants}
-      layout
-      whileHover={{ y: -4 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="group relative"
-    >
+    <div className="group relative">
       {/* Hover glow */}
-      <div className="absolute -inset-[1.5px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      <div className="pointer-events-none absolute -inset-[1.5px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
           background: 'linear-gradient(135deg, rgba(168,85,247,0.35), rgba(236,72,153,0.35), rgba(249,115,22,0.25))',
         }}
       />
 
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-sm overflow-hidden flex flex-col h-full group-hover:shadow-xl transition-all duration-300">
+      <button
+        type="button"
+        className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-sm flex flex-col h-full group-hover:shadow-xl transition-all duration-300 cursor-pointer text-right w-full p-0"
+        onClick={onPreview}
+      >
         {/* Icon area */}
         <div className={cn('bg-gradient-to-br relative flex items-center justify-center h-32 overflow-hidden', template.gradient)}>
           <div className="absolute -top-8 -right-8 size-24 rounded-full bg-white/10" />
@@ -406,19 +410,19 @@ function TemplateCard({
             </div>
 
             <div className="flex items-center gap-1.5">
-              <Button
+              <span
+                role="button"
+                tabIndex={0}
                 onClick={(e) => { e.stopPropagation(); onPreview(); }}
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2.5 rounded-lg text-gray-500 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50"
+                className="inline-flex items-center justify-center h-8 px-2.5 rounded-lg text-gray-500 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 cursor-pointer"
               >
                 <Eye className="size-3.5" />
-              </Button>
-              <Button
+              </span>
+              <span
+                role="button"
+                tabIndex={0}
                 onClick={(e) => { e.stopPropagation(); onUse(); }}
-                disabled={isUsing}
-                size="sm"
-                className="h-8 rounded-lg bg-gradient-to-l from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 dark:from-gray-200 dark:to-gray-300 text-white dark:text-gray-900 shadow-sm text-xs font-medium px-3 transition-all"
+                className="inline-flex items-center justify-center h-8 rounded-lg bg-gradient-to-l from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 dark:from-gray-200 dark:to-gray-300 text-white dark:text-gray-900 shadow-sm text-xs font-medium px-3 transition-all cursor-pointer"
               >
                 {isUsing ? (
                   <Loader2 className="size-3.5 animate-spin" />
@@ -426,12 +430,12 @@ function TemplateCard({
                   <Sparkles className="size-3.5" />
                 )}
                 استفاده
-              </Button>
+              </span>
             </div>
           </div>
         </div>
-      </div>
-    </motion.div>
+      </button>
+    </div>
   );
 }
 
@@ -537,6 +541,16 @@ export default function TemplateLibraryPage() {
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/80 dark:bg-gray-950 flex flex-col">
+      {/* Debug test */}
+      {previewTemplate && (
+        <div className="fixed inset-0 z-[200] bg-red-500/30 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl shadow-xl">
+            <p className="text-lg font-bold">{previewTemplate.name}</p>
+            <button onClick={() => setPreviewTemplate(null)} className="mt-2 px-4 py-2 bg-gray-200 rounded">بستن</button>
+          </div>
+        </div>
+      )}
+
       {/* ─── Hero Header ─── */}
       <div className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 overflow-hidden">
         {/* Decorative blobs */}
@@ -586,6 +600,12 @@ export default function TemplateLibraryPage() {
             <p className="text-base sm:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
               از میان الگوهای حرفه‌ای انتخاب کنید و در کمتر از ۳۰ ثانیه فرم خود را بسازید
             </p>
+            <button
+              onClick={() => setPreviewTemplate(templatesData[0])}
+              className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg text-sm"
+            >
+              تست پیش‌نمایش (DEBUG)
+            </button>
           </motion.div>
 
           {/* Search bar */}
@@ -778,14 +798,15 @@ export default function TemplateLibraryPage() {
         </div>
       )}
 
-      {/* ─── Template Preview Dialog ─── */}
-      <TemplatePreviewDialog
-        template={previewTemplate}
-        open={!!previewTemplate}
-        onOpenChange={(open) => { if (!open) setPreviewTemplate(null); }}
-        onUse={() => { if (previewTemplate) handleUseTemplate(previewTemplate); }}
-        isUsing={!!previewTemplate && usingTemplateId === previewTemplate.id}
-      />
+      {/* ─── Template Preview Overlay ─── */}
+      {previewTemplate && (
+        <TemplatePreviewOverlay
+          template={previewTemplate}
+          onClose={() => setPreviewTemplate(null)}
+          onUse={() => handleUseTemplate(previewTemplate)}
+          isUsing={usingTemplateId === previewTemplate.id}
+        />
+      )}
     </div>
   );
 }
