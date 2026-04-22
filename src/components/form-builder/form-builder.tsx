@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   PanelLeftClose,
   PanelLeftOpen,
@@ -41,10 +41,11 @@ import QuestionTypes from './question-types';
 import FormPreview from './form-preview';
 import PropertiesPanel from './properties-panel';
 import FormSettingsDialog from './form-settings-dialog';
+import KeyboardShortcutsDialog from './keyboard-shortcuts-dialog';
 import { toast } from 'sonner';
 
 export default function FormBuilder() {
-  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView } = useAppStore();
+  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView, canUndo, canRedo, undo, redo, removeQuestion, setSelectedQuestionId } = useAppStore();
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [mobileLeftOpen, setMobileLeftOpen] = useState(false);
@@ -163,11 +164,79 @@ export default function FormBuilder() {
       viewCount: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      expiresAt: null,
       questions,
+      _count: { submissions: 0 },
     };
     setFillForm(previewForm);
     setCurrentView('fill');
   };
+
+  // Keyboard shortcuts
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Ignore when typing in inputs/textareas
+    const tag = (e.target as HTMLElement).tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (e.target as HTMLElement).isContentEditable) {
+      // Only handle Escape and Ctrl+S even inside inputs
+      if (e.key === 'Escape') {
+        (e.target as HTMLElement).blur();
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        handleSave();
+        return;
+      }
+      return;
+    }
+
+    // Undo
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+      e.preventDefault();
+      if (canUndo) undo();
+      return;
+    }
+    // Redo (Ctrl+Shift+Z)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'z' || e.key === 'Z')) {
+      e.preventDefault();
+      if (canRedo) redo();
+      return;
+    }
+    // Redo (Ctrl+Y)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'y' && !e.shiftKey) {
+      e.preventDefault();
+      if (canRedo) redo();
+      return;
+    }
+    // Save (Ctrl+S)
+    if ((e.ctrlKey || e.metaKey) && e.key === 's' && !e.shiftKey) {
+      e.preventDefault();
+      handleSave();
+      return;
+    }
+    // Form Settings (Ctrl+Shift+S)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      return;
+    }
+    // Delete selected question
+    if (e.key === 'Delete' && selectedQuestionId !== null) {
+      e.preventDefault();
+      removeQuestion(selectedQuestionId);
+      return;
+    }
+    // Escape - deselect question
+    if (e.key === 'Escape' && selectedQuestionId !== null) {
+      e.preventDefault();
+      setSelectedQuestionId(null);
+      return;
+    }
+  }, [canUndo, canRedo, undo, redo, selectedQuestionId, removeQuestion, setSelectedQuestionId]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   const hasQuestions = questions.length > 0;
   const hasSelection = selectedQuestionId !== null;
@@ -261,27 +330,41 @@ export default function FormBuilder() {
 
         {/* Left section (RTL - actions) */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Undo/Redo - decorative for now */}
+          {/* Undo/Redo */}
           <div className="hidden lg:flex items-center gap-0.5">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground"
+                  disabled={!canUndo}
+                  onClick={undo}
+                >
                   <Undo2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>برگشت</TooltipContent>
+              <TooltipContent>برگشت (Ctrl+Z)</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground"
+                  disabled={!canRedo}
+                  onClick={redo}
+                >
                   <Redo2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>دوباره</TooltipContent>
+              <TooltipContent>دوباره (Ctrl+Shift+Z)</TooltipContent>
             </Tooltip>
           </div>
 
           <Separator orientation="vertical" className="h-6 mx-0.5 hidden lg:block" />
+
+          <KeyboardShortcutsDialog />
 
           <Tooltip>
             <TooltipTrigger asChild>

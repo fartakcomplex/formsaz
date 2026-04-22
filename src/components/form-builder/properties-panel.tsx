@@ -100,7 +100,7 @@ function OptionsEditor({
         {options.map((opt, idx) => (
           <div
             key={opt.id}
-            className="group/opt flex items-center gap-1.5 rounded-lg border bg-muted/30 px-2 py-1 transition-colors hover:bg-muted/50"
+            className="group/opt flex items-center gap-1.5 rounded-lg border bg-muted/30 px-2 py-1.5 transition-all duration-200 hover:bg-violet-50/60 hover:border-violet-200 dark:hover:bg-violet-950/20 dark:hover:border-violet-800/50 hover:shadow-sm hover:shadow-violet-100/50 dark:hover:shadow-violet-950/20"
           >
             <GripVertical className="h-3.5 w-3.5 shrink-0 cursor-grab text-muted-foreground/40" />
             <span className="shrink-0 text-[10px] font-bold text-muted-foreground w-4 text-center">
@@ -109,12 +109,12 @@ function OptionsEditor({
             <Input
               value={opt.text}
               onChange={(e) => updateOptionText(opt.id, e.target.value)}
-              className="h-8 flex-1 border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm px-1"
+              className="h-8 flex-1 border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm px-1 focus-visible:ring-0"
               placeholder="متن گزینه..."
             />
             <button
               onClick={() => removeOption(opt.id)}
-              className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted-foreground/40 opacity-0 transition-all hover:bg-red-100 hover:text-red-500 group-hover/opt:opacity-100"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted-foreground/40 opacity-0 transition-all duration-200 hover:bg-red-100 hover:text-red-500 group-hover/opt:opacity-100 hover:scale-110"
               disabled={options.length <= 1}
             >
               <X className="h-3 w-3" />
@@ -152,14 +152,14 @@ function TextConfigSection({
   isLong?: boolean;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 transition-all duration-200">
       <div className="space-y-2">
         <Label className="text-xs font-semibold text-muted-foreground">متن راهنما</Label>
         <Input
           value={config.placeholder || ''}
           onChange={(e) => onUpdate({ placeholder: e.target.value })}
           placeholder={isLong ? 'پاسخ بلند خود را وارد کنید...' : 'پاسخ کوتاه...'}
-          className="text-sm"
+          className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
         />
       </div>
       <div className="space-y-2">
@@ -170,7 +170,7 @@ function TextConfigSection({
           onChange={(e) => onUpdate({ maxLength: e.target.value ? parseInt(e.target.value) : undefined })}
           placeholder={isLong ? '۵۰۰۰' : '۲۵۵'}
           min={1}
-          className="text-sm"
+          className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
         />
       </div>
     </div>
@@ -185,7 +185,7 @@ function NumberConfigSection({
   onUpdate: (updates: Partial<QuestionConfig>) => void;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 transition-all duration-200">
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-2">
           <Label className="text-xs font-semibold text-muted-foreground">حداقل</Label>
@@ -194,7 +194,7 @@ function NumberConfigSection({
             value={config.min ?? ''}
             onChange={(e) => onUpdate({ min: e.target.value ? parseInt(e.target.value) : undefined })}
             placeholder="۰"
-            className="text-sm"
+            className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
           />
         </div>
         <div className="space-y-2">
@@ -204,7 +204,7 @@ function NumberConfigSection({
             value={config.max ?? ''}
             onChange={(e) => onUpdate({ max: e.target.value ? parseInt(e.target.value) : undefined })}
             placeholder="۱۰۰"
-            className="text-sm"
+            className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
           />
         </div>
       </div>
@@ -216,7 +216,7 @@ function NumberConfigSection({
           onChange={(e) => onUpdate({ step: e.target.value ? parseInt(e.target.value) : undefined })}
           placeholder="۱"
           min={1}
-          className="text-sm"
+          className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
         />
       </div>
     </div>
@@ -233,14 +233,14 @@ function ContactConfigSection({
   label: string;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 transition-all duration-200">
       <div className="space-y-2">
         <Label className="text-xs font-semibold text-muted-foreground">متن راهنما</Label>
         <Input
           value={config.placeholder || ''}
           onChange={(e) => onUpdate({ placeholder: e.target.value })}
           placeholder={label === 'ایمیل' ? 'example@email.com' : '۰۹۱۲۳۴۵۶۷۸۹'}
-          className="text-sm"
+          className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
         />
       </div>
     </div>
@@ -295,7 +295,7 @@ function ScaleConfigSection({
             value={config.scaleMinLabel || ''}
             onChange={(e) => onUpdate({ scaleMinLabel: e.target.value })}
             placeholder="کم"
-            className="text-sm"
+            className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
           />
         </div>
         <div className="space-y-2">
@@ -304,7 +304,7 @@ function ScaleConfigSection({
             value={config.scaleMaxLabel || ''}
             onChange={(e) => onUpdate({ scaleMaxLabel: e.target.value })}
             placeholder="زیاد"
-            className="text-sm"
+            className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
           />
         </div>
       </div>
@@ -812,7 +812,7 @@ export default function PropertiesPanel() {
               value={selectedQuestion.title}
               onChange={(e) => handleTitleChange(e.target.value)}
               placeholder="متن سؤال را وارد کنید..."
-              className="text-sm min-h-[80px] resize-none"
+              className="text-sm min-h-[80px] resize-none focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
               dir="rtl"
             />
           </div>
@@ -820,7 +820,7 @@ export default function PropertiesPanel() {
           <Separator />
 
           {/* Required Toggle */}
-          <div className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-3">
+          <div className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-3 transition-all duration-200 hover:border-violet-200 dark:hover:border-violet-800/50">
             <div className="flex items-center gap-2">
               <Label className="text-sm cursor-pointer" htmlFor="required-toggle">
                 پاسخ دادن الزامی است
@@ -841,8 +841,8 @@ export default function PropertiesPanel() {
           <Separator />
 
           {/* Type-specific configuration */}
-          <div>
-            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-3">
+          <div className="transition-all duration-200">
+            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-3 border-r-2 border-r-violet-400 dark:border-r-violet-600 pr-2">
               تنظیمات
             </Label>
             <TypeConfigSection question={selectedQuestion} />
@@ -865,7 +865,7 @@ export default function PropertiesPanel() {
             <Button
               variant="outline"
               size="sm"
-              className="w-full gap-2 justify-start text-sm"
+              className="w-full gap-2 justify-start text-sm transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 dark:hover:border-violet-700 dark:hover:bg-violet-950/30"
               onClick={handleDuplicate}
             >
               <Copy className="h-4 w-4" />

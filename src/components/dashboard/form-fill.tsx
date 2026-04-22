@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
@@ -554,6 +554,49 @@ function QuestionRenderer({
   }
 }
 
+function evaluateCondition(
+  condition: { questionId: string; operator: string; value?: string },
+  answers: Record<string, string>
+): boolean {
+  const answerValue = answers[condition.questionId];
+
+  switch (condition.operator) {
+    case 'equals':
+      return answerValue === condition.value;
+    case 'not_equals':
+      return answerValue !== condition.value;
+    case 'contains':
+      return answerValue?.includes(condition.value || '') ?? false;
+    case 'not_contains':
+      return !(answerValue?.includes(condition.value || ''));
+    case 'is_answered':
+      return !!answerValue && answerValue.trim() !== '';
+    case 'is_not_answered':
+      return !answerValue || answerValue.trim() === '';
+    default:
+      return true;
+  }
+}
+
+function isQuestionVisible(
+  question: FormQuestion,
+  answers: Record<string, string>
+): boolean {
+  if (!question.logic || !question.logic.enabled) return true;
+  if (!question.logic.conditions || question.logic.conditions.length === 0) return true;
+
+  const allConditionsMatch = question.logic.conditions.every((condition) =>
+    evaluateCondition(condition, answers)
+  );
+
+  if (question.logic.action === 'show') {
+    return allConditionsMatch;
+  } else {
+    // action === 'hide': hide when all conditions match
+    return !allConditionsMatch;
+  }
+}
+
 function SuccessScreen() {
   return (
     <motion.div
@@ -632,13 +675,27 @@ export default function FormFill() {
     [questions]
   );
 
-  const totalPages = inputQuestions.length;
+  const visibleInputQuestions = useMemo(
+    () => inputQuestions.filter((q) => isQuestionVisible(q, answers)),
+    [inputQuestions, answers]
+  );
+
+  const totalPages = visibleInputQuestions.length;
 
   const progressPercent = totalPages > 0
     ? Math.round(((currentPage + 1) / totalPages) * 100)
     : 0;
 
-  const currentQuestion = inputQuestions[currentPage];
+  const currentQuestion = visibleInputQuestions[currentPage];
+
+  // Keep currentPage in sync when visible questions change
+  useEffect(() => {
+    if (totalPages === 0) {
+      setCurrentPage(0);
+    } else if (currentPage >= totalPages) {
+      setCurrentPage(totalPages - 1);
+    }
+  }, [totalPages, currentPage]);
 
   const handleAnswerChange = useCallback((questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -689,9 +746,9 @@ export default function FormFill() {
   const handleSubmit = async () => {
     if (!validateCurrentPage()) return;
 
-    // Validate all questions
+    // Validate all visible questions
     const allErrors: Record<string, string> = {};
-    inputQuestions.forEach((q) => {
+    visibleInputQuestions.forEach((q) => {
       if (q.required) {
         const value = answers[q.id];
         if (!value || value.trim() === '') {
@@ -704,7 +761,7 @@ export default function FormFill() {
       setErrors(allErrors);
       // Navigate to first error
       const firstErrorId = Object.keys(allErrors)[0];
-      const errorIdx = inputQuestions.findIndex((q) => q.id === firstErrorId);
+      const errorIdx = visibleInputQuestions.findIndex((q) => q.id === firstErrorId);
       if (errorIdx >= 0) {
         setCurrentPage(errorIdx);
       }
@@ -713,10 +770,14 @@ export default function FormFill() {
 
     try {
       setIsSubmitting(true);
-      const responses = Object.entries(answers).map(([questionId, value]) => ({
-        questionId,
-        value,
-      }));
+      // Only send responses for visible questions
+      const visibleIds = new Set(visibleInputQuestions.map((q) => q.id));
+      const responses = Object.entries(answers)
+        .filter(([questionId]) => visibleIds.has(questionId))
+        .map(([questionId, value]) => ({
+          questionId,
+          value,
+        }));
 
       const res = await fetch(`/api/forms/${fillForm?.id}/submit`, {
         method: 'POST',
@@ -738,6 +799,36 @@ export default function FormFill() {
     return (
       <div dir="rtl" className="min-h-screen bg-gray-50/50 flex items-center justify-center">
         <p className="text-gray-400">فرمی برای نمایش وجود ندارد</p>
+      </div>
+    );
+  }
+
+  // Check if form is expired
+  const isExpired = fillForm.expiresAt && new Date(fillForm.expiresAt) < new Date();
+
+  if (isExpired) {
+    return (
+      <div dir="rtl" className="min-h-screen bg-gray-50/50 flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center text-center max-w-md"
+        >
+          <div className="flex size-20 items-center justify-center rounded-3xl bg-red-100 dark:bg-red-900/30 mb-6">
+            <AlertCircle className="size-10 text-red-500" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">این فرم منقضی شده است</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            مهلت پاسخگویی به این فرم به پایان رسیده است و دیگر قابل پر کردن نیست.
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => { setFillForm(null); setCurrentView(previousView || 'dashboard'); }}
+            className="rounded-xl"
+          >
+            بازگشت به داشبورد
+          </Button>
+        </motion.div>
       </div>
     );
   }
@@ -883,7 +974,7 @@ export default function FormFill() {
         {/* Page dots */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-1.5 mt-6">
-            {inputQuestions.map((q, idx) => (
+            {visibleInputQuestions.map((q, idx) => (
               <button
                 key={q.id}
                 onClick={() => setCurrentPage(idx)}

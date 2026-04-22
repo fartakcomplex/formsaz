@@ -16,6 +16,7 @@ import {
   TrendingUp,
   Star,
   PieChart as PieChartIcon,
+  AlertCircle,
 } from 'lucide-react';
 import {
   BarChart,
@@ -87,12 +88,12 @@ function StatCard({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-4 rounded-2xl border bg-white dark:bg-gray-900 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow dark:border-gray-800"
+      className="relative flex items-center gap-4 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/20 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 sm:p-5 shadow-sm hover:shadow-md transition-all duration-300 dark:border-gray-800 overflow-hidden"
     >
-      <div className={`flex size-12 items-center justify-center rounded-xl ${color} dark:opacity-80`}>
+      <div className={`relative flex size-12 items-center justify-center rounded-xl ${color} dark:opacity-80`}>
         {icon}
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="relative flex-1 min-w-0">
         <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{value}</p>
         <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
         {subtitle && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{subtitle}</p>}
@@ -945,9 +946,30 @@ export default function ResultsView() {
     );
   }
 
+  const isExpired = currentForm.expiresAt && new Date(currentForm.expiresAt) < new Date();
+
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-gray-950">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Expiration Warning */}
+        {isExpired && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 p-4 mb-6"
+          >
+            <AlertCircle className="size-5 text-red-500 shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                این فرم منقضی شده است
+              </p>
+              <p className="text-xs text-red-600 dark:text-red-400 mt-0.5">
+                مهلت پاسخگویی به این فرم به پایان رسیده و پاسخ‌های جدیدی ثبت نخواهد شد.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -965,7 +987,7 @@ export default function ResultsView() {
             </Button>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                <BarChart3 className="size-6 text-indigo-500" />
+                <BarChart3 className="size-6 text-violet-500" />
                 نتایج فرم
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{currentForm.title}</p>
@@ -988,25 +1010,33 @@ export default function ResultsView() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-20"
+            className="flex flex-col items-center justify-center py-24"
           >
-            <div className="flex size-20 items-center justify-center rounded-3xl bg-gray-100 dark:bg-gray-800 mb-6">
-              <ListChecks className="size-10 text-gray-300 dark:text-gray-600" />
+            {/* Decorative background */}
+            <div className="relative mb-8">
+              <div className="absolute -inset-6 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-200/40 dark:from-violet-900/30 dark:to-purple-900/30 blur-2xl" />
+              <div className="relative flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/40 dark:to-purple-900/40 border border-violet-200/50 dark:border-violet-700/30">
+                <ListChecks className="size-12 text-violet-400 dark:text-violet-500" />
+              </div>
             </div>
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">هنوز پاسخی ثبت نشده</h3>
-            <p className="text-sm text-gray-400 dark:text-gray-500 max-w-sm text-center">
+            <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">هنوز پاسخی ثبت نشده</h3>
+            <p className="text-sm text-gray-400 dark:text-gray-500 max-w-sm text-center leading-relaxed">
               با به اشتراک‌گذاری لینک فرم، پاسخ‌دهندگان می‌توانند فرم شما را پر کنند.
             </p>
+            <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
+              <div className="size-1.5 rounded-full bg-violet-400" />
+              <span>منتظر اولین پاسخ باشید</span>
+            </div>
           </motion.div>
         ) : (
           <>
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
               <StatCard
-                icon={<Users className="size-6 text-indigo-600 dark:text-indigo-400" />}
+                icon={<Users className="size-6 text-violet-600 dark:text-violet-400" />}
                 label="کل پاسخ‌ها"
                 value={submissions.length}
-                color="bg-indigo-100 dark:bg-indigo-900/50"
+                color="bg-violet-100 dark:bg-violet-900/50"
               />
               <StatCard
                 icon={<TrendingUp className="size-6 text-emerald-600 dark:text-emerald-400" />}
@@ -1062,7 +1092,7 @@ export default function ResultsView() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                       >
-                        <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+                        <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
                           <CardContent className="p-5 sm:p-6">
                             <QuestionSummary
                               question={question}

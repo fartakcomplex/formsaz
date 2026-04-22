@@ -48,7 +48,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { title, description, theme, status, questions } = body;
+    const { title, description, theme, status, questions, expiresAt } = body;
 
     const form = await db.form.update({
       where: { id },
@@ -57,6 +57,7 @@ export async function PUT(
         ...(description !== undefined && { description }),
         ...(theme !== undefined && { theme: JSON.stringify(theme) }),
         ...(status !== undefined && { status }),
+        ...(expiresAt !== undefined && { expiresAt: expiresAt ? new Date(expiresAt) : null }),
       },
     });
 

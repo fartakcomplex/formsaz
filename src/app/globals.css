@@ -121,8 +121,24 @@
   }
 }
 
-/* Custom scrollbar */
+/* Smooth scrolling */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Scroll margin for anchor links */
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+}
+
+/* Custom scrollbar – thin, violet-accented */
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.75 0.08 293) transparent;
+  }
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -131,17 +147,48 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.8 0.01 270);
+    background: oklch(0.75 0.08 293);
     border-radius: 100px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.7 0.01 270);
+    background: oklch(0.65 0.12 293);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  .dark * {
+    scrollbar-color: oklch(0.35 0.06 293) transparent;
   }
   .dark ::-webkit-scrollbar-thumb {
-    background: oklch(0.3 0.01 270);
+    background: oklch(0.35 0.06 293);
   }
   .dark ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.4 0.01 270);
+    background: oklch(0.45 0.08 293);
+  }
+}
+
+/* Custom text selection – violet themed */
+@layer base {
+  ::selection {
+    background: oklch(0.7 0.18 293 / 30%);
+    color: inherit;
+  }
+  .dark ::selection {
+    background: oklch(0.55 0.2 293 / 40%);
+    color: inherit;
+  }
+}
+
+/* Focus ring improvements */
+@layer base {
+  :focus-visible {
+    outline: 2px solid oklch(0.55 0.24 270);
+    outline-offset: 2px;
+    border-radius: calc(var(--radius) - 2px);
+  }
+  /* Remove default browser outlines when :focus-visible is used by Tailwind */
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format, formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow, isAfter, isBefore } from 'date-fns';
 import { faIR } from 'date-fns/locale';
 import {
   Plus,
@@ -31,6 +31,12 @@ import {
   FileEdit,
   Rocket,
   TrendingUp,
+  Calendar,
+  Clock,
+  Undo2,
+  CheckSquare,
+  Square,
+  X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -74,6 +80,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -120,6 +127,24 @@ function formatDate(dateStr: string): string {
   } catch {
     return dateStr;
   }
+}
+
+function getExpirationStatus(expiresAt: string | null | undefined): { isExpired: boolean; text: string; color: string } {
+  if (!expiresAt) return { isExpired: false, text: '', color: '' };
+  const now = new Date();
+  const expDate = new Date(expiresAt);
+  if (isBefore(expDate, now)) {
+    return {
+      isExpired: true,
+      text: 'منقضی',
+      color: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800',
+    };
+  }
+  return {
+    isExpired: false,
+    text: `منقضی در ${formatDate(expiresAt)}`,
+    color: 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800',
+  };
 }
 
 // ─── Share Form Dialog ─────────────────────────────────────────────────────
@@ -396,6 +421,127 @@ function ShareFormDialog({
   );
 }
 
+// ─── Expiration Date Dialog ────────────────────────────────────────────────
+
+function ExpirationDateDialog({
+  form,
+  open,
+  onOpenChange,
+  onSave,
+}: {
+  form: Form | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: (formId: string, expiresAt: string | null) => void;
+}) {
+  const [dateValue, setDateValue] = useState('');
+
+  const getInitialDate = () => {
+    if (form?.expiresAt) {
+      try {
+        return format(new Date(form.expiresAt), 'yyyy-MM-dd');
+      } catch {
+        return '';
+      }
+    }
+    return '';
+  };
+
+  const handleOpen = (isOpen: boolean) => {
+    if (isOpen) {
+      setDateValue(getInitialDate());
+    }
+    onOpenChange(isOpen);
+  };
+
+  const handleSave = () => {
+    if (!form) return;
+    onSave(form.id, dateValue || null);
+    onOpenChange(false);
+  };
+
+  const handleRemove = () => {
+    if (!form) return;
+    onSave(form.id, null);
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpen}>
+      <DialogContent dir="rtl" className="sm:max-w-md rounded-2xl border-gray-200 dark:border-gray-800 overflow-hidden p-0">
+        <DialogHeader className="p-6 pb-4 bg-gradient-to-l from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/40 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-sm">
+              <Clock className="size-5 text-violet-500" />
+            </div>
+            <div className="text-right">
+              <DialogTitle className="text-base font-bold text-gray-900 dark:text-white">
+                تاریخ انقضای فرم
+              </DialogTitle>
+              <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {form?.title}
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="p-6 space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              تاریخ انقضا
+            </label>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              پس از این تاریخ، فرم دیگر قابل پر کردن نخواهد بود.
+            </p>
+            <div className="relative">
+              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
+              <Input
+                type="date"
+                value={dateValue}
+                onChange={(e) => setDateValue(e.target.value)}
+                min={format(new Date(), 'yyyy-MM-dd')}
+                className="pr-10 h-11 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-violet-300 focus:ring-violet-100 text-gray-900 dark:text-white"
+                dir="ltr"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            {form?.expiresAt && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleRemove}
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl text-sm"
+              >
+                <X className="size-3.5 ml-1" />
+                حذف تاریخ
+              </Button>
+            )}
+            <div className="flex-1" />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="rounded-xl border-gray-200 dark:border-gray-700 text-sm"
+            >
+              انصراف
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSave}
+              className="bg-violet-500 hover:bg-violet-600 text-white rounded-xl text-sm shadow-md shadow-violet-200/50 dark:shadow-violet-500/20"
+            >
+              <Check className="size-3.5 ml-1" />
+              ذخیره
+            </Button>
+          </DialogFooter>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 // ─── Stat Card ──────────────────────────────────────────────────────────────
 
 function StatCard({
@@ -459,7 +605,7 @@ function WelcomeIllustration() {
           <rect x="22" y="14" width="200" height="270" rx="16" fill="currentColor" className="text-gray-300 dark:text-gray-700" />
 
           {/* Document body */}
-          <rect x="16" y="8" width="200" height="270" rx="16" fill="white" className="dark:fill-gray-800" stroke="currentColor" className_ignored="true" />
+          <rect x="16" y="8" width="200" height="270" rx="16" fill="white" className="dark:fill-gray-800" stroke="currentColor" />
           <rect x="16" y="8" width="200" height="270" rx="16" stroke="currentColor" strokeWidth="1.5" className="text-gray-200 dark:text-gray-700" fill="none" />
 
           {/* Header bar */}
@@ -844,6 +990,10 @@ function FormCard({
   onDelete,
   onDuplicate,
   onShare,
+  onSetExpiration,
+  selectMode,
+  selected,
+  onToggleSelect,
 }: {
   form: Form;
   onEdit: (form: Form) => void;
@@ -852,26 +1002,50 @@ function FormCard({
   onDelete: (form: Form) => void;
   onDuplicate: (form: Form) => void;
   onShare: (form: Form) => void;
+  onSetExpiration: (form: Form) => void;
+  selectMode?: boolean;
+  selected?: boolean;
+  onToggleSelect?: (id: string) => void;
 }) {
   const status = statusConfig[form.status] || statusConfig.draft;
   const borderGradient = statusBorderGradient[form.status] || statusBorderGradient.draft;
   const questionCount = form.questions?.length || 0;
+  const expiration = getExpirationStatus(form.expiresAt);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -3, scale: 1.01 }}
+      whileHover={selectMode ? {} : { y: -3, scale: 1.01 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
-      <Card className="overflow-hidden border-gray-200 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg transition-all duration-300 group bg-white dark:bg-gray-900">
+      <Card className={`overflow-hidden transition-all duration-300 group bg-white dark:bg-gray-900 ${
+        selected
+          ? 'border-violet-400 dark:border-violet-600 ring-2 ring-violet-200 dark:ring-violet-800 shadow-lg shadow-violet-100/50 dark:shadow-violet-900/30'
+          : 'border-gray-200 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg'
+      }`}>
         {/* Status color top stripe */}
         <div className={`h-1 bg-gradient-to-l ${borderGradient}`} />
 
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                {selectMode && (
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => onToggleSelect?.(form.id)}
+                    className="shrink-0"
+                  >
+                    {selected ? (
+                      <div className="flex size-5 items-center justify-center rounded-md bg-violet-500 text-white">
+                        <Check className="size-3.5" strokeWidth={3} />
+                      </div>
+                    ) : (
+                      <div className="flex size-5 items-center justify-center rounded-md border-2 border-gray-300 dark:border-gray-600 group-hover:border-violet-400 dark:group-hover:border-violet-500 transition-colors" />
+                    )}
+                  </motion.button>
+                )}
                 <CardTitle className="text-base font-bold text-gray-900 dark:text-white truncate">
                   {form.title}
                 </CardTitle>
@@ -882,6 +1056,13 @@ function FormCard({
                 >
                   {questionCount} سؤال
                 </Badge>
+                {/* Expiration badge */}
+                {expiration.text && (
+                  <Badge variant="outline" className={`shrink-0 text-[10px] ${expiration.color}`}>
+                    {expiration.isExpired ? <Lock className="size-3 ml-0.5" /> : <Clock className="size-3 ml-0.5" />}
+                    {expiration.text}
+                  </Badge>
+                )}
               </div>
               {form.description && (
                 <CardDescription className="mt-1 line-clamp-2 text-sm dark:text-gray-400">
@@ -922,74 +1103,103 @@ function FormCard({
             <span>{formatRelativeTime(form.updatedAt)}</span>
           </div>
 
-          <div className="flex items-center gap-2 w-full">
+          {selectMode ? (
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 text-xs rounded-lg hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
-              onClick={() => onEdit(form)}
+              className={`w-full text-xs rounded-lg transition-colors ${
+                selected
+                  ? 'bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-950/50 dark:text-violet-400 dark:border-violet-800'
+                  : 'hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800'
+              }`}
+              onClick={() => onToggleSelect?.(form.id)}
             >
-              <Edit3 className="size-3.5 ml-1" />
-              ویرایش
+              {selected ? (
+                <>
+                  <CheckSquare className="size-3.5 ml-1" />
+                  انتخاب شده
+                </>
+              ) : (
+                <>
+                  <Square className="size-3.5 ml-1" />
+                  انتخاب
+                </>
+              )}
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 text-xs rounded-lg hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
-              onClick={() => onPreview(form)}
-            >
-              <Eye className="size-3.5 ml-1" />
-              پیش‌نمایش
-            </Button>
+          ) : (
+            <div className="flex items-center gap-2 w-full">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 text-xs rounded-lg hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
+                onClick={() => onEdit(form)}
+              >
+                <Edit3 className="size-3.5 ml-1" />
+                ویرایش
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 text-xs rounded-lg hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
+                onClick={() => onPreview(form)}
+              >
+                <Eye className="size-3.5 ml-1" />
+                پیش‌نمایش
+              </Button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-lg px-2">
-                  <MoreHorizontal className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-44">
-                <DropdownMenuItem onClick={() => onResults(form)}>
-                  <BarChart3 className="size-4 ml-2 text-violet-500" />
-                  نتایج
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onShare(form)}>
-                  <Share2 className="size-4 ml-2 text-purple-500" />
-                  اشتراک‌گذاری
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onDuplicate(form)}>
-                  <Copy className="size-4 ml-2 text-gray-500" />
-                  کپی فرم
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50" select={false}>
-                      <Trash2 className="size-4 ml-2" />
-                      حذف
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent dir="rtl">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>حذف فرم</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        آیا از حذف فرم «{form.title}» مطمئن هستید؟ این عمل قابل بازگشت نیست و تمام پاسخ‌ها نیز حذف خواهند شد.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="rounded-lg">انصراف</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => onDelete(form)}
-                        className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                      >
-                        حذف فرم
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="rounded-lg px-2">
+                    <MoreHorizontal className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-44">
+                  <DropdownMenuItem onClick={() => onResults(form)}>
+                    <BarChart3 className="size-4 ml-2 text-violet-500" />
+                    نتایج
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onShare(form)}>
+                    <Share2 className="size-4 ml-2 text-purple-500" />
+                    اشتراک‌گذاری
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onSetExpiration(form)}>
+                    <Clock className="size-4 ml-2 text-orange-500" />
+                    تاریخ انقضا
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onDuplicate(form)}>
+                    <Copy className="size-4 ml-2 text-gray-500" />
+                    کپی فرم
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50" onSelect={(e) => e.preventDefault()}>
+                        <Trash2 className="size-4 ml-2" />
+                        حذف
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent dir="rtl">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>حذف فرم</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          آیا از حذف فرم «{form.title}» مطمئن هستید؟ این عمل قابل بازگشت نیست و تمام پاسخ‌ها نیز حذف خواهند شد.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="rounded-lg">انصراف</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => onDelete(form)}
+                          className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                        >
+                          حذف فرم
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
         </CardFooter>
       </Card>
     </motion.div>
@@ -1007,6 +1217,7 @@ export default function Dashboard() {
     setCurrentView,
     setCurrentForm,
     setFillForm,
+    addToDeletedForms,
   } = useAppStore();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -1016,6 +1227,11 @@ export default function Dashboard() {
   const [duplicating, setDuplicating] = useState<string | null>(null);
   const [shareForm, setShareForm] = useState<Form | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [expirationForm, setExpirationForm] = useState<Form | null>(null);
+  const [expirationDialogOpen, setExpirationDialogOpen] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [batchDeleteConfirmOpen, setBatchDeleteConfirmOpen] = useState(false);
 
   const fetchForms = useCallback(async () => {
     try {
@@ -1084,11 +1300,53 @@ export default function Dashboard() {
     setCurrentView('results');
   };
 
+  const handleUndoDelete = async (deletedForm: Form) => {
+    try {
+      const questionsPayload = (deletedForm.questions || []).map((q, i) => ({
+        ...q,
+        order: q.order ?? i,
+      }));
+
+      const res = await fetch('/api/forms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: deletedForm.title,
+          description: deletedForm.description || '',
+          questions: questionsPayload,
+        }),
+      });
+
+      if (res.ok) {
+        const restoredForm = await res.json();
+        setForms([restoredForm, ...forms]);
+        toast.success(`فرم «${deletedForm.title}» بازگردانده شد`);
+      }
+    } catch (err) {
+      console.error('Failed to restore form:', err);
+      toast.error('خطا در بازگردانی فرم');
+    }
+  };
+
   const handleDelete = async (form: Form) => {
     try {
       const res = await fetch(`/api/forms/${form.id}`, { method: 'DELETE' });
       if (res.ok) {
+        addToDeletedForms(form);
         setForms(forms.filter((f) => f.id !== form.id));
+        toast(`فرم «${form.title}» حذف شد`, {
+          description: 'فرم از لیست حذف شد',
+          duration: 5000,
+          action: {
+            label: (
+              <span className="flex items-center gap-1">
+                <Undo2 className="size-3.5" />
+                بازگردانی
+              </span>
+            ),
+            onClick: () => handleUndoDelete(form),
+          },
+        });
       }
     } catch (err) {
       console.error('Failed to delete form:', err);
@@ -1147,6 +1405,96 @@ export default function Dashboard() {
     }
   };
 
+  const handleSetExpiration = (form: Form) => {
+    setExpirationForm(form);
+    setExpirationDialogOpen(true);
+  };
+
+  const handleSaveExpiration = async (formId: string, expiresAt: string | null) => {
+    try {
+      const res = await fetch(`/api/forms/${formId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ expiresAt }),
+      });
+      if (res.ok) {
+        const updatedForm = await res.json();
+        setForms(forms.map((f) => (f.id === updatedForm.id ? updatedForm : f)));
+        toast.success(expiresAt ? 'تاریخ انقضا تنظیم شد' : 'تاریخ انقضا حذف شد');
+      }
+    } catch (err) {
+      console.error('Failed to set expiration:', err);
+      toast.error('خطا در تنظیم تاریخ انقضا');
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const selectAll = () => {
+    if (selectedIds.size === filteredAndSortedForms.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredAndSortedForms.map((f) => f.id)));
+    }
+  };
+
+  const handleBatchDelete = async () => {
+    try {
+      const idsToDelete = Array.from(selectedIds);
+      const formsToDelete = forms.filter((f) => idsToDelete.includes(f.id));
+
+      await Promise.all(
+        idsToDelete.map((id) =>
+          fetch(`/api/forms/${id}`, { method: 'DELETE' })
+        )
+      );
+
+      // Store all for potential undo
+      formsToDelete.forEach((f) => addToDeletedForms(f));
+
+      setForms(forms.filter((f) => !idsToDelete.includes(f.id)));
+      setSelectedIds(new Set());
+      setSelectMode(false);
+      setBatchDeleteConfirmOpen(false);
+
+      toast(`${idsToDelete.length} فرم حذف شد`, {
+        description: 'فرم‌ها از لیست حذف شدند',
+        duration: 5000,
+        action: {
+          label: (
+            <span className="flex items-center gap-1">
+              <Undo2 className="size-3.5" />
+              بازگردانی همه
+            </span>
+          ),
+          onClick: () => {
+            Promise.all(
+              formsToDelete.map((f) => handleUndoDelete(f))
+            );
+          },
+        },
+      });
+    } catch (err) {
+      console.error('Failed to batch delete:', err);
+      toast.error('خطا در حذف فرم‌ها');
+    }
+  };
+
+  const exitSelectMode = () => {
+    setSelectMode(false);
+    setSelectedIds(new Set());
+  };
+
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-gray-950">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -1189,6 +1537,35 @@ export default function Dashboard() {
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">مدیریت و مشاهده تمام فرم‌های خود</p>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
+            {forms.length > 0 && (
+              <Button
+                variant={selectMode ? 'default' : 'outline'}
+                onClick={() => {
+                  if (selectMode) {
+                    exitSelectMode();
+                  } else {
+                    setSelectMode(true);
+                  }
+                }}
+                className={`rounded-xl px-4 font-medium h-10 transition-all ${
+                  selectMode
+                    ? 'bg-violet-500 hover:bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20'
+                    : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
+                }`}
+              >
+                {selectMode ? (
+                  <>
+                    <X className="size-4 ml-1.5" />
+                    خروج
+                  </>
+                ) : (
+                  <>
+                    <CheckSquare className="size-4 ml-1.5 text-violet-500" />
+                    انتخاب
+                  </>
+                )}
+              </Button>
+            )}
             <Button
               variant="outline"
               onClick={() => setCurrentView('templates')}
@@ -1249,6 +1626,41 @@ export default function Dashboard() {
           </motion.div>
         )}
 
+        {/* Select mode header bar */}
+        <AnimatePresence>
+          {selectMode && filteredAndSortedForms.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={selectAll}
+                className="text-xs text-violet-600 dark:text-violet-400 hover:bg-violet-100 dark:hover:bg-violet-900/50 rounded-lg"
+              >
+                {selectedIds.size === filteredAndSortedForms.length ? (
+                  <>
+                    <Square className="size-3.5 ml-1" />
+                    لغو همه
+                  </>
+                ) : (
+                  <>
+                    <CheckSquare className="size-3.5 ml-1" />
+                    انتخاب همه
+                  </>
+                )}
+              </Button>
+              <div className="flex-1" />
+              <span className="text-xs text-violet-600 dark:text-violet-400 font-medium">
+                {selectedIds.size} فرم انتخاب شده
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Content */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -1290,6 +1702,10 @@ export default function Dashboard() {
                     onDelete={handleDelete}
                     onDuplicate={handleDuplicate}
                     onShare={handleShare}
+                    onSetExpiration={handleSetExpiration}
+                    selectMode={selectMode}
+                    selected={selectedIds.has(form.id)}
+                    onToggleSelect={toggleSelect}
                   />
                 ))}
               </AnimatePresence>
@@ -1298,11 +1714,67 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* Floating batch action bar */}
+      <AnimatePresence>
+        {selectMode && selectedIds.size > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+          >
+            <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-2xl shadow-gray-300/50 dark:shadow-black/30">
+              <span className="text-sm font-bold text-gray-900 dark:text-white">
+                انتخاب {selectedIds.size} فرم
+              </span>
+              <AlertDialog open={batchDeleteConfirmOpen} onOpenChange={setBatchDeleteConfirmOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    size="sm"
+                    className="bg-red-500 hover:bg-red-600 text-white rounded-xl px-4 text-sm shadow-md shadow-red-200/50 dark:shadow-red-500/20"
+                  >
+                    <Trash2 className="size-3.5 ml-1.5" />
+                    حذف انتخاب شده‌ها
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent dir="rtl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>حذف فرم‌های انتخاب شده</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      آیا از حذف {selectedIds.size} فرم انتخاب شده مطمئن هستید؟ این عمل قابل بازگشت نیست.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="rounded-lg" onClick={() => setBatchDeleteConfirmOpen(false)}>
+                      انصراف
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleBatchDelete}
+                      className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                    >
+                      حذف {selectedIds.size} فرم
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <ShareFormDialog
         form={shareForm}
         open={shareDialogOpen}
         onOpenChange={setShareDialogOpen}
         onPublish={handlePublishFromShare}
+      />
+
+      <ExpirationDateDialog
+        form={expirationForm}
+        open={expirationDialogOpen}
+        onOpenChange={setExpirationDialogOpen}
+        onSave={handleSaveExpiration}
       />
     </div>
   );

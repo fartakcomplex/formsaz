@@ -455,3 +455,117 @@ Unresolved Issues / Recommendations for Next Phase:
 9. Custom domain/branding for published forms
 10. AnimatePresence mode="wait" warnings in page.tsx (harmless, from page transitions)
 11. Non-boolean attribute warning from shadcn/ui sidebar component (harmless, from library)
+
+---
+Task ID: 6
+Agent: main
+Task: QA testing, undo/redo, conditional logic evaluation, dashboard enhancements, keyboard shortcuts, styling
+
+Work Log:
+- QA testing via agent-browser: Landing page (all sections), Dashboard (forms list, search, filter, sort), Form Builder (14 question types, toolbar, panels), Template Gallery (100 templates, categories, search, favorites, sort), Dark mode toggle - all verified working, 0 JS errors
+- Clean ESLint: 0 warnings, 0 errors throughout session
+- Fixed TypeScript errors:
+  - Removed `className_ignored` from SVG rect in dashboard WelcomeIllustration
+  - Fixed `select` prop on DropdownMenuItem → `onSelect={(e) => e.preventDefault()}`
+  - Fixed `isExpired` computation placement in results-view.tsx (moved after null check)
+  - Added `expiresAt` and `_count` to previewForm object in form-builder.tsx
+  - Added `as const` to pageTransition type in page.tsx
+
+Feature 1: Undo/Redo in Form Builder:
+  - Added history management to Zustand store (history[], historyIndex, canUndo, canRedo)
+  - pushHistory() saves question snapshots before mutations (capped at 50 entries)
+  - updateQuestion uses 300ms debounce to prevent flooding history
+  - undo()/redo() navigate history and restore question state
+  - initHistory() resets history when loading forms/templates
+  - All mutations (addQuestion, updateQuestion, removeQuestion, reorderQuestions) push to history
+  - Undo/Redo buttons now functional with disabled state based on canUndo/canRedo
+  - Keyboard shortcuts: Ctrl+Z (undo), Ctrl+Shift+Z / Ctrl+Y (redo)
+
+Feature 2: Conditional Logic Evaluation in Form Fill:
+  - Added evaluateCondition() function supporting 6 operators: equals, not_equals, contains, not_contains, is_answered, is_not_answered
+  - Added isQuestionVisible() function that checks logic config (show/hide with AND logic)
+  - visibleInputQuestions useMemo filters questions based on logic and current answers
+  - useEffect auto-adjusts currentPage when questions appear/disappear
+  - Submit validation only checks visible questions
+  - Submit responses only include answers for visible questions
+
+Feature 3: Dashboard Enhancements:
+  - Undo Delete: Toast with "بازگردانی" button restores deleted forms via POST API (5s timeout)
+  - Batch Select/Delete: Toggle "انتخاب" mode → checkboxes on cards → floating action bar → batch delete with confirmation
+  - Form Expiration Date: "تاریخ انقضا" option in dropdown → ExpirationDateDialog → saves expiresAt to API
+  - Expiration badges on form cards (red for expired, orange for upcoming)
+  - Expired form detection in Form Fill and Results views with warning messages
+  - Added expiresAt field to Prisma schema and Form interface
+  - Added deletedForms to store for undo functionality
+
+Feature 4: Keyboard Shortcuts Overlay:
+  - Created keyboard-shortcuts-dialog.tsx with 7 shortcuts documented in Persian
+  - Styled keyboard key badges with violet-themed modifier keys
+  - Grid layout displaying shortcut + description pairs
+  - Ctrl+/ shortcut to toggle dialog
+  - Keyboard icon button in form builder toolbar
+  - Additional shortcuts: Ctrl+S (save), Delete (remove question), Escape (deselect)
+
+Feature 5: Styling Improvements:
+  - globals.css: Enhanced scrollbars (violet-accented), text selection colors (violet), focus-visible rings
+  - Properties Panel: Violet hover effects on options, transition-all on sections, left border accent on settings labels
+  - Results View: Gradient backgrounds on stat cards, improved chart containers, redesigned empty state
+  - Form Settings Dialog: Gradient header bar, hover:scale on color swatches, violet active indicator ring, font previews
+  - All styling changes support dark mode
+
+Stage Summary:
+- Files modified: store.ts, form-builder.tsx, form-fill.tsx, dashboard.tsx, results-view.tsx, properties-panel.tsx, form-settings-dialog.tsx, globals.css, page.tsx
+- Files created: keyboard-shortcuts-dialog.tsx
+- Files modified (schema): prisma/schema.prisma (added expiresAt), api/forms/[id]/route.ts
+- 5 major features implemented: Undo/Redo, Conditional Logic, Dashboard Enhancements, Keyboard Shortcuts, Styling
+- 5 TypeScript errors fixed
+- Clean ESLint: 0 warnings, 0 errors
+- Dev server compiles successfully (GET / 200)
+
+---
+Current Project Status Assessment:
+- Application is fully functional with no JS errors across all views
+- 6 views working correctly: Landing (8+ sections, animations), Dashboard (batch select, undo delete, expiration, stats, sort), Builder (undo/redo, keyboard shortcuts, drag-and-drop, logic), Form Fill (conditional logic evaluation, expiration check), Results (pie charts, expiration warning), Templates (100 templates, favorites, sort, preview)
+- Template gallery with 100 real Persian templates across 10 categories + favorites filter
+- Dark mode toggle working across all components
+- Full undo/redo system in form builder with keyboard shortcuts
+- Conditional logic/branching fully evaluated during form filling
+- Form expiration date support with warning badges
+- Batch select/delete forms with undo capability
+- Drag-and-drop question reordering in form builder
+- Form sharing with copy link, social sharing
+- Pie charts and donut charts in results view
+- Landing page with pricing, testimonials, 3D mockup, animated counters
+- Keyboard shortcuts overlay with 7 documented shortcuts
+- Clean ESLint - no warnings or errors
+- Dev server compiles without errors
+
+Completed in This Session:
+1. ✅ Undo/Redo system with 50-entry history, debounced updates, keyboard shortcuts (Ctrl+Z/Ctrl+Shift+Z)
+2. ✅ Conditional logic evaluation during form fill (6 operators, show/hide actions, AND logic)
+3. ✅ Undo delete with toast + restore button (5s timeout)
+4. ✅ Batch select/delete forms with floating action bar
+5. ✅ Form expiration date with dialog, API persistence, warning badges
+6. ✅ Keyboard shortcuts dialog (7 shortcuts, Ctrl+/ to open)
+7. ✅ Additional keyboard shortcuts: Ctrl+S, Delete, Escape, Ctrl+Y
+8. ✅ Enhanced scrollbar styling (violet-accented, thin)
+9. ✅ Custom text selection colors (violet tinted)
+10. ✅ Violet focus-visible rings across app
+11. ✅ Properties panel: hover effects, transitions, section accents
+12. ✅ Results view: gradient stat cards, improved empty state
+13. ✅ Form settings: gradient header, hover animations on swatches, active indicators
+14. ✅ 5 TypeScript errors fixed
+
+Unresolved Issues / Recommendations for Next Phase:
+1. Image choice question type is listed but not yet implemented in the renderer
+2. Matrix question type is listed but needs implementation
+3. ~~Batch delete/select multiple forms in dashboard~~ ✅ DONE
+4. File upload is UI-only (no actual file handling backend)
+5. ~~Form expiration/closing date feature~~ ✅ DONE
+6. ~~Form logic actually evaluated during form fill~~ ✅ DONE
+7. ~~Undo/redo functionality in form builder~~ ✅ DONE
+8. Email notifications on form submission
+9. Custom domain/branding for published forms
+10. Real-time collaborative form editing (websocket)
+11. Form analytics export to PDF
+12. Multi-language support (currently Persian only)

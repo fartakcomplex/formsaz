@@ -64,6 +64,7 @@ export interface Form {
   viewCount: number;
   createdAt: string;
   updatedAt: string;
+  expiresAt: string | null;
   questions: FormQuestion[];
   _count?: {
     submissions: number;
@@ -102,6 +103,16 @@ interface AppState {
   removeQuestion: (id: string) => void;
   reorderQuestions: (questions: FormQuestion[]) => void;
 
+  // History (undo/redo)
+  history: FormQuestion[][];
+  historyIndex: number;
+  canUndo: boolean;
+  canRedo: boolean;
+  pushHistory: () => void;
+  undo: () => void;
+  redo: () => void;
+  initHistory: (questions: FormQuestion[]) => void;
+
   // Form theme
   formTheme: FormTheme;
   setFormTheme: (theme: Partial<FormTheme>) => void;
@@ -109,11 +120,19 @@ interface AppState {
   // Dashboard
   submissions: Submission[];
   setSubmissions: (submissions: Submission[]) => void;
+  deletedForms: Form[];
+  addToDeletedForms: (form: Form) => void;
 
   // Sidebar
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
+
+// Module-level debounce state for updateQuestion history
+let updateDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let preUpdateSnapshot: FormQuestion[] | null = null;
+
+const MAX_HISTORY_SIZE = 50;
 
 export const useAppStore = create<AppState>((set, get) => ({
   // Navigation
@@ -125,34 +144,176 @@ export const useAppStore = create<AppState>((set, get) => ({
   forms: [],
   setForms: (forms) => set({ forms }),
   currentForm: null,
-  setCurrentForm: (form) => set({ currentForm: form, questions: form?.questions || [] }),
+  setCurrentForm: (form) => {
+    const questions = form?.questions || [];
+    const snapshot = JSON.parse(JSON.stringify(questions));
+    set({
+      currentForm: form,
+      questions,
+      history: [snapshot],
+      historyIndex: 0,
+      canUndo: false,
+      canRedo: false,
+    });
+  },
   fillForm: null,
   setFillForm: (form) => set({ fillForm: form }),
 
   // Builder state
   questions: [],
-  setQuestions: (questions) => set({ questions }),
+  setQuestions: (questions) => {
+    const snapshot = JSON.parse(JSON.stringify(questions));
+    set({
+      questions,
+      history: [snapshot],
+      historyIndex: 0,
+      canUndo: false,
+      canRedo: false,
+    });
+  },
   selectedQuestionId: null,
   setSelectedQuestionId: (id) => set({ selectedQuestionId: id }),
 
-  addQuestion: (question) =>
+  addQuestion: (question) => {
+    get().pushHistory();
     set((state) => ({
       questions: [...state.questions, question],
       selectedQuestionId: question.id,
-    })),
+    }));
+  },
 
-  updateQuestion: (id, updates) =>
+  updateQuestion: (id, updates) => {
+    // Save a snapshot on the first update in a debounce cycle
+    if (!updateDebounceTimer) {
+      preUpdateSnapshot = JSON.parse(JSON.stringify(get().questions));
+    }
+
+    // Clear existing debounce timer
+    if (updateDebounceTimer) {
+      clearTimeout(updateDebounceTimer);
+    }
+
+    // Perform the mutation immediately
     set((state) => ({
       questions: state.questions.map((q) => (q.id === id ? { ...q, ...updates } : q)),
-    })),
+    }));
 
-  removeQuestion: (id) =>
+    // Debounce: push snapshot to history after 300ms of no changes
+    updateDebounceTimer = setTimeout(() => {
+      if (preUpdateSnapshot) {
+        const state = get();
+        const newHistory = state.history.slice(0, state.historyIndex + 1);
+        newHistory.push(preUpdateSnapshot);
+        if (newHistory.length > MAX_HISTORY_SIZE) newHistory.shift();
+        const newIndex = newHistory.length - 1;
+        set({
+          history: newHistory,
+          historyIndex: newIndex,
+          canUndo: newIndex > 0,
+          canRedo: false,
+        });
+        preUpdateSnapshot = null;
+      }
+      updateDebounceTimer = null;
+    }, 300);
+  },
+
+  removeQuestion: (id) => {
+    get().pushHistory();
     set((state) => ({
       questions: state.questions.filter((q) => q.id !== id),
       selectedQuestionId: state.selectedQuestionId === id ? null : state.selectedQuestionId,
-    })),
+    }));
+  },
 
-  reorderQuestions: (questions) => set({ questions }),
+  reorderQuestions: (questions) => {
+    get().pushHistory();
+    set({ questions });
+  },
+
+  // History (undo/redo)
+  history: [],
+  historyIndex: -1,
+  canUndo: false,
+  canRedo: false,
+
+  pushHistory: () => {
+    // Flush any pending debounced update first
+    if (updateDebounceTimer) {
+      clearTimeout(updateDebounceTimer);
+      updateDebounceTimer = null;
+      if (preUpdateSnapshot) {
+        const state = get();
+        const newHistory = state.history.slice(0, state.historyIndex + 1);
+        newHistory.push(preUpdateSnapshot);
+        if (newHistory.length > MAX_HISTORY_SIZE) newHistory.shift();
+        const newIndex = newHistory.length - 1;
+        set({
+          history: newHistory,
+          historyIndex: newIndex,
+          canUndo: newIndex > 0,
+          canRedo: false,
+        });
+        preUpdateSnapshot = null;
+      }
+    }
+
+    // Push the current state to history
+    const state = get();
+    const snapshot = JSON.parse(JSON.stringify(state.questions));
+    const newHistory = state.history.slice(0, state.historyIndex + 1);
+    newHistory.push(snapshot);
+    if (newHistory.length > MAX_HISTORY_SIZE) newHistory.shift();
+    const newIndex = newHistory.length - 1;
+    set({
+      history: newHistory,
+      historyIndex: newIndex,
+      canUndo: newIndex > 0,
+      canRedo: false,
+    });
+  },
+
+  undo: () => {
+    const state = get();
+    if (state.historyIndex > 0) {
+      const newIndex = state.historyIndex - 1;
+      const restoredQuestions = JSON.parse(JSON.stringify(state.history[newIndex]));
+      const selectedExists = restoredQuestions.some((q) => q.id === state.selectedQuestionId);
+      set({
+        questions: restoredQuestions,
+        historyIndex: newIndex,
+        canUndo: newIndex > 0,
+        canRedo: true,
+        selectedQuestionId: selectedExists ? state.selectedQuestionId : null,
+      });
+    }
+  },
+
+  redo: () => {
+    const state = get();
+    if (state.historyIndex < state.history.length - 1) {
+      const newIndex = state.historyIndex + 1;
+      const restoredQuestions = JSON.parse(JSON.stringify(state.history[newIndex]));
+      const selectedExists = restoredQuestions.some((q) => q.id === state.selectedQuestionId);
+      set({
+        questions: restoredQuestions,
+        historyIndex: newIndex,
+        canUndo: true,
+        canRedo: newIndex < state.history.length - 1,
+        selectedQuestionId: selectedExists ? state.selectedQuestionId : null,
+      });
+    }
+  },
+
+  initHistory: (questions) => {
+    const snapshot = JSON.parse(JSON.stringify(questions));
+    set({
+      history: [snapshot],
+      historyIndex: 0,
+      canUndo: false,
+      canRedo: false,
+    });
+  },
 
   // Form theme
   formTheme: {
@@ -169,6 +330,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Dashboard
   submissions: [],
   setSubmissions: (submissions) => set({ submissions }),
+  deletedForms: [],
+  addToDeletedForms: (form) =>
+    set((state) => ({
+      deletedForms: [...state.deletedForms, form],
+    })),
 
   // Sidebar
   sidebarOpen: false,

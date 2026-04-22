@@ -54,9 +54,9 @@ const BORDER_RADIUS_OPTIONS = [
 ];
 
 const FONT_OPTIONS = [
-  { label: 'مدرن', value: 'Vazirmatn' },
-  { label: 'کلاسیک', value: 'Vazirmatn' },
-  { label: 'مینیمال', value: 'Vazirmatn' },
+  { label: 'مدرن', value: 'Vazirmatn', preview: 'فرم‌ساز حرفه‌ای' },
+  { label: 'کلاسیک', value: 'Vazirmatn', preview: 'فرم‌ساز حرفه‌ای' },
+  { label: 'مینیمال', value: 'Vazirmatn', preview: 'فرم‌ساز حرفه‌ای' },
 ];
 
 /* ========== Types ========== */
@@ -118,10 +118,15 @@ export default function FormSettingsDialog({
         className="sm:max-w-[520px] p-0 gap-0 overflow-hidden"
         dir="rtl"
       >
+        {/* Gradient header bar */}
+        <div className="h-1 bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500" />
+
         {/* Header */}
-        <DialogHeader className="px-6 pt-6 pb-0 flex-row items-center justify-between space-y-0">
-          <DialogTitle className="text-lg font-bold flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-purple-500" />
+        <DialogHeader className="px-6 pt-5 pb-0 flex-row items-center justify-between space-y-0">
+          <DialogTitle className="text-lg font-bold flex items-center gap-2.5">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/40">
+              <Sparkles className="h-4.5 w-4.5 text-violet-600 dark:text-violet-400" />
+            </div>
             تنظیمات فرم
           </DialogTitle>
           <Button
@@ -160,7 +165,7 @@ export default function FormSettingsDialog({
                     value={draftTitle}
                     onChange={(e) => setDraftTitle(e.target.value)}
                     placeholder="عنوان فرم خود را وارد کنید..."
-                    className="text-sm"
+                    className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
                   />
                 </div>
 
@@ -174,7 +179,7 @@ export default function FormSettingsDialog({
                     value={draftDescription}
                     onChange={(e) => setDraftDescription(e.target.value)}
                     placeholder="توضیحات اختیاری فرم را وارد کنید..."
-                    className="text-sm min-h-[100px] resize-none"
+                    className="text-sm min-h-[100px] resize-none focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -189,40 +194,52 @@ export default function FormSettingsDialog({
                 <div className="space-y-3">
                   <Label className="text-sm font-medium flex items-center gap-2">
                     <div
-                      className="h-3 w-3 rounded-full"
-                      style={{ backgroundColor: draftTheme.primaryColor }}
+                      className="h-3 w-3 rounded-full ring-2 ring-offset-2 ring-offset-background"
+                      style={{ backgroundColor: draftTheme.primaryColor, ringColor: draftTheme.primaryColor }}
                     />
                     رنگ اصلی
                   </Label>
                   <div className="grid grid-cols-4 gap-2">
-                    {PRIMARY_COLORS.map((color) => (
-                      <button
-                        key={color.value}
-                        type="button"
-                        onClick={() =>
-                          setDraftTheme({ ...draftTheme, primaryColor: color.value })
-                        }
-                        className={cn(
-                          'relative flex flex-col items-center gap-1.5 rounded-lg border-2 p-3 transition-all hover:shadow-sm',
-                          draftTheme.primaryColor === color.value
-                            ? 'border-foreground bg-muted/50'
-                            : 'border-transparent bg-muted/30 hover:bg-muted/60'
-                        )}
-                      >
-                        <div
-                          className="h-7 w-7 rounded-full shadow-sm ring-2 ring-white"
-                          style={{ backgroundColor: color.value }}
-                        />
-                        <span className="text-[10px] text-muted-foreground leading-none">
-                          {color.label}
-                        </span>
-                        {draftTheme.primaryColor === color.value && (
-                          <div className="absolute top-1.5 left-1.5">
-                            <Check className="h-3 w-3 text-foreground" />
+                    {PRIMARY_COLORS.map((color) => {
+                      const isSelected = draftTheme.primaryColor === color.value;
+                      return (
+                        <button
+                          key={color.value}
+                          type="button"
+                          onClick={() =>
+                            setDraftTheme({ ...draftTheme, primaryColor: color.value })
+                          }
+                          className={cn(
+                            'relative flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all duration-200 hover:scale-105 hover:shadow-md',
+                            isSelected
+                              ? 'border-violet-500 bg-violet-50 dark:bg-violet-950/30 shadow-sm'
+                              : 'border-transparent bg-muted/30 hover:bg-muted/50'
+                          )}
+                        >
+                          <div className="relative">
+                            <div
+                              className="h-8 w-8 rounded-full shadow-sm transition-transform duration-200"
+                              style={{ backgroundColor: color.value }}
+                            />
+                            {/* Active ring indicator */}
+                            {isSelected && (
+                              <div
+                                className="absolute -inset-1 rounded-full ring-2 transition-all duration-200"
+                                style={{ ringColor: color.value }}
+                              />
+                            )}
                           </div>
-                        )}
-                      </button>
-                    ))}
+                          <span className="text-[10px] text-muted-foreground leading-none font-medium">
+                            {color.label}
+                          </span>
+                          {isSelected && (
+                            <div className="absolute top-1 left-1 flex size-5 items-center justify-center rounded-full bg-violet-500 text-white shadow-sm">
+                              <Check className="h-3 w-3" strokeWidth={3} />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -234,33 +251,41 @@ export default function FormSettingsDialog({
                     رنگ پس‌زمینه
                   </Label>
                   <div className="grid grid-cols-4 gap-2">
-                    {BACKGROUND_COLORS.map((bg) => (
-                      <button
-                        key={bg.value}
-                        type="button"
-                        onClick={() =>
-                          setDraftTheme({ ...draftTheme, backgroundColor: bg.value })
-                        }
-                        className={cn(
-                          'relative flex flex-col items-center gap-1.5 rounded-lg border-2 p-3 transition-all hover:shadow-sm',
-                          draftTheme.backgroundColor === bg.value
-                            ? 'border-foreground bg-muted/50'
-                            : 'border-transparent bg-muted/30 hover:bg-muted/60'
-                        )}
-                      >
-                        <div
-                          className={cn('h-7 w-7 rounded-full shadow-sm ring-2 ring-white', bg.className)}
-                        />
-                        <span className="text-[10px] text-muted-foreground leading-none">
-                          {bg.label}
-                        </span>
-                        {draftTheme.backgroundColor === bg.value && (
-                          <div className="absolute top-1.5 left-1.5">
-                            <Check className="h-3 w-3 text-foreground" />
+                    {BACKGROUND_COLORS.map((bg) => {
+                      const isSelected = draftTheme.backgroundColor === bg.value;
+                      return (
+                        <button
+                          key={bg.value}
+                          type="button"
+                          onClick={() =>
+                            setDraftTheme({ ...draftTheme, backgroundColor: bg.value })
+                          }
+                          className={cn(
+                            'relative flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all duration-200 hover:scale-105 hover:shadow-md',
+                            isSelected
+                              ? 'border-violet-500 bg-violet-50 dark:bg-violet-950/30 shadow-sm'
+                              : 'border-transparent bg-muted/30 hover:bg-muted/50'
+                          )}
+                        >
+                          <div className="relative">
+                            <div
+                              className={cn('h-8 w-8 rounded-full shadow-sm transition-transform duration-200', bg.className)}
+                            />
+                            {isSelected && (
+                              <div className="absolute -inset-1 rounded-full ring-2 ring-violet-500 transition-all duration-200" />
+                            )}
                           </div>
-                        )}
-                      </button>
-                    ))}
+                          <span className="text-[10px] text-muted-foreground leading-none font-medium">
+                            {bg.label}
+                          </span>
+                          {isSelected && (
+                            <div className="absolute top-1 left-1 flex size-5 items-center justify-center rounded-full bg-violet-500 text-white shadow-sm">
+                              <Check className="h-3 w-3" strokeWidth={3} />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -273,32 +298,35 @@ export default function FormSettingsDialog({
                     گردی گوشه‌ها
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
-                    {BORDER_RADIUS_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        onClick={() =>
-                          setDraftTheme({ ...draftTheme, borderRadius: opt.value })
-                        }
-                        className={cn(
-                          'relative flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all hover:shadow-sm',
-                          draftTheme.borderRadius === opt.value
-                            ? 'border-foreground bg-muted/50'
-                            : 'border-transparent bg-muted/30 hover:bg-muted/60'
-                        )}
-                      >
-                        <div
-                          className="h-8 w-8 bg-foreground/20"
-                          style={{ borderRadius: `${opt.value}px` }}
-                        />
-                        <span className="text-xs text-muted-foreground">{opt.label}</span>
-                        {draftTheme.borderRadius === opt.value && (
-                          <div className="absolute top-1.5 left-1.5">
-                            <Check className="h-3 w-3 text-foreground" />
-                          </div>
-                        )}
-                      </button>
-                    ))}
+                    {BORDER_RADIUS_OPTIONS.map((opt) => {
+                      const isSelected = draftTheme.borderRadius === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() =>
+                            setDraftTheme({ ...draftTheme, borderRadius: opt.value })
+                          }
+                          className={cn(
+                            'relative flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all duration-200 hover:scale-105 hover:shadow-md',
+                            isSelected
+                              ? 'border-violet-500 bg-violet-50 dark:bg-violet-950/30 shadow-sm'
+                              : 'border-transparent bg-muted/30 hover:bg-muted/50'
+                          )}
+                        >
+                          <div
+                            className="h-8 w-8 bg-foreground/20 transition-transform duration-200"
+                            style={{ borderRadius: `${opt.value}px` }}
+                          />
+                          <span className="text-xs text-muted-foreground font-medium">{opt.label}</span>
+                          {isSelected && (
+                            <div className="absolute top-1 left-1 flex size-5 items-center justify-center rounded-full bg-violet-500 text-white shadow-sm">
+                              <Check className="h-3 w-3" strokeWidth={3} />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -311,33 +339,44 @@ export default function FormSettingsDialog({
                     سبک فونت
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
-                    {FONT_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        onClick={() =>
-                          setDraftTheme({ ...draftTheme, fontFamily: opt.value })
-                        }
-                        className={cn(
-                          'relative flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all hover:shadow-sm',
-                          draftTheme.fontFamily === opt.value
-                            ? 'border-foreground bg-muted/50'
-                            : 'border-transparent bg-muted/30 hover:bg-muted/60'
-                        )}
-                      >
-                        <span className="text-sm font-semibold text-foreground">
-                          {opt.label === 'مدرن' && 'الف ب'}
-                          {opt.label === 'کلاسیک' && 'الف ب'}
-                          {opt.label === 'مینیمال' && 'الف ب'}
-                        </span>
-                        <span className="text-xs text-muted-foreground">{opt.label}</span>
-                        {draftTheme.fontFamily === opt.value && (
-                          <div className="absolute top-1.5 left-1.5">
-                            <Check className="h-3 w-3 text-foreground" />
-                          </div>
-                        )}
-                      </button>
-                    ))}
+                    {FONT_OPTIONS.map((opt) => {
+                      const isSelected = draftTheme.fontFamily === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() =>
+                            setDraftTheme({ ...draftTheme, fontFamily: opt.value })
+                          }
+                          className={cn(
+                            'relative flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all duration-200 hover:scale-105 hover:shadow-md',
+                            isSelected
+                              ? 'border-violet-500 bg-violet-50 dark:bg-violet-950/30 shadow-sm'
+                              : 'border-transparent bg-muted/30 hover:bg-muted/50'
+                          )}
+                        >
+                          {/* Font preview */}
+                          <span
+                            className={cn(
+                              'text-base text-foreground leading-relaxed transition-all duration-200',
+                              opt.label === 'مدرن' && 'font-bold tracking-tight',
+                              opt.label === 'کلاسیک' && 'font-semibold',
+                              opt.label === 'مینیمال' && 'font-normal text-muted-foreground'
+                            )}
+                          >
+                            {opt.label === 'مدرن' && 'فرم'}
+                            {opt.label === 'کلاسیک' && 'فرم'}
+                            {opt.label === 'مینیمال' && 'فرم'}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground font-medium">{opt.label}</span>
+                          {isSelected && (
+                            <div className="absolute top-1 left-1 flex size-5 items-center justify-center rounded-full bg-violet-500 text-white shadow-sm">
+                              <Check className="h-3 w-3" strokeWidth={3} />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -352,7 +391,7 @@ export default function FormSettingsDialog({
           </Button>
           <Button
             size="sm"
-            className="gap-1.5"
+            className="gap-1.5 transition-all duration-200 hover:shadow-md"
             style={{ backgroundColor: draftTheme.primaryColor }}
             onClick={handleApply}
           >
