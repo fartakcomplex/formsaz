@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
@@ -106,6 +106,75 @@ const staggerChild = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
 };
+
+/* ── Animated counter hook ── */
+function useAnimatedCounter(end: number, duration: number = 2, isInView: boolean = false) {
+  const [display, setDisplay] = useState(0);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (!isInView || hasAnimated.current) return;
+    hasAnimated.current = true;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const dur = prefersReduced ? 0.01 : duration;
+
+    const startTime = performance.now();
+    const step = (now: number) => {
+      const elapsed = (now - startTime) / 1000;
+      const progress = Math.min(elapsed / dur, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.floor(eased * end));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [isInView, end, duration]);
+
+  return display;
+}
+
+/* ── Floating particles component ── */
+function FloatingParticles({ count = 20, className = '' }: { count?: number; className?: string }) {
+  const particles = React.useMemo(() => {
+    return Array.from({ length: count }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 3 + 1.5,
+      duration: Math.random() * 6 + 4,
+      delay: Math.random() * 4,
+      opacity: Math.random() * 0.3 + 0.1,
+    }));
+  }, [count]);
+
+  return (
+    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full bg-indigo-400/30 dark:bg-indigo-400/20"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: p.size,
+            height: p.size,
+          }}
+          animate={{
+            y: [0, -30, 0],
+            x: [0, Math.random() > 0.5 ? 15 : -15, 0],
+            opacity: [p.opacity, p.opacity + 0.2, p.opacity],
+          }}
+          transition={{
+            duration: p.duration,
+            repeat: Infinity,
+            delay: p.delay,
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 /* ──────────────────────────── Navbar ──────────────────────────── */
 
@@ -237,14 +306,36 @@ function Navbar() {
 
 /* ──────────────────────────── Hero Section ──────────────────────────── */
 
+/* ── Animated stat counter ── */
+function AnimatedStat({ value, suffix, label, delay = 0, isInView }: {
+  value: number;
+  suffix: string;
+  label: string;
+  delay?: number;
+  isInView: boolean;
+}) {
+  const count = useAnimatedCounter(value, 2.2, isInView);
+
+  return (
+    <motion.div
+      className="text-center"
+      animate={{ y: [0, -6, 0] }}
+      transition={{ duration: 3, delay: delay + 1.5, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' }}
+    >
+      <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-l from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+        {isInView ? count.toLocaleString('fa-IR') : '۰'}{suffix}
+      </div>
+      <div className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
+        {label}
+      </div>
+    </motion.div>
+  );
+}
+
 function HeroSection() {
   const setCurrentView = useAppStore((s) => s.setCurrentView);
-
-  const stats = [
-    { value: '۵۰,۰۰۰+', label: 'کاربر فعال' },
-    { value: '۱+ میلیون', label: 'پاسخ ثبت‌شده' },
-    { value: '۹۹.۹٪', label: 'آپتایم' },
-  ];
+  const statsRef = useRef<HTMLDivElement>(null);
+  const statsInView = useInView(statsRef, { once: true, margin: '-40px' });
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -253,6 +344,9 @@ function HeroSection() {
       <div className="absolute top-20 right-[10%] w-72 h-72 bg-indigo-300/20 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-[10%] w-96 h-96 bg-violet-300/20 rounded-full blur-3xl" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-indigo-200/10 to-violet-200/10 rounded-full blur-3xl" />
+
+      {/* Floating particles */}
+      <FloatingParticles count={25} />
 
       {/* Grid pattern overlay */}
       <div
@@ -272,7 +366,7 @@ function HeroSection() {
         >
           <Badge
             variant="secondary"
-            className="mb-6 px-4 py-1.5 text-sm font-medium bg-indigo-100/80 text-indigo-700 border-indigo-200/50 cursor-default"
+            className="mb-6 px-4 py-1.5 text-sm font-medium bg-indigo-100/80 text-indigo-700 border-indigo-200/50 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800 cursor-default"
           >
             <Zap className="h-3.5 w-3.5 ml-1" />
             سریع، رایگان و بدون محدودیت
@@ -331,101 +425,166 @@ function HeroSection() {
           </Button>
         </motion.div>
 
-        {/* Stats — with floating animation */}
+        {/* Animated Stats with counters */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}
-          className="mt-16 mx-auto max-w-2xl"
+          ref={statsRef}
+          className="mt-16 mx-auto max-w-3xl"
         >
           <div className="grid grid-cols-3 gap-4 sm:gap-8">
-            {stats.map((stat, i) => (
-              <motion.div
-                key={i}
-                className="text-center"
-                animate={{
-                  y: [0, -6, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  delay: i * 0.4,
-                  repeat: Infinity,
-                  repeatType: 'loop',
-                  ease: 'easeInOut',
-                }}
-              >
-                <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-l from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-                  {stat.value}
-                </div>
-                <div className="mt-1 text-xs sm:text-sm text-gray-500 font-medium">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
+            <AnimatedStat value={100000} suffix={"+"} label={"فرم ساخته شده"} delay={0} isInView={statsInView} />
+            <AnimatedStat value={50000} suffix={"+"} label={"کاربر فعال"} delay={0.15} isInView={statsInView} />
+            <AnimatedStat value={2000000} suffix={"+"} label={"پاسخ ثبت شده"} delay={0.3} isInView={statsInView} />
           </div>
         </motion.div>
 
-        {/* Hero Illustration / Preview */}
+        {/* 3D-style floating form mockup */}
         <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          initial={{ opacity: 0, y: 60, rotateX: 8 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
           className="mt-16 relative"
+          style={{ perspective: '1200px' }}
         >
           <div className="relative mx-auto max-w-4xl">
-            {/* Glow behind */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-indigo-500/20 via-violet-500/20 to-purple-500/20 rounded-3xl blur-2xl" />
+            {/* Animated glow behind */}
+            <motion.div
+              className="absolute -inset-6 bg-gradient-to-r from-indigo-500/20 via-violet-500/25 to-purple-500/20 rounded-3xl blur-2xl"
+              animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.02, 1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            />
 
-            {/* Browser chrome mockup */}
-            <div className="relative rounded-2xl border border-gray-200/60 bg-white shadow-2xl shadow-indigo-500/10 overflow-hidden">
+            {/* Main browser mockup with 3D tilt */}
+            <motion.div
+              className="relative rounded-2xl border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-gray-900 shadow-2xl shadow-indigo-500/10 dark:shadow-indigo-950/30 overflow-hidden"
+              whileHover={{ rotateY: -2, rotateX: 1 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+              style={{ transformStyle: 'preserve-3d' }}
+            >
               {/* Title bar */}
-              <div className="flex items-center gap-2 px-4 py-3 bg-gray-50/80 border-b border-gray-100">
+              <div className="flex items-center gap-2 px-4 py-3 bg-gray-50/80 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700">
                 <div className="flex gap-1.5">
                   <div className="h-3 w-3 rounded-full bg-red-400" />
                   <div className="h-3 w-3 rounded-full bg-yellow-400" />
                   <div className="h-3 w-3 rounded-full bg-green-400" />
                 </div>
                 <div className="flex-1 mx-4">
-                  <div className="h-6 bg-gray-100 rounded-lg max-w-sm mx-auto flex items-center justify-center text-[10px] text-gray-400">
+                  <div className="h-6 bg-gray-100 dark:bg-gray-700 rounded-lg max-w-sm mx-auto flex items-center justify-center text-[10px] text-gray-400 dark:text-gray-500">
                     formsaz.ir/builder
                   </div>
                 </div>
               </div>
 
-              {/* Form preview content */}
-              <div className="p-6 sm:p-10 bg-gradient-to-b from-white to-gray-50/50">
-                <div className="max-w-lg mx-auto space-y-6">
-                  {/* Fake form header */}
-                  <div className="text-center space-y-2">
-                    <div className="h-5 bg-gray-200 rounded w-48 mx-auto" />
-                    <div className="h-3 bg-gray-100 rounded w-72 mx-auto" />
-                  </div>
+              {/* Split view: builder sidebar + form preview */}
+              <div className="flex min-h-[280px] sm:min-h-[320px]">
+                {/* Left sidebar - question types */}
+                <div className="hidden sm:flex w-52 shrink-0 flex-col border-l border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 p-3 gap-1.5">
+                  <div className="text-[10px] font-bold text-gray-400 dark:text-gray-500 mb-1 px-2">انواع سوال</div>
+                  {[['متن کوتاه', 'T'], ['چند گزینه‌ای', '◎'], ['مقیاس', '☆'], ['تاریخ', '📅'], ['آپلود', '📎']].map(([name, icon], idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 1 + idx * 0.1 }}
+                      className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs text-gray-500 dark:text-gray-400 transition-colors ${idx === 1 ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-medium' : ''}`}
+                    >
+                      <span className="text-sm">{icon}</span>
+                      {name}
+                    </motion.div>
+                  ))}
+                </div>
 
-                  {/* Fake form fields */}
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <div className="h-4 bg-gray-200 rounded w-32" />
-                      <div className="h-10 bg-gray-50 rounded-lg border border-gray-100" />
+                {/* Form preview content */}
+                <div className="flex-1 p-5 sm:p-8 bg-gradient-to-b from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-950">
+                  <div className="max-w-md mx-auto space-y-5">
+                    {/* Form header */}
+                    <div className="text-center space-y-2">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: '100%' }}
+                        transition={{ delay: 0.8, duration: 0.6 }}
+                        className="h-5 bg-gradient-to-l from-gray-200 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded w-48 mx-auto"
+                      />
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: '100%' }}
+                        transition={{ delay: 0.9, duration: 0.6 }}
+                        className="h-3 bg-gray-100 dark:bg-gray-700 rounded w-64 mx-auto"
+                      />
                     </div>
-                    <div className="space-y-2">
-                      <div className="h-4 bg-gray-200 rounded w-28" />
-                      <div className="flex gap-3">
-                        <div className="h-5 bg-gray-100 rounded w-24" />
-                        <div className="h-5 bg-gray-100 rounded w-20" />
-                        <div className="h-5 bg-gray-100 rounded w-16" />
+
+                    {/* Form field: text input */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1 }}
+                      className="space-y-2"
+                    >
+                      <div className="h-3.5 bg-gray-200 dark:bg-gray-600 rounded w-24" />
+                      <div className="h-10 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200/80 dark:border-gray-700 flex items-center px-3">
+                        <span className="text-[11px] text-gray-300 dark:text-gray-600">نام و نام خانوادگی...</span>
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-4 bg-gray-200 rounded w-36" />
-                      <div className="h-24 bg-gray-50 rounded-lg border border-gray-100" />
-                    </div>
-                    <div className="pt-2">
-                      <div className="h-11 bg-gradient-to-l from-indigo-500 to-violet-500 rounded-lg w-32 mx-auto" />
-                    </div>
+                    </motion.div>
+
+                    {/* Form field: radio buttons */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.1 }}
+                      className="space-y-2"
+                    >
+                      <div className="h-3.5 bg-gray-200 dark:bg-gray-600 rounded w-28" />
+                      <div className="flex flex-col gap-1.5">
+                        {['گزینه اول', 'گزینه دوم', 'گزینه سوم'].map((opt, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <div className={`w-4 h-4 rounded-full border-2 ${idx === 0 ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300 dark:border-gray-600'}`}>
+                              {idx === 0 && <div className="w-1.5 h-1.5 rounded-full bg-white mx-auto mt-[1px]" />}
+                            </div>
+                            <span className={`text-xs ${idx === 0 ? 'text-gray-700 dark:text-gray-300 font-medium' : 'text-gray-400 dark:text-gray-500'}`}>{opt}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+
+                    {/* Form field: rating stars */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.2 }}
+                      className="space-y-2"
+                    >
+                      <div className="h-3.5 bg-gray-200 dark:bg-gray-600 rounded w-32" />
+                      <div className="flex gap-1.5" dir="ltr">
+                        {[1,2,3,4,5].map((s) => (
+                          <motion.div
+                            key={s}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 1.4 + s * 0.08 }}
+                          >
+                            <Star className={`h-5 w-5 ${s <= 4 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200 dark:text-gray-600'}`} />
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+
+                    {/* Submit button */}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 1.6, type: 'spring' }}
+                      className="pt-1"
+                    >
+                      <div className="h-11 bg-gradient-to-l from-indigo-500 to-violet-500 rounded-xl w-36 mx-auto shadow-lg shadow-indigo-500/20 flex items-center justify-center">
+                        <span className="text-white text-sm font-semibold">ثبت پاسخ</span>
+                      </div>
+                    </motion.div>
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>
@@ -510,15 +669,24 @@ function FeaturesSection() {
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, i) => (
             <motion.div key={i} variants={staggerChild}>
-              <Card className="group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-indigo-100 dark:hover:border-indigo-800 hover:shadow-xl hover:shadow-indigo-500/[0.06] transition-all duration-300 hover:-translate-y-1 cursor-default overflow-hidden">
-                <CardContent className="p-6">
+              <Card className="group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-default overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                {/* Animated gradient border on hover */}
+                <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${feature.gradient} p-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500`}>
+                  <div className="w-full h-full rounded-[10px] bg-white dark:bg-gray-900" />
+                </div>
+
+                {/* Spotlight glow effect on hover */}
+                <div className={`absolute -inset-1 rounded-xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.08] blur-xl transition-opacity duration-500`} />
+
+                <CardContent className="p-6 relative z-10">
+                  {/* Animated icon container */}
                   <div
-                    className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} mb-5`}
+                    className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
                   >
-                    <feature.icon className="h-6 w-6 text-white" />
+                    <feature.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{feature.title}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{feature.description}</p>
                 </CardContent>
 
                 {/* Subtle gradient overlay on hover */}
@@ -1107,6 +1275,19 @@ function PricingSection() {
                   <div className="absolute -inset-px rounded-xl bg-gradient-to-b from-indigo-500/20 via-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                 )}
 
+                {/* Shimmer/shine animation for recommended plan */}
+                {plan.highlight && (
+                  <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+                    <motion.div
+                      className="absolute inset-0 -translate-x-full"
+                      animate={{ translateX: ['-100%', '100%'] }}
+                      transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, ease: 'linear' }}
+                    >
+                      <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+                    </motion.div>
+                  </div>
+                )}
+
                 <CardContent className="p-6 lg:p-8 flex flex-col h-full">
                   {/* Plan icon + name */}
                   <div className="flex items-center gap-3 mb-4">
@@ -1207,35 +1388,65 @@ function CTASection() {
 
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
-      {/* Background — more vibrant gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700" />
-      <div className="absolute inset-0 bg-gradient-to-t from-indigo-800/40 to-transparent" />
+      {/* Animated shifting gradient background */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{
+          backgroundPosition: ['0% 50%', '50% 100%', '100% 50%', '50% 0%', '0% 50%'],
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+        style={{
+          backgroundSize: '400% 400%',
+          backgroundImage: 'linear-gradient(135deg, #4f46e5, #7c3aed, #9333ea, #6366f1, #4f46e5)',
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent" />
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
         backgroundSize: '32px 32px',
       }} />
 
-      {/* Glow effects — more vibrant */}
+      {/* Floating geometric shapes */}
+      <motion.div
+        className="absolute top-[15%] right-[8%] w-16 h-16 border-2 border-white/20 rounded-xl"
+        animate={{ y: [0, -25, 0], rotate: [0, 45, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute bottom-[20%] left-[10%] w-12 h-12 border-2 border-white/15 rounded-full"
+        animate={{ y: [0, 20, 0], x: [0, 10, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+      />
+      <motion.div
+        className="absolute top-[30%] left-[20%] w-8 h-8 bg-white/10 rounded-lg"
+        animate={{ y: [0, -15, 0], rotate: [0, 90, 0], scale: [1, 1.2, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+      />
+      <motion.div
+        className="absolute bottom-[35%] right-[18%] w-6 h-6 bg-white/10 rounded-full"
+        animate={{ y: [0, -20, 0], scale: [1, 1.3, 1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+      />
+      <motion.div
+        className="absolute top-[60%] left-[35%] w-10 h-10 border border-white/10 rotate-45"
+        animate={{ y: [0, 15, 0], rotate: [45, 135, 45] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+      />
+      <motion.div
+        className="absolute top-[10%] left-[45%] w-5 h-5 bg-yellow-300/30 rounded-full"
+        animate={{ y: [0, -12, 0], opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+      />
+      <motion.div
+        className="absolute bottom-[15%] right-[35%] w-4 h-4 bg-pink-300/25 rotate-12"
+        animate={{ y: [0, 18, 0], rotate: [12, 72, 12] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+      />
+
+      {/* Animated glow orbs */}
       <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-violet-300/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-400/10 rounded-full blur-3xl" />
-
-      {/* Animated floating orbs */}
-      <motion.div
-        className="absolute top-[20%] right-[10%] w-4 h-4 bg-yellow-300/60 rounded-full"
-        animate={{ y: [0, -20, 0], x: [0, 10, 0], opacity: [0.4, 0.8, 0.4] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute bottom-[30%] left-[15%] w-3 h-3 bg-pink-300/60 rounded-full"
-        animate={{ y: [0, 15, 0], x: [0, -8, 0], opacity: [0.3, 0.7, 0.3] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      />
-      <motion.div
-        className="absolute top-[40%] left-[25%] w-2 h-2 bg-emerald-300/60 rounded-full"
-        animate={{ y: [0, -12, 0], opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      />
 
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
         <FadeInSection>
@@ -1278,14 +1489,27 @@ function CTASection() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button
-              size="lg"
-              onClick={() => setCurrentView('dashboard')}
-              className="w-full sm:w-auto min-w-[220px] h-14 text-base font-bold bg-white text-indigo-600 hover:bg-indigo-50 shadow-xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-0.5 transition-all rounded-xl px-10 group"
+            {/* CTA button with pulse animation */}
+            <motion.div
+              className="relative"
+              animate={{ scale: [1, 1.03, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              شروع رایگان
-              <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
-            </Button>
+              {/* Pulse ring behind button */}
+              <motion.div
+                className="absolute inset-0 rounded-xl bg-white/20"
+                animate={{ scale: [1, 1.15], opacity: [0.3, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+              />
+              <Button
+                size="lg"
+                onClick={() => setCurrentView('dashboard')}
+                className="relative w-full sm:w-auto min-w-[220px] h-14 text-base font-bold bg-white text-indigo-600 hover:bg-indigo-50 shadow-xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-0.5 transition-all rounded-xl px-10 group"
+              >
+                شروع رایگان
+                <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
+              </Button>
+            </motion.div>
             <div className="flex items-center gap-2 text-white/70 text-sm">
               <Shield className="h-4 w-4" />
               بدون نیاز به کارت بانکی

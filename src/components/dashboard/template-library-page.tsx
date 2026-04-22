@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
@@ -39,6 +38,11 @@ import {
   ShoppingBag,
   ClipboardList,
   HelpCircle,
+  ArrowUpDown,
+  Heart,
+  Clock,
+  TrendingUp,
+  Zap,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -47,6 +51,13 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   templatesData,
   type TemplateData,
   type TemplateCategory,
@@ -54,10 +65,29 @@ import {
 import { useAppStore, type FormQuestion } from '@/lib/store';
 import { cn } from '@/lib/utils';
 
+/* ─── Favorites storage ─────────────────────────────────────────────────── */
+
+const FAVORITES_KEY = 'formbuilder-favorite-templates';
+
+function getFavorites(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(FAVORITES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveFavorites(ids: string[]) {
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
+}
+
 /* ─── Category config ───────────────────────────────────────────────────── */
 
 const categoryTabs: { value: string; label: string; icon: React.ReactNode }[] = [
   { value: 'all', label: 'همه', icon: <Layers className="size-4" /> },
+  { value: 'favorites', label: 'برگزیده‌ها', icon: <Heart className="size-4 text-rose-500" /> },
   { value: 'survey', label: 'نظرسنجی', icon: <ClipboardList className="size-4" /> },
   { value: 'registration', label: 'ثبت‌نام', icon: <FileText className="size-4" /> },
   { value: 'feedback', label: 'بازخورد', icon: <MessageSquareHeart className="size-4" /> },
@@ -89,7 +119,7 @@ const ITEMS_PER_PAGE = 12;
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.05 } },
+  visible: { transition: { staggerChildren: 0.04 } },
 };
 
 const cardVariants = {
@@ -101,6 +131,24 @@ const cardVariants = {
   exit: { opacity: 0, scale: 0.95, transition: { duration: 0.15 } },
 };
 
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
+const dialogVariants = {
+  hidden: { opacity: 0, scale: 0.92, y: 20 },
+  visible: {
+    opacity: 1, scale: 1, y: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 28 },
+  },
+  exit: {
+    opacity: 0, scale: 0.95, y: 10,
+    transition: { duration: 0.2 },
+  },
+};
+
 /* ─── Icon resolver ──────────────────────────────────────────────────────── */
 
 function TemplateIcon({ name, className }: { name: string; className?: string }) {
@@ -108,7 +156,7 @@ function TemplateIcon({ name, className }: { name: string; className?: string })
   return <IconComponent className={className} />;
 }
 
-/* ─── Question type label ───────────────────────────────────────────────── */
+/* ─── Question type helpers ──────────────────────────────────────────────── */
 
 function getQuestionTypeLabel(type: string): string {
   const labels: Record<string, string> = {
@@ -154,9 +202,16 @@ function getQuestionTypeIcon(type: string) {
 
 function QuestionPreviewRow({ question, index }: { question: Omit<FormQuestion, 'id'>; index: number }) {
   return (
-    <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
+    <motion.div
+      initial={{ opacity: 0, x: 12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.04, duration: 0.25 }}
+      className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800/50 transition-colors"
+    >
       <div className="flex items-center justify-center size-8 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shrink-0 mt-0.5 shadow-sm">
-        {getQuestionTypeIcon(question.type)}
+        <span className="text-violet-600 dark:text-violet-400">
+          {getQuestionTypeIcon(question.type)}
+        </span>
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
@@ -173,10 +228,9 @@ function QuestionPreviewRow({ question, index }: { question: Omit<FormQuestion, 
           <span className="text-gray-400 ml-1 font-normal">{index + 1}.</span>
           {question.title}
         </p>
-        {/* Show options preview for choice questions */}
         {question.config?.options && question.config.options.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">
-            {question.config.options.map((opt) => (
+            {question.config.options.slice(0, 5).map((opt) => (
               <span
                 key={opt.id}
                 className="text-[11px] text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-2 py-0.5 rounded-md"
@@ -184,9 +238,11 @@ function QuestionPreviewRow({ question, index }: { question: Omit<FormQuestion, 
                 {opt.text}
               </span>
             ))}
+            {question.config.options.length > 5 && (
+              <span className="text-[11px] text-gray-400 px-1.5 py-0.5">+{question.config.options.length - 5}</span>
+            )}
           </div>
         )}
-        {/* Show scale labels */}
         {question.config?.scaleMinLabel && question.config?.scaleMaxLabel && (
           <div className="flex items-center gap-2 mt-1.5 text-[11px] text-gray-400">
             <span>{question.config.scaleMinLabel}</span>
@@ -195,84 +251,119 @@ function QuestionPreviewRow({ question, index }: { question: Omit<FormQuestion, 
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-/* ─── Template Preview Overlay ────────────────────────────────────────────── */
+/* ─── Template Preview Overlay (inline, no portal) ──────────────────────── */
 
 function TemplatePreviewOverlay({
   template,
   onClose,
   onUse,
+  onToggleFavorite,
   isUsing,
+  isFavorite,
 }: {
   template: TemplateData;
   onClose: () => void;
   onUse: () => void;
+  onToggleFavorite: () => void;
   isUsing: boolean;
+  isFavorite: boolean;
 }) {
   const colors = categoryColorMap[template.category];
 
-  return createPortal(
+  return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      variants={overlayVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       transition={{ duration: 0.2 }}
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
       {/* Dialog */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        variants={dialogVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        onClick={(e) => e.stopPropagation()}
         className="relative z-10 w-full max-w-2xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden flex flex-col"
       >
+        {/* Header gradient bar */}
+        <div className={cn('h-1.5 w-full bg-gradient-to-l', template.gradient)} />
+
         {/* Header */}
-        <div className={cn('relative px-6 pt-6 pb-5')}>
-          <div className={cn('absolute inset-0 bg-gradient-to-br opacity-10', template.gradient)} />
+        <div className="relative px-6 pt-5 pb-4">
+          <div className={cn('absolute inset-0 bg-gradient-to-br opacity-[0.04]', template.gradient)} />
           <div className="relative">
             <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className={cn('flex size-12 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg text-white', template.gradient)}>
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className={cn('flex size-12 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg text-white shrink-0', template.gradient)}>
                   <TemplateIcon name={template.icon} className="size-6" />
                 </div>
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                <div className="min-w-0">
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white truncate">
                     {template.name}
                   </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
                     {template.description}
                   </p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onClose}
-                className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 size-8 shrink-0"
-                aria-label="بستن"
-              >
-                <X className="size-4" />
-              </Button>
+              <div className="flex items-center gap-1 shrink-0">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onToggleFavorite}
+                  className={cn(
+                    'rounded-full h-9 w-9 transition-all',
+                    isFavorite
+                      ? 'text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20'
+                      : 'text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20'
+                  )}
+                  aria-label={isFavorite ? 'حذف از برگزیده‌ها' : 'افزودن به برگزیده‌ها'}
+                >
+                  <motion.div
+                    animate={isFavorite ? { scale: [1, 1.3, 1], rotate: [0, -15, 15, 0] } : {}}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <Star className="size-4.5" fill={isFavorite ? 'currentColor' : 'none'} />
+                  </motion.div>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onClose}
+                  className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 size-9"
+                  aria-label="بستن"
+                >
+                  <X className="size-4" />
+                </Button>
+              </div>
             </div>
 
             {/* Meta badges */}
-            <div className="flex items-center gap-3 mt-3">
+            <div className="flex items-center gap-3 mt-3 flex-wrap">
               <Badge
                 variant="outline"
                 className={cn('text-[11px] font-medium border-0', colors.bg, colors.text, colors.darkBg, colors.darkText)}
               >
                 {template.categoryLabel}
               </Badge>
-              <div className="flex items-center gap-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                 <Layers className="size-3.5" />
                 <span>{template.questionCount} سؤال</span>
+              </div>
+              <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                <Zap className="size-3.5" />
+                <span>رایگان</span>
               </div>
             </div>
           </div>
@@ -282,18 +373,14 @@ function TemplatePreviewOverlay({
 
         {/* Questions list */}
         <div className="flex-1 overflow-hidden px-6 py-4">
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3">سؤالات این الگو:</p>
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-1.5">
+            <FileText className="size-3.5" />
+            سؤالات این الگو:
+          </p>
           <ScrollArea className="max-h-[45vh]">
-            <div className="space-y-2">
+            <div className="space-y-2 pr-1">
               {template.questions.map((q, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                >
-                  <QuestionPreviewRow question={q} index={idx} />
-                </motion.div>
+                <QuestionPreviewRow key={idx} question={q} index={idx} />
               ))}
             </div>
           </ScrollArea>
@@ -301,27 +388,35 @@ function TemplatePreviewOverlay({
 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
-          <Button
-            onClick={onUse}
-            disabled={isUsing}
-            className="w-full h-11 rounded-xl bg-gradient-to-l from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg shadow-violet-500/20 font-medium text-sm"
-          >
-            {isUsing ? (
-              <>
-                <Loader2 className="size-4 ml-2 animate-spin" />
-                در حال ساخت فرم...
-              </>
-            ) : (
-              <>
-                <Sparkles className="size-4 ml-2" />
-                استفاده از این الگو
-              </>
-            )}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              className="h-11 rounded-xl px-6 border-gray-200 dark:border-gray-700"
+            >
+              بستن
+            </Button>
+            <Button
+              onClick={onUse}
+              disabled={isUsing}
+              className="flex-1 h-11 rounded-xl bg-gradient-to-l from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg shadow-violet-500/25 font-medium text-sm"
+            >
+              {isUsing ? (
+                <>
+                  <Loader2 className="size-4 ml-2 animate-spin" />
+                  در حال ساخت فرم...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="size-4 ml-2" />
+                  استفاده از این الگو
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </motion.div>
-    </motion.div>,
-    document.body
+    </motion.div>
   );
 }
 
@@ -332,41 +427,65 @@ function TemplateCard({
   onPreview,
   onUse,
   isUsing,
+  isFavorite,
+  onToggleFavorite,
 }: {
   template: TemplateData;
   onPreview: () => void;
   onUse: () => void;
   isUsing: boolean;
+  isFavorite: boolean;
+  onToggleFavorite: (e: React.MouseEvent) => void;
 }) {
   const colors = categoryColorMap[template.category];
 
   return (
-    <div className="group relative">
-      {/* Hover glow */}
-      <div className="pointer-events-none absolute -inset-[1.5px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+    <motion.div variants={cardVariants} layout className="group relative">
+      {/* Hover glow border */}
+      <div className="pointer-events-none absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
-          background: 'linear-gradient(135deg, rgba(168,85,247,0.35), rgba(236,72,153,0.35), rgba(249,115,22,0.25))',
+          background: 'linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.3), rgba(249,115,22,0.2))',
         }}
       />
 
-      <button
-        type="button"
-        className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-sm flex flex-col h-full group-hover:shadow-xl transition-all duration-300 cursor-pointer text-right w-full p-0"
-        onClick={onPreview}
-      >
+      <div className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-sm flex flex-col h-full group-hover:shadow-xl group-hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
         {/* Icon area */}
         <div className={cn('bg-gradient-to-br relative flex items-center justify-center h-32 overflow-hidden', template.gradient)}>
           <div className="absolute -top-8 -right-8 size-24 rounded-full bg-white/10" />
           <div className="absolute -bottom-10 -left-10 size-32 rounded-full bg-white/5" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-16 rounded-full bg-white/10" />
 
-          <div className="relative flex size-16 items-center justify-center rounded-2xl bg-white/90 backdrop-blur-sm shadow-xl">
+          <div className="relative flex size-16 items-center justify-center rounded-2xl bg-white/90 backdrop-blur-sm shadow-xl group-hover:scale-110 transition-transform duration-300">
             <TemplateIcon name={template.icon} className="size-8 text-gray-700" />
           </div>
+
+          {/* Favorite button on card */}
+          <button
+            onClick={onToggleFavorite}
+            className="absolute top-3 left-3 size-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm hover:bg-white dark:bg-gray-900/80 dark:hover:bg-gray-900 shadow-sm transition-all z-10"
+            aria-label={isFavorite ? 'حذف از برگزیده‌ها' : 'افزودن به برگزیده‌ها'}
+          >
+            <motion.div
+              animate={isFavorite ? { scale: [1, 1.25, 1] } : {}}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+            >
+              <Star
+                className={cn(
+                  'size-4 transition-colors',
+                  isFavorite ? 'text-rose-500' : 'text-gray-400 hover:text-rose-400'
+                )}
+                fill={isFavorite ? 'currentColor' : 'none'}
+              />
+            </motion.div>
+          </button>
         </div>
 
         {/* Content */}
-        <div className="flex flex-col flex-1 p-4 gap-2.5">
+        <button
+          type="button"
+          onClick={onPreview}
+          className="flex flex-col flex-1 p-4 gap-2.5 text-right w-full cursor-pointer"
+        >
           <div className="flex items-start justify-between gap-2">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-relaxed line-clamp-2 flex-1">
               {template.name}
@@ -410,19 +529,12 @@ function TemplateCard({
             </div>
 
             <div className="flex items-center gap-1.5">
-              <span
-                role="button"
-                tabIndex={0}
-                onClick={(e) => { e.stopPropagation(); onPreview(); }}
-                className="inline-flex items-center justify-center h-8 px-2.5 rounded-lg text-gray-500 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 cursor-pointer"
-              >
+              <span className="inline-flex items-center justify-center h-8 px-2.5 rounded-lg text-gray-500 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 cursor-pointer transition-colors">
                 <Eye className="size-3.5" />
               </span>
               <span
-                role="button"
-                tabIndex={0}
                 onClick={(e) => { e.stopPropagation(); onUse(); }}
-                className="inline-flex items-center justify-center h-8 rounded-lg bg-gradient-to-l from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 dark:from-gray-200 dark:to-gray-300 text-white dark:text-gray-900 shadow-sm text-xs font-medium px-3 transition-all cursor-pointer"
+                className="inline-flex items-center justify-center h-8 rounded-lg bg-gradient-to-l from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 dark:from-gray-200 dark:to-gray-300 text-white dark:text-gray-900 shadow-sm text-xs font-medium px-3 gap-1.5 transition-all cursor-pointer"
               >
                 {isUsing ? (
                   <Loader2 className="size-3.5 animate-spin" />
@@ -433,13 +545,15 @@ function TemplateCard({
               </span>
             </div>
           </div>
-        </div>
-      </button>
-    </div>
+        </button>
+      </div>
+    </motion.div>
   );
 }
 
 /* ─── Main Template Library Page ────────────────────────────────────────── */
+
+type SortOption = 'default' | 'most-questions' | 'least-questions' | 'alpha-asc' | 'alpha-desc';
 
 export default function TemplateLibraryPage() {
   const [activeTab, setActiveTab] = useState('all');
@@ -447,13 +561,36 @@ export default function TemplateLibraryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [usingTemplateId, setUsingTemplateId] = useState<string | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<TemplateData | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<SortOption>('default');
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
+
+  // Load favorites from localStorage
+  useEffect(() => {
+    setFavorites(getFavorites());
+  }, []);
+
+  const toggleFavorite = useCallback((templateId: string) => {
+    setFavorites((prev) => {
+      const next = prev.includes(templateId)
+        ? prev.filter((id) => id !== templateId)
+        : [...prev, templateId];
+      saveFavorites(next);
+      return next;
+    });
+  }, []);
 
   const filteredTemplates = useMemo(() => {
     let result = templatesData;
-    if (activeTab !== 'all') {
+
+    // Filter by tab
+    if (activeTab === 'favorites') {
+      result = result.filter((t) => favorites.includes(t.id));
+    } else if (activeTab !== 'all') {
       result = result.filter((t) => t.category === activeTab);
     }
+
+    // Filter by search
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
       result = result.filter(
@@ -463,8 +600,25 @@ export default function TemplateLibraryPage() {
           t.categoryLabel.includes(q)
       );
     }
+
+    // Sort
+    switch (sortBy) {
+      case 'most-questions':
+        result = [...result].sort((a, b) => b.questionCount - a.questionCount);
+        break;
+      case 'least-questions':
+        result = [...result].sort((a, b) => a.questionCount - b.questionCount);
+        break;
+      case 'alpha-asc':
+        result = [...result].sort((a, b) => a.name.localeCompare(b.name, 'fa'));
+        break;
+      case 'alpha-desc':
+        result = [...result].sort((a, b) => b.name.localeCompare(a.name, 'fa'));
+        break;
+    }
+
     return result;
-  }, [activeTab, searchQuery]);
+  }, [activeTab, searchQuery, sortBy, favorites]);
 
   const totalPages = Math.ceil(filteredTemplates.length / ITEMS_PER_PAGE);
   const paginatedTemplates = filteredTemplates.slice(
@@ -479,6 +633,11 @@ export default function TemplateLibraryPage() {
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
+    setCurrentPage(1);
+  }, []);
+
+  const handleSortChange = useCallback((value: string) => {
+    setSortBy(value as SortOption);
     setCurrentPage(1);
   }, []);
 
@@ -516,14 +675,13 @@ export default function TemplateLibraryPage() {
     }
   };
 
-  // Page numbers to show in pagination
   const getPageNumbers = useCallback(() => {
     const pages: number[] = [];
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else if (currentPage <= 3) {
       for (let i = 1; i <= 5; i++) pages.push(i);
-      pages.push(-1); // ellipsis
+      pages.push(-1);
       pages.push(totalPages);
     } else if (currentPage >= totalPages - 2) {
       pages.push(1);
@@ -539,18 +697,10 @@ export default function TemplateLibraryPage() {
     return pages;
   }, [totalPages, currentPage]);
 
+  const favCount = favorites.length;
+
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/80 dark:bg-gray-950 flex flex-col">
-      {/* Debug test */}
-      {previewTemplate && (
-        <div className="fixed inset-0 z-[200] bg-red-500/30 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-xl shadow-xl">
-            <p className="text-lg font-bold">{previewTemplate.name}</p>
-            <button onClick={() => setPreviewTemplate(null)} className="mt-2 px-4 py-2 bg-gray-200 rounded">بستن</button>
-          </div>
-        </div>
-      )}
-
       {/* ─── Hero Header ─── */}
       <div className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 overflow-hidden">
         {/* Decorative blobs */}
@@ -561,7 +711,7 @@ export default function TemplateLibraryPage() {
         <div
           className="absolute inset-0 opacity-[0.06]"
           style={{
-            backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
+            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
             backgroundSize: '28px 28px',
           }}
         />
@@ -591,8 +741,15 @@ export default function TemplateLibraryPage() {
             className="text-center mb-8"
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-4 backdrop-blur-sm">
-              <Star className="size-4 text-yellow-300" />
+              <Sparkles className="size-4 text-yellow-300" />
               {templatesData.length} الگوی آماده
+              {favCount > 0 && (
+                <>
+                  <span className="text-white/30 mx-1">|</span>
+                  <Heart className="size-3.5 text-rose-300" fill="currentColor" />
+                  <span className="text-rose-200">{favCount} برگزیده</span>
+                </>
+              )}
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
               گالری الگوهای آماده
@@ -600,12 +757,6 @@ export default function TemplateLibraryPage() {
             <p className="text-base sm:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
               از میان الگوهای حرفه‌ای انتخاب کنید و در کمتر از ۳۰ ثانیه فرم خود را بسازید
             </p>
-            <button
-              onClick={() => setPreviewTemplate(templatesData[0])}
-              className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg text-sm"
-            >
-              تست پیش‌نمایش (DEBUG)
-            </button>
           </motion.div>
 
           {/* Search bar */}
@@ -648,14 +799,17 @@ export default function TemplateLibraryPage() {
             {categoryTabs.map((tab) => {
               const count = tab.value === 'all'
                 ? templatesData.length
+                : tab.value === 'favorites'
+                ? favCount
                 : templatesData.filter((t) => t.category === tab.value).length;
+              const isActive = activeTab === tab.value;
               return (
                 <button
                   key={tab.value}
                   onClick={() => handleTabChange(tab.value)}
                   className={cn(
                     'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all shrink-0',
-                    activeTab === tab.value
+                    isActive
                       ? 'bg-gray-900 text-white shadow-md dark:bg-white dark:text-gray-900'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
                   )}
@@ -664,7 +818,7 @@ export default function TemplateLibraryPage() {
                   {tab.label}
                   <span className={cn(
                     'text-[10px] px-1.5 py-0.5 rounded-full font-semibold',
-                    activeTab === tab.value ? 'bg-white/20 dark:bg-gray-900/20' : 'bg-gray-200/80 dark:bg-gray-700'
+                    isActive ? 'bg-white/20 dark:bg-gray-900/20' : 'bg-gray-200/80 dark:bg-gray-700'
                   )}>
                     {count}
                   </span>
@@ -675,9 +829,9 @@ export default function TemplateLibraryPage() {
         </div>
       </motion.div>
 
-      {/* ─── Results Info ─── */}
+      {/* ─── Results Info & Sort ─── */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 pb-2">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <Filter className="size-4 text-gray-400" />
             <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -689,12 +843,27 @@ export default function TemplateLibraryPage() {
                 {categoryTabs.find(c => c.value === activeTab)?.label}
               </Badge>
             )}
+            {searchQuery && (
+              <p className="text-sm text-gray-400 hidden sm:block">
+                نتایج جستجو برای «<span className="font-medium text-gray-600 dark:text-gray-300">{searchQuery}</span>»
+              </p>
+            )}
           </div>
-          {searchQuery && (
-            <p className="text-sm text-gray-400">
-              نتایج جستجو برای «<span className="font-medium text-gray-600 dark:text-gray-300">{searchQuery}</span>»
-            </p>
-          )}
+          <div className="flex items-center gap-2">
+            <ArrowUpDown className="size-3.5 text-gray-400" />
+            <Select value={sortBy} onValueChange={handleSortChange}>
+              <SelectTrigger className="h-8 w-[150px] text-xs rounded-lg border-gray-200 dark:border-gray-700">
+                <SelectValue placeholder="مرتب‌سازی" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">پیش‌فرض</SelectItem>
+                <SelectItem value="most-questions">بیشترین سؤال</SelectItem>
+                <SelectItem value="least-questions">کمترین سؤال</SelectItem>
+                <SelectItem value="alpha-asc">الفبایی (صعودی)</SelectItem>
+                <SelectItem value="alpha-desc">الفبایی (نزولی)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
@@ -702,7 +871,7 @@ export default function TemplateLibraryPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-8">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${activeTab}-${searchQuery}-${currentPage}`}
+            key={`${activeTab}-${searchQuery}-${currentPage}-${sortBy}`}
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -716,6 +885,8 @@ export default function TemplateLibraryPage() {
                 onPreview={() => setPreviewTemplate(template)}
                 onUse={() => handleUseTemplate(template)}
                 isUsing={usingTemplateId === template.id}
+                isFavorite={favorites.includes(template.id)}
+                onToggleFavorite={(e) => { e.stopPropagation(); toggleFavorite(template.id); }}
               />
             ))}
           </motion.div>
@@ -729,16 +900,26 @@ export default function TemplateLibraryPage() {
             className="flex flex-col items-center justify-center py-20"
           >
             <div className="flex size-20 items-center justify-center rounded-3xl bg-gray-100 dark:bg-gray-800 mb-4">
-              <Search className="size-10 text-gray-300 dark:text-gray-600" />
+              {activeTab === 'favorites' ? (
+                <Heart className="size-10 text-gray-300 dark:text-gray-600" />
+              ) : (
+                <Search className="size-10 text-gray-300 dark:text-gray-600" />
+              )}
             </div>
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">الگویی یافت نشد</h3>
-            <p className="text-sm text-gray-400 dark:text-gray-500">عبارت جستجو یا دسته‌بندی دیگری را امتحان کنید</p>
+            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">
+              {activeTab === 'favorites' ? 'هنوز برگزیده‌ای ندارید' : 'الگویی یافت نشد'}
+            </h3>
+            <p className="text-sm text-gray-400 dark:text-gray-500">
+              {activeTab === 'favorites'
+                ? 'با کلیک روی ستاره، الگوهای مورد علاقه خود را ذخیره کنید'
+                : 'عبارت جستجو یا دسته‌بندی دیگری را امتحان کنید'}
+            </p>
             <Button
               variant="outline"
               onClick={() => { handleSearchChange(''); handleTabChange('all'); }}
               className="mt-4 rounded-xl"
             >
-              نمایش همه الگوها
+              {activeTab === 'favorites' ? 'مشاهده همه الگوها' : 'نمایش همه الگوها'}
             </Button>
           </motion.div>
         )}
@@ -798,15 +979,20 @@ export default function TemplateLibraryPage() {
         </div>
       )}
 
-      {/* ─── Template Preview Overlay ─── */}
-      {previewTemplate && (
-        <TemplatePreviewOverlay
-          template={previewTemplate}
-          onClose={() => setPreviewTemplate(null)}
-          onUse={() => handleUseTemplate(previewTemplate)}
-          isUsing={usingTemplateId === previewTemplate.id}
-        />
-      )}
+      {/* ─── Template Preview Overlay (with AnimatePresence) ─── */}
+      <AnimatePresence>
+        {previewTemplate && (
+          <TemplatePreviewOverlay
+            key={previewTemplate.id}
+            template={previewTemplate}
+            onClose={() => setPreviewTemplate(null)}
+            onUse={() => handleUseTemplate(previewTemplate)}
+            onToggleFavorite={() => toggleFavorite(previewTemplate.id)}
+            isUsing={usingTemplateId === previewTemplate.id}
+            isFavorite={favorites.includes(previewTemplate.id)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

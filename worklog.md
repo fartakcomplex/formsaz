@@ -241,3 +241,217 @@ Unresolved Issues / Recommendations for Next Phase:
 8. Undo/redo functionality in form builder (buttons exist but are decorative)
 9. Email notifications on form submission
 10. Custom domain/branding for published forms
+
+---
+Task ID: 4-a
+Agent: dashboard-enhancement
+Task: Enhance dashboard with welcome empty state, card improvements, quick stats bar, and sort dropdown
+
+Work Log:
+- Beautiful animated Welcome Empty State for first-time users (forms.length === 0):
+  - Custom SVG illustration of a form document with animated rows, floating pencil, and checkmark
+  - Gradient background orbs with breathing animation
+  - Welcome message: "به فرمساز خوش آمدید!" with gradient text
+  - Subtitle: "اولین فرم خود را بسازید یا از الگوهای آماده استفاده کنید"
+  - 3 quick-start cards with staggered framer-motion entrance animations:
+    - "ایجاد فرم خالی" (Plus icon) → calls handleCreateNew
+    - "استفاده از الگو" (LayoutTemplate icon) → navigates to 'templates' view
+    - "مشاهده راهنما" (BookOpen icon) → opens HelpDialog
+  - HelpDialog component with 4 getting-started steps (icons + descriptions):
+    1. فرم بسازید - یک فرم خالی یا از الگو بسازید
+    2. سؤالات اضافه کنید - انواع سؤال را اضافه کنید
+    3. فرم را منتشر کنید - لینک فرم را به اشتراک بگذارید
+    4. نتایج را ببینید - پاسخ‌ها و آمار را تحلیل کنید
+- Dashboard Card Improvements:
+  - Colored top border/stripe (1px gradient) on each card based on status:
+    - published/draft → violet-to-purple gradient
+    - closed → gray gradient
+  - Question count badge ("X سؤال") next to card title
+  - Improved hover: scale(1.01) + y(-3) + shadow-lg with smooth 300ms transition
+  - Relative time display using date-fns formatDistanceToNow with faIR locale (e.g., "۵ دقیقه پیش")
+- Quick Stats Bar (shown when forms exist):
+  - Horizontal gradient bar (violet→purple→fuchsia) above form cards
+  - Glassmorphism with backdrop-blur and semi-transparent overlay
+  - 4 stats: کل فرم‌ها, منتشر شده, کل پاسخ‌ها, کل بازدیدها
+  - Staggered entrance animations for each stat
+- Sort dropdown:
+  - Added sort Select next to search and status filter
+  - 4 options: جدیدترین (default), قدیمی‌ترین, بیشترین پاسخ, کمترین پاسخ
+  - ArrowUpDown icon in trigger
+  - Sorts filtered forms by updatedAt or submission count
+- Color scheme updated from indigo to violet throughout for consistency
+- All existing functionality preserved (search, filter, CRUD, share, duplicate, delete)
+- Dark mode fully supported for all new components
+
+Stage Summary:
+- File modified: src/components/dashboard/dashboard.tsx
+- 0 lint errors (1 pre-existing in landing-page.tsx unrelated to changes)
+- Dev server compiles successfully
+- All UI in RTL/Persian with proper dark mode support
+
+---
+Task ID: 4-d
+Agent: landing-enhancement
+Task: Enhance the landing page with improved animations, visual polish, and micro-interactions
+
+Work Log:
+- Hero Section Enhancement:
+  - Added `FloatingParticles` component: 25 randomly positioned animated dots with varying sizes, opacity, and movement patterns
+  - Replaced static stats with animated counters using `useAnimatedCounter` hook:
+    - ۱۰۰,۰۰۰+ فرم ساخته شده
+    - ۵۰,۰۰۰+ کاربر فعال
+    - ۲,۰۰۰,۰۰۰+ پاسخ ثبت شده
+  - Counter uses `useInView` to trigger animation on scroll with eased cubic timing
+  - Respects `prefers-reduced-motion` by using near-instant duration
+  - Replaced simple browser mockup with 3D-style interactive form mockup:
+    - Split view with builder sidebar (question types list) and form preview
+    - Stylized form card showing: text input, radio buttons (with selection), rating stars (4/5), submit button
+    - 3D perspective with `whileHover` tilt effect using spring physics
+    - Staggered entrance animations for each form element
+    - Animated pulsing glow behind the mockup
+    - Full dark mode support
+- Features Section Enhancement:
+  - Added "feature card spotlight" effect: colored glow matching each feature's gradient on hover
+  - Added gradient border effect on hover (matches feature's color gradient)
+  - Animated icons: scale + rotate(3deg) on hover with smooth transition
+  - Title color change on hover (indigo)
+  - Increased hover elevation to -translate-y-2 with shadow-2xl
+- Pricing Section Enhancement:
+  - Added shimmer/shine animation on the Pro (recommended) plan card:
+    - Sweeps across the card every 5 seconds using translateX animation
+    - Semi-transparent white gradient with skew effect
+  - Already had "محبوب‌ترین" badge (confirmed existing)
+  - Already had checkmarks/crosses for features (confirmed existing)
+- CTA Section Enhancement:
+  - Replaced static gradient with animated shifting gradient background:
+    - 5-stop gradient (indigo → violet → purple → indigo → violet)
+    - 400% background size with 15s animation cycle
+  - Added 7 floating geometric shapes:
+    - Rounded square (border outline, rotation animation)
+    - Circle (border outline, float animation)
+    - Small filled square (rotation + scale animation)
+    - Small filled circle (scale animation)
+    - Diamond shape (rotation animation)
+    - Small yellow dot (opacity animation)
+    - Small pink square (rotation animation)
+  - Added pulse animation on CTA button:
+    - Button wrapper gently scales 1 → 1.03 → 1
+    - Expanding ring effect (scale 1 → 1.15, opacity 0.3 → 0)
+- All scroll animations preserved (FadeInSection, StaggerContainer, staggerChild variants)
+- Full dark mode support for all new elements
+- Clean ESLint: 0 warnings, 0 errors
+- Dev server compiles successfully
+
+Stage Summary:
+- File modified: src/components/landing/landing-page.tsx
+- 5 major enhancements: Hero (3D mockup, counters, particles), Features (spotlight, gradient border, animated icons), Pricing (shimmer), CTA (animated gradient, geometric shapes, pulse button)
+- 2 new reusable components: `useAnimatedCounter` hook, `FloatingParticles` component
+- All existing sections and functionality preserved
+- Clean ESLint: 0 warnings, 0 errors
+
+---
+Task ID: 5
+Agent: main
+Task: QA testing, bug fixes, template library enhancements, styling improvements
+
+Work Log:
+- QA testing via agent-browser across all views (Landing, Dashboard, Templates, Form Builder)
+- Identified and removed DEBUG code from template-library-page.tsx:
+  - Red overlay debug div (z-200) that covered the entire page
+  - "تست پیشنمایش (DEBUG)" button in the hero section
+- Template Library Page major rewrite:
+  - Added Favorites system with localStorage persistence:
+    - Star button on each template card (top-left)
+    - Star button in preview dialog header
+    - Animated star fill/scale effect on toggle
+    - "برگزیده‌ها" tab in category filters showing favorite count
+    - Empty state with helpful message when no favorites
+    - localStorage key: 'formbuilder-favorite-templates'
+  - Added Sort dropdown:
+    - 5 sort options: پیش‌فرض, بیشترین سؤال, کمترین سؤال, الفبایی (صعودی), الفبایی (نزولی)
+    - Uses shadcn Select component with ArrowUpDown icon
+  - Fixed Template Preview Overlay:
+    - Replaced createPortal with inline rendering for proper AnimatePresence support
+    - Proper exit animation when closing dialog
+    - Gradient top bar matching template color
+    - Close button + favorite toggle in header
+    - Backdrop click-to-close
+    - "رایگان" (Free) badge
+    - Question preview rows with staggered entrance animation
+    - Two-button footer (بستن + استفاده از این الگو)
+  - Improved card hover: -translate-y-0.5 + shadow-xl transition
+  - Replaced TemplateIcon dynamic import with safer fallback
+  - Card body changed from button to div+button for better click handling
+- Dashboard Enhancements (via subagent):
+  - Welcome Empty State with SVG illustration and 3 quick-start cards
+  - Help Dialog with 4 getting-started steps
+  - Colored status stripe on form cards (violet/purple for active, gray for closed)
+  - Question count badge on form cards
+  - Improved hover effects (scale + elevation + shadow)
+  - Relative time display ("۵ دقیقه پیش") using date-fns faIR locale
+  - Quick Stats Bar with glassmorphism (total forms, published, submissions, views)
+  - Sort dropdown (newest, oldest, most responses, least responses)
+- Landing Page Enhancements (via subagent):
+  - 3D interactive form mockup in hero section
+  - Animated counter stats (100K+ forms, 50K+ users, 2M+ responses)
+  - 25 floating particle dots in hero background
+  - Feature card spotlight glow and gradient border on hover
+  - Animated icons (scale + rotate on hover)
+  - Shimmer/shine animation on Pro pricing card
+  - Animated gradient background on CTA section
+  - 7 floating geometric shapes in CTA
+  - Pulse animation on CTA button
+  - All animations use useInView for scroll-triggered activation
+- Clean ESLint: 0 warnings, 0 errors
+- Dev server compiles successfully
+- QA verified: All views functional, no JS errors, favorites working, sort working
+
+Stage Summary:
+- Files modified: template-library-page.tsx (major rewrite), dashboard.tsx (enhanced), landing-page.tsx (enhanced)
+- New features: Template favorites, Sort options, Welcome empty state, Help dialog, Quick stats bar, Animated counters, 3D mockup
+- Bug fixes: Removed DEBUG overlay and button, Fixed preview overlay animation
+- All functionality verified via agent-browser QA testing
+
+---
+Current Project Status Assessment:
+- Application is fully functional with no JS errors across all views
+- 6 views working correctly: Landing (enhanced animations), Dashboard (empty state, stats, sort), Builder (drag-and-drop, logic), Form Fill, Results (pie charts), Templates (favorites, sort, preview)
+- Template gallery with 100 real Persian templates across 10 categories + favorites filter
+- Dark mode toggle working across all components
+- Drag-and-drop question reordering in form builder
+- Form sharing with copy link, social sharing
+- Conditional logic/branching support in properties panel
+- Pie charts and donut charts in results view
+- Landing page with pricing, testimonials, 3D mockup, animated counters
+- Clean ESLint - no warnings or errors
+- Dev server compiles without errors
+
+Completed in This Session:
+1. ✅ Removed DEBUG code from template-library-page.tsx (red overlay + debug button)
+2. ✅ Template favorites with localStorage persistence and animated star toggle
+3. ✅ Template sort dropdown (5 sort options)
+4. ✅ Fixed template preview overlay with proper AnimatePresence animations
+5. ✅ Dashboard welcome empty state with SVG illustration and help dialog
+6. ✅ Dashboard quick stats bar with glassmorphism
+7. ✅ Dashboard card improvements (status stripe, question count, relative time, better hover)
+8. ✅ Dashboard sort dropdown
+9. ✅ Landing page 3D form mockup with hover tilt effect
+10. ✅ Landing page animated counter stats
+11. ✅ Landing page floating particles
+12. ✅ Landing page feature spotlight glow and gradient borders
+13. ✅ Landing page pricing shimmer animation
+14. ✅ Landing page CTA animated gradient and floating shapes
+15. ✅ QA testing across all views - no JS errors found
+
+Unresolved Issues / Recommendations for Next Phase:
+1. Image choice question type is listed but not yet implemented in the renderer
+2. Matrix question type is listed but needs implementation
+3. Batch delete/select multiple forms in dashboard
+4. File upload is UI-only (no actual file handling backend)
+5. Form expiration/closing date feature
+6. Form logic actually evaluated during form fill (currently only configured in builder)
+7. Undo/redo functionality in form builder (buttons exist but are decorative)
+8. Email notifications on form submission
+9. Custom domain/branding for published forms
+10. AnimatePresence mode="wait" warnings in page.tsx (harmless, from page transitions)
+11. Non-boolean attribute warning from shadcn/ui sidebar component (harmless, from library)

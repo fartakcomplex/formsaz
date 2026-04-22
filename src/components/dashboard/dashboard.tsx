@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { faIR } from 'date-fns/locale';
 import {
   Plus,
@@ -25,6 +25,12 @@ import {
   Check,
   QrCode,
   Mail,
+  BookOpen,
+  ArrowUpDown,
+  HelpCircle,
+  FileEdit,
+  Rocket,
+  TrendingUp,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -90,6 +96,23 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.R
     icon: <Lock className="size-3.5" />,
   },
 };
+
+const statusBorderGradient: Record<string, string> = {
+  draft: 'from-violet-400 to-purple-500',
+  published: 'from-violet-400 to-purple-500',
+  closed: 'from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-500',
+};
+
+function formatRelativeTime(dateStr: string): string {
+  try {
+    return formatDistanceToNow(new Date(dateStr), {
+      addSuffix: true,
+      locale: faIR,
+    });
+  } catch {
+    return dateStr;
+  }
+}
 
 function formatDate(dateStr: string): string {
   try {
@@ -164,7 +187,7 @@ function ShareFormDialog({
           label: 'ایمیل',
           href: `mailto:?subject=${encodeURIComponent(form.title)}&body=${encodeURIComponent(`فرم: ${form.title}\n\nلینک: ${formLink}`)}`,
           icon: <Mail className="size-5" />,
-          color: 'hover:bg-indigo-100 dark:hover:bg-indigo-950/50 text-indigo-500 border-indigo-200 dark:border-indigo-800 hover:border-indigo-400 dark:hover:border-indigo-600',
+          color: 'hover:bg-violet-100 dark:hover:bg-violet-950/50 text-violet-500 border-violet-200 dark:border-violet-800 hover:border-violet-400 dark:hover:border-violet-600',
         },
       ]
     : [];
@@ -176,10 +199,10 @@ function ShareFormDialog({
         className="sm:max-w-md p-0 gap-0 overflow-hidden rounded-2xl border-gray-200 dark:border-gray-800"
       >
         {/* Header */}
-        <DialogHeader className="p-6 pb-4 bg-gradient-to-l from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 border-b border-gray-100 dark:border-gray-800">
+        <DialogHeader className="p-6 pb-4 bg-gradient-to-l from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/40 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-sm">
-              <Share2 className="size-5 text-indigo-500" />
+              <Share2 className="size-5 text-violet-500" />
             </div>
             <div className="text-right">
               <DialogTitle className="text-base font-bold text-gray-900 dark:text-white">
@@ -255,7 +278,7 @@ function ShareFormDialog({
                   className={`shrink-0 rounded-xl h-10 px-4 text-sm font-medium transition-all duration-300 ${
                     copied
                       ? 'bg-emerald-500 hover:bg-emerald-500 text-white border-0 shadow-md shadow-emerald-200/50 dark:shadow-emerald-500/20'
-                      : 'bg-indigo-500 hover:bg-indigo-600 text-white shadow-md shadow-indigo-200/50 dark:shadow-indigo-500/20'
+                      : 'bg-violet-500 hover:bg-violet-600 text-white shadow-md shadow-violet-200/50 dark:shadow-violet-500/20'
                   }`}
                 >
                   <AnimatePresence mode="wait">
@@ -407,40 +430,381 @@ function StatCard({
   );
 }
 
-// ─── Empty State ────────────────────────────────────────────────────────────
+// ─── Welcome Empty State SVG Illustration ───────────────────────────────────
 
-function EmptyState({ onCreateNew }: { onCreateNew: () => void }) {
+function WelcomeIllustration() {
+  return (
+    <div className="relative w-full max-w-sm mx-auto">
+      {/* Background orbs */}
+      <motion.div
+        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute -top-4 -right-4 size-32 rounded-full bg-gradient-to-br from-violet-200 to-purple-300 dark:from-violet-800/30 dark:to-purple-800/30 blur-xl"
+      />
+      <motion.div
+        animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className="absolute -bottom-2 -left-6 size-40 rounded-full bg-gradient-to-br from-fuchsia-200 to-pink-300 dark:from-fuchsia-800/20 dark:to-pink-800/20 blur-xl"
+      />
+
+      {/* Main form document */}
+      <motion.div
+        initial={{ opacity: 0, y: 20, rotateY: -15 }}
+        animate={{ opacity: 1, y: 0, rotateY: 0 }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        className="relative mx-auto w-64"
+      >
+        <svg viewBox="0 0 240 300" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full drop-shadow-xl">
+          {/* Document shadow */}
+          <rect x="22" y="14" width="200" height="270" rx="16" fill="currentColor" className="text-gray-300 dark:text-gray-700" />
+
+          {/* Document body */}
+          <rect x="16" y="8" width="200" height="270" rx="16" fill="white" className="dark:fill-gray-800" stroke="currentColor" className_ignored="true" />
+          <rect x="16" y="8" width="200" height="270" rx="16" stroke="currentColor" strokeWidth="1.5" className="text-gray-200 dark:text-gray-700" fill="none" />
+
+          {/* Header bar */}
+          <rect x="16" y="8" width="200" height="44" rx="16" className="fill-gradient-top" />
+          <rect x="16" y="36" width="200" height="16" className="fill-gradient-top" />
+
+          {/* Gradient for header using defs */}
+          <defs>
+            <linearGradient id="headerGrad" x1="16" y1="8" x2="216" y2="52" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#8b5cf6" />
+              <stop offset="1" stopColor="#a855f7" />
+            </linearGradient>
+          </defs>
+          <rect x="16" y="8" width="200" height="44" rx="16" fill="url(#headerGrad)" />
+          <rect x="16" y="36" width="200" height="16" fill="url(#headerGrad)" />
+
+          {/* Header dots */}
+          <circle cx="36" cy="30" r="4" fill="rgba(255,255,255,0.5)" />
+          <circle cx="50" cy="30" r="4" fill="rgba(255,255,255,0.5)" />
+          <circle cx="64" cy="30" r="4" fill="rgba(255,255,255,0.5)" />
+
+          {/* Header title line */}
+          <rect x="90" y="25" width="100" height="10" rx="5" fill="rgba(255,255,255,0.7)" />
+
+          {/* Question rows */}
+          {/* Row 1 */}
+          <motion.g
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+          >
+            <rect x="36" y="68" width="160" height="8" rx="4" className="text-gray-300 dark:text-gray-600" fill="currentColor" />
+            <rect x="36" y="84" width="120" height="32" rx="8" className="text-gray-100 dark:text-gray-700" fill="currentColor" stroke="currentColor" strokeWidth="0.5" />
+          </motion.g>
+
+          {/* Row 2 */}
+          <motion.g
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.45, duration: 0.4 }}
+          >
+            <rect x="36" y="130" width="140" height="8" rx="4" className="text-gray-300 dark:text-gray-600" fill="currentColor" />
+            {/* Radio buttons */}
+            <circle cx="44" cy="156" r="8" className="text-gray-100 dark:text-gray-700" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            <circle cx="44" cy="156" r="3" fill="#8b5cf6" />
+            <rect x="60" y="149" width="50" height="14" rx="4" className="text-gray-200 dark:text-gray-600" fill="currentColor" />
+            <circle cx="120" cy="156" r="8" className="text-gray-100 dark:text-gray-700" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            <rect x="136" y="149" width="40" height="14" rx="4" className="text-gray-200 dark:text-gray-600" fill="currentColor" />
+          </motion.g>
+
+          {/* Row 3 */}
+          <motion.g
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
+          >
+            <rect x="36" y="190" width="155" height="8" rx="4" className="text-gray-300 dark:text-gray-600" fill="currentColor" />
+            <rect x="36" y="206" width="160" height="32" rx="8" className="text-gray-100 dark:text-gray-700" fill="currentColor" stroke="currentColor" strokeWidth="0.5" />
+          </motion.g>
+
+          {/* Submit button */}
+          <motion.g
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.75, duration: 0.4 }}
+          >
+            <rect x="66" y="256" width="100" height="14" rx="7" fill="url(#headerGrad)" />
+          </motion.g>
+        </svg>
+
+        {/* Floating pencil */}
+        <motion.div
+          animate={{ y: [0, -8, 0], rotate: [0, 5, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -bottom-3 left-4"
+        >
+          <div className="size-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-200/50 dark:shadow-amber-500/20">
+            <Edit3 className="size-5 text-white" />
+          </div>
+        </motion.div>
+
+        {/* Floating checkmark */}
+        <motion.div
+          animate={{ y: [0, -6, 0], rotate: [0, -5, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+          className="absolute -top-2 left-8"
+        >
+          <div className="size-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-200/50 dark:shadow-emerald-500/20">
+            <Check className="size-4 text-white" />
+          </div>
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ─── Help Dialog ────────────────────────────────────────────────────────────
+
+function HelpDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const steps = [
+    {
+      icon: <FileEdit className="size-5 text-violet-500" />,
+      title: 'فرم بسازید',
+      description: 'یک فرم خالی یا از الگو بسازید',
+      stepNumber: '۱',
+    },
+    {
+      icon: <HelpCircle className="size-5 text-fuchsia-500" />,
+      title: 'سؤالات اضافه کنید',
+      description: 'انواع سؤال را اضافه کنید',
+      stepNumber: '۲',
+    },
+    {
+      icon: <Rocket className="size-5 text-rose-500" />,
+      title: 'فرم را منتشر کنید',
+      description: 'لینک فرم را به اشتراک بگذارید',
+      stepNumber: '۳',
+    },
+    {
+      icon: <TrendingUp className="size-5 text-emerald-500" />,
+      title: 'نتایج را ببینید',
+      description: 'پاسخ‌ها و آمار را تحلیل کنید',
+      stepNumber: '۴',
+    },
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent dir="rtl" className="sm:max-w-lg rounded-2xl border-gray-200 dark:border-gray-800 overflow-hidden p-0">
+        <DialogHeader className="p-6 pb-4 bg-gradient-to-l from-violet-50 to-fuchsia-50 dark:from-violet-950/40 dark:to-fuchsia-950/40 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-sm">
+              <BookOpen className="size-5 text-violet-500" />
+            </div>
+            <div className="text-right">
+              <DialogTitle className="text-base font-bold text-gray-900 dark:text-white">
+                راهنمای شروع سریع
+              </DialogTitle>
+              <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                در ۴ قدم ساده فرم خود را بسازید و منتشر کنید
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="p-6 space-y-4">
+          {steps.map((step, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+            >
+              <div className="flex items-center justify-center size-10 shrink-0 rounded-xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30">
+                {step.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-xs font-bold text-violet-500 dark:text-violet-400">
+                    مرحله {step.stepNumber}
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+                  {step.title}
+                </h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  {step.description}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+
+          <div className="pt-3 border-t border-gray-100 dark:border-gray-800">
+            <p className="text-xs text-center text-gray-400 dark:text-gray-500">
+              برای سؤالات بیشتر، از الگوهای آماده استفاده کنید یا فرم جدیدی بسازید.
+            </p>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ─── Empty State (Welcome) ─────────────────────────────────────────────────
+
+function EmptyState({
+  onCreateNew,
+  onGoTemplates,
+}: {
+  onCreateNew: () => void;
+  onGoTemplates: () => void;
+}) {
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  const quickStartItems = [
+    {
+      icon: <Plus className="size-6 text-white" />,
+      title: 'ایجاد فرم خالی',
+      description: 'یک فرم جدید از ابتدا بسازید',
+      gradient: 'from-violet-500 to-purple-600',
+      shadowColor: 'shadow-violet-200/50 dark:shadow-violet-500/20',
+      onClick: onCreateNew,
+    },
+    {
+      icon: <LayoutTemplate className="size-6 text-white" />,
+      title: 'استفاده از الگو',
+      description: 'از فرم‌های آماده استفاده کنید',
+      gradient: 'from-fuchsia-500 to-pink-600',
+      shadowColor: 'shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20',
+      onClick: onGoTemplates,
+    },
+    {
+      icon: <BookOpen className="size-6 text-white" />,
+      title: 'مشاهده راهنما',
+      description: 'مراحل شروع کار را ببینید',
+      gradient: 'from-amber-500 to-orange-600',
+      shadowColor: 'shadow-amber-200/50 dark:shadow-amber-500/20',
+      onClick: () => setHelpOpen(true),
+    },
+  ];
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-      className="flex flex-col items-center justify-center py-16 px-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="flex flex-col items-center justify-center py-8 sm:py-12 px-4"
     >
-      <div className="relative mb-6">
-        <div className="flex size-28 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/50 dark:to-purple-950/50">
-          <FilePlus className="size-14 text-indigo-300 dark:text-indigo-600" />
-        </div>
-        <motion.div
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -bottom-2 left-1/2 -translate-x-1/2"
-        >
-          <Plus className="size-7 rounded-full bg-white dark:bg-gray-800 text-indigo-500 shadow-lg" />
-        </motion.div>
+      {/* Illustration */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="mb-8"
+      >
+        <WelcomeIllustration />
+      </motion.div>
+
+      {/* Welcome text */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="text-center mb-8"
+      >
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-3">
+          به فرمساز{' '}
+          <span className="bg-gradient-to-l from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+            خوش آمدید!
+          </span>
+        </h2>
+        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md">
+          اولین فرم خود را بسازید یا از الگوهای آماده استفاده کنید
+        </p>
+      </motion.div>
+
+      {/* Quick-start cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl">
+        {quickStartItems.map((item, index) => (
+          <motion.button
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 + index * 0.12, duration: 0.5, ease: 'easeOut' }}
+            whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={item.onClick}
+            className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg transition-all duration-200 cursor-pointer"
+          >
+            <div className={`flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} shadow-lg ${item.shadowColor} group-hover:shadow-xl transition-shadow`}>
+              {item.icon}
+            </div>
+            <div className="text-center">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">
+                {item.title}
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {item.description}
+              </p>
+            </div>
+          </motion.button>
+        ))}
       </div>
-      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">هنوز فرمی نساخته‌اید!</h3>
-      <p className="text-gray-500 dark:text-gray-400 text-center max-w-sm mb-6">
-        با ساخت اولین فرم خود، شروع به جمع‌آوری اطلاعات و بازخورد کنید.
-      </p>
-      <div className="flex items-center gap-3">
-        <Button
-          onClick={onCreateNew}
-          className="bg-gradient-to-l from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md shadow-indigo-200/50 dark:shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-300/50 rounded-xl px-6 font-medium"
-        >
-          <Plus className="size-4 ml-2" />
-          ایجاد فرم جدید
-        </Button>
+
+      <HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />
+    </motion.div>
+  );
+}
+
+// ─── Quick Stats Bar ────────────────────────────────────────────────────────
+
+function QuickStatsBar({
+  totalForms,
+  publishedCount,
+  totalSubmissions,
+  totalViews,
+}: {
+  totalForms: number;
+  publishedCount: number;
+  totalSubmissions: number;
+  totalViews: number;
+}) {
+  const stats = [
+    { label: 'کل فرم‌ها', value: totalForms, icon: <FileText className="size-4" /> },
+    { label: 'منتشر شده', value: publishedCount, icon: <CircleDot className="size-4" /> },
+    { label: 'کل پاسخ‌ها', value: totalSubmissions, icon: <Send className="size-4" /> },
+    { label: 'کل بازدیدها', value: totalViews, icon: <Eye className="size-4" /> },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+      className="relative mb-6 rounded-2xl overflow-hidden"
+    >
+      {/* Gradient background with glassmorphism */}
+      <div className="absolute inset-0 bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 opacity-90" />
+      <div className="absolute inset-0 bg-white/10 dark:bg-white/5 backdrop-blur-xl" />
+
+      <div className="relative flex items-center justify-around gap-2 py-4 px-4 sm:px-8">
+        {stats.map((stat, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.15 + index * 0.08 }}
+            className="flex items-center gap-3"
+          >
+            <div className="flex items-center justify-center size-9 rounded-xl bg-white/20 backdrop-blur-sm">
+              <span className="text-white">{stat.icon}</span>
+            </div>
+            <div>
+              <p className="text-lg sm:text-xl font-bold text-white">{stat.value}</p>
+              <p className="text-[11px] text-white/70">{stat.label}</p>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </motion.div>
   );
@@ -451,6 +815,7 @@ function EmptyState({ onCreateNew }: { onCreateNew: () => void }) {
 function FormCardSkeleton() {
   return (
     <Card className="overflow-hidden bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
+      <div className="h-1 bg-gray-200 dark:bg-gray-800" />
       <CardHeader className="pb-3">
         <Skeleton className="h-5 w-3/4" />
         <Skeleton className="h-4 w-1/2 mt-1" />
@@ -489,21 +854,35 @@ function FormCard({
   onShare: (form: Form) => void;
 }) {
   const status = statusConfig[form.status] || statusConfig.draft;
+  const borderGradient = statusBorderGradient[form.status] || statusBorderGradient.draft;
+  const questionCount = form.questions?.length || 0;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -2 }}
+      whileHover={{ y: -3, scale: 1.01 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
-      <Card className="overflow-hidden border-gray-200 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-md transition-all duration-200 group bg-white dark:bg-gray-900">
+      <Card className="overflow-hidden border-gray-200 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg transition-all duration-300 group bg-white dark:bg-gray-900">
+        {/* Status color top stripe */}
+        <div className={`h-1 bg-gradient-to-l ${borderGradient}`} />
+
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-base font-bold text-gray-900 dark:text-white truncate">
-                {form.title}
-              </CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-base font-bold text-gray-900 dark:text-white truncate">
+                  {form.title}
+                </CardTitle>
+                {/* Question count badge */}
+                <Badge
+                  variant="secondary"
+                  className="shrink-0 text-[10px] font-semibold px-1.5 py-0 bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 h-5"
+                >
+                  {questionCount} سؤال
+                </Badge>
+              </div>
               {form.description && (
                 <CardDescription className="mt-1 line-clamp-2 text-sm dark:text-gray-400">
                   {form.description}
@@ -519,18 +898,18 @@ function FormCard({
 
         <CardContent className="gap-3 pb-3">
           <div className="grid grid-cols-3 gap-2">
-            <div className="flex flex-col items-center gap-1 rounded-lg bg-gray-50 dark:bg-gray-800 p-2.5 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-950/50 transition-colors">
-              <FileText className="size-4 text-gray-400 group-hover:text-indigo-400 dark:group-hover:text-indigo-500 transition-colors" />
-              <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{form.questions?.length || 0}</span>
+            <div className="flex flex-col items-center gap-1 rounded-lg bg-gray-50 dark:bg-gray-800 p-2.5 group-hover:bg-violet-50 dark:group-hover:bg-violet-950/50 transition-colors">
+              <FileText className="size-4 text-gray-400 group-hover:text-violet-400 dark:group-hover:text-violet-500 transition-colors" />
+              <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{questionCount}</span>
               <span className="text-[10px] text-gray-400 dark:text-gray-500">سؤال</span>
             </div>
-            <div className="flex flex-col items-center gap-1 rounded-lg bg-gray-50 dark:bg-gray-800 p-2.5 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-950/50 transition-colors">
-              <Send className="size-4 text-gray-400 group-hover:text-indigo-400 dark:group-hover:text-indigo-500 transition-colors" />
+            <div className="flex flex-col items-center gap-1 rounded-lg bg-gray-50 dark:bg-gray-800 p-2.5 group-hover:bg-violet-50 dark:group-hover:bg-violet-950/50 transition-colors">
+              <Send className="size-4 text-gray-400 group-hover:text-violet-400 dark:group-hover:text-violet-500 transition-colors" />
               <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{form._count?.submissions || 0}</span>
               <span className="text-[10px] text-gray-400 dark:text-gray-500">پاسخ</span>
             </div>
-            <div className="flex flex-col items-center gap-1 rounded-lg bg-gray-50 dark:bg-gray-800 p-2.5 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-950/50 transition-colors">
-              <Eye className="size-4 text-gray-400 group-hover:text-indigo-400 dark:group-hover:text-indigo-500 transition-colors" />
+            <div className="flex flex-col items-center gap-1 rounded-lg bg-gray-50 dark:bg-gray-800 p-2.5 group-hover:bg-violet-50 dark:group-hover:bg-violet-950/50 transition-colors">
+              <Eye className="size-4 text-gray-400 group-hover:text-violet-400 dark:group-hover:text-violet-500 transition-colors" />
               <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{form.viewCount || 0}</span>
               <span className="text-[10px] text-gray-400 dark:text-gray-500">بازدید</span>
             </div>
@@ -540,14 +919,14 @@ function FormCard({
         <CardFooter className="flex-col gap-3 pt-0">
           <div className="flex items-center justify-between w-full text-xs text-gray-400 dark:text-gray-500 px-1">
             <span>آخرین ویرایش</span>
-            <span>{formatDate(form.updatedAt)}</span>
+            <span>{formatRelativeTime(form.updatedAt)}</span>
           </div>
 
           <div className="flex items-center gap-2 w-full">
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 text-xs rounded-lg hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-400 dark:hover:border-indigo-800 transition-colors"
+              className="flex-1 text-xs rounded-lg hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
               onClick={() => onEdit(form)}
             >
               <Edit3 className="size-3.5 ml-1" />
@@ -556,7 +935,7 @@ function FormCard({
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 text-xs rounded-lg hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-400 dark:hover:border-indigo-800 transition-colors"
+              className="flex-1 text-xs rounded-lg hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
               onClick={() => onPreview(form)}
             >
               <Eye className="size-3.5 ml-1" />
@@ -571,7 +950,7 @@ function FormCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-44">
                 <DropdownMenuItem onClick={() => onResults(form)}>
-                  <BarChart3 className="size-4 ml-2 text-indigo-500" />
+                  <BarChart3 className="size-4 ml-2 text-violet-500" />
                   نتایج
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onShare(form)}>
@@ -619,6 +998,8 @@ function FormCard({
 
 // ─── Dashboard ──────────────────────────────────────────────────────────────
 
+type SortOption = 'newest' | 'oldest' | 'most_responses' | 'least_responses';
+
 export default function Dashboard() {
   const {
     forms,
@@ -630,6 +1011,7 @@ export default function Dashboard() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [loading, setLoading] = useState(true);
   const [duplicating, setDuplicating] = useState<string | null>(null);
   const [shareForm, setShareForm] = useState<Form | null>(null);
@@ -654,14 +1036,29 @@ export default function Dashboard() {
     fetchForms();
   }, [fetchForms]);
 
-  const filteredForms = forms.filter((form) => {
-    const matchesSearch =
-      !searchQuery ||
-      form.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (form.description && form.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesStatus = statusFilter === 'all' || form.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredAndSortedForms = forms
+    .filter((form) => {
+      const matchesSearch =
+        !searchQuery ||
+        form.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (form.description && form.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesStatus = statusFilter === 'all' || form.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        case 'oldest':
+          return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+        case 'most_responses':
+          return (b._count?.submissions || 0) - (a._count?.submissions || 0);
+        case 'least_responses':
+          return (a._count?.submissions || 0) - (b._count?.submissions || 0);
+        default:
+          return 0;
+      }
+    });
 
   const totalSubmissions = forms.reduce((sum, f) => sum + (f._count?.submissions || 0), 0);
   const totalViews = forms.reduce((sum, f) => sum + (f.viewCount || 0), 0);
@@ -756,11 +1153,11 @@ export default function Dashboard() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <StatCard
-            icon={<FileText className="size-6 text-indigo-600 dark:text-indigo-400" />}
+            icon={<FileText className="size-6 text-violet-600 dark:text-violet-400" />}
             label="کل فرم‌ها"
             value={forms.length}
-            color="bg-indigo-100"
-            colorDark="dark:bg-indigo-900/30"
+            color="bg-violet-100"
+            colorDark="dark:bg-violet-900/30"
           />
           <StatCard
             icon={<Send className="size-6 text-emerald-600 dark:text-emerald-400" />}
@@ -770,11 +1167,11 @@ export default function Dashboard() {
             colorDark="dark:bg-emerald-900/30"
           />
           <StatCard
-            icon={<Eye className="size-6 text-blue-600 dark:text-blue-400" />}
+            icon={<Eye className="size-6 text-fuchsia-600 dark:text-fuchsia-400" />}
             label="کل بازدیدها"
             value={totalViews}
-            color="bg-blue-100"
-            colorDark="dark:bg-blue-900/30"
+            color="bg-fuchsia-100"
+            colorDark="dark:bg-fuchsia-900/30"
           />
           <StatCard
             icon={<CircleDot className="size-6 text-purple-600 dark:text-purple-400" />}
@@ -802,7 +1199,7 @@ export default function Dashboard() {
             </Button>
             <Button
               onClick={handleCreateNew}
-              className="bg-gradient-to-l from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md shadow-indigo-200/50 dark:shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-300/50 rounded-xl px-5 font-medium w-full sm:w-auto h-10"
+              className="bg-gradient-to-l from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-300/50 rounded-xl px-5 font-medium w-full sm:w-auto h-10"
             >
               <Plus className="size-4 ml-2" />
               ایجاد فرم جدید
@@ -823,7 +1220,7 @@ export default function Dashboard() {
                 placeholder="جستجو در فرم‌ها..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-indigo-300 focus:ring-indigo-100 text-gray-900 dark:text-white"
+                className="pr-10 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-violet-300 focus:ring-violet-100 text-gray-900 dark:text-white"
               />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -837,6 +1234,18 @@ export default function Dashboard() {
                 <SelectItem value="closed">بسته شده</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+              <SelectTrigger className="w-full sm:w-44 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                <ArrowUpDown className="size-4 ml-2 text-gray-400" />
+                <SelectValue placeholder="مرتب‌سازی" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">جدیدترین</SelectItem>
+                <SelectItem value="oldest">قدیمی‌ترین</SelectItem>
+                <SelectItem value="most_responses">بیشترین پاسخ</SelectItem>
+                <SelectItem value="least_responses">کمترین پاسخ</SelectItem>
+              </SelectContent>
+            </Select>
           </motion.div>
         )}
 
@@ -848,8 +1257,8 @@ export default function Dashboard() {
             ))}
           </div>
         ) : forms.length === 0 ? (
-          <EmptyState onCreateNew={handleCreateNew} />
-        ) : filteredForms.length === 0 ? (
+          <EmptyState onCreateNew={handleCreateNew} onGoTemplates={() => setCurrentView('templates')} />
+        ) : filteredAndSortedForms.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -860,22 +1269,32 @@ export default function Dashboard() {
             <p className="text-sm text-gray-400 dark:text-gray-500">فیلتر یا عبارت جستجوی خود را تغییر دهید</p>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            <AnimatePresence mode="popLayout">
-              {filteredForms.map((form) => (
-                <FormCard
-                  key={form.id}
-                  form={form}
-                  onEdit={handleEdit}
-                  onPreview={handlePreview}
-                  onResults={handleResults}
-                  onDelete={handleDelete}
-                  onDuplicate={handleDuplicate}
-                  onShare={handleShare}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
+          <>
+            {/* Quick Stats Bar */}
+            <QuickStatsBar
+              totalForms={forms.length}
+              publishedCount={publishedForms}
+              totalSubmissions={totalSubmissions}
+              totalViews={totalViews}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <AnimatePresence mode="popLayout">
+                {filteredAndSortedForms.map((form) => (
+                  <FormCard
+                    key={form.id}
+                    form={form}
+                    onEdit={handleEdit}
+                    onPreview={handlePreview}
+                    onResults={handleResults}
+                    onDelete={handleDelete}
+                    onDuplicate={handleDuplicate}
+                    onShare={handleShare}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+          </>
         )}
       </div>
 
