@@ -893,6 +893,8 @@ function HowItWorksSection() {
       description:
         'با رابط کاربری کشیدن و رها کردن، فرم دلخواه خود را در کمتر از ۵ دقیقه بسازید.',
       gradient: 'from-indigo-500 to-violet-500',
+      shadowColor: 'shadow-indigo-500/25 dark:shadow-indigo-500/15',
+      ringColor: 'ring-indigo-200/60 dark:ring-indigo-500/20',
     },
     {
       number: '۲',
@@ -901,6 +903,8 @@ function HowItWorksSection() {
       description:
         'لینک فرم را از طریق ایمیل، شبکه‌های اجتماعی یا کد QR با مخاطبان به اشتراک بگذارید.',
       gradient: 'from-violet-500 to-purple-500',
+      shadowColor: 'shadow-violet-500/25 dark:shadow-violet-500/15',
+      ringColor: 'ring-violet-200/60 dark:ring-violet-500/20',
     },
     {
       number: '۳',
@@ -909,11 +913,16 @@ function HowItWorksSection() {
       description:
         'با داشبورد تحلیلی قدرتمند، نتایج را به صورت لحظه‌ای بررسی و گزارش بگیرید.',
       gradient: 'from-purple-500 to-fuchsia-500',
+      shadowColor: 'shadow-purple-500/25 dark:shadow-purple-500/15',
+      ringColor: 'ring-purple-200/60 dark:ring-purple-500/20',
     },
   ];
 
+  const stepsRef = React.useRef<HTMLDivElement>(null);
+  const stepsInView = useInView(stepsRef, { once: true, margin: '-60px' });
+
   return (
-    <section className="relative py-24 sm:py-32 bg-white overflow-hidden">
+    <section className="relative py-24 sm:py-32 bg-white dark:bg-gray-950 overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.015]" style={{
         backgroundImage: `radial-gradient(circle, #6366f1 1px, transparent 1px)`,
@@ -929,55 +938,90 @@ function HowItWorksSection() {
           >
             راهنمای شروع
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             چگونه کار می‌کند؟
           </h2>
-          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 leading-relaxed">
+          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
             تنها در سه مرحله ساده فرم خود را بسازید و نتایج را دریافت کنید.
           </p>
         </FadeInSection>
 
         {/* Steps */}
-        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {/* Connector line (desktop only) with animated gradient */}
-          <div className="hidden md:block absolute top-[52px] right-[16%] left-[16%] h-[2px]">
-            <div className="h-full bg-gradient-to-l from-indigo-400 via-violet-400 to-purple-400 rounded-full opacity-60" />
-            <motion.div
-              className="h-full bg-gradient-to-l from-white via-violet-300 to-transparent rounded-full"
-              initial={{ x: '100%' }}
-              animate={{ x: '-100%' }}
-              transition={{ duration: 3, repeat: Infinity, repeatDelay: 1, ease: 'linear' }}
-            />
-          </div>
+        <div ref={stepsRef} className="relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            {/* Dotted connector lines (desktop only) */}
+            <div className="hidden md:block absolute top-[48px] right-[20%] left-[20%] z-0">
+              <div className="relative h-0 steps-connector" />
+            </div>
 
-          {steps.map((step, i) => (
-            <FadeInSection key={i} delay={i * 0.15} className="relative">
-              <div className="text-center">
-                {/* Step number circle */}
-                <div className="relative mx-auto mb-6">
-                  <motion.div
-                    whileHover={{ y: -4, scale: 1.08 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    className="inline-block"
-                  >
-                    <div
-                      className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${step.gradient} shadow-xl shadow-indigo-500/20 transition-shadow duration-300 hover:shadow-2xl hover:shadow-indigo-500/30`}
+            {steps.map((step, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 40 }}
+                animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                transition={{ duration: 0.6, delay: i * 0.15, ease: 'easeOut' }}
+                className="relative z-10"
+              >
+                <div className="text-center">
+                  {/* Step number gradient circle + icon */}
+                  <div className="relative mx-auto mb-8">
+                    {/* Outer glow ring */}
+                    <motion.div
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={stepsInView ? { scale: 1, opacity: 1 } : { scale: 0.5, opacity: 0 }}
+                      transition={{ duration: 0.5, delay: i * 0.15 + 0.2, ease: 'easeOut' }}
+                      className={`absolute inset-[-8px] rounded-full bg-gradient-to-br ${step.gradient} opacity-20 blur-xl`}
+                    />
+                    {/* Main circle with gradient */}
+                    <motion.div
+                      whileHover={{ y: -6, scale: 1.1 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      className={`relative inline-flex size-[88px] items-center justify-center rounded-full bg-gradient-to-br ${step.gradient} shadow-xl ${step.shadowColor} ring-4 ring-white dark:ring-gray-950 ${step.ringColor}`}
                     >
-                      <step.icon className="h-7 w-7 text-white" />
-                    </div>
-                  </motion.div>
-                  <div className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-900 shadow-md border border-gray-200 dark:border-gray-700">
-                    <span className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">{step.number}</span>
+                      {/* Large gradient number */}
+                      <motion.span
+                        initial={{ scale: 0, rotate: -90 }}
+                        animate={stepsInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -90 }}
+                        transition={{ duration: 0.5, delay: i * 0.15 + 0.1, type: 'spring', stiffness: 200 }}
+                        className="absolute inset-0 flex items-center justify-center text-3xl font-black text-white/20 select-none"
+                      >
+                        {step.number}
+                      </motion.span>
+                      {/* Icon */}
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={stepsInView ? { scale: 1 } : { scale: 0 }}
+                        transition={{ duration: 0.4, delay: i * 0.15 + 0.25, type: 'spring', stiffness: 300 }}
+                        className="relative flex size-12 items-center justify-center rounded-2xl bg-white/25 backdrop-blur-sm"
+                      >
+                        <step.icon className="h-6 w-6 text-white" />
+                      </motion.div>
+                    </motion.div>
                   </div>
-                </div>
 
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{step.title}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
-                  {step.description}
-                </p>
-              </div>
-            </FadeInSection>
-          ))}
+                  {/* Title */}
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                    transition={{ duration: 0.4, delay: i * 0.15 + 0.3 }}
+                    className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-3"
+                  >
+                    {step.title}
+                  </motion.h3>
+
+                  {/* Description */}
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                    transition={{ duration: 0.4, delay: i * 0.15 + 0.4 }}
+                    className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto"
+                  >
+                    {step.description}
+                  </motion.p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -32,6 +32,7 @@ import {
   Minus,
   LayoutDashboard,
   BookOpen,
+  Link2,
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -1198,41 +1199,85 @@ function isQuestionVisible(
   }
 }
 
-function SuccessScreen({ customMessage, onReturn }: { customMessage?: string; onReturn: () => void }) {
-  const confettiColors = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899'];
+function SuccessScreen({ customMessage, formId, onReturn }: { customMessage?: string; formId?: string; onReturn: () => void }) {
+  const [copied, setCopied] = useState(false);
+  const confettiColors = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316'];
+  const confettiParticles = React.useMemo(() => {
+    return Array.from({ length: 36 }).map((_, i) => ({
+      id: i,
+      color: confettiColors[i % confettiColors.length],
+      left: Math.random() * 100,
+      delay: Math.random() * 2.5,
+      duration: 2.5 + Math.random() * 2.5,
+      size: 4 + Math.random() * 8,
+      rotation: Math.random() * 360,
+    }));
+  }, []);
+
+  const handleCopyLink = async () => {
+    if (!formId) return;
+    const link = `formsaz.ir/f/${formId}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // fallback
+    }
+  };
 
   return (
     <div className="relative overflow-hidden">
-      {/* Confetti Particles */}
+      {/* CSS Confetti Particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {confettiParticles.map((p) => (
+          <div
+            key={p.id}
+            className="confetti-particle"
+            style={{
+              backgroundColor: p.color,
+              left: `${p.left}%`,
+              top: '-10px',
+              width: p.size,
+              height: p.size,
+              borderRadius: Math.random() > 0.5 ? '2px' : '50%',
+              animationDuration: `${p.duration}s`,
+              animationDelay: `${0.3 + p.delay}s`,
+              transform: `rotate(${p.rotation}deg)`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Framer-motion burst particles */}
       <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 24 }).map((_, i) => {
+        {Array.from({ length: 12 }).map((_, i) => {
           const color = confettiColors[i % confettiColors.length];
           const left = Math.random() * 100;
-          const delay = Math.random() * 2;
-          const duration = 2 + Math.random() * 2;
-          const size = 4 + Math.random() * 6;
+          const delay = Math.random() * 1.5;
+          const duration = 2 + Math.random() * 1.5;
           return (
             <motion.div
-              key={i}
+              key={`burst-${i}`}
               initial={{ opacity: 0, y: 0, scale: 0 }}
               animate={{
                 opacity: [0, 1, 1, 0],
-                y: [0, -60 - Math.random() * 80, -120 - Math.random() * 60],
-                x: [(Math.random() - 0.5) * 40, (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 60],
-                scale: [0, 1.2, 0.8],
+                y: [0, -80 - Math.random() * 60, -160 - Math.random() * 40],
+                x: [(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 100, (Math.random() - 0.5) * 80],
+                scale: [0, 1.3, 0.6],
               }}
               transition={{
                 duration,
-                delay: 0.5 + delay,
+                delay: 0.4 + delay,
                 ease: 'easeOut',
               }}
               className="absolute rounded-full"
               style={{
                 backgroundColor: color,
                 left: `${left}%`,
-                bottom: '30%',
-                width: size,
-                height: size,
+                bottom: '35%',
+                width: 5 + Math.random() * 5,
+                height: 5 + Math.random() * 5,
               }}
             />
           );
@@ -1243,14 +1288,14 @@ function SuccessScreen({ customMessage, onReturn }: { customMessage?: string; on
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-        className="flex flex-col items-center justify-center py-16 px-4 text-center"
+        className="flex flex-col items-center justify-center py-16 px-4 text-center relative z-10"
       >
         {/* Pulsing glow behind checkmark */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.1, 0.3] }}
+          animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.1, 0.3] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-          className="absolute top-16 sm:top-20 size-36 rounded-full bg-emerald-400/20 blur-2xl"
+          className="absolute top-12 sm:top-16 size-40 rounded-full bg-emerald-400/20 blur-2xl"
         />
 
         <motion.div
@@ -1296,6 +1341,26 @@ function SuccessScreen({ customMessage, onReturn }: { customMessage?: string; on
           transition={{ delay: 0.8 }}
           className="mt-8 flex flex-col items-center gap-4"
         >
+          {/* Copy link button */}
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={handleCopyLink}
+            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 dark:hover:bg-violet-950/50 transition-colors shadow-sm"
+          >
+            {copied ? (
+              <>
+                <Check className="size-4" />
+                لینک کپی شد!
+              </>
+            ) : (
+              <>
+                <Link2 className="size-4" />
+                کپی لینک فرم
+              </>
+            )}
+          </motion.button>
+
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -1549,7 +1614,7 @@ export default function FormFill() {
 
   if (!fillForm) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center">
+      <div dir="rtl" className="min-h-screen form-fill-bg bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center">
         <p className="text-gray-400 dark:text-zinc-500">فرمی برای نمایش وجود ندارد</p>
       </div>
     );
@@ -1560,7 +1625,7 @@ export default function FormFill() {
 
   if (isExpired) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center px-4">
+      <div dir="rtl" className="min-h-screen form-fill-bg bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -1587,16 +1652,20 @@ export default function FormFill() {
 
   if (isSubmitted) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950">
+      <div dir="rtl" className="min-h-screen form-fill-bg bg-gray-50/50 dark:bg-zinc-950">
         <div className="mx-auto max-w-xl px-4">
-          <SuccessScreen customMessage={customThankYouMessage} onReturn={() => { setFillForm(null); setCurrentView('dashboard'); }} />
+          <SuccessScreen
+            customMessage={customThankYouMessage}
+            formId={fillForm?.id}
+            onReturn={() => { setFillForm(null); setCurrentView('dashboard'); }}
+          />
         </div>
       </div>
     );
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-zinc-950">
+    <div dir="rtl" className="min-h-screen form-fill-bg bg-gray-50/50 dark:bg-zinc-950">
       <TooltipProvider delayDuration={400}>
       <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10 relative">
         {/* Auto-save indicator */}
@@ -1738,7 +1807,9 @@ export default function FormFill() {
                   ? `بخش ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalSections)}`
                   : `سؤال ${currentPage + 1} از ${totalPages}`}
               </span>
-              <span className="text-xs font-bold" style={{ color: themeColor }}>{progressPercent}٪</span>
+              <span className="text-xs font-bold" style={{ color: themeColor }}>
+                {toPersianDigit(progressPercent)}٪ تکمیل شده
+              </span>
             </div>
             {progressStyle === 'bar' ? (
               <div className="relative overflow-hidden rounded-full h-2.5 bg-gray-100 dark:bg-zinc-800">
@@ -1819,7 +1890,8 @@ export default function FormFill() {
                     <motion.div
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center gap-2 mt-3 text-sm text-red-500"
+                      key={`error-${q.id}-${errors[q.id]}`}
+                      className="flex items-center gap-2 mt-3 text-sm text-red-500 shake"
                     >
                       <AlertCircle className="size-4" />
                       {errors[q.id]}
@@ -1862,7 +1934,8 @@ export default function FormFill() {
                     <motion.div
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center gap-2 mt-3 text-sm text-red-500"
+                      key={`error-${currentQuestion.id}-${errors[currentQuestion.id]}`}
+                      className="flex items-center gap-2 mt-3 text-sm text-red-500 shake"
                     >
                       <AlertCircle className="size-4" />
                       {errors[currentQuestion.id]}

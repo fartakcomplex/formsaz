@@ -31,7 +31,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         <motion.div
           key={currentView}
           initial="initial"
@@ -41,15 +41,17 @@ export default function Home() {
           transition={pageTransition}
           className="flex-1 flex flex-col"
         >
-          {currentView === 'landing' && <LandingPage />}
-          {currentView !== 'landing' && currentView !== 'admin' && currentView !== 'user-panel' && <AppHeader />}
-          {currentView === 'builder' && <FormBuilder />}
-          {currentView === 'dashboard' && <Dashboard />}
-          {currentView === 'fill' && <FormFill />}
-          {currentView === 'results' && <ResultsView />}
-          {currentView === 'templates' && <TemplateLibraryPage />}
-          {currentView === 'admin' && <AdminPanel />}
-          {currentView === 'user-panel' && <UserPanel />}
+          <div>
+            {currentView === 'landing' && <LandingPage />}
+            {currentView !== 'landing' && currentView !== 'admin' && currentView !== 'user-panel' && <AppHeader />}
+            {currentView === 'builder' && <FormBuilder />}
+            {currentView === 'dashboard' && <Dashboard />}
+            {currentView === 'fill' && <FormFill />}
+            {currentView === 'results' && <ResultsView />}
+            {currentView === 'templates' && <TemplateLibraryPage />}
+            {currentView === 'admin' && <AdminPanel />}
+            {currentView === 'user-panel' && <UserPanel />}
+          </div>
         </motion.div>
       </AnimatePresence>
     </div>

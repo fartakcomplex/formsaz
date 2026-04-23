@@ -17,6 +17,10 @@ import {
   Settings,
   Loader2,
   Plus,
+  Import,
+  CheckCircle2,
+  AlertCircle,
+  Circle,
 } from 'lucide-react';
 import {
   ResizablePanelGroup,
@@ -45,6 +49,7 @@ import FormPreview from './form-preview';
 import PropertiesPanel from './properties-panel';
 import FormSettingsDialog from './form-settings-dialog';
 import KeyboardShortcutsDialog from './keyboard-shortcuts-dialog';
+import ImportQuestionsDialog from './import-questions-dialog';
 import { toast } from 'sonner';
 
 export default function FormBuilder() {
@@ -55,7 +60,8 @@ export default function FormBuilder() {
   const [mobileRightOpen, setMobileRightOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'dirty' | 'saving' | 'saved' | 'error'>('idle');
+  const [importOpen, setImportOpen] = useState(false);
   const [formTitle, setFormTitle] = useState(currentForm?.title || 'فرم بدون عنوان');
   const [formDescription, setFormDescription] = useState(currentForm?.description || '');
   const [showFab, setShowFab] = useState(false);
@@ -63,7 +69,7 @@ export default function FormBuilder() {
 
   const handleSave = useCallback(async (isAutoSave = false) => {
     if (isAutoSave) {
-      setIsAutoSaving(true);
+      setAutoSaveStatus('saving');
     } else {
       setIsSaving(true);
     }
@@ -100,22 +106,44 @@ export default function FormBuilder() {
       if (res.ok) {
         const savedForm = await res.json();
         setCurrentForm(savedForm);
-        toast.success(isAutoSave ? '✓ ذخیره شد' : 'فرم با موفقیت ذخیره شد');
+        if (isAutoSave) {
+          setAutoSaveStatus('saved');
+          setTimeout(() => setAutoSaveStatus('idle'), 3000);
+        } else {
+          toast.success('فرم با موفقیت ذخیره شد');
+          setAutoSaveStatus('idle');
+        }
       } else {
-        toast.error(isAutoSave ? 'خطا در ذخیره خودکار' : 'خطا در ذخیره فرم');
+        if (isAutoSave) {
+          setAutoSaveStatus('error');
+          setTimeout(() => setAutoSaveStatus('dirty'), 4000);
+        } else {
+          toast.error('خطا در ذخیره فرم');
+        }
       }
     } catch {
-      toast.error('خطا در ذخیره فرم');
+      if (isAutoSave) {
+        setAutoSaveStatus('error');
+        setTimeout(() => setAutoSaveStatus('dirty'), 4000);
+      } else {
+        toast.error('خطا در ذخیره فرم');
+      }
     } finally {
       setIsSaving(false);
-      setIsAutoSaving(false);
-      hasUnsavedChanges.current = false;
+      if (!isAutoSave) {
+        hasUnsavedChanges.current = false;
+      } else {
+        hasUnsavedChanges.current = false;
+      }
     }
   }, [formTitle, formDescription, formTheme, currentForm, questions, setCurrentForm]);
 
   // Track unsaved changes
   useEffect(() => {
-    hasUnsavedChanges.current = true;
+    if (questions.length > 0) {
+      hasUnsavedChanges.current = true;
+      setAutoSaveStatus('dirty');
+    }
   }, [questions, formTitle, formDescription, formTheme]);
 
   // Auto-save every 30 seconds when there are unsaved changes
@@ -408,14 +436,54 @@ export default function FormBuilder() {
           </div>
 
           {/* Auto-save indicator */}
-          {isAutoSaving && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground animate-in fade-in duration-300">
-              <Loader2 className="h-3 w-3 animate-spin text-violet-500" />
-              <span className="hidden sm:inline">ذخیره خودکار...</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground animate-in fade-in duration-300">
+            {autoSaveStatus === 'idle' && (
+              <>
+                <Circle className="size-2.5 text-gray-400 dark:text-gray-500" fill="currentColor" />
+                <span className="hidden sm:inline">ذخیره خودکار غیرفعال</span>
+              </>
+            )}
+            {autoSaveStatus === 'dirty' && (
+              <>
+                <Circle className="size-2.5 text-gray-400 dark:text-gray-500" fill="currentColor" />
+                <span className="hidden sm:inline">تغییرات ذخیره نشده</span>
+              </>
+            )}
+            {autoSaveStatus === 'saving' && (
+              <>
+                <Loader2 className="size-2.5 animate-spin text-blue-500" />
+                <span className="hidden sm:inline text-blue-500 dark:text-blue-400">در حال ذخیره...</span>
+              </>
+            )}
+            {autoSaveStatus === 'saved' && (
+              <>
+                <CheckCircle2 className="size-2.5 text-emerald-500" />
+                <span className="hidden sm:inline text-emerald-500 dark:text-emerald-400">ذخیره شد</span>
+              </>
+            )}
+            {autoSaveStatus === 'error' && (
+              <>
+                <AlertCircle className="size-2.5 text-red-500" />
+                <span className="hidden sm:inline text-red-500 dark:text-red-400">خطا در ذخیره</span>
+              </>
+            )}
+          </div>
 
           <Separator orientation="vertical" className="h-6 mx-0.5 hidden lg:block" />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                onClick={() => setImportOpen(true)}
+              >
+                <Import className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>وارد کردن سؤال</TooltipContent>
+          </Tooltip>
 
           <KeyboardShortcutsDialog />
 
@@ -491,6 +559,9 @@ export default function FormBuilder() {
           </Tooltip>
         </div>
       </header>
+
+      {/* Gradient divider between toolbar and content */}
+      <div className="h-px bg-gradient-to-l from-transparent via-violet-300/50 dark:via-violet-700/30 to-transparent shrink-0" />
 
       {/* ============ MAIN CONTENT ============ */}
       <div className="flex-1 overflow-hidden relative">
@@ -616,6 +687,9 @@ export default function FormBuilder() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* ============ IMPORT QUESTIONS DIALOG ============ */}
+      <ImportQuestionsDialog open={importOpen} onOpenChange={setImportOpen} />
 
       {/* ============ MOBILE SHEETS ============ */}
       {/* Left sheet - Question types */}

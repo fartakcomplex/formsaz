@@ -218,9 +218,9 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
                       key={qt.type}
                       onClick={() => handleAddQuestion(qt.type)}
                       className={cn(
-                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-right transition-all duration-150',
-                        'hover:bg-purple-50 hover:text-purple-700',
-                        'dark:hover:bg-purple-950/50 dark:hover:text-purple-300',
+                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-right transition-all duration-200 ease-out',
+                        'hover:bg-purple-50 hover:text-purple-700 hover:translate-x-1',
+                        'dark:hover:bg-purple-950/50 dark:hover:text-purple-300 dark:hover:translate-x-1',
                         'active:scale-[0.98]'
                       )}
                     >

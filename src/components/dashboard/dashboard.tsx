@@ -38,6 +38,7 @@ import {
   Square,
   X,
   Download,
+  ArrowLeft,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -975,7 +976,7 @@ function QuickStatsBar({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
-      className="relative mb-6 rounded-2xl overflow-hidden"
+      className="relative mb-6 rounded-2xl overflow-hidden glass-card"
     >
       {/* Gradient background with glassmorphism */}
       <div className="absolute inset-0 bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 opacity-90" />
@@ -1401,6 +1402,121 @@ function FormCard({
           )}
         </CardFooter>
       </Card>
+    </motion.div>
+  );
+}
+
+// ─── Recent Activity Feed (Mock Data) ──────────────────────────────────────
+
+function RecentActivityFeed() {
+  const mockActivities = [
+    {
+      id: '1',
+      type: 'form_created',
+      icon: <FilePlus className="size-4 text-violet-500" />,
+      bgColor: 'bg-violet-100 dark:bg-violet-900/40',
+      description: 'فرم «فرم ثبت‌نام کارگاه» ایجاد شد',
+      time: '۵ دقیقه پیش',
+    },
+    {
+      id: '2',
+      type: 'form_published',
+      icon: <Rocket className="size-4 text-emerald-500" />,
+      bgColor: 'bg-emerald-100 dark:bg-emerald-900/40',
+      description: 'فرم «نظرسنجی رضایت مشتری» منتشر شد',
+      time: '۲۰ دقیقه پیش',
+    },
+    {
+      id: '3',
+      type: 'new_response',
+      icon: <Send className="size-4 text-fuchsia-500" />,
+      bgColor: 'bg-fuchsia-100 dark:bg-fuchsia-900/40',
+      description: 'پاسخ جدید برای «فرم استخدام» دریافت شد',
+      time: '۱ ساعت پیش',
+    },
+    {
+      id: '4',
+      type: 'form_copied',
+      icon: <Copy className="size-4 text-amber-500" />,
+      bgColor: 'bg-amber-100 dark:bg-amber-900/40',
+      description: 'فرم «پرسشنامه تحقیقات بازار» کپی شد',
+      time: '۳ ساعت پیش',
+    },
+    {
+      id: '5',
+      type: 'new_response',
+      icon: <Send className="size-4 text-fuchsia-500" />,
+      bgColor: 'bg-fuchsia-100 dark:bg-fuchsia-900/40',
+      description: 'پاسخ جدید برای «فرم تماس با ما» دریافت شد',
+      time: '۵ ساعت پیش',
+    },
+    {
+      id: '6',
+      type: 'form_published',
+      icon: <Rocket className="size-4 text-emerald-500" />,
+      bgColor: 'bg-emerald-100 dark:bg-emerald-900/40',
+      description: 'فرم «ثبت‌نام رویداد سالانه» منتشر شد',
+      time: 'دیروز',
+    },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="mt-8 rounded-2xl glass-card overflow-hidden"
+    >
+      {/* Header */}
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-200/60 dark:border-gray-800/60">
+        <div className="flex size-9 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/40">
+          <Clock className="size-4 text-violet-500" />
+        </div>
+        <h3 className="text-sm font-bold text-gray-900 dark:text-white">فعالیت اخیر</h3>
+        <Badge variant="secondary" className="text-[10px] h-5 mr-auto">
+          {mockActivities.length} مورد
+        </Badge>
+      </div>
+
+      {/* Activity List */}
+      <div className="relative max-h-96 overflow-y-auto">
+        {/* Timeline connector line */}
+        <div className="absolute top-0 bottom-0 right-[22px] w-px bg-gradient-to-b from-violet-200/60 via-purple-200/40 to-transparent dark:from-violet-800/40 dark:via-purple-800/30 dark:to-transparent" />
+
+        <div className="divide-y divide-gray-50 dark:divide-gray-800/50">
+          {mockActivities.map((activity, index) => (
+            <motion.div
+              key={activity.id}
+              initial={{ opacity: 0, x: -15 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.05 * index + 0.4, duration: 0.35 }}
+              className="relative flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+            >
+              {/* Timeline dot with icon */}
+              <div className={`relative z-10 flex items-center justify-center size-[22px] rounded-full shrink-0 ring-[3px] ring-white dark:ring-gray-900 ${activity.bgColor}`}>
+                {activity.icon}
+              </div>
+              {/* Description + Time */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                  {activity.description}
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                  {activity.time}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer link */}
+      <div className="border-t border-gray-200/60 dark:border-gray-800/60 px-5 py-3">
+        <button className="flex items-center gap-1.5 text-xs font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors mx-auto">
+          مشاهده همه
+          <ArrowLeft className="size-3.5" />
+        </button>
+      </div>
     </motion.div>
   );
 }
@@ -1902,24 +2018,34 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               <AnimatePresence mode="popLayout">
-                {filteredAndSortedForms.map((form) => (
-                  <FormCard
+                {filteredAndSortedForms.map((form, index) => (
+                  <motion.div
                     key={form.id}
-                    form={form}
-                    onEdit={handleEdit}
-                    onPreview={handlePreview}
-                    onResults={handleResults}
-                    onDelete={handleDelete}
-                    onDuplicate={handleDuplicate}
-                    onShare={handleShare}
-                    onSetExpiration={handleSetExpiration}
-                    selectMode={selectMode}
-                    selected={selectedIds.has(form.id)}
-                    onToggleSelect={toggleSelect}
-                  />
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: index * 0.06, duration: 0.35, ease: 'easeOut' }}
+                  >
+                    <FormCard
+                      form={form}
+                      onEdit={handleEdit}
+                      onPreview={handlePreview}
+                      onResults={handleResults}
+                      onDelete={handleDelete}
+                      onDuplicate={handleDuplicate}
+                      onShare={handleShare}
+                      onSetExpiration={handleSetExpiration}
+                      selectMode={selectMode}
+                      selected={selectedIds.has(form.id)}
+                      onToggleSelect={toggleSelect}
+                    />
+                  </motion.div>
                 ))}
               </AnimatePresence>
             </div>
+
+            {/* Recent Activity Feed */}
+            <RecentActivityFeed />
           </>
         )}
       </div>
