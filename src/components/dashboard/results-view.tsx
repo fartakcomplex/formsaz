@@ -1,12 +1,17 @@
 'use client';
 
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { faIR } from 'date-fns/locale';
 import {
   ArrowRight,
+  ChevronDown,
+  Clock,
+  Copy,
   Download,
+  Search,
+  Table2,
   Users,
   BarChart3,
   ListChecks,
@@ -18,6 +23,7 @@ import {
   Activity,
   FileSpreadsheet,
   FileDown,
+  Check,
 } from 'lucide-react';
 import {
   BarChart,
@@ -60,6 +66,8 @@ import {
 } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Input } from '@/components/ui/input';
+
 import { useAppStore, type FormQuestion, type Submission } from '@/lib/store';
 
 const COLORS = [
@@ -707,6 +715,133 @@ function YesNoQuestionChart({
   );
 }
 
+// ── Helper: Resolve question response value for display ─────────────────────
+function resolveResponseValue(question: FormQuestion, value: string): string {
+  if (!value) return '';
+  const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown'];
+  if (choiceTypes.includes(question.type)) {
+    if (question.type === 'multiple_select') {
+      const ids = value.split(',').filter(Boolean);
+      const texts = ids.map((id) => {
+        const opt = question.config.options?.find((o) => o.id === id);
+        return opt ? opt.text : id;
+      });
+      return texts.join(' | ');
+    }
+    const opt = question.config.options?.find((o) => o.id === value);
+    return opt ? opt.text : value;
+  }
+  if (question.type === 'yes_no') {
+    return value === 'yes' ? 'بله' : value === 'no' ? 'خیر' : value;
+  }
+  if (question.type === 'rating') {
+    const num = parseInt(value, 10);
+    if (!isNaN(num) && num > 0) {
+      return '★'.repeat(num);
+    }
+    return value;
+  }
+  const textTypes = ['short_text', 'long_text', 'email', 'phone'];
+  if (textTypes.includes(question.type)) {
+    return value.length > 50 ? value.slice(0, 50) + '...' : value;
+  }
+  return value;
+}
+
+function QuestionResponseList({
+  question,
+  submissions,
+}: {
+  question: FormQuestion;
+  submissions: Submission[];
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const responses = useMemo(() => {
+    return submissions
+      .map((sub) => {
+        const response = sub.responses.find((r) => r.questionId === question.id);
+        if (!response?.value) return null;
+        return {
+          id: sub.id,
+          date: sub.createdAt,
+          value: resolveResponseValue(question, response.value),
+        };
+      })
+      .filter(Boolean);
+  }, [submissions, question]);
+
+  const handleCopy = async () => {
+    const text = responses
+      .map((r, idx) => `${idx + 1}. ${formatDate(r.date)}\n${r.value}`)
+      .join('\n─────────\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // fallback
+    }
+  };
+
+  return (
+    <div className="mt-3">
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-1.5 text-xs font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+      >
+        <ChevronDown
+          className={`size-3.5 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+        />
+        مشاهده همه پاسخ‌ها ({responses.length})
+      </button>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="mt-2 flex items-center justify-between">
+              <span className="text-[10px] text-gray-400 dark:text-gray-500">لیست پاسخ‌های ثبت شده</span>
+              <button
+                type="button"
+                onClick={handleCopy}
+                className="flex items-center gap-1 text-[10px] font-medium text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+              >
+                {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
+                کپی پاسخ‌ها
+              </button>
+            </div>
+            <div className="mt-2 max-h-48 overflow-y-auto rounded-xl border bg-gray-50/50 dark:bg-gray-900/50 p-3 dark:border-gray-800 space-y-2">
+              {responses.length === 0 ? (
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-4">بدون پاسخ</p>
+              ) : (
+                responses.map((r, idx) => (
+                  <div
+                    key={r.id}
+                    className="flex flex-col gap-0.5 text-sm p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500">پاسخ‌دهنده {idx + 1}</span>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500">{formatDate(r.date)}</span>
+                    </div>
+                    <span className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">{r.value}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function QuestionSummary({
   question,
   submissions,
@@ -717,6 +852,14 @@ function QuestionSummary({
   const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown'];
   const textTypes = ['short_text', 'long_text', 'email', 'phone', 'file_upload'];
   const otherTypes = ['statement', 'number', 'date', 'section_divider'];
+
+  // Count responses for this question
+  const responseCount = useMemo(() => {
+    return submissions.filter((sub) => {
+      const r = sub.responses.find((resp) => resp.questionId === question.id);
+      return r?.value && r.value.trim() !== '';
+    }).length;
+  }, [submissions, question.id]);
 
   if (choiceTypes.includes(question.type)) {
     return <ChoiceQuestionChart question={question} submissions={submissions} />;
@@ -973,6 +1116,153 @@ function LoadingSkeleton() {
         ))}
       </div>
     </div>
+  );
+}
+
+// ── Helper: Convert digits to Persian numerals ─────────────────────────────
+const PERSIAN_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+function toPersianDigits(num: number): string {
+  return num.toString().replace(/\d/g, (d) => PERSIAN_DIGITS[parseInt(d, 10)]);
+}
+
+// ── Helper: Format cell value for table display ─────────────────────────────
+function formatCellDisplay(question: FormQuestion, rawValue: string | null | undefined): string {
+  if (!rawValue) return '—';
+  const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown'];
+  if (choiceTypes.includes(question.type)) {
+    if (question.type === 'multiple_select') {
+      const ids = rawValue.split(',').filter(Boolean);
+      const texts = ids.map((id) => {
+        const opt = question.config.options?.find((o) => o.id === id);
+        return opt ? opt.text : id;
+      });
+      return texts.join(' | ');
+    }
+    const opt = question.config.options?.find((o) => o.id === rawValue);
+    return opt ? opt.text : rawValue;
+  }
+  if (question.type === 'yes_no') {
+    return rawValue === 'yes' ? 'بله' : rawValue === 'no' ? 'خیر' : rawValue;
+  }
+  if (question.type === 'rating') {
+    const num = parseInt(rawValue, 10);
+    if (!isNaN(num) && num > 0) {
+      return `${toPersianDigits(num)} ستاره`;
+    }
+    return rawValue;
+  }
+  const textTypes = ['short_text', 'long_text', 'email', 'phone'];
+  if (textTypes.includes(question.type)) {
+    return rawValue.length > 50 ? rawValue.slice(0, 50) + '...' : rawValue;
+  }
+  return rawValue;
+}
+
+// ── Responses Data Table Component ──────────────────────────────────────────
+function ResponsesDataTable({
+  questions,
+  submissions,
+}: {
+  questions: FormQuestion[];
+  submissions: Submission[];
+}) {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredSubmissions = useMemo(() => {
+    if (!searchQuery.trim()) return submissions;
+    const query = searchQuery.trim().toLowerCase();
+    return submissions.filter((sub) => {
+      return sub.responses.some((r) => {
+        if (!r.value) return false;
+        const question = questions.find((q) => q.id === r.questionId);
+        if (!question) return false;
+        const displayValue = formatCellDisplay(question, r.value).toLowerCase();
+        return displayValue.includes(query);
+      });
+    });
+  }, [submissions, searchQuery, questions]);
+
+  return (
+    <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+      <CardHeader className="pb-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <CardTitle className="text-base text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <Table2 className="size-4 text-violet-500" />
+              جدول پاسخ‌ها
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400 mt-1">
+              {filteredSubmissions.length} پاسخ
+            </CardDescription>
+          </div>
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
+            <Input
+              placeholder="جستجو در پاسخ‌ها..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-9 pr-9 pl-3 text-sm rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+              dir="rtl"
+            />
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px] border-collapse text-sm">
+            <thead>
+              <tr className="bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+                <th className="sticky right-0 z-10 bg-zinc-100 dark:bg-zinc-900 text-right text-xs font-semibold text-gray-600 dark:text-gray-400 px-4 py-3 min-w-[140px] whitespace-nowrap shadow-[2px_0_4px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.3)]">
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="size-3 text-violet-500" />
+                    تاریخ ثبت
+                  </div>
+                </th>
+                {questions.map((q) => (
+                  <th
+                    key={q.id}
+                    className="text-right text-xs font-semibold text-gray-600 dark:text-gray-400 px-4 py-3 min-w-[150px] max-w-[200px]"
+                  >
+                    <span className="truncate block max-w-[180px]" title={q.title}>{q.title}</span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredSubmissions.length === 0 ? (
+                <tr>
+                  <td colSpan={questions.length + 1} className="text-center py-16 text-gray-400 dark:text-gray-500 text-sm">
+                    {searchQuery ? 'پاسخی با این مشخصات یافت نشد' : 'بدون پاسخ'}
+                  </td>
+                </tr>
+              ) : (
+                filteredSubmissions.map((sub) => (
+                  <tr
+                    key={sub.id}
+                    className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-violet-50/60 dark:hover:bg-violet-950/20 transition-colors duration-150"
+                  >
+                    <td className="sticky right-0 z-10 bg-white dark:bg-zinc-900 text-xs text-gray-600 dark:text-gray-400 px-4 py-3 whitespace-nowrap font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.3)] hover:bg-violet-50/60 dark:hover:bg-violet-950/20 transition-colors duration-150">
+                      {formatDate(sub.createdAt)}
+                    </td>
+                    {questions.map((q) => {
+                      const response = sub.responses.find((r) => r.questionId === q.id);
+                      const displayValue = formatCellDisplay(q, response?.value);
+                      return (
+                        <td key={q.id} className="text-xs text-gray-700 dark:text-gray-300 px-4 py-3 max-w-[200px]">
+                          <span className="truncate block max-w-[180px]" title={displayValue}>
+                            {displayValue}
+                          </span>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -1373,6 +1663,10 @@ export default function ResultsView() {
                   <PieChartIcon className="size-4 ml-1.5" />
                   نمودار دایره‌ای
                 </TabsTrigger>
+                <TabsTrigger value="responses-table" className="rounded-lg text-sm font-medium">
+                  <Table2 className="size-4 ml-1.5" />
+                  جدول پاسخ‌ها
+                </TabsTrigger>
                 <TabsTrigger value="individual" className="rounded-lg text-sm font-medium">
                   <Users className="size-4 ml-1.5" />
                   پاسخ‌های فردی
@@ -1388,21 +1682,31 @@ export default function ResultsView() {
                 >
                   {questions
                     .filter((q) => q.type !== 'statement')
-                    .map((question) => (
-                      <motion.div
-                        key={question.id}
-                        variants={staggerItem}
-                      >
-                        <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                          <CardContent className="p-5 sm:p-6">
-                            <QuestionSummary
-                              question={question}
-                              submissions={submissions}
-                            />
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    ))}
+                    .map((question) => {
+                      const qResponseCount = submissions.filter((sub) => {
+                        const r = sub.responses.find((resp) => resp.questionId === question.id);
+                        return r?.value && r.value.trim() !== '';
+                      }).length;
+                      return (
+                        <motion.div
+                          key={question.id}
+                          variants={staggerItem}
+                        >
+                          <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                            <CardContent className="p-5 sm:p-6">
+                              <QuestionSummary
+                                question={question}
+                                submissions={submissions}
+                              />
+                              <QuestionResponseList
+                                question={question}
+                                submissions={submissions}
+                              />
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      );
+                    })}
                 </motion.div>
               </TabsContent>
 
@@ -1437,6 +1741,13 @@ export default function ResultsView() {
                     ))}
                   </motion.div>
                 )}
+              </TabsContent>
+
+              <TabsContent value="responses-table">
+                <ResponsesDataTable
+                  questions={inputQuestions}
+                  submissions={submissions}
+                />
               </TabsContent>
 
               <TabsContent value="individual">

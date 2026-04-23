@@ -669,6 +669,43 @@ function HeroSection() {
   );
 }
 
+/* ──────────────────────────── Trusted By Section ──────────────────────────── */
+
+const logos = ["دیجی‌کالا", "اسنپ", "ایران‌ایر", "بانک ملت", "دانشگاه تهران", "شهرداری", "صنایع پتروشیمی", "تپسی", "بلیط‌چی", "فینوتک"];
+
+function TrustedBySection() {
+  const trustedRef = useRef<HTMLDivElement>(null);
+  const trustedInView = useInView(trustedRef, { once: true, margin: '-60px' });
+
+  return (
+    <motion.section
+      ref={trustedRef}
+      initial={{ opacity: 0, y: 20 }}
+      animate={trustedInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6 }}
+      className="py-16 overflow-hidden"
+    >
+      <div className="max-w-6xl mx-auto px-4 mb-8 text-center">
+        <h2 className="text-lg font-medium text-zinc-500 dark:text-zinc-400 mb-2">
+          مورد اعتماد هزاران سازمان
+        </h2>
+        <p className="text-sm text-zinc-400 dark:text-zinc-500">
+          از استارتاپ‌ها تا سازمان‌های بزرگ
+        </p>
+      </div>
+      <div className="relative">
+        <div className="flex animate-marquee gap-8 whitespace-nowrap">
+          {[...logos, ...logos].map((logo, i) => (
+            <div key={i} className="flex-shrink-0 px-6 py-3 rounded-xl bg-white/50 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 backdrop-blur-sm">
+              <span className="text-lg font-medium text-zinc-600 dark:text-zinc-300">{logo}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.section>
+  );
+}
+
 /* ──────────────────────────── Features Section ──────────────────────────── */
 
 function FeaturesSection() {
@@ -1997,6 +2034,7 @@ export default function LandingPage() {
       <Navbar />
       <main className="flex-1">
         <HeroSection />
+        <TrustedBySection />
         <FeaturesSection />
         <UseCasesSection />
         <HowItWorksSection />

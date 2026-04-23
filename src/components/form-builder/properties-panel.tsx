@@ -14,6 +14,8 @@ import {
   Calendar,
   GitBranch,
   ChevronDown,
+  Eye,
+  Upload,
 } from 'lucide-react';
 import { useAppStore, FormQuestion, QuestionConfig, QuestionOption, ImageOption, QuestionLogic, ConditionRule } from '@/lib/store';
 import { cn } from '@/lib/utils';
@@ -42,6 +44,21 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { motion, AnimatePresence } from 'framer-motion';
+
+/* ========== Helpers ========== */
+
+function toPersianDigits(str: string): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return str.replace(/\d/g, (d) => persianDigits[parseInt(d)]);
+}
 
 /* ======================== */
 /* Options Editor Component  */
@@ -241,11 +258,16 @@ function TextConfigSection({
   config,
   onUpdate,
   isLong,
+  titleLength = 0,
 }: {
   config: QuestionConfig;
   onUpdate: (updates: Partial<QuestionConfig>) => void;
   isLong?: boolean;
+  titleLength?: number;
 }) {
+  const maxLength = config.maxLength;
+  const overLimit = maxLength && titleLength > maxLength;
+
   return (
     <div className="space-y-4 transition-all duration-200">
       <div className="space-y-2">
@@ -267,6 +289,21 @@ function TextConfigSection({
           min={1}
           className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
         />
+        {maxLength && titleLength > 0 && (
+          <p className={cn(
+            'text-[11px] font-medium transition-colors',
+            overLimit
+              ? 'text-red-500 dark:text-red-400'
+              : 'text-emerald-600 dark:text-emerald-400'
+          )}>
+            {toPersianDigits(String(titleLength))} / {toPersianDigits(String(maxLength))} کاراکتر
+          </p>
+        )}
+        {maxLength && titleLength === 0 && (
+          <p className="text-[11px] text-muted-foreground">
+            حداکثر {toPersianDigits(String(maxLength))} کاراکتر
+          </p>
+        )}
       </div>
     </div>
   );
@@ -657,9 +694,9 @@ function TypeConfigSection({ question }: { question: FormQuestion }) {
 
   switch (question.type) {
     case 'short_text':
-      return <TextConfigSection config={question.config} onUpdate={handleConfigUpdate} />;
+      return <TextConfigSection config={question.config} onUpdate={handleConfigUpdate} titleLength={question.title.length} />;
     case 'long_text':
-      return <TextConfigSection config={question.config} onUpdate={handleConfigUpdate} isLong />;
+      return <TextConfigSection config={question.config} onUpdate={handleConfigUpdate} isLong titleLength={question.title.length} />;
     case 'multiple_choice':
     case 'multiple_select':
     case 'dropdown':
@@ -1002,6 +1039,195 @@ function QuestionTypeSelector({ question }: { question: FormQuestion }) {
 }
 
 /* =============================== */
+/* Question Mini Preview Component   */
+/* =============================== */
+function QuestionMiniPreview({ question }: { question: FormQuestion }) {
+  const { config, type, title, required } = question;
+
+  const typeLabels: Record<string, string> = {
+    short_text: 'متن کوتاه',
+    long_text: 'متن بلند',
+    multiple_choice: 'تک انتخابی',
+    multiple_select: 'چند انتخابی',
+    dropdown: 'لیست کشویی',
+    number: 'عدد',
+    email: 'ایمیل',
+    phone: 'تلفن',
+    date: 'تاریخ',
+    scale: 'مقیاس',
+    rating: 'امتیازدهی',
+    yes_no: 'بله/خیر',
+    file_upload: 'آپلود فایل',
+    statement: 'عبارت توضیحی',
+    image_choice: 'انتخاب تصویری',
+    matrix: 'ماتریس',
+    section_divider: 'جداکننده بخش',
+  };
+
+  const renderInputPreview = () => {
+    switch (type) {
+      case 'short_text':
+        return (
+          <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+            <span className="text-sm text-muted-foreground/60">
+              {config.placeholder || 'پاسخ کوتاه...'}
+            </span>
+          </div>
+        );
+      case 'long_text':
+        return (
+          <div className="mt-3 min-h-[72px] rounded-lg border-2 border-dashed border-muted-foreground/30 p-3">
+            <span className="text-sm text-muted-foreground/60">
+              {config.placeholder || 'پاسخ بلند خود را وارد کنید...'}
+            </span>
+          </div>
+        );
+      case 'multiple_choice':
+        return (
+          <div className="mt-3 space-y-2">
+            {(config.options || []).map((opt) => (
+              <div key={opt.id} className="flex items-center gap-2">
+                <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-muted-foreground/40" />
+                <span className="text-sm text-foreground/80">{opt.text}</span>
+              </div>
+            ))}
+          </div>
+        );
+      case 'multiple_select':
+        return (
+          <div className="mt-3 space-y-2">
+            {(config.options || []).map((opt) => (
+              <div key={opt.id} className="flex items-center gap-2">
+                <div className="h-4 w-4 rounded border-2 border-muted-foreground/40" />
+                <span className="text-sm text-foreground/80">{opt.text}</span>
+              </div>
+            ))}
+          </div>
+        );
+      case 'dropdown':
+        return (
+          <div className="mt-3 flex h-10 w-full items-center justify-between rounded-lg border-2 border-muted-foreground/30 px-3">
+            <span className="text-sm text-muted-foreground/60">
+              {(config.options && config.options[0]?.text) || 'انتخاب کنید...'}
+            </span>
+            <ChevronDown className="h-4 w-4 text-muted-foreground/50" />
+          </div>
+        );
+      case 'number':
+        return (
+          <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+            <span className="text-sm text-muted-foreground/60">۰</span>
+          </div>
+        );
+      case 'email':
+        return (
+          <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+            <span className="text-sm text-muted-foreground/60">
+              {config.placeholder || 'example@email.com'}
+            </span>
+          </div>
+        );
+      case 'phone':
+        return (
+          <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+            <span className="text-sm text-muted-foreground/60">
+              {config.placeholder || '۰۹۱۲۳۴۵۶۷۸۹'}
+            </span>
+          </div>
+        );
+      case 'date':
+        return (
+          <div className="mt-3 flex h-10 w-full items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-3">
+            <Calendar className="h-4 w-4 text-muted-foreground/50" />
+            <span className="text-sm text-muted-foreground/60">انتخاب تاریخ</span>
+          </div>
+        );
+      case 'rating':
+        return (
+          <div className="mt-3 flex gap-1">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Star key={i} className="h-6 w-6 text-muted-foreground/30" />
+            ))}
+          </div>
+        );
+      case 'yes_no':
+        return (
+          <div className="mt-3 flex gap-3">
+            <div className="flex h-10 items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-4">
+              <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
+              <span className="text-sm text-foreground/80">بله</span>
+            </div>
+            <div className="flex h-10 items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-4">
+              <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
+              <span className="text-sm text-foreground/80">خیر</span>
+            </div>
+          </div>
+        );
+      case 'file_upload':
+        return (
+          <div className="mt-3 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 py-8">
+            <Upload className="h-8 w-8 text-muted-foreground/40" />
+            <span className="text-sm text-muted-foreground/60">فایل خود را اینجا رها کنید یا کلیک کنید</span>
+          </div>
+        );
+      case 'scale': {
+        const min = config.scaleMin ?? 1;
+        const max = config.scaleMax ?? 5;
+        const values = Array.from({ length: max - min + 1 }, (_, i) => i + min);
+        return (
+          <div className="mt-3 flex gap-1.5 justify-center">
+            {values.map((v) => (
+              <div
+                key={v}
+                className="flex h-8 w-8 items-center justify-center rounded-md border-2 border-muted-foreground/30 text-xs text-muted-foreground"
+              >
+                {v}
+              </div>
+            ))}
+          </div>
+        );
+      }
+      default:
+        return (
+          <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+            <span className="text-sm text-muted-foreground/60">پاسخ...</span>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="rounded-xl border bg-muted/20 p-5"
+      dir="rtl"
+    >
+      <div className="space-y-1.5">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-violet-600 dark:text-violet-400">
+            {typeLabels[type] || type}
+          </span>
+          {required && (
+            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400">
+              الزامی
+            </span>
+          )}
+        </div>
+        <h4 className="text-[15px] font-semibold text-foreground">
+          {title || 'عنوان سؤال'}
+          {required && (
+            <span className="mr-1 text-red-500">*</span>
+          )}
+        </h4>
+      </div>
+      {renderInputPreview()}
+    </motion.div>
+  );
+}
+
+/* =============================== */
 /* Main Properties Panel            */
 /* =============================== */
 export default function PropertiesPanel() {
@@ -1142,6 +1368,25 @@ export default function PropertiesPanel() {
 
           {/* Action buttons */}
           <div className="flex flex-col gap-2 pb-4">
+            {/* Preview Question Button */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full gap-2 justify-start text-sm transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 dark:hover:border-violet-700 dark:hover:bg-violet-950/30"
+                >
+                  <Eye className="h-4 w-4" />
+                  پیش‌نمایش سؤال
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-lg" dir="rtl">
+                <DialogHeader>
+                  <DialogTitle className="text-right text-sm">پیش‌نمایش سؤال</DialogTitle>
+                </DialogHeader>
+                <QuestionMiniPreview question={selectedQuestion} />
+              </DialogContent>
+            </Dialog>
             <Button
               variant="outline"
               size="sm"

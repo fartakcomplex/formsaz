@@ -21,6 +21,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Circle,
+  CircleHelp,
 } from 'lucide-react';
 import {
   ResizablePanelGroup,
@@ -42,6 +43,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
 import QuestionTypes from './question-types';
@@ -51,6 +53,12 @@ import FormSettingsDialog from './form-settings-dialog';
 import KeyboardShortcutsDialog from './keyboard-shortcuts-dialog';
 import ImportQuestionsDialog from './import-questions-dialog';
 import { toast } from 'sonner';
+
+/* ========== Helpers ========== */
+function toPersianDigits(str: string): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return str.replace(/\d/g, (d) => persianDigits[parseInt(d)]);
+}
 
 export default function FormBuilder() {
   const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView, canUndo, canRedo, undo, redo, addQuestion, removeQuestion, setSelectedQuestionId } = useAppStore();
@@ -395,10 +403,24 @@ export default function FormBuilder() {
               className="text-sm font-medium text-foreground bg-transparent border-none outline-none w-full text-center truncate"
               placeholder="عنوان فرم..."
             />
-            <span className="text-[10px] text-muted-foreground shrink-0">
-              ({questions.length} سؤال)
-            </span>
+            <Badge
+              variant="secondary"
+              className="shrink-0 bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300 border-0 text-[11px] px-2 py-0 gap-1 font-semibold"
+            >
+              <CircleHelp className="h-3 w-3" />
+              {toPersianDigits(String(questions.length))} سؤال
+            </Badge>
           </div>
+          {formTitle.length > 0 && (
+            <span className={cn(
+              'text-[11px] tabular-nums shrink-0 transition-colors',
+              formTitle.length > 150
+                ? 'text-red-500 dark:text-red-400'
+                : 'text-muted-foreground'
+            )}>
+              {toPersianDigits(String(formTitle.length))} / {toPersianDigits('150')}
+            </span>
+          )}
         </div>
 
         {/* Left section (RTL - actions) */}

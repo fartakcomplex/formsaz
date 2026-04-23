@@ -42,11 +42,19 @@ import {
   Pencil,
   CheckIcon,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAppStore, FormQuestion, FormTheme } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+/* ========== Helpers ========== */
+
+function toPersianDigits(str: string): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return str.replace(/\d/g, (d) => persianDigits[parseInt(d)]);
+}
 
 /* ========== Types ========== */
 
@@ -512,26 +520,27 @@ function SortableQuestionCard({
       >
         {/* Question number badge */}
         {!isStatement && (
-          <div
-            className="absolute -left-3 top-4 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-md z-10"
-            style={{ backgroundColor: primaryColor }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.05 }}
+            className="absolute -left-3 top-4 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-md z-10 bg-violet-500"
           >
-            {index + 1}
-          </div>
+            {toPersianDigits(String(index + 1))}
+          </motion.div>
         )}
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-2 flex-1 min-w-0">
             {!isStatement && (
-              <span
-                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded text-[10px] font-bold"
-                style={{
-                  backgroundColor: `${primaryColor}1a`,
-                  color: primaryColor,
-                }}
+              <motion.span
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}
+                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded text-[10px] font-bold bg-violet-500/15 text-violet-600 dark:bg-violet-400/15 dark:text-violet-400"
               >
-                {index + 1}
-              </span>
+                {toPersianDigits(String(index + 1))}
+              </motion.span>
             )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
@@ -546,6 +555,9 @@ function SortableQuestionCard({
               </div>
               <h4 className="text-[15px] font-semibold leading-relaxed text-foreground break-words">
                 {question.title}
+                {question.required && (
+                  <span className="mr-1.5 text-[11px] font-medium text-red-500 dark:text-red-400">(الزامی)</span>
+                )}
               </h4>
             </div>
           </div>
@@ -646,10 +658,9 @@ function DragOverlayCard({ question, primaryColor }: { question: FormQuestion; p
       >
         {/* Question number badge */}
         <div
-          className="absolute -left-3 top-4 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-md z-10"
-          style={{ backgroundColor: primaryColor }}
+          className="absolute -left-3 top-4 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-md z-10 bg-violet-500"
         >
-          {question.order + 1}
+          {toPersianDigits(String(question.order + 1))}
         </div>
         <div className="flex items-start gap-2">
           <div className="flex-1 min-w-0">

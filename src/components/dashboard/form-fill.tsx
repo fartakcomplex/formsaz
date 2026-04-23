@@ -33,6 +33,7 @@ import {
   LayoutDashboard,
   BookOpen,
   Link2,
+  Clock,
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -128,7 +129,8 @@ function QuestionTypeIconDisplay({ type, color }: { type: string; color: string 
   }
 }
 
-function QuestionTitle({ question, index, themeColor }: { question: FormQuestion; index: number; themeColor: string }) {
+function QuestionTitle({ question, index, themeColor, totalQuestions }: { question: FormQuestion; index: number; themeColor: string; totalQuestions?: number }) {
+  const showBadge = question.type !== 'section_divider' && totalQuestions !== undefined && totalQuestions > 0;
   return (
     <div className="mb-4">
       <div className="flex items-start gap-2">
@@ -149,13 +151,25 @@ function QuestionTitle({ question, index, themeColor }: { question: FormQuestion
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 24, delay: 0.1 }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 flex-wrap"
           >
             <QuestionTypeIconDisplay type={question.type} color={themeColor} />
             <Label className="text-base font-semibold text-gray-900 dark:text-white leading-relaxed">
               {question.title}
-              {question.required && <span className="text-red-500 mr-1">*</span>}
+              {question.required && (
+                <span className="inline-flex items-center justify-center size-5 rounded-full bg-red-100 dark:bg-red-900/40 text-red-500 dark:text-red-400 text-xs font-bold mr-1 -mt-0.5">*</span>
+              )}
             </Label>
+            {showBadge && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.15 }}
+                className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
+              >
+                سؤال {toPersianDigit(index + 1)} از {toPersianDigit(totalQuestions)}
+              </motion.span>
+            )}
           </motion.div>
           {question.config.description && (
             <motion.p
@@ -1390,7 +1404,17 @@ export default function FormFill() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [navDirection, setNavDirection] = useState<'forward' | 'backward'>('forward');
   const [showAutoSave, setShowAutoSave] = useState(false);
+  const [showValidationError, setShowValidationError] = useState(false);
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const validationErrorTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+      if (validationErrorTimerRef.current) clearTimeout(validationErrorTimerRef.current);
+    };
+  }, []);
 
   const formThemeData = useFormTheme(fillForm);
   const themeColor = formThemeData.primaryColor;
@@ -1548,7 +1572,17 @@ export default function FormFill() {
   };
 
   const handleSubmit = async () => {
-    if (!validateCurrentPage()) return;
+    if (!validateCurrentPage()) {
+      // Scroll to first invalid question
+      const firstErrorId = Object.keys(errors)[0];
+      if (firstErrorId) {
+        const el = document.getElementById(`question-card-${firstErrorId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      return;
+    }
 
     // Validate all visible questions
     const allErrors: Record<string, string> = {};
@@ -1556,13 +1590,19 @@ export default function FormFill() {
       if (q.required) {
         const value = answers[q.id];
         if (!value || value.trim() === '') {
-          allErrors[q.id] = 'این فیلد الزامی است';
+          allErrors[q.id] = 'این سؤال الزامی است';
         }
       }
     });
 
     if (Object.keys(allErrors).length > 0) {
       setErrors(allErrors);
+      // Show validation error banner
+      setShowValidationError(true);
+      if (validationErrorTimerRef.current) clearTimeout(validationErrorTimerRef.current);
+      validationErrorTimerRef.current = setTimeout(() => {
+        setShowValidationError(false);
+      }, 5000);
       // Navigate to first error
       const firstErrorId = Object.keys(allErrors)[0];
       const errorIdx = visibleInputQuestions.findIndex((q) => q.id === firstErrorId);
@@ -1579,8 +1619,16 @@ export default function FormFill() {
             }
           }
         } else {
+          setNavDirection(errorIdx < currentPage ? 'backward' : 'forward');
           setCurrentPage(errorIdx);
         }
+        // Scroll to first error after navigation
+        setTimeout(() => {
+          const el = document.getElementById(`question-card-${firstErrorId}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
       }
       return;
     }
@@ -1668,6 +1716,24 @@ export default function FormFill() {
     <div dir="rtl" className="min-h-screen form-fill-bg bg-gray-50/50 dark:bg-zinc-950">
       <TooltipProvider delayDuration={400}>
       <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10 relative">
+        {/* Validation Error Banner */}
+        <AnimatePresence>
+          {showValidationError && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: 'auto' }}
+              exit={{ opacity: 0, y: -10, height: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+              className="mb-4 flex items-center gap-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 px-4 py-3"
+            >
+              <AlertCircle className="size-5 text-red-500 dark:text-red-400 shrink-0" />
+              <span className="text-sm font-medium text-red-700 dark:text-red-300">
+                لطفاً تمام سؤالات الزامی را پاسخ دهید
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Auto-save indicator */}
         <AnimatePresence>
           {showAutoSave && (
@@ -1805,11 +1871,17 @@ export default function FormFill() {
               <span className="text-xs font-medium text-gray-500 dark:text-zinc-400">
                 {isMultiPageMode
                   ? `بخش ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalSections)}`
-                  : `سؤال ${currentPage + 1} از ${totalPages}`}
+                  : `سؤال ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalPages)}`}
               </span>
-              <span className="text-xs font-bold" style={{ color: themeColor }}>
-                {toPersianDigit(progressPercent)}٪ تکمیل شده
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1 text-[10px] text-gray-400 dark:text-zinc-500">
+                  <Clock className="size-3" />
+                  زمان تقریبی تکمیل: {toPersianDigit(Math.max(1, Math.ceil(visibleInputQuestions.length / 5)))} دقیقه
+                </span>
+                <span className="text-xs font-bold" style={{ color: themeColor }}>
+                  {toPersianDigit(progressPercent)}٪ تکمیل شده
+                </span>
+              </div>
             </div>
             {progressStyle === 'bar' ? (
               <div className="relative overflow-hidden rounded-full h-2.5 bg-gray-100 dark:bg-zinc-800">
@@ -1832,6 +1904,18 @@ export default function FormFill() {
                 </motion.div>
               </div>
             ) : null}
+          </motion.div>
+        )}
+
+        {/* Required fields note */}
+        {inputQuestions.some((q) => q.required) && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-4 text-xs text-zinc-500 dark:text-zinc-400"
+          >
+            فیلدهای الزامی با * مشخص شده‌اند
           </motion.div>
         )}
 
@@ -1877,9 +1961,14 @@ export default function FormFill() {
                 return (
                 <div
                   key={q.id}
-                  className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm"
+                  id={`question-card-${q.id}`}
+                  className={`rounded-2xl border bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm transition-all duration-300 ${
+                    errors[q.id]
+                      ? 'border-red-400 dark:border-red-600 shadow-red-200 dark:shadow-red-900/30 ring-2 ring-red-400/30 dark:ring-red-600/30 shake'
+                      : 'border-gray-200 dark:border-zinc-800'
+                  }`}
                 >
-                  <QuestionTitle question={q} index={globalIdx} themeColor={themeColor} />
+                  <QuestionTitle question={q} index={globalIdx} themeColor={themeColor} totalQuestions={visibleInputQuestions.length} />
                   <QuestionRenderer
                     question={q}
                     value={answers[q.id] || ''}
@@ -1916,8 +2005,15 @@ export default function FormFill() {
                 exit={{ opacity: 0, x: navDirection === 'forward' ? -40 : 40 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 28 }}
               >
-                <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm">
-                  <QuestionTitle question={currentQuestion} index={currentPage} themeColor={themeColor} />
+                <div
+                  id={`question-card-${currentQuestion.id}`}
+                  className={`rounded-2xl border bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm transition-all duration-300 ${
+                    errors[currentQuestion.id]
+                      ? 'border-red-400 dark:border-red-600 shadow-red-200 dark:shadow-red-900/30 ring-2 ring-red-400/30 dark:ring-red-600/30 shake'
+                      : 'border-gray-200 dark:border-zinc-800'
+                  }`}
+                >
+                  <QuestionTitle question={currentQuestion} index={currentPage} themeColor={themeColor} totalQuestions={visibleInputQuestions.length} />
                   <motion.div
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}

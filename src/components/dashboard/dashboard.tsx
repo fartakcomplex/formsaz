@@ -39,6 +39,9 @@ import {
   X,
   Download,
   ArrowLeft,
+  LayoutGrid,
+  List,
+  AlertTriangle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -91,18 +94,23 @@ import { useAppStore, type Form } from '@/lib/store';
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   draft: {
     label: 'پیش‌نویس',
-    color: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800',
+    color: 'bg-gradient-to-l from-amber-100 to-yellow-100 text-amber-700 border border-amber-200 dark:from-amber-900/30 dark:to-yellow-900/30 dark:text-amber-400 dark:border-amber-800',
     icon: <ClipboardList className="size-3.5" />,
   },
   published: {
     label: 'منتشر شده',
-    color: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800',
+    color: 'bg-gradient-to-l from-emerald-100 to-green-100 text-emerald-700 border border-emerald-200 dark:from-emerald-900/30 dark:to-green-900/30 dark:text-emerald-400 dark:border-emerald-800',
     icon: <CircleDot className="size-3.5" />,
   },
   closed: {
     label: 'بسته شده',
-    color: 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700',
+    color: 'bg-gradient-to-l from-zinc-100 to-gray-100 text-zinc-600 border border-zinc-200 dark:from-zinc-800 dark:to-gray-800 dark:text-zinc-400 dark:border-zinc-700',
     icon: <Lock className="size-3.5" />,
+  },
+  expired: {
+    label: 'منقضی',
+    color: 'bg-gradient-to-l from-red-100 to-rose-100 text-red-700 border border-red-200 dark:from-red-900/30 dark:to-rose-900/30 dark:text-red-400 dark:border-red-800',
+    icon: <AlertTriangle className="size-3.5" />,
   },
 };
 
@@ -1184,6 +1192,7 @@ function FormCard({
   selectMode,
   selected,
   onToggleSelect,
+  getEffectiveStatus,
 }: {
   form: Form;
   onEdit: (form: Form) => void;
@@ -1196,9 +1205,13 @@ function FormCard({
   selectMode?: boolean;
   selected?: boolean;
   onToggleSelect?: (id: string) => void;
+  getEffectiveStatus: (form: Form) => string;
 }) {
-  const status = statusConfig[form.status] || statusConfig.draft;
-  const borderGradient = statusBorderGradient[form.status] || statusBorderGradient.draft;
+  const effectiveStatus = getEffectiveStatus(form);
+  const status = statusConfig[effectiveStatus] || statusConfig.draft;
+  const borderGradient = effectiveStatus === 'expired'
+    ? 'from-red-400 to-rose-500'
+    : statusBorderGradient[form.status] || statusBorderGradient.draft;
   const questionCount = form.questions?.length || 0;
   const expiration = getExpirationStatus(form.expiresAt);
 
@@ -1206,7 +1219,7 @@ function FormCard({
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={selectMode ? {} : { y: -3, scale: 1.01 }}
+      whileHover={selectMode ? {} : { y: -4, scale: 1.01 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
       <Card className={`overflow-hidden transition-all duration-300 group relative bg-white dark:bg-gray-900 ${
@@ -1214,6 +1227,14 @@ function FormCard({
           ? 'border-violet-400 dark:border-violet-600 ring-2 ring-violet-200 dark:ring-violet-800 shadow-lg shadow-violet-100/50 dark:shadow-violet-900/30'
           : 'border-gray-200 dark:border-gray-800 hover:shadow-xl'
       }`}>
+        {/* Gradient hover glow overlay */}
+        {!selectMode && (
+          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"
+            style={{
+              boxShadow: 'inset 0 0 30px rgba(139, 92, 246, 0.08), 0 0 40px rgba(139, 92, 246, 0.06)',
+            }}
+          />
+        )}
         {/* Gradient right border on hover (RTL: right side) */}
         {!selectMode && (
           <div className="absolute top-0 right-0 bottom-0 w-[3px] bg-gradient-to-b from-violet-400 via-purple-500 to-fuchsia-500 rounded-l-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
@@ -1227,7 +1248,7 @@ function FormCard({
         {/* Status color top stripe */}
         <div className={`h-1 bg-gradient-to-l ${borderGradient}`} />
 
-        <CardHeader className="pb-2">
+        <CardHeader className="pb-2 relative z-10">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -1271,14 +1292,14 @@ function FormCard({
               )}
             </div>
             <Badge variant="outline" className={`shrink-0 text-xs flex items-center gap-1.5 ${status.color}`}>
-              <span className={`size-2 rounded-full ${form.status === 'published' ? 'bg-emerald-500' : form.status === 'closed' ? 'bg-red-500' : 'bg-gray-400'}`} />
+              <span className={`size-2 rounded-full ${effectiveStatus === 'published' ? 'bg-emerald-500' : effectiveStatus === 'expired' ? 'bg-red-500' : effectiveStatus === 'closed' ? 'bg-zinc-400' : 'bg-amber-400'}`} />
               {status.label}
             </Badge>
           </div>
         </CardHeader>
 
-        <CardContent className="gap-3 pb-3">
-          <div className="grid grid-cols-3 gap-2">
+        <CardContent className="gap-3 pb-3 relative z-10">
+          <div className="grid grid-cols-4 gap-2">
             <div className="flex flex-col items-center gap-1 rounded-lg bg-gray-50 dark:bg-gray-800 p-2.5 group-hover:bg-violet-50 dark:group-hover:bg-violet-950/50 transition-colors">
               <FileText className="size-4 text-gray-400 group-hover:text-violet-400 dark:group-hover:text-violet-500 transition-colors" />
               <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{questionCount}</span>
@@ -1294,10 +1315,15 @@ function FormCard({
               <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{form.viewCount || 0}</span>
               <span className="text-[10px] text-gray-400 dark:text-gray-500">بازدید</span>
             </div>
+            <div className="flex flex-col items-center gap-1 rounded-lg bg-gray-50 dark:bg-gray-800 p-2.5 group-hover:bg-violet-50 dark:group-hover:bg-violet-950/50 transition-colors">
+              <Calendar className="size-4 text-gray-400 group-hover:text-violet-400 dark:group-hover:text-violet-500 transition-colors" />
+              <span className="text-[10px] font-semibold text-gray-700 dark:text-gray-300 leading-tight text-center">{formatRelativeTime(form.createdAt)}</span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500">ایجاد</span>
+            </div>
           </div>
         </CardContent>
 
-        <CardFooter className="flex-col gap-3 pt-0">
+        <CardFooter className="flex-col gap-3 pt-0 relative z-10">
           <div className="flex items-center justify-between w-full text-xs text-gray-400 dark:text-gray-500 px-1">
             <span>آخرین ویرایش</span>
             <span>{formatRelativeTime(form.updatedAt)}</span>
@@ -1403,6 +1429,184 @@ function FormCard({
         </CardFooter>
       </Card>
     </motion.div>
+  );
+}
+
+// ─── Form List Row ─────────────────────────────────────────────────────────
+
+function FormListRow({
+  form,
+  onEdit,
+  onPreview,
+  onResults,
+  onDelete,
+  onDuplicate,
+  onShare,
+  onSetExpiration,
+  selectMode,
+  selected,
+  onToggleSelect,
+  getEffectiveStatus,
+}: {
+  form: Form;
+  onEdit: (form: Form) => void;
+  onPreview: (form: Form) => void;
+  onResults: (form: Form) => void;
+  onDelete: (form: Form) => void;
+  onDuplicate: (form: Form) => void;
+  onShare: (form: Form) => void;
+  onSetExpiration: (form: Form) => void;
+  selectMode?: boolean;
+  selected?: boolean;
+  onToggleSelect?: (id: string) => void;
+  getEffectiveStatus: (form: Form) => string;
+}) {
+  const effectiveStatus = getEffectiveStatus(form);
+  const status = statusConfig[effectiveStatus] || statusConfig.draft;
+  const questionCount = form.questions?.length || 0;
+
+  return (
+    <Card className={`overflow-hidden transition-all duration-200 group bg-white dark:bg-gray-900 hover:shadow-lg ${
+      selected
+        ? 'border-violet-400 dark:border-violet-600 ring-2 ring-violet-200 dark:ring-violet-800'
+        : 'border-gray-200 dark:border-gray-800'
+    }`}>
+      <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4">
+        {/* Checkbox in select mode */}
+        {selectMode && (
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => onToggleSelect?.(form.id)}
+            className="shrink-0"
+          >
+            {selected ? (
+              <div className="flex size-5 items-center justify-center rounded-md bg-violet-500 text-white">
+                <Check className="size-3.5" strokeWidth={3} />
+              </div>
+            ) : (
+              <div className="flex size-5 items-center justify-center rounded-md border-2 border-gray-300 dark:border-gray-600 group-hover:border-violet-400 dark:group-hover:border-violet-500 transition-colors" />
+            )}
+          </motion.button>
+        )}
+
+        {/* Status indicator line */}
+        <div className={`shrink-0 w-1 h-10 rounded-full bg-gradient-to-b ${effectiveStatus === 'expired' ? 'from-red-400 to-rose-500' : effectiveStatus === 'published' ? 'from-emerald-400 to-green-500' : effectiveStatus === 'closed' ? 'from-zinc-300 to-zinc-400' : 'from-amber-400 to-yellow-500'}`} />
+
+        {/* Form info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate">{form.title}</h3>
+            {form.description && (
+              <span className="hidden sm:inline text-xs text-gray-400 dark:text-gray-500 truncate max-w-[200px]">
+                — {form.description}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 flex-wrap text-xs text-gray-400 dark:text-gray-500">
+            <Badge variant="outline" className={`text-[10px] px-1.5 py-0 h-5 ${status.color}`}>
+              {status.icon}
+              {status.label}
+            </Badge>
+            <span className="flex items-center gap-1">
+              <FileText className="size-3" />
+              {questionCount} سؤال
+            </span>
+            <span className="flex items-center gap-1">
+              <Send className="size-3" />
+              {form._count?.submissions || 0} پاسخ
+            </span>
+            <span className="hidden sm:flex items-center gap-1">
+              <Eye className="size-3" />
+              {form.viewCount || 0} بازدید
+            </span>
+            <span className="hidden md:flex items-center gap-1">
+              <Calendar className="size-3" />
+              {formatRelativeTime(form.createdAt)}
+            </span>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        {!selectMode && (
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="rounded-lg size-8 p-0 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+              onClick={() => onEdit(form)}
+              title="ویرایش"
+            >
+              <Edit3 className="size-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="rounded-lg size-8 p-0 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+              onClick={() => onPreview(form)}
+              title="پیش‌نمایش"
+            >
+              <Eye className="size-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="rounded-lg size-8 p-0 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+              onClick={() => onResults(form)}
+              title="نتایج"
+            >
+              <BarChart3 className="size-3.5" />
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="rounded-lg size-8 p-0 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                  <MoreHorizontal className="size-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-44">
+                <DropdownMenuItem onClick={() => onShare(form)}>
+                  <Share2 className="size-4 ml-2 text-purple-500" />
+                  اشتراک‌گذاری
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onSetExpiration(form)}>
+                  <Clock className="size-4 ml-2 text-orange-500" />
+                  تاریخ انقضا
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onDuplicate(form)}>
+                  <Copy className="size-4 ml-2 text-gray-500" />
+                  کپی فرم
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50" onSelect={(e) => e.preventDefault()}>
+                      <Trash2 className="size-4 ml-2" />
+                      حذف
+                    </DropdownMenuItem>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent dir="rtl">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>حذف فرم</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        آیا از حذف فرم «{form.title}» مطمئن هستید؟
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="rounded-lg">انصراف</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => onDelete(form)}
+                        className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                      >
+                        حذف فرم
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
+      </div>
+    </Card>
   );
 }
 
@@ -1524,6 +1728,7 @@ function RecentActivityFeed() {
 // ─── Dashboard ──────────────────────────────────────────────────────────────
 
 type SortOption = 'newest' | 'oldest' | 'most_responses' | 'least_responses';
+type ViewMode = 'grid' | 'list';
 
 export default function Dashboard() {
   const {
@@ -1538,6 +1743,12 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('dashboard-view-mode') as ViewMode) || 'grid';
+    }
+    return 'grid';
+  });
   const [loading, setLoading] = useState(true);
   const [duplicating, setDuplicating] = useState<string | null>(null);
   const [shareForm, setShareForm] = useState<Form | null>(null);
@@ -1810,6 +2021,18 @@ export default function Dashboard() {
     setSelectedIds(new Set());
   };
 
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode);
+    localStorage.setItem('dashboard-view-mode', mode);
+  };
+
+  const getEffectiveStatus = (form: Form): string => {
+    if (form.expiresAt && isBefore(new Date(form.expiresAt), new Date())) {
+      return 'expired';
+    }
+    return form.status;
+  };
+
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-gray-950">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -1946,6 +2169,33 @@ export default function Dashboard() {
                 <SelectItem value="least_responses">کمترین پاسخ</SelectItem>
               </SelectContent>
             </Select>
+            {/* View Mode Toggle */}
+            <div className="flex items-center rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-0.5">
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleViewModeChange('grid')}
+                className={`flex items-center justify-center size-9 rounded-lg transition-all duration-200 ${
+                  viewMode === 'grid'
+                    ? 'bg-violet-500 text-white shadow-sm'
+                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
+                }`}
+                title="نمایش شبکه‌ای"
+              >
+                <LayoutGrid className="size-4" />
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleViewModeChange('list')}
+                className={`flex items-center justify-center size-9 rounded-lg transition-all duration-200 ${
+                  viewMode === 'list'
+                    ? 'bg-violet-500 text-white shadow-sm'
+                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
+                }`}
+                title="نمایش لیستی"
+              >
+                <List className="size-4" />
+              </motion.button>
+            </div>
           </motion.div>
         )}
 
@@ -2016,33 +2266,77 @@ export default function Dashboard() {
             {/* Activity Feed Widget */}
             <ActivityFeedWidget />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              <AnimatePresence mode="popLayout">
-                {filteredAndSortedForms.map((form, index) => (
-                  <motion.div
-                    key={form.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ delay: index * 0.06, duration: 0.35, ease: 'easeOut' }}
-                  >
-                    <FormCard
-                      form={form}
-                      onEdit={handleEdit}
-                      onPreview={handlePreview}
-                      onResults={handleResults}
-                      onDelete={handleDelete}
-                      onDuplicate={handleDuplicate}
-                      onShare={handleShare}
-                      onSetExpiration={handleSetExpiration}
-                      selectMode={selectMode}
-                      selected={selectedIds.has(form.id)}
-                      onToggleSelect={toggleSelect}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+            <AnimatePresence mode="wait">
+              {viewMode === 'grid' ? (
+                <motion.div
+                  key="grid-view"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                  className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+                >
+                  {filteredAndSortedForms.map((form, index) => (
+                    <motion.div
+                      key={form.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ delay: index * 0.06, duration: 0.35, ease: 'easeOut' }}
+                    >
+                      <FormCard
+                        form={form}
+                        onEdit={handleEdit}
+                        onPreview={handlePreview}
+                        onResults={handleResults}
+                        onDelete={handleDelete}
+                        onDuplicate={handleDuplicate}
+                        onShare={handleShare}
+                        onSetExpiration={handleSetExpiration}
+                        selectMode={selectMode}
+                        selected={selectedIds.has(form.id)}
+                        onToggleSelect={toggleSelect}
+                        getEffectiveStatus={getEffectiveStatus}
+                      />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="list-view"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex flex-col gap-3"
+                >
+                  {filteredAndSortedForms.map((form, index) => (
+                    <motion.div
+                      key={form.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ delay: index * 0.04, duration: 0.3, ease: 'easeOut' }}
+                    >
+                      <FormListRow
+                        form={form}
+                        onEdit={handleEdit}
+                        onPreview={handlePreview}
+                        onResults={handleResults}
+                        onDelete={handleDelete}
+                        onDuplicate={handleDuplicate}
+                        onShare={handleShare}
+                        onSetExpiration={handleSetExpiration}
+                        selectMode={selectMode}
+                        selected={selectedIds.has(form.id)}
+                        onToggleSelect={toggleSelect}
+                        getEffectiveStatus={getEffectiveStatus}
+                      />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Recent Activity Feed */}
             <RecentActivityFeed />

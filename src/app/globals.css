@@ -1128,3 +1128,150 @@
 .dark .modal-backdrop-blur {
   background: oklch(0 0 0 / 60%);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TASK DASHBOARD ENHANCEMENT: Card Effects, Glassmorphism, Utilities
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── 35. Enhanced Card Hover Lift ───────────────────────────────────────── */
+.card-hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(139, 92, 246, 0.15);
+}
+
+/* ─── 36. Gradient Text ─────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── 37. Glassmorphism Card Enhanced ───────────────────────────────────── */
+.glass-card-enhanced {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.08);
+}
+
+/* ─── 38. Animated Gradient Border ──────────────────────────────────────── */
+.animated-gradient-border {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.animated-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #ec4899, #7c3aed);
+  background-size: 200% 200%;
+  animation: dashboard-gradient-shift 3s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes dashboard-gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ─── 39. Pulse Ring ────────────────────────────────────────────────────── */
+.pulse-ring {
+  position: relative;
+}
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  animation: dashboard-pulse-ring 2s ease-out infinite;
+}
+
+@keyframes dashboard-pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ─── 40. Smooth Scrollbar ──────────────────────────────────────────────── */
+.smooth-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
+}
+.smooth-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.smooth-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.smooth-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 3px;
+}
+.smooth-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+
+/* ─── 41. Notification Badge ────────────────────────────────────────────── */
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(135deg, #ef4444, #ec4899);
+  border-radius: 50%;
+  border: 2px solid white;
+  animation: dashboard-badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes dashboard-badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* ─── Dark mode variants for new utilities ──────────────────────────────── */
+.dark .glass-card-enhanced {
+  background: rgba(39, 39, 42, 0.7);
+  border: 1px solid rgba(63, 63, 70, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.dark .card-hover-lift:hover {
+  box-shadow: 0 20px 40px -12px rgba(139, 92, 246, 0.25);
+}
+.dark .notification-badge {
+  border-color: #27272a;
+}
+.dark .smooth-scrollbar {
+  scrollbar-color: rgba(139, 92, 246, 0.25) transparent;
+}
+.dark .smooth-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.25);
+}
+.dark .smooth-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.4);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TRUSTED BY SECTION: Marquee scrolling animation
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
