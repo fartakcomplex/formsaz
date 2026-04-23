@@ -31,6 +31,7 @@ import {
   MessageSquare,
   Minus,
   LayoutDashboard,
+  BookOpen,
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -1123,6 +1124,61 @@ function evaluateCondition(
   }
 }
 
+/* ========== Section Splitting Helper ========== */
+
+interface FormSection {
+  id: string;
+  title: string;
+  description: string;
+  questions: FormQuestion[];
+}
+
+function splitIntoSections(questions: FormQuestion[]): FormSection[] {
+  const sections: FormSection[] = [];
+  let currentSection: FormSection | null = null;
+  let sectionIndex = 0;
+
+  for (const q of questions) {
+    if (q.type === 'section_divider') {
+      // Start a new section
+      if (currentSection) {
+        sections.push(currentSection);
+      }
+      currentSection = {
+        id: q.id,
+        title: q.title,
+        description: q.config.description || '',
+        questions: [],
+      };
+      sectionIndex++;
+    } else {
+      if (!currentSection) {
+        // First section (before any divider)
+        currentSection = {
+          id: `__default_section_${sectionIndex}`,
+          title: '',
+          description: '',
+          questions: [],
+        };
+      }
+      currentSection.questions.push(q);
+    }
+  }
+
+  if (currentSection) {
+    sections.push(currentSection);
+  }
+
+  return sections;
+}
+
+/* ========== Persian Number Converter ========== */
+
+function toPersianDigit(n: number): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return n.toString().replace(/\d/g, (d) => persianDigits[parseInt(d)]);
+}
+
 function isQuestionVisible(
   question: FormQuestion,
   answers: Record<string, string>
@@ -1284,7 +1340,7 @@ export default function FormFill() {
   }, [fillForm]);
 
   const inputQuestions = useMemo(
-    () => questions.filter((q) => q.type !== 'statement'),
+    () => questions.filter((q) => q.type !== 'statement' && q.type !== 'section_divider'),
     [questions]
   );
 
@@ -1293,13 +1349,59 @@ export default function FormFill() {
     [inputQuestions, answers]
   );
 
-  const totalPages = visibleInputQuestions.length;
+  // Check if form has section dividers
+  const hasSections = useMemo(
+    () => questions.some((q) => q.type === 'section_divider'),
+    [questions]
+  );
 
-  const progressPercent = totalPages > 0
-    ? Math.round(((currentPage + 1) / totalPages) * 100)
+  // Split visible questions into sections
+  const sections = useMemo(() => {
+    const visible = visibleInputQuestions;
+    if (!hasSections) return [];
+    // We need to also include section_divider questions for splitting context
+    // But visibleInputQuestions already excludes them.
+    // Re-derive from visibleInputQuestions using section_dividers as boundaries.
+    // We need the section dividers from the full visible question list.
+    const allVisible = questions.filter((q) => isQuestionVisible(q, answers));
+    return splitIntoSections(allVisible);
+  }, [visibleInputQuestions, hasSections, questions, answers]);
+
+  const totalSections = sections.length;
+  const isMultiPageMode = hasSections && totalSections > 0;
+
+  // Cumulative question count offsets per section for global question numbering
+  const sectionOffsets = useMemo(() => {
+    if (!isMultiPageMode) return [];
+    const offsets: number[] = [];
+    let cum = 0;
+    for (const sec of sections) {
+      offsets.push(cum);
+      cum += sec.questions.length;
+    }
+    return offsets;
+  }, [isMultiPageMode, sections]);
+
+  const totalPages = isMultiPageMode
+    ? totalSections
+    : visibleInputQuestions.length;
+
+  // Calculate progress based on answered questions
+  const answeredCount = useMemo(
+    () => visibleInputQuestions.filter((q) => {
+      const val = answers[q.id];
+      return val && val.trim() !== '';
+    }).length,
+    [visibleInputQuestions, answers]
+  );
+
+  const progressPercent = visibleInputQuestions.length > 0
+    ? Math.round((answeredCount / visibleInputQuestions.length) * 100)
     : 0;
 
-  const currentQuestion = visibleInputQuestions[currentPage];
+  const currentQuestion = !isMultiPageMode ? visibleInputQuestions[currentPage] : null;
+  const currentSection = isMultiPageMode ? sections[currentPage] : null;
+  const currentSectionQuestions = currentSection?.questions || [];
 
   // Keep currentPage in sync when visible questions change
   useEffect(() => {
@@ -1326,21 +1428,37 @@ export default function FormFill() {
   }, []);
 
   const validateCurrentPage = (): boolean => {
-    if (!currentQuestion) return true;
-
     const newErrors: Record<string, string> = {};
 
-    if (currentQuestion.required && currentQuestion.type !== 'statement') {
-      const value = answers[currentQuestion.id];
-      if (!value || value.trim() === '') {
-        newErrors[currentQuestion.id] = 'این فیلد الزامی است';
+    if (isMultiPageMode) {
+      // Validate all questions in current section
+      currentSectionQuestions.forEach((q) => {
+        if (q.required) {
+          const value = answers[q.id];
+          if (!value || value.trim() === '') {
+            newErrors[q.id] = 'این فیلد الزامی است';
+          }
+        }
+        if (q.type === 'email' && answers[q.id]) {
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailPattern.test(answers[q.id])) {
+            newErrors[q.id] = 'لطفاً یک ایمیل معتبر وارد کنید';
+          }
+        }
+      });
+    } else if (currentQuestion) {
+      // Validate single question
+      if (currentQuestion.required && currentQuestion.type !== 'statement') {
+        const value = answers[currentQuestion.id];
+        if (!value || value.trim() === '') {
+          newErrors[currentQuestion.id] = 'این فیلد الزامی است';
+        }
       }
-    }
-
-    if (currentQuestion.type === 'email' && answers[currentQuestion.id]) {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(answers[currentQuestion.id])) {
-        newErrors[currentQuestion.id] = 'لطفاً یک ایمیل معتبر وارد کنید';
+      if (currentQuestion.type === 'email' && answers[currentQuestion.id]) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(answers[currentQuestion.id])) {
+          newErrors[currentQuestion.id] = 'لطفاً یک ایمیل معتبر وارد کنید';
+        }
       }
     }
 
@@ -1384,7 +1502,20 @@ export default function FormFill() {
       const firstErrorId = Object.keys(allErrors)[0];
       const errorIdx = visibleInputQuestions.findIndex((q) => q.id === firstErrorId);
       if (errorIdx >= 0) {
-        setCurrentPage(errorIdx);
+        if (isMultiPageMode) {
+          // Find which section contains this question
+          let cumulative = 0;
+          for (let i = 0; i < sections.length; i++) {
+            cumulative += sections[i].questions.length;
+            if (errorIdx < cumulative) {
+              setNavDirection(i < currentPage ? 'backward' : 'forward');
+              setCurrentPage(i);
+              break;
+            }
+          }
+        } else {
+          setCurrentPage(errorIdx);
+        }
       }
       return;
     }
@@ -1531,6 +1662,68 @@ export default function FormFill() {
           </div>
         </motion.div>
 
+        {/* Section Breadcrumbs (multi-page mode) */}
+        {isMultiPageMode && totalSections > 1 && progressStyle !== 'hidden' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.12 }}
+            className="mb-4 flex items-center justify-center gap-1 flex-wrap"
+          >
+            {sections.map((sec, idx) => {
+              const isActive = idx === currentPage;
+              const isPast = idx < currentPage;
+              return (
+                <React.Fragment key={sec.id}>
+                  {idx > 0 && (
+                    <div className="w-6 h-px bg-gray-200 dark:bg-zinc-700 mx-1" />
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (idx < currentPage) {
+                        setNavDirection('backward');
+                      } else if (idx > currentPage) {
+                        if (validateCurrentPage()) {
+                          setNavDirection('forward');
+                          setCurrentPage(idx);
+                        }
+                        return;
+                      }
+                      setCurrentPage(idx);
+                    }}
+                    className="group flex items-center gap-1.5 px-2 py-1 rounded-lg transition-all duration-200"
+                  >
+                    <div
+                      className="size-6 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200"
+                      style={
+                        isActive
+                          ? { backgroundColor: themeColor, color: '#fff', boxShadow: `0 2px 8px ${themeColor}33` }
+                          : isPast
+                          ? { backgroundColor: `${themeColor}1a`, color: themeColor }
+                          : { backgroundColor: '#f3f4f6', color: '#9ca3af' }
+                      }
+                    >
+                      {isPast ? (
+                        <Check className="size-3" />
+                      ) : (
+                        <span>{toPersianDigit(idx + 1)}</span>
+                      )}
+                    </div>
+                    <span
+                      className={`text-xs font-medium transition-colors duration-200 hidden sm:inline ${
+                        isActive ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-zinc-500 group-hover:text-gray-600 dark:group-hover:text-zinc-300'
+                      }`}
+                    >
+                      {sec.title || `بخش ${toPersianDigit(idx + 1)}`}
+                    </span>
+                  </button>
+                </React.Fragment>
+              );
+            })}
+          </motion.div>
+        )}
+
         {/* Progress Bar */}
         {totalPages > 0 && progressStyle !== 'hidden' && (
           <motion.div
@@ -1541,7 +1734,9 @@ export default function FormFill() {
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-medium text-gray-500 dark:text-zinc-400">
-                سؤال {currentPage + 1} از {totalPages}
+                {isMultiPageMode
+                  ? `بخش ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalSections)}`
+                  : `سؤال ${currentPage + 1} از ${totalPages}`}
               </span>
               <span className="text-xs font-bold" style={{ color: themeColor }}>{progressPercent}٪</span>
             </div>
@@ -1569,44 +1764,113 @@ export default function FormFill() {
           </motion.div>
         )}
 
-        {/* Question Card */}
-        <AnimatePresence mode="wait">
-          {currentQuestion && (
-            <motion.div
-              key={currentQuestion.id}
-              initial={{ opacity: 0, x: navDirection === 'forward' ? 40 : -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: navDirection === 'forward' ? -40 : 40 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-            >
-              <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm">
-                <QuestionTitle question={currentQuestion} index={currentPage} themeColor={themeColor} />
+        {/* Section Header (multi-page mode) */}
+        {isMultiPageMode && currentSection && currentSection.title && (
+          <motion.div
+            key={`section-header-${currentSection.id}`}
+            initial={{ opacity: 0, y: navDirection === 'forward' ? 20 : -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            className="mb-6 rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 shadow-sm"
+          >
+            <div className="flex items-center gap-3 mb-1">
+              <div
+                className="h-8 w-1 rounded-full"
+                style={{ backgroundColor: themeColor }}
+              />
+              <div className="flex items-center gap-2">
+                <BookOpen className="size-5" style={{ color: themeColor }} />
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">{currentSection.title}</h2>
+              </div>
+            </div>
+            {currentSection.description && (
+              <p className="text-sm text-gray-500 dark:text-zinc-400 pr-7 leading-relaxed">{currentSection.description}</p>
+            )}
+          </motion.div>
+        )}
 
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: 'spring', stiffness: 280, damping: 24, delay: 0.2 }}
+        {/* Question Card(s) */}
+        <AnimatePresence mode="wait">
+          {isMultiPageMode ? (
+            /* Multi-page mode: show all questions in current section */
+            <motion.div
+              key={currentSection?.id || 'empty'}
+              initial={{ opacity: 0, y: navDirection === 'forward' ? 30 : -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: navDirection === 'forward' ? -30 : 30 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="space-y-6"
+            >
+              {currentSectionQuestions.map((q, idx) => {
+                const globalIdx = (sectionOffsets[currentPage] || 0) + idx;
+                return (
+                <div
+                  key={q.id}
+                  className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm"
                 >
+                  <QuestionTitle question={q} index={globalIdx} themeColor={themeColor} />
                   <QuestionRenderer
-                    question={currentQuestion}
-                    value={answers[currentQuestion.id] || ''}
-                    onChange={(val) => handleAnswerChange(currentQuestion.id, val)}
+                    question={q}
+                    value={answers[q.id] || ''}
+                    onChange={(val) => handleAnswerChange(q.id, val)}
                     themeColor={themeColor}
                   />
-                </motion.div>
-
-                {errors[currentQuestion.id] && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2 mt-3 text-sm text-red-500"
-                  >
-                    <AlertCircle className="size-4" />
-                    {errors[currentQuestion.id]}
-                  </motion.div>
-                )}
-              </div>
+                  {errors[q.id] && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center gap-2 mt-3 text-sm text-red-500"
+                    >
+                      <AlertCircle className="size-4" />
+                      {errors[q.id]}
+                    </motion.div>
+                  )}
+                </div>
+                );
+              })}
+              {currentSectionQuestions.length === 0 && (
+                <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 shadow-sm text-center">
+                  <p className="text-gray-400 dark:text-zinc-500 text-sm">این بخش خالی است</p>
+                </div>
+              )}
             </motion.div>
+          ) : (
+            /* Single-page mode: one question at a time (original behavior) */
+            currentQuestion && (
+              <motion.div
+                key={currentQuestion.id}
+                initial={{ opacity: 0, x: navDirection === 'forward' ? 40 : -40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: navDirection === 'forward' ? -40 : 40 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              >
+                <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm">
+                  <QuestionTitle question={currentQuestion} index={currentPage} themeColor={themeColor} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 280, damping: 24, delay: 0.2 }}
+                  >
+                    <QuestionRenderer
+                      question={currentQuestion}
+                      value={answers[currentQuestion.id] || ''}
+                      onChange={(val) => handleAnswerChange(currentQuestion.id, val)}
+                      themeColor={themeColor}
+                    />
+                  </motion.div>
+                  {errors[currentQuestion.id] && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center gap-2 mt-3 text-sm text-red-500"
+                    >
+                      <AlertCircle className="size-4" />
+                      {errors[currentQuestion.id]}
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            )
           )}
         </AnimatePresence>
 
@@ -1687,43 +1951,85 @@ export default function FormFill() {
         {/* Page dots */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center mt-6">
-            {visibleInputQuestions.map((q, idx) => (
-              <React.Fragment key={q.id}>
-                <motion.button
-                  whileHover={{ scale: 1.4 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => {
-                    setNavDirection(idx > currentPage ? 'forward' : 'backward');
-                    setCurrentPage(idx);
-                  }}
-                  className="rounded-full transition-all duration-200 relative"
-                  style={{
-                    width: idx === currentPage ? 28 : 10,
-                    height: idx === currentPage ? 10 : 10,
-                    backgroundColor: idx === currentPage ? themeColor : answers[q.id] ? `${themeColor}55` : undefined,
-                  }}
-                  animate={idx === currentPage ? { scale: [1, 1.15, 1] } : {}}
-                  transition={{ duration: 0.3 }}
-                >
-                  {idx === currentPage && (
-                    <motion.div
-                      className="absolute inset-0 rounded-full"
-                      style={{ backgroundColor: themeColor }}
-                      animate={{ scale: [1, 1.8, 2.5], opacity: [0.3, 0.1, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+            {isMultiPageMode ? (
+              /* Section mode: one dot per section */
+              sections.map((sec, idx) => (
+                <React.Fragment key={sec.id}>
+                  <motion.button
+                    whileHover={{ scale: 1.4 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => {
+                      setNavDirection(idx > currentPage ? 'forward' : 'backward');
+                      setCurrentPage(idx);
+                    }}
+                    className="rounded-full transition-all duration-200 relative"
+                    style={{
+                      width: idx === currentPage ? 28 : 10,
+                      height: idx === currentPage ? 10 : 10,
+                      backgroundColor: idx === currentPage ? themeColor : idx < currentPage ? `${themeColor}55` : undefined,
+                    }}
+                    animate={idx === currentPage ? { scale: [1, 1.15, 1] } : {}}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {idx === currentPage && (
+                      <motion.div
+                        className="absolute inset-0 rounded-full"
+                        style={{ backgroundColor: themeColor }}
+                        animate={{ scale: [1, 1.8, 2.5], opacity: [0.3, 0.1, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+                      />
+                    )}
+                  </motion.button>
+                  {idx < sections.length - 1 && (
+                    <div
+                      className="w-3 sm:w-6 h-0.5 mx-0.5"
+                      style={{
+                        backgroundColor: idx < currentPage ? themeColor : '#e5e7eb',
+                      }}
                     />
                   )}
-                </motion.button>
-                {idx < visibleInputQuestions.length - 1 && (
-                  <div
-                    className="w-3 sm:w-6 h-0.5 mx-0.5"
-                    style={{
-                      backgroundColor: idx < currentPage ? themeColor : '#e5e7eb',
+                </React.Fragment>
+              ))
+            ) : (
+              /* Single-question mode: one dot per question (original behavior) */
+              visibleInputQuestions.map((q, idx) => (
+                <React.Fragment key={q.id}>
+                  <motion.button
+                    whileHover={{ scale: 1.4 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => {
+                      setNavDirection(idx > currentPage ? 'forward' : 'backward');
+                      setCurrentPage(idx);
                     }}
-                  />
-                )}
-              </React.Fragment>
-            ))}
+                    className="rounded-full transition-all duration-200 relative"
+                    style={{
+                      width: idx === currentPage ? 28 : 10,
+                      height: idx === currentPage ? 10 : 10,
+                      backgroundColor: idx === currentPage ? themeColor : answers[q.id] ? `${themeColor}55` : undefined,
+                    }}
+                    animate={idx === currentPage ? { scale: [1, 1.15, 1] } : {}}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {idx === currentPage && (
+                      <motion.div
+                        className="absolute inset-0 rounded-full"
+                        style={{ backgroundColor: themeColor }}
+                        animate={{ scale: [1, 1.8, 2.5], opacity: [0.3, 0.1, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+                      />
+                    )}
+                  </motion.button>
+                  {idx < visibleInputQuestions.length - 1 && (
+                    <div
+                      className="w-3 sm:w-6 h-0.5 mx-0.5"
+                      style={{
+                        backgroundColor: idx < currentPage ? themeColor : '#e5e7eb',
+                      }}
+                    />
+                  )}
+                </React.Fragment>
+              ))
+            )}
           </div>
         )}
       </div>

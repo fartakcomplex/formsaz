@@ -550,34 +550,71 @@ function ExpirationDateDialog({
 
 // ─── Stat Card ──────────────────────────────────────────────────────────────
 
+function MiniSparkline({ trend = 'up', color = '#8b5cf6' }: { trend?: 'up' | 'down'; color?: string }) {
+  const points = trend === 'up'
+    ? 'M0 20 L4 16 L8 18 L12 12 L16 8 L20 10 L24 4 L28 6 L32 2'
+    : 'M0 4 L4 8 L8 6 L12 12 L16 14 L20 10 L24 16 L28 14 L32 18';
+  return (
+    <svg viewBox="0 0 32 22" className="w-full h-5" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id={`spark-${color.replace('#','')}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path
+        d={points}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d={`${points} L32 22 L0 22 Z`}
+        fill={`url(#spark-${color.replace('#','')})`}
+      />
+    </svg>
+  );
+}
+
 function StatCard({
   icon,
   label,
   value,
   color,
   colorDark,
+  sparkTrend,
+  sparkColor,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number | string;
   color: string;
   colorDark: string;
+  sparkTrend?: 'up' | 'down';
+  sparkColor?: string;
 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-4 rounded-2xl border bg-white dark:bg-gray-900 p-4 shadow-sm hover:shadow-md transition-shadow border-gray-200 dark:border-gray-800"
+      className="relative flex items-center gap-4 rounded-2xl border bg-white/60 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-lg transition-all duration-300 border-gray-200/80 dark:border-gray-800/80 backdrop-blur-xl hover:-translate-y-0.5"
     >
       <div
-        className={`flex size-12 items-center justify-center rounded-xl ${color} ${colorDark}`}
+        className={`flex size-11 items-center justify-center rounded-xl shadow-sm ${color} ${colorDark}`}
       >
         {icon}
       </div>
-      <div>
-        <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+      <div className="flex-1 min-w-0">
+        <p className="text-2xl font-extrabold text-gray-900 dark:text-white tabular-nums">{value}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{label}</p>
       </div>
+      {sparkTrend && sparkColor && (
+        <div className="w-16 h-5 opacity-70">
+          <MiniSparkline trend={sparkTrend} color={sparkColor} />
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -850,8 +887,8 @@ function EmptyState({
       {/* Illustration */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        animate={{ opacity: 1, y: 0, y: [0, -8, 0] }}
+        transition={{ duration: 0.6, ease: 'easeOut', y: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.8 } }}
         className="mb-8"
       >
         <WelcomeIllustration />
@@ -883,15 +920,20 @@ function EmptyState({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 + index * 0.12, duration: 0.5, ease: 'easeOut' }}
-            whileHover={{ y: -4, scale: 1.02 }}
+            whileHover={{ y: -6, scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
             onClick={item.onClick}
-            className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg transition-all duration-200 cursor-pointer"
+            className="group relative flex flex-col items-center gap-3 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:shadow-xl transition-all duration-200 cursor-pointer overflow-hidden"
           >
-            <div className={`flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} shadow-lg ${item.shadowColor} group-hover:shadow-xl transition-shadow`}>
+            {/* Shimmer overlay on hover */}
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.03] via-purple-500/[0.06] to-fuchsia-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-2xl">
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+            </div>
+            <div className={`relative flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} shadow-lg ${item.shadowColor} group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
               {item.icon}
             </div>
-            <div className="text-center">
+            <div className="text-center relative">
               <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">
                 {item.title}
               </h3>
@@ -1066,31 +1108,38 @@ function ActivityFeedWidget() {
           {activities.length} مورد
         </Badge>
       </div>
-      <div className="divide-y divide-gray-50 dark:divide-gray-800/50 max-h-80 overflow-y-auto scrollbar-thin">
-        {activities.map((activity, index) => {
-          const meta = getActivityMeta(activity.type);
-          return (
-            <motion.div
-              key={activity.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.05 * index }}
-              className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
-            >
-              <div className={`flex items-center justify-center size-8 rounded-lg shrink-0 ${meta.bgColor}`}>
-                {meta.icon}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-700 dark:text-gray-300 truncate">
-                  {meta.description(activity.formTitle)}
-                </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                  {formatRelativeTime(activity.createdAt)}
-                </p>
-              </div>
-            </motion.div>
-          );
-        })}
+      <div className="relative max-h-80 overflow-y-auto scrollbar-thin">
+        {/* Timeline connector line */}
+        <div className="absolute top-0 bottom-0 right-[26px] w-px bg-gradient-to-b from-violet-200 via-purple-200 to-transparent dark:from-violet-800 dark:via-purple-800 dark:to-transparent" />
+        <div className="divide-y divide-gray-50 dark:divide-gray-800/50">
+          {activities.map((activity, index) => {
+            const meta = getActivityMeta(activity.type);
+            return (
+              <motion.div
+                key={activity.id}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 * index }}
+                className="relative flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+              >
+                {/* Timeline dot */}
+                <div className={`relative z-10 flex items-center justify-center size-[22px] rounded-full shrink-0 ring-3 ring-white dark:ring-gray-900 ${meta.bgColor}`}>
+                  <div className="flex items-center justify-center">
+                    {meta.icon}
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                    {meta.description(activity.formTitle)}
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                    {formatRelativeTime(activity.createdAt)}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </motion.div>
   );
@@ -1162,12 +1211,16 @@ function FormCard({
       <Card className={`overflow-hidden transition-all duration-300 group relative bg-white dark:bg-gray-900 ${
         selected
           ? 'border-violet-400 dark:border-violet-600 ring-2 ring-violet-200 dark:ring-violet-800 shadow-lg shadow-violet-100/50 dark:shadow-violet-900/30'
-          : 'border-gray-200 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg'
+          : 'border-gray-200 dark:border-gray-800 hover:shadow-xl'
       }`}>
+        {/* Gradient right border on hover (RTL: right side) */}
+        {!selectMode && (
+          <div className="absolute top-0 right-0 bottom-0 w-[3px] bg-gradient-to-b from-violet-400 via-purple-500 to-fuchsia-500 rounded-l-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+        )}
         {/* Shimmer hover effect */}
         {!selectMode && (
           <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-xl">
-            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
           </div>
         )}
         {/* Status color top stripe */}
@@ -1192,7 +1245,7 @@ function FormCard({
                     )}
                   </motion.button>
                 )}
-                <CardTitle className="text-base font-bold text-gray-900 dark:text-white truncate">
+                <CardTitle className="text-base font-extrabold text-gray-900 dark:text-white truncate">
                   {form.title}
                 </CardTitle>
                 {/* Question count badge */}
@@ -1211,13 +1264,13 @@ function FormCard({
                 )}
               </div>
               {form.description && (
-                <CardDescription className="mt-1 line-clamp-2 text-sm dark:text-gray-400">
+                <CardDescription className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
                   {form.description}
                 </CardDescription>
               )}
             </div>
-            <Badge variant="outline" className={`shrink-0 text-xs ${status.color}`}>
-              {status.icon}
+            <Badge variant="outline" className={`shrink-0 text-xs flex items-center gap-1.5 ${status.color}`}>
+              <span className={`size-2 rounded-full ${form.status === 'published' ? 'bg-emerald-500' : form.status === 'closed' ? 'bg-red-500' : 'bg-gray-400'}`} />
               {status.label}
             </Badge>
           </div>
@@ -1295,7 +1348,7 @@ function FormCard({
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="rounded-lg px-2">
+                  <Button variant="outline" size="sm" className="rounded-lg px-2 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:border-violet-200 dark:hover:border-violet-800 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                     <MoreHorizontal className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -1647,32 +1700,40 @@ export default function Dashboard() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <StatCard
-            icon={<FileText className="size-6 text-violet-600 dark:text-violet-400" />}
+            icon={<FileText className="size-5 text-violet-600 dark:text-violet-400" />}
             label="کل فرم‌ها"
             value={forms.length}
             color="bg-violet-100"
             colorDark="dark:bg-violet-900/30"
+            sparkTrend="up"
+            sparkColor="#8b5cf6"
           />
           <StatCard
-            icon={<Send className="size-6 text-emerald-600 dark:text-emerald-400" />}
+            icon={<Send className="size-5 text-emerald-600 dark:text-emerald-400" />}
             label="کل پاسخ‌ها"
             value={totalSubmissions}
             color="bg-emerald-100"
             colorDark="dark:bg-emerald-900/30"
+            sparkTrend="up"
+            sparkColor="#10b981"
           />
           <StatCard
-            icon={<Eye className="size-6 text-fuchsia-600 dark:text-fuchsia-400" />}
+            icon={<Eye className="size-5 text-fuchsia-600 dark:text-fuchsia-400" />}
             label="کل بازدیدها"
             value={totalViews}
             color="bg-fuchsia-100"
             colorDark="dark:bg-fuchsia-900/30"
+            sparkTrend="up"
+            sparkColor="#d946ef"
           />
           <StatCard
-            icon={<CircleDot className="size-6 text-purple-600 dark:text-purple-400" />}
+            icon={<CircleDot className="size-5 text-purple-600 dark:text-purple-400" />}
             label="فرم‌های منتشر شده"
             value={publishedForms}
             color="bg-purple-100"
             colorDark="dark:bg-purple-900/30"
+            sparkTrend="up"
+            sparkColor="#9333ea"
           />
         </div>
 
@@ -1738,12 +1799,12 @@ export default function Dashboard() {
             className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6"
           >
             <div className="relative flex-1 w-full">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
               <Input
                 placeholder="جستجو در فرم‌ها..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-violet-300 focus:ring-violet-100 text-gray-900 dark:text-white"
+                className="pr-11 h-11 rounded-full border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/80 text-gray-900 dark:text-white transition-all duration-300 focus-visible:border-violet-400 focus-visible:ring-2 focus-visible:ring-violet-200/50 dark:focus-visible:border-violet-600 dark:focus-visible:ring-violet-800/50 shadow-sm focus-visible:shadow-violet-100/50 dark:focus-visible:shadow-violet-900/20"
               />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>

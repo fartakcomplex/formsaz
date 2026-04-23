@@ -16,6 +16,7 @@ import {
   Menu,
   Settings,
   Loader2,
+  Plus,
 } from 'lucide-react';
 import {
   ResizablePanelGroup,
@@ -36,6 +37,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
 import QuestionTypes from './question-types';
@@ -46,7 +48,7 @@ import KeyboardShortcutsDialog from './keyboard-shortcuts-dialog';
 import { toast } from 'sonner';
 
 export default function FormBuilder() {
-  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView, canUndo, canRedo, undo, redo, removeQuestion, setSelectedQuestionId } = useAppStore();
+  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView, canUndo, canRedo, undo, redo, addQuestion, removeQuestion, setSelectedQuestionId } = useAppStore();
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [mobileLeftOpen, setMobileLeftOpen] = useState(false);
@@ -56,6 +58,7 @@ export default function FormBuilder() {
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [formTitle, setFormTitle] = useState(currentForm?.title || 'فرم بدون عنوان');
   const [formDescription, setFormDescription] = useState(currentForm?.description || '');
+  const [showFab, setShowFab] = useState(false);
   const hasUnsavedChanges = useRef(false);
 
   const handleSave = useCallback(async (isAutoSave = false) => {
@@ -124,6 +127,12 @@ export default function FormBuilder() {
     }, 30000);
     return () => clearInterval(interval);
   }, [handleSave, questions.length]);
+
+  // Show FAB after a short delay
+  useEffect(() => {
+    const timer = setTimeout(() => setShowFab(true), 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handlePublish = async () => {
     if (questions.length === 0) {
@@ -194,6 +203,18 @@ export default function FormBuilder() {
     };
     setFillForm(previewForm);
     setCurrentView('fill');
+  };
+
+  const handleAddQuickQuestion = () => {
+    const newQuestion = {
+      id: crypto.randomUUID(),
+      type: 'short_text',
+      title: 'سؤال متنی کوتاه',
+      required: false,
+      order: questions.length,
+      config: { placeholder: '' },
+    };
+    addQuestion(newQuestion);
   };
 
   // Keyboard shortcuts
@@ -472,7 +493,7 @@ export default function FormBuilder() {
       </header>
 
       {/* ============ MAIN CONTENT ============ */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
         {/* Desktop layout */}
         <div className="hidden sm:block h-full">
           <ResizablePanelGroup direction="horizontal" className="h-full">
@@ -489,30 +510,60 @@ export default function FormBuilder() {
             >
               <div
                 className={cn(
-                  'h-full border-l transition-all dark:border-zinc-800',
-                  leftCollapsed ? 'w-full' : 'w-full',
-                  'bg-gradient-to-b from-violet-50 via-white to-purple-50 dark:from-violet-950/20 dark:via-zinc-950 dark:to-purple-950/20'
+                  'h-full transition-all',
+                  'bg-gradient-to-b from-violet-50/80 via-purple-50/40 to-fuchsia-50/60 dark:from-violet-950/30 dark:via-purple-950/15 dark:to-fuchsia-950/20',
+                  'border-l dark:border-violet-500/10'
                 )}
               >
                 <QuestionTypes collapsed={leftCollapsed} />
               </div>
             </ResizablePanel>
 
-            <ResizableHandle withHandle />
+            {/* Enhanced gradient resize handle */}
+            <ResizableHandle className="w-px bg-gradient-to-b from-transparent via-violet-300/60 to-transparent dark:via-violet-700/40 hover:via-violet-400/80 dark:hover:via-violet-500/60 transition-all duration-300" />
 
             {/* Center Panel - Form Preview */}
             <ResizablePanel defaultSize={56} minSize={40}>
-              <div className="h-full bg-muted/30">
+              <div className="h-full bg-muted/30 relative">
                 <FormPreview
                   formTitle={formTitle}
                   formDescription={formDescription}
                   formTheme={formTheme}
                   onDescriptionChange={setFormDescription}
                 />
+
+                {/* FAB - سؤال جدید + */}
+                <AnimatePresence>
+                  {showFab && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0, y: 20 }}
+                      transition={{ delay: 0.3, type: 'spring', stiffness: 260, damping: 20 }}
+                      className="absolute bottom-6 left-6 z-10"
+                    >
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <motion.button
+                            whileHover={{ scale: 1.08 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={handleAddQuickQuestion}
+                            className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-l from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-300/40 dark:shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-400/40 transition-shadow duration-300 breathing-glow"
+                          >
+                            <Plus className="size-5" />
+                            <span className="text-sm font-medium">سؤال جدید</span>
+                          </motion.button>
+                        </TooltipTrigger>
+                        <TooltipContent>افزودن سؤال متنی کوتاه</TooltipContent>
+                      </Tooltip>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </ResizablePanel>
 
-            <ResizableHandle withHandle />
+            {/* Enhanced gradient resize handle */}
+            <ResizableHandle className="w-px bg-gradient-to-b from-transparent via-violet-300/60 to-transparent dark:via-violet-700/40 hover:via-violet-400/80 dark:hover:via-violet-500/60 transition-all duration-300" />
 
             {/* Right Panel - Properties */}
             <ResizablePanel
@@ -533,13 +584,36 @@ export default function FormBuilder() {
         </div>
 
         {/* Mobile layout */}
-        <div className="sm:hidden h-full">
+        <div className="sm:hidden h-full relative">
           <FormPreview
             formTitle={formTitle}
             formDescription={formDescription}
             formTheme={formTheme}
             onDescriptionChange={setFormDescription}
           />
+
+          {/* Mobile FAB */}
+          <AnimatePresence>
+            {showFab && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ delay: 0.5, type: 'spring', stiffness: 260, damping: 20 }}
+                className="absolute bottom-5 left-5 z-10"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleAddQuickQuestion}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-l from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-300/40 dark:shadow-violet-500/25"
+                >
+                  <Plus className="size-5" />
+                  <span className="text-sm font-medium">سؤال جدید</span>
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 

@@ -1244,3 +1244,162 @@ Unresolved Issues / Recommendations for Next Phase:
 9. User Panel: Two-factor authentication
 10. Rate limiting on form submissions
 11. Form builder: Multi-page/section support (page_break question type)
+
+---
+Task ID: 12
+Agent: main
+Task: QA testing, styling improvements, notification bell, multi-page sections, PDF export
+
+Work Log:
+- QA testing via agent-browser across all views:
+  - Landing page: All sections rendering, back-to-top button, 0 JS errors
+  - Dashboard: Notification bell with badge counter, form cards, stats, search, filter, sort
+  - Admin Panel: Sidebar navigation, stats, user management, forms management
+  - User Panel: Profile, My Forms, Activity, Notifications, Settings, Subscription
+  - Template Gallery: 100 templates, categories, search, favorites, sort
+  - Dark mode toggle working across all components
+- ESLint: 0 errors, 0 warnings (clean pass)
+- Build: 19 routes compiled successfully (22 total including 3 new)
+
+Feature 1: Enhanced globals.css:
+  - Page transition overlay animation keyframes
+  - Breathing glow effect for focused elements (.breathing-glow)
+  - Tooltip glassmorphism styling with blur + saturation
+  - Grid pattern utility classes (.bg-grid-pattern, .bg-grid-pattern-sm)
+  - Gradient badge/pill classes (.badge-gradient-violet, .badge-gradient-fuchsia, .badge-gradient-emerald, .badge-gradient-amber, .badge-glass)
+  - Typing cursor blink animation (.input-cursor-blink)
+  - Card tilt perspective hover effect (.card-tilt-wrapper, .card-tilt)
+  - Enhanced focus-visible ring (thicker 2.5px, wider 3px offset)
+  - Animated gradient text utility (.text-gradient-animated)
+  - Loading dots animation (.loading-dots, .loading-dots-dot)
+
+Feature 2: App Header Notification Bell:
+  - New NotificationBell component with animated bell button
+  - Gradient badge counter showing notification count (Persian numerals)
+  - Popover dropdown with glassmorphism styling showing "بدون اعلان جدید" empty state
+  - Placed between ThemeToggle and user avatar in header
+- App Header Mobile Menu Redesign:
+  - Gradient header with logo and description
+  - Staggered entrance animations on nav items
+  - Icon containers with proper alignment
+  - Active nav item gets gradient bar + violet background
+  - "فرم جدید" gradient button at bottom
+- App Header Active Nav Indicator:
+  - Animated gradient underline using layoutId
+  - Spring physics transition between active items
+- App Header Logo:
+  - Animated gradient text using .text-gradient-animated class
+
+Feature 3: Form Builder Enhancements:
+  - Gradient sidebar background (violet-50/80 via purple-50/40 to fuchsia-50/60)
+  - Dark mode sidebar variant (violet-950/30 via purple-950/15 to fuchsia-950/20)
+  - Subtle left border on sidebar
+  - Gradient resize handles (violet gradient on both handles)
+  - Hover state on resize handles with brighter gradient
+  - Floating Action Button "سؤال جدید +" at bottom-left of form preview:
+    - Appears after 600ms delay with spring animation
+    - Gradient background with elevated shadow
+    - Breathing glow pulsing effect
+    - Desktop version has label text, mobile version compact
+    - Adds short_text question on click
+
+Feature 4: Multi-Page Section Support in Form Fill:
+  - section_divider question type now acts as page break in form fill
+  - Questions split into sections based on section_divider type
+  - section_divider questions hidden from user, their title shown as section header
+  - Section description shown as subtitle when provided
+  - "بخش X از Y" (Section X of Y) progress indicator
+  - Section breadcrumbs with clickable navigation
+  - Global question numbering across sections (not reset per section)
+  - Progress bar reflects all questions across all sections
+  - Fixed error navigation to jump to correct section
+  - Page dots show sections in multi-page mode
+  - Framer Motion animations for section transitions
+  - Empty section handling ("این بخش خالی است")
+  - When no section_dividers exist, original behavior preserved exactly
+
+Feature 5: Results PDF Export:
+  - Created /api/export/pdf/route.ts API endpoint:
+    - GET handler accepts ?formId= query parameter
+    - Fetches form, questions, submissions from Prisma database
+    - Generates standalone HTML page with:
+      - RTL direction, Persian language, Vazirmatn font
+      - Professional report header with title, description, stats, date range
+      - Per-question analysis sections with typed visualizations
+      - Choice questions: colored horizontal bar charts with percentages
+      - Yes/No: green/red card layout
+      - Rating: amber average + star distribution
+      - Scale: purple average + bar chart
+      - Text: numbered list of responses
+      - Page breaks between questions
+      - Print-optimized CSS with @media print rules
+    - Returns Content-Type: text/html; charset=utf-8
+  - Added "خروجی PDF" button in results-view.tsx toolbar:
+    - FileDown icon from lucide-react
+    - Opens HTML report in new tab for printing/saving as PDF
+    - Disabled when no submissions exist
+
+Stage Summary:
+- Files created: src/app/api/export/pdf/route.ts
+- Files modified: globals.css (10 new CSS features), app-header.tsx (notification bell, mobile menu, active nav indicator), form-builder.tsx (gradient sidebar, resize handles, floating action button), form-fill.tsx (multi-page sections with 3 bug fixes), results-view.tsx (PDF export button)
+- 5 major features implemented: Global CSS enhancements, Notification bell, Builder FAB, Multi-page sections, PDF export
+- 3 bugs fixed in form-fill.tsx: question numbering across sections, error navigation to correct section, page dots for section mode
+- Clean ESLint: 0 errors, 0 warnings
+- Build: 22 routes compiled successfully
+
+---
+Current Project Status Assessment:
+- Application is fully functional with no JS errors across all views
+- 8 views: Landing, Dashboard, Builder, Form Fill, Results, Templates, Admin Panel, User Panel
+- 17 question types with section_divider for multi-page support
+- Multi-page form sections with breadcrumbs, section headers, and progress tracking
+- Results PDF export via dedicated API endpoint
+- Notification bell with popover in app header
+- Animated gradient logo and active nav indicator
+- Floating action button in form builder for quick question adding
+- Enhanced global CSS with 10 new utility classes and animations
+- Template gallery: 100 templates, categories, search, favorites, sort, preview
+- Dark mode toggle across all components
+- Drag-and-drop, undo/redo, keyboard shortcuts, conditional logic
+- File upload with backend, QR code generation, form sharing
+- Clean ESLint - no warnings or errors
+- Dev server compiles without errors
+
+Completed in This Session:
+1. ✅ Enhanced globals.css with 10 new CSS features (animations, utilities, effects)
+2. ✅ Notification bell with popover dropdown in app header
+3. ✅ Mobile hamburger menu redesign with gradient header
+4. ✅ Active nav indicator with animated gradient underline
+5. ✅ Animated gradient logo text
+6. ✅ Form builder gradient sidebar background
+7. ✅ Gradient resize handles on builder panels
+8. ✅ Floating action button "سؤال جدید +" in form builder
+9. ✅ Multi-page section support in form fill (section_divider as page break)
+10. ✅ Section breadcrumbs and progress indicator ("بخش X از Y")
+11. ✅ Global question numbering across sections
+12. ✅ Fixed 3 form-fill bugs (numbering, error nav, page dots)
+13. ✅ Results PDF export API endpoint
+14. ✅ "خروجی PDF" button in results view toolbar
+15. ✅ QA testing across all views - 0 JS errors
+
+Unresolved Issues / Recommendations for Next Phase:
+1. ~~Image choice question type~~ ✅ DONE
+2. ~~Matrix question type~~ ✅ DONE
+3. ~~Batch delete/select multiple forms~~ ✅ DONE
+4. ~~Form expiration/closing date feature~~ ✅ DONE
+5. ~~Form logic evaluated during form fill~~ ✅ DONE
+6. ~~Undo/redo functionality~~ ✅ DONE
+7. ~~QR code generation~~ ✅ DONE
+8. ~~Form analytics export to PDF~~ ✅ DONE
+9. ~~Multi-page section support~~ ✅ DONE
+10. File upload backend works but no cloud storage integration
+11. Email notifications on form submission (backend ready, needs email service)
+12. Real-time collaborative editing (websocket)
+13. Multi-language support (currently Persian only)
+14. Custom domain/branding for published forms
+15. Admin Panel: Email configuration (SMTP) testing needed
+16. Admin Panel: Maintenance mode implementation
+17. User Panel: Two-factor authentication
+18. Rate limiting on form submissions
+19. Form analytics export to actual PDF file (currently HTML for printing)
+20. Form builder: Import questions from other forms

@@ -17,6 +17,7 @@ import {
   Eye,
   Activity,
   FileSpreadsheet,
+  FileDown,
 } from 'lucide-react';
 import {
   BarChart,
@@ -1199,6 +1200,16 @@ export default function ResultsView() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(`/api/export/pdf?formId=${currentForm.id}`, '_blank')}
+              className="rounded-xl border-gray-200 dark:border-gray-700 hover:bg-violet-50 hover:border-violet-200 dark:hover:bg-violet-950/30 dark:hover:border-violet-800 transition-colors duration-200"
+              disabled={submissions.length === 0}
+            >
+              <FileDown className="size-4 ml-2" />
+              خروجی PDF
+            </Button>
             <Button
               variant="outline"
               size="sm"

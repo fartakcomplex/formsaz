@@ -14,7 +14,8 @@ import {
   Sun,
   Moon,
   Shield,
-  Settings,
+  Bell,
+  Plus,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +24,11 @@ import {
   SheetTrigger,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { useAppStore, type ViewType } from '@/lib/store';
 
 const navItems: Record<string, { label: string; icon: React.ReactNode; view?: ViewType }[]> = {
@@ -105,6 +111,55 @@ function ThemeToggle() {
   );
 }
 
+function NotificationBell() {
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <div className="size-9 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse" />
+    );
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="relative flex size-9 items-center justify-center rounded-full bg-gray-100 hover:bg-violet-100 dark:bg-gray-800 dark:hover:bg-violet-900/40 transition-colors duration-200"
+          title="اعلان‌ها"
+        >
+          <Bell className="size-[18px] text-gray-600 dark:text-gray-400" />
+          <span className="absolute -top-0.5 -left-0.5 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-[9px] font-bold text-white shadow-sm">
+            ۰
+          </span>
+        </motion.button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        sideOffset={8}
+        className="w-72 glass rounded-xl border border-violet-200/30 dark:border-violet-500/20 p-0 overflow-hidden"
+      >
+        {/* Header with gradient */}
+        <div className="bg-gradient-to-l from-violet-500 to-purple-600 px-4 py-3">
+          <h3 className="text-sm font-bold text-white">اعلان‌ها</h3>
+        </div>
+        {/* Empty state */}
+        <div className="flex flex-col items-center justify-center py-8 px-4">
+          <div className="flex size-12 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/30 mb-3">
+            <Bell className="size-6 text-violet-500 dark:text-violet-400" />
+          </div>
+          <p className="text-sm text-muted-foreground text-center">
+            بدون اعلان جدید
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export default function AppHeader() {
   const { currentView, previousView, setCurrentView, currentForm } = useAppStore();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -140,6 +195,15 @@ export default function AppHeader() {
       setCurrentView(view);
       setMobileOpen(false);
     }
+  };
+
+  const isActiveNav = (view?: ViewType) => {
+    if (!view) return false;
+    if (view === 'dashboard' && currentView === 'dashboard') return true;
+    if (view === 'templates' && currentView === 'templates') return true;
+    if (view === 'admin' && currentView === 'admin') return true;
+    if (view === 'user-panel' && currentView === 'user-panel') return true;
+    return false;
   };
 
   return (
@@ -190,7 +254,7 @@ export default function AppHeader() {
             <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 group-hover:shadow-lg group-hover:shadow-violet-300/50 transition-all duration-300 group-hover:scale-105">
               <FileText className="size-5 text-white" />
             </div>
-            <span className="text-lg font-extrabold hidden sm:block bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
+            <span className="text-lg font-extrabold hidden sm:block text-gradient-animated">
               فرم‌ساز
             </span>
           </button>
@@ -199,26 +263,44 @@ export default function AppHeader() {
         {/* Center: Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
           <AnimatePresence mode="wait">
-            {items.map((item) => (
-              <motion.button
-                key={item.label}
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.15 }}
-                onClick={() => handleNavClick(item.view)}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors duration-200"
-              >
-                {item.icon}
-                {item.label}
-              </motion.button>
-            ))}
+            {items.map((item) => {
+              const active = isActiveNav(item.view);
+              return (
+                <motion.button
+                  key={item.label}
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.15 }}
+                  onClick={() => handleNavClick(item.view)}
+                  className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors duration-200"
+                >
+                  {item.icon}
+                  {item.label}
+                  {/* Active indicator gradient line */}
+                  {active && (
+                    <motion.div
+                      layoutId="active-nav-indicator"
+                      className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full"
+                      style={{
+                        background: 'linear-gradient(90deg, oklch(0.55 0.24 270), oklch(0.65 0.22 310), oklch(0.55 0.24 270))',
+                        backgroundSize: '200% 100%',
+                        animation: 'text-gradient-flow 3s ease infinite',
+                      }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                </motion.button>
+              );
+            })}
           </AnimatePresence>
         </nav>
 
-        {/* Left side: Theme toggle + Auth/User + Mobile menu */}
+        {/* Left side: Theme toggle + Notifications + Auth/User + Mobile menu */}
         <div className="flex items-center gap-2">
           <ThemeToggle />
+
+          {showUserAvatar && <NotificationBell />}
 
           {showAuthButton && (
             <motion.div
@@ -255,23 +337,86 @@ export default function AppHeader() {
           <div className="md:hidden">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-400">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-600 dark:text-gray-400 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-900/30"
+                >
                   <Menu className="size-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72">
+              <SheetContent side="left" className="w-72 p-0 overflow-hidden">
                 <SheetTitle className="sr-only">منوی ناوبری</SheetTitle>
-                <div className="flex flex-col gap-1 mt-8">
-                  {items.map((item) => (
-                    <button
-                      key={item.label}
-                      onClick={() => handleNavClick(item.view)}
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-violet-900/30 hover:text-violet-700 dark:hover:text-violet-300 transition-colors duration-200"
+                {/* Gradient header */}
+                <div className="bg-gradient-to-bl from-violet-500 via-purple-500 to-fuchsia-600 px-5 pt-8 pb-6">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex size-9 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                      <FileText className="size-5 text-white" />
+                    </div>
+                    <span className="text-lg font-extrabold text-white">فرم‌ساز</span>
+                  </div>
+                </div>
+                {/* Nav items */}
+                <div className="flex flex-col gap-0.5 p-3">
+                  {items.map((item, idx) => {
+                    const active = isActiveNav(item.view);
+                    return (
+                      <motion.button
+                        key={item.label}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                        onClick={() => handleNavClick(item.view)}
+                        className={`relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
+                          active
+                            ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300'
+                        }`}
+                      >
+                        {/* Icon container for better alignment */}
+                        <div className={`flex size-8 items-center justify-center rounded-lg shrink-0 ${
+                          active
+                            ? 'bg-violet-200/60 dark:bg-violet-800/40'
+                            : 'bg-gray-100 dark:bg-gray-800'
+                        }`}>
+                          {item.icon}
+                        </div>
+                        {item.label}
+                        {/* Active gradient bar */}
+                        {active && (
+                          <div
+                            className="absolute right-0 top-2 bottom-2 w-1 rounded-full"
+                            style={{
+                              background: 'linear-gradient(180deg, oklch(0.55 0.24 270), oklch(0.65 0.22 310))',
+                            }}
+                          />
+                        )}
+                      </motion.button>
+                    );
+                  })}
+
+                  {/* Create new form button in mobile menu */}
+                  {currentView !== 'landing' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: items.length * 0.05 + 0.1 }}
+                      className="mt-2 pt-2 border-t border-gray-200/60 dark:border-gray-800/60"
                     >
-                      {item.icon}
-                      {item.label}
-                    </button>
-                  ))}
+                      <button
+                        onClick={() => {
+                          setCurrentView('builder');
+                          setMobileOpen(false);
+                        }}
+                        className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium bg-gradient-to-l from-violet-500 to-purple-600 text-white hover:from-violet-600 hover:to-purple-700 transition-all duration-200 shadow-sm shadow-violet-200/50 dark:shadow-violet-500/20"
+                      >
+                        <div className="flex size-8 items-center justify-center rounded-lg bg-white/20 shrink-0">
+                          <Plus className="size-4" />
+                        </div>
+                        فرم جدید
+                      </button>
+                    </motion.div>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>

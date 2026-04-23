@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -56,6 +56,7 @@ import {
   CircleDot,
   Rocket,
   Send,
+  ArrowUp,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -391,8 +392,22 @@ function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background decorations */}
       <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/80 via-violet-50/50 to-white dark:from-indigo-950/50 dark:via-violet-950/30 dark:to-gray-950" />
-      <div className="absolute top-20 right-[10%] w-72 h-72 bg-indigo-300/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-[10%] w-96 h-96 bg-violet-300/20 rounded-full blur-3xl" />
+      {/* Animated gradient mesh blobs */}
+      <motion.div
+        className="absolute top-[10%] right-[8%] w-80 h-80 bg-indigo-300/25 dark:bg-indigo-600/15 rounded-full blur-3xl"
+        animate={{ x: [0, 30, -20, 0], y: [0, -20, 15, 0], scale: [1, 1.1, 0.95, 1] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute bottom-[15%] left-[5%] w-96 h-96 bg-violet-300/25 dark:bg-violet-600/15 rounded-full blur-3xl"
+        animate={{ x: [0, -25, 20, 0], y: [0, 15, -25, 0], scale: [1, 0.95, 1.1, 1] }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+      />
+      <motion.div
+        className="absolute top-[40%] left-[40%] w-64 h-64 bg-fuchsia-200/20 dark:bg-fuchsia-600/10 rounded-full blur-3xl"
+        animate={{ x: [0, 15, -30, 0], y: [0, -30, 20, 0], scale: [1, 1.15, 0.9, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+      />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-indigo-200/10 to-violet-200/10 rounded-full blur-3xl" />
 
       {/* Floating particles */}
@@ -442,7 +457,7 @@ function HeroSection() {
         >
           <span className="text-gray-900 dark:text-white">فرم‌ساز آنلاین</span>
           <br />
-          <span className="bg-gradient-to-l from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-l from-indigo-600 via-violet-500 to-fuchsia-500 dark:from-indigo-400 dark:via-violet-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
             حرفه‌ای و هوشمند
           </span>
         </motion.h1>
@@ -511,15 +526,17 @@ function HeroSection() {
           <div className="relative mx-auto max-w-4xl">
             {/* Animated glow behind */}
             <motion.div
-              className="absolute -inset-6 bg-gradient-to-r from-indigo-500/20 via-violet-500/25 to-purple-500/20 rounded-3xl blur-2xl"
-              animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.02, 1] }}
+              className="absolute -inset-8 bg-gradient-to-r from-indigo-500/25 via-violet-500/30 to-purple-500/25 rounded-3xl blur-3xl"
+              animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.03, 1] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             />
 
+            {/* Subtle reflection below mockup */}
+            <div className="absolute -bottom-12 left-[5%] right-[5%] h-20 bg-gradient-to-b from-gray-300/20 via-gray-300/5 to-transparent rounded-full blur-2xl dark:from-gray-600/10" />
             {/* Main browser mockup with 3D tilt */}
             <motion.div
-              className="relative rounded-2xl border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-gray-900 shadow-2xl shadow-indigo-500/10 dark:shadow-indigo-950/30 overflow-hidden"
-              whileHover={{ rotateY: -2, rotateX: 1 }}
+              className="relative rounded-2xl border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-gray-900 shadow-2xl shadow-indigo-500/15 dark:shadow-indigo-950/40 overflow-hidden"
+              whileHover={{ rotateY: -2, rotateX: 1, y: -4 }}
               transition={{ type: 'spring', stiffness: 200, damping: 20 }}
               style={{ transformStyle: 'preserve-3d' }}
             >
@@ -708,7 +725,12 @@ function FeaturesSection() {
 
   return (
     <section id="features" className="relative py-24 sm:py-32 bg-white dark:bg-gray-950">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Dot grid background pattern */}
+      <div className="absolute inset-0 opacity-[0.025]" style={{
+        backgroundImage: 'radial-gradient(circle, #8b5cf6 1px, transparent 1px)',
+        backgroundSize: '28px 28px',
+      }} />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <FadeInSection className="text-center mb-16 sm:mb-20">
           <Badge
@@ -730,6 +752,8 @@ function FeaturesSection() {
           {features.map((feature, i) => (
             <motion.div key={i} variants={staggerChild}>
               <Card className="group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-default overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                {/* Animated gradient top border (2px) */}
+                <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-l ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                 {/* Animated gradient border on hover */}
                 <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${feature.gradient} p-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500`}>
                   <div className="w-full h-full rounded-[10px] bg-white dark:bg-gray-900" />
@@ -741,7 +765,7 @@ function FeaturesSection() {
                 <CardContent className="p-6 relative z-10">
                   {/* Animated icon container */}
                   <div
-                    className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
+                    className={`relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
                   >
                     <feature.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
                   </div>
@@ -915,26 +939,40 @@ function HowItWorksSection() {
 
         {/* Steps */}
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {/* Connector line (desktop only) */}
-          <div className="hidden md:block absolute top-20 right-[16%] left-[16%] h-0.5 bg-gradient-to-l from-indigo-200 via-violet-200 to-purple-200" />
+          {/* Connector line (desktop only) with animated gradient */}
+          <div className="hidden md:block absolute top-[52px] right-[16%] left-[16%] h-[2px]">
+            <div className="h-full bg-gradient-to-l from-indigo-400 via-violet-400 to-purple-400 rounded-full opacity-60" />
+            <motion.div
+              className="h-full bg-gradient-to-l from-white via-violet-300 to-transparent rounded-full"
+              initial={{ x: '100%' }}
+              animate={{ x: '-100%' }}
+              transition={{ duration: 3, repeat: Infinity, repeatDelay: 1, ease: 'linear' }}
+            />
+          </div>
 
           {steps.map((step, i) => (
             <FadeInSection key={i} delay={i * 0.15} className="relative">
               <div className="text-center">
                 {/* Step number circle */}
                 <div className="relative mx-auto mb-6">
-                  <div
-                    className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${step.gradient} shadow-xl shadow-indigo-500/20`}
+                  <motion.div
+                    whileHover={{ y: -4, scale: 1.08 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className="inline-block"
                   >
-                    <step.icon className="h-7 w-7 text-white" />
-                  </div>
-                  <div className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full bg-white shadow-md border border-gray-100">
-                    <span className="text-xs font-extrabold text-indigo-600">{step.number}</span>
+                    <div
+                      className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${step.gradient} shadow-xl shadow-indigo-500/20 transition-shadow duration-300 hover:shadow-2xl hover:shadow-indigo-500/30`}
+                    >
+                      <step.icon className="h-7 w-7 text-white" />
+                    </div>
+                  </motion.div>
+                  <div className="absolute -top-2 -left-2 flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-900 shadow-md border border-gray-200 dark:border-gray-700">
+                    <span className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">{step.number}</span>
                   </div>
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed max-w-xs mx-auto">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{step.title}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
                   {step.description}
                 </p>
               </div>
@@ -1042,22 +1080,29 @@ function TestimonialsSection() {
               className="snap-start min-w-[300px] md:min-w-0"
             >
               <Card className="group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:shadow-xl hover:shadow-indigo-500/[0.06] transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-                <CardContent className="p-6">
+                {/* Gradient border on hover */}
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-200 via-violet-200 to-purple-200 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="w-full h-full rounded-[11px] bg-white dark:bg-gray-900" />
+                </div>
+                <CardContent className="p-6 relative z-10">
                   {/* Quote icon */}
                   <div className="mb-4">
                     <Quote className="h-8 w-8 text-indigo-200 dark:text-indigo-800" />
                   </div>
 
-                  {/* Star rating */}
+                  {/* Star rating with amber gradient */}
                   <div className="flex gap-0.5 mb-4" dir="ltr">
                     {Array.from({ length: 5 }).map((_, starIdx) => (
                       <Star
                         key={starIdx}
-                        className={`h-4 w-4 ${
+                        className={`h-4 w-4 transition-all duration-200 ${
                           starIdx < testimonial.rating
-                            ? 'text-yellow-400 fill-yellow-400'
+                            ? 'text-amber-400 fill-amber-400'
                             : 'text-gray-200 dark:text-gray-700'
                         }`}
+                        style={starIdx < testimonial.rating ? {
+                          filter: 'drop-shadow(0 0 2px rgba(251, 191, 36, 0.4))'
+                        } : undefined}
                       />
                     ))}
                   </div>
@@ -1092,6 +1137,18 @@ function TestimonialsSection() {
             </motion.div>
           ))}
         </StaggerContainer>
+
+        {/* Subtle scroll indicator for mobile */}
+        <FadeInSection delay={0.5} className="md:hidden flex justify-center mt-6">
+          <motion.div
+            animate={{ x: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            className="flex items-center gap-2 text-gray-400 text-xs"
+          >
+            <span>اسکرول کنید</span>
+            <ChevronDown className="size-4" />
+          </motion.div>
+        </FadeInSection>
       </div>
     </section>
   );
@@ -1600,12 +1657,12 @@ function CTASection() {
       {/* Floating geometric shapes */}
       <motion.div
         className="absolute top-[15%] right-[8%] w-16 h-16 border-2 border-white/20 rounded-xl"
-        animate={{ y: [0, -25, 0], rotate: [0, 45, 0] }}
+        animate={{ y: [0, -25, 0], rotate: [0, 45, 0], scale: [1, 1.1, 1] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute bottom-[20%] left-[10%] w-12 h-12 border-2 border-white/15 rounded-full"
-        animate={{ y: [0, 20, 0], x: [0, 10, 0] }}
+        animate={{ y: [0, 20, 0], x: [0, 10, 0], scale: [1, 1.15, 1] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       />
       <motion.div
@@ -1632,6 +1689,22 @@ function CTASection() {
         className="absolute bottom-[15%] right-[35%] w-4 h-4 bg-pink-300/25 rotate-12"
         animate={{ y: [0, 18, 0], rotate: [12, 72, 12] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+      />
+      {/* Additional varied shapes */}
+      <motion.div
+        className="absolute top-[45%] right-[5%] w-14 h-14 border-2 border-white/10 rounded-full"
+        animate={{ y: [0, -18, 0], x: [0, 12, 0], scale: [1, 0.9, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2.5 }}
+      />
+      <motion.div
+        className="absolute bottom-[40%] left-[25%] w-7 h-7 bg-cyan-300/20 rounded-lg"
+        animate={{ y: [0, -22, 0], rotate: [0, -45, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1.8 }}
+      />
+      <motion.div
+        className="absolute top-[20%] right-[30%] w-3 h-3 bg-amber-300/20 rotate-45"
+        animate={{ y: [0, 10, 0], opacity: [0.2, 0.5, 0.2], rotate: [45, 135, 45] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
       />
 
       {/* Animated glow orbs */}
@@ -1695,7 +1768,7 @@ function CTASection() {
               <Button
                 size="lg"
                 onClick={() => setCurrentView('dashboard')}
-                className="relative w-full sm:w-auto min-w-[220px] h-14 text-base font-bold bg-white text-indigo-600 hover:bg-indigo-50 shadow-xl shadow-black/10 hover:shadow-black/20 hover:-translate-y-0.5 transition-all rounded-xl px-10 group"
+                className="relative w-full sm:w-auto min-w-[220px] h-14 text-base font-bold bg-white text-indigo-600 hover:bg-indigo-50 shadow-2xl shadow-black/15 hover:shadow-black/25 hover:-translate-y-1 transition-all rounded-xl px-10 group"
               >
                 شروع رایگان
                 <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
@@ -1715,6 +1788,14 @@ function CTASection() {
 /* ──────────────────────────── Footer ──────────────────────────── */
 
 function Footer() {
+  const [showBackTop, setShowBackTop] = React.useState(false);
+
+  React.useEffect(() => {
+    const onScroll = () => setShowBackTop(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const socialLinks = [
     {
       name: 'تلگرام',
@@ -1800,9 +1881,9 @@ function Footer() {
           <div>
             <h4 className="text-sm font-semibold text-white mb-4">محصول</h4>
             <ul className="space-y-2.5 text-sm">
-              <li><a href="#features" className="hover:text-white transition-colors">ویژگی‌ها</a></li>
-              <li><a href="#use-cases" className="hover:text-white transition-colors">محیط‌های کاربردی</a></li>
-              <li><a href="#pricing" className="hover:text-white transition-colors">قیمت‌گذاری</a></li>
+              <li><a href="#features" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">ویژگی‌ها</a></li>
+              <li><a href="#use-cases" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">محیط‌های کاربردی</a></li>
+              <li><a href="#pricing" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">قیمت‌گذاری</a></li>
               <li><span className="text-gray-600 cursor-default">الگوهای آماده</span></li>
             </ul>
           </div>
@@ -1843,6 +1924,23 @@ function Footer() {
           </div>
         </div>
       </div>
+
+      {/* Back to top button */}
+      <AnimatePresence>
+        {showBackTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 10 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-6 left-6 z-40 flex items-center justify-center size-11 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-1 transition-all"
+            title="بازگشت به بالا"
+          >
+            <ArrowUp className="size-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </footer>
   );
 }
