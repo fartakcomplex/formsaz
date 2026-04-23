@@ -67,6 +67,10 @@ export interface FormTheme {
   progressStyle?: 'bar' | 'dots' | 'hidden';
   notificationEnabled?: boolean;
   notificationEmail?: string;
+  dailySummary?: boolean;
+  webhookUrl?: string;
+  telegramNotification?: boolean;
+  telegramChatId?: string;
 }
 
 export interface Form {
@@ -83,6 +87,15 @@ export interface Form {
   _count?: {
     submissions: number;
   };
+}
+
+export interface NotificationSettings {
+  enabled: boolean;
+  email: string;
+  dailySummary: boolean;
+  webhookUrl: string;
+  telegramEnabled: boolean;
+  telegramChatId: string;
 }
 
 export interface Submission {

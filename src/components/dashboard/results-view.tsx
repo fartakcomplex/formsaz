@@ -24,6 +24,7 @@ import {
   FileSpreadsheet,
   FileDown,
   Check,
+  Filter,
 } from 'lucide-react';
 import {
   BarChart,
@@ -69,6 +70,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Input } from '@/components/ui/input';
 
 import { useAppStore, type FormQuestion, type Submission } from '@/lib/store';
+import { cn } from '@/lib/utils';
 
 const COLORS = [
   '#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#7c3aed',
@@ -1167,20 +1169,37 @@ function ResponsesDataTable({
   submissions: Submission[];
 }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [showDateFilter, setShowDateFilter] = useState(false);
 
   const filteredSubmissions = useMemo(() => {
-    if (!searchQuery.trim()) return submissions;
-    const query = searchQuery.trim().toLowerCase();
-    return submissions.filter((sub) => {
-      return sub.responses.some((r) => {
-        if (!r.value) return false;
-        const question = questions.find((q) => q.id === r.questionId);
-        if (!question) return false;
-        const displayValue = formatCellDisplay(question, r.value).toLowerCase();
-        return displayValue.includes(query);
+    let result = submissions;
+    if (searchQuery.trim()) {
+      const query = searchQuery.trim().toLowerCase();
+      result = result.filter((sub) => {
+        return sub.responses.some((r) => {
+          if (!r.value) return false;
+          const question = questions.find((q) => q.id === r.questionId);
+          if (!question) return false;
+          const displayValue = formatCellDisplay(question, r.value).toLowerCase();
+          return displayValue.includes(query);
+        });
       });
-    });
-  }, [submissions, searchQuery, questions]);
+    }
+    if (dateFrom) {
+      result = result.filter((sub) => sub.createdAt >= dateFrom);
+    }
+    if (dateTo) {
+      result = result.filter((sub) => sub.createdAt <= dateTo + 'T23:59:59');
+    }
+    return result;
+  }, [submissions, searchQuery, questions, dateFrom, dateTo]);
+
+  const clearDateFilter = () => {
+    setDateFrom('');
+    setDateTo('');
+  };
 
   return (
     <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
@@ -1195,16 +1214,67 @@ function ResponsesDataTable({
               {filteredSubmissions.length} پاسخ
             </CardDescription>
           </div>
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
-            <Input
-              placeholder="جستجو در پاسخ‌ها..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-9 pr-9 pl-3 text-sm rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-              dir="rtl"
-            />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
+              <Input
+                placeholder="جستجو در پاسخ‌ها..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-9 pr-9 pl-3 text-sm rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                dir="rtl"
+              />
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowDateFilter(!showDateFilter)}
+              className={cn(
+                'h-9 gap-1.5 text-xs rounded-lg transition-all duration-200',
+                showDateFilter
+                  ? 'bg-violet-50 border-violet-200 text-violet-700 dark:bg-violet-950/30 dark:border-violet-800 dark:text-violet-400'
+                  : 'text-gray-600 dark:text-gray-400'
+              )}
+            >
+              <Filter className="size-3.5" />
+              فیلتر تاریخ
+            </Button>
           </div>
+          {showDateFilter && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="flex flex-wrap items-center gap-2 mt-2"
+            >
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">از:</span>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="h-8 text-xs rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-2 focus-visible:ring-violet-500/40"
+                />
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">تا:</span>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="h-8 text-xs rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-2 focus-visible:ring-violet-500/40"
+                />
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearDateFilter}
+                className="h-8 text-xs text-gray-500 hover:text-red-500 px-2"
+              >
+                پاک کردن
+              </Button>
+            </motion.div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="p-0">

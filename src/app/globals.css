@@ -1133,6 +1133,347 @@
    TASK DASHBOARD ENHANCEMENT: Card Effects, Glassmorphism, Utilities
    ═══════════════════════════════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TASK 15: Comprehensive Styling Improvements
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── 42. Subtle page background gradient shift ─────────────────────────── */
+@keyframes page-bg-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+   50% {
+    background-position: 100% 50%;
+  }
+}
+
+.page-bg-animated {
+  background: linear-gradient(
+    135deg,
+    oklch(0.98 0.002 270),
+    oklch(0.97 0.005 293),
+    oklch(0.98 0.002 270),
+    oklch(0.975 0.008 310)
+  );
+  background-size: 400% 400%;
+  animation: page-bg-shift 20s ease infinite;
+}
+
+.dark .page-bg-animated {
+  background: linear-gradient(
+    135deg,
+    oklch(0.13 0.005 270),
+    oklch(0.14 0.008 293),
+    oklch(0.13 0.005 270),
+    oklch(0.135 0.010 310)
+  );
+  background-size: 400% 400%;
+}
+
+/* ─── 43. Glass card with stronger blur and border ────────────────────────── */
+.glass-card-strong {
+  background: oklch(1 0 0 / 78%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid oklch(0.88 0.008 270 / 50%);
+  box-shadow: 0 8px 32px -4px oklch(0.55 0.24 270 / 10%),
+              inset 0 1px 0 oklch(1 0 0 / 10%);
+}
+
+.dark .glass-card-strong {
+  background: oklch(0.19 0.005 270 / 78%);
+  border-color: oklch(1 0 0 / 12%);
+  box-shadow: 0 8px 32px -4px oklch(0 0 0 / 35%),
+              inset 0 1px 0 oklch(1 0 0 / 6%);
+}
+
+/* ─── 44. Progress bar shimmer animation ─────────────────────────────────── */
+@keyframes progress-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+.progress-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 35%) 50%,
+    transparent 100%
+  );
+  animation: progress-shimmer 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.dark .progress-shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(1 0 0 / 20%) 50%,
+    transparent 100%
+  );
+}
+
+/* ─── 45. Scrollbar with gradient track ──────────────────────────────────── */
+.scrollbar-gradient-track::-webkit-scrollbar-track {
+  background: linear-gradient(180deg,
+    transparent 0%,
+    oklch(0.55 0.24 270 / 5%) 20%,
+    oklch(0.55 0.24 270 / 10%) 50%,
+    oklch(0.55 0.24 270 / 5%) 80%,
+    transparent 100%
+  );
+  border-radius: 100px;
+}
+
+.dark .scrollbar-gradient-track::-webkit-scrollbar-track {
+  background: linear-gradient(180deg,
+    transparent 0%,
+    oklch(0.55 0.24 270 / 8%) 20%,
+    oklch(0.55 0.24 270 / 15%) 50%,
+    oklch(0.55 0.24 270 / 8%) 80%,
+    transparent 100%
+  );
+}
+
+/* ─── 46. Focus-within styles for form groups ────────────────────────────── */
+.form-group-focus-within:focus-within {
+  border-color: oklch(0.55 0.24 270);
+  box-shadow: 0 0 0 3px oklch(0.55 0.24 270 / 8%),
+              0 0 0 1px oklch(0.55 0.24 270 / 18%);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .form-group-focus-within:focus-within {
+  border-color: oklch(0.65 0.22 270);
+  box-shadow: 0 0 0 3px oklch(0.65 0.22 270 / 12%),
+              0 0 0 1px oklch(0.65 0.22 270 / 22%);
+}
+
+/* ─── 47. Notification bell ring animation ───────────────────────────────── */
+@keyframes bell-ring {
+  0% { transform: rotate(0deg); }
+  8% { transform: rotate(14deg); }
+  16% { transform: rotate(-12deg); }
+  24% { transform: rotate(8deg); }
+  32% { transform: rotate(-4deg); }
+  40%, 100% { transform: rotate(0deg); }
+}
+
+.bell-animate:hover svg,
+.bell-animate:focus svg {
+  animation: bell-ring 0.8s ease-in-out;
+}
+
+/* ─── 48. Scroll fade for sidebar top/bottom ───────────────────────────── */
+.sidebar-scroll-fade {
+  position: relative;
+}
+
+.sidebar-scroll-fade::before,
+.sidebar-scroll-fade::after {
+  content: '';
+  position: sticky;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 32px;
+  pointer-events: none;
+}
+
+.sidebar-scroll-fade::before {
+  top: 0;
+  background: linear-gradient(to bottom, oklch(0.98 0.002 270) 0%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+.sidebar-scroll-fade::after {
+  bottom: 0;
+  background: linear-gradient(to top, oklch(0.98 0.002 270) 0%, transparent 100%);
+  mask-image: linear-gradient(to top, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%);
+}
+
+.dark .sidebar-scroll-fade::before {
+  background: linear-gradient(to bottom, oklch(0.14 0.005 270) 0%, transparent 100%);
+}
+
+.dark .sidebar-scroll-fade::after {
+  background: linear-gradient(to top, oklch(0.14 0.005 270) 0%, transparent 100%);
+}
+
+/* ─── 49. Button gradient hover transition ───────────────────────────────── */
+.btn-gradient-hover {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-gradient-hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    oklch(0.55 0.24 270),
+    oklch(0.55 0.20 320),
+    oklch(0.60 0.18 293)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.btn-gradient-hover:hover::before {
+  opacity: 1;
+}
+
+.btn-gradient-hover > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── 50. Float-to-top button ────────────────────────────────────────── */
+.float-to-top {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.float-to-top:hover {
+  box-shadow: 0 8px 24px -4px oklch(0.55 0.24 270 / 25%),
+              0 4px 12px -2px oklch(0.2 0.01 270 / 15%);
+  transform: translateY(-2px);
+}
+
+.dark .float-to-top:hover {
+  box-shadow: 0 8px 24px -4px oklch(0 0 0 / 35%),
+              0 4px 12px -2px oklch(0 0 0 / 25%);
+}
+
+/* ─── 51. Activity timeline connector line ───────────────────────────────── */
+.timeline-item {
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  right: 15px;
+  top: 32px;
+  bottom: -8px;
+  width: 2px;
+  background: linear-gradient(to bottom,
+    oklch(0.55 0.24 270 / 20%),
+    oklch(0.55 0.24 270 / 6%)
+  );
+}
+
+.timeline-item:last-child::before {
+  display: none;
+}
+
+.dark .timeline-item::before {
+  background: linear-gradient(to bottom,
+    oklch(0.55 0.24 270 / 15%),
+    oklch(0.55 0.24 270 / 5%)
+  );
+}
+
+/* ─── 52. Tab underline indicator animation ─────────────────────────────────── */
+.tab-indicator {
+  position: relative;
+}
+
+.tab-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(90deg, oklch(0.65 0.22 270), oklch(0.65 0.20 320));
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-indicator-active::after {
+  transform: scaleX(1);
+}
+
+/* ─── 53. Enhanced admin stat card gradient ─────────────────────────────── */
+.stat-card-gradient {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    oklch(0.55 0.24 270 / 3%),
+    oklch(0.65 0.20 320 / 3%)
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.stat-card-gradient > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dark .stat-card-gradient::before {
+  background: linear-gradient(135deg,
+    oklch(0.55 0.24 270 / 5%),
+    oklch(0.65 0.20 320 / 5%)
+  );
+}
+
+/* ─── 54. Nav border-left accent for active items ────────────────────────── */
+.nav-border-accent {
+  border-right: 3px solid transparent;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.nav-border-accent-active {
+  border-right-color: oklch(0.65 0.22 270);
+  background-color: oklch(0.55 0.24 270 / 5%);
+}
+
+.dark .nav-border-accent-active {
+  border-right-color: oklch(0.70 0.18 293);
+  background-color: oklch(0.55 0.24 270 / 8%);
+}
+
+/* ─── 55. Toggle switch enhancement ────────────────────────────────────── */
+.toggle-switch-enhanced {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.toggle-switch-enhanced[data-state="checked"] {
+  box-shadow: 0 0 12px oklch(0.55 0.24 270 / 30%);
+}
+
+.dark .toggle-switch-enhanced[data-state="checked"] {
+  box-shadow: 0 0 12px oklch(0.55 0.24 270 / 20%);
+}
+
 /* ─── 35. Enhanced Card Hover Lift ───────────────────────────────────────── */
 .card-hover-lift {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1274,4 +1615,148 @@
 
 .animate-marquee {
   animation: marquee 25s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SESSION 15: Additional Styling Utilities & Visual Polish
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── 50. Sidebar fade gradients (top & bottom) ────────────────────────────── */
+.sidebar-fade-top {
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%);
+}
+
+.sidebar-fade-bottom {
+  mask-image: linear-gradient(to top, transparent 0%, black 12%);
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 12%);
+}
+
+.sidebar-fade-both {
+  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+/* ─── 51. Question type card hover with scale + glow ───────────────────── */
+.question-type-card {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s ease,
+              border-color 0.2s ease,
+              background-color 0.2s ease;
+}
+.question-type-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px -2px oklch(0.55 0.24 270 / 15%);
+}
+.dark .question-type-card:hover {
+  box-shadow: 0 4px 12px -2px oklch(0 0 0 / 30%);
+}
+
+/* ─── 52. Active sidebar item with right accent border ─────────────────── */
+.sidebar-item-active {
+  position: relative;
+  border-right: 3px solid oklch(0.55 0.24 270);
+  background: oklch(0.55 0.24 270 / 8%);
+}
+.dark .sidebar-item-active {
+  border-right-color: oklch(0.65 0.22 270);
+  background: oklch(0.55 0.24 270 / 15%);
+}
+
+/* ─── 53. Gradient badge for categories ─────────────────────────────────── */
+.category-badge-violet { background: linear-gradient(135deg, oklch(0.65 0.22 270), oklch(0.55 0.24 293)); color: white; }
+.category-badge-emerald { background: linear-gradient(135deg, oklch(0.65 0.18 160), oklch(0.55 0.15 140)); color: white; }
+.category-badge-blue { background: linear-gradient(135deg, oklch(0.62 0.19 250), oklch(0.60 0.18 230)); color: white; }
+.category-badge-amber { background: linear-gradient(135deg, oklch(0.78 0.15 75), oklch(0.72 0.14 60)); color: white; }
+.category-badge-rose { background: linear-gradient(135deg, oklch(0.65 0.20 10), oklch(0.60 0.18 350)); color: white; }
+.category-badge-fuchsia { background: linear-gradient(135deg, oklch(0.65 0.22 310), oklch(0.60 0.20 330)); color: white; }
+
+/* ─── 54. Stat card with animated gradient background ─────────────────── */
+@keyframes stat-gradient-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.stat-card-gradient {
+  background: linear-gradient(135deg, oklch(0.97 0.01 270), oklch(0.95 0.02 293), oklch(0.97 0.01 310), oklch(0.97 0.01 270));
+  background-size: 300% 300%;
+  animation: stat-gradient-flow 8s ease infinite;
+}
+
+.dark .stat-card-gradient {
+  background: linear-gradient(135deg, oklch(0.18 0.01 270), oklch(0.20 0.02 293), oklch(0.18 0.01 310), oklch(0.18 0.01 270));
+}
+
+/* ─── 55. Smooth focus transition ring ──────────────────────────────────── */
+@keyframes focus-ring-expand {
+  0% { outline-offset: 2px; opacity: 0; }
+  100% { outline-offset: 3px; opacity: 1; }
+}
+
+.focus-ring-animate:focus-visible {
+  animation: focus-ring-expand 0.25s ease-out forwards;
+}
+
+/* ─── 56. Pulse badge for unread indicators ─────────────────────────────── */
+@keyframes badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 oklch(0.55 0.24 270 / 40%);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 4px oklch(0.55 0.24 270 / 20%);
+  }
+}
+
+.badge-pulse {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+/* ─── 57. Floating action button (FAB) styling ──────────────────────────── */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 40;
+  box-shadow: 0 8px 24px -4px oklch(0.55 0.24 270 / 30%),
+              0 4px 8px -2px oklch(0.55 0.24 270 / 20%);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 32px -4px oklch(0.55 0.24 270 / 35%),
+              0 4px 12px -2px oklch(0.55 0.24 270 / 25%);
+}
+.dark .fab {
+  box-shadow: 0 8px 24px -4px oklch(0 0 0 / 40%),
+              0 4px 8px -2px oklch(0 0 0 / 30%);
+}
+.dark .fab:hover {
+  box-shadow: 0 12px 32px -4px oklch(0 0 0 / 50%),
+              0 4px 12px -2px oklch(0 0 0 / 35%);
+}
+
+/* ─── 58. Progress bar with gradient fill ───────────────────────────────── */
+.progress-gradient {
+  background: linear-gradient(90deg, oklch(0.65 0.22 270), oklch(0.60 0.20 293), oklch(0.65 0.22 310));
+  background-size: 200% 100%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* ─── 59. Subtle inner shadow for inset depth ───────────────────────────── */
+.inset-shadow-sm {
+  box-shadow: inset 0 1px 3px oklch(0 0 0 / 6%),
+              inset 0 1px 2px -1px oklch(0 0 0 / 4%);
+}
+.dark .inset-shadow-sm {
+  box-shadow: inset 0 1px 3px oklch(0 0 0 / 20%),
+              inset 0 1px 2px -1px oklch(0 0 0 / 12%);
+}
+
+/* ─── 60. Smooth accordion expand ───────────────────────────────────────── */
+.accordion-expand {
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease;
 }

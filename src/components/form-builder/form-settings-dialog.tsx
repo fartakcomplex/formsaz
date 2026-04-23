@@ -11,6 +11,7 @@ import {
   Check,
   Layout,
   Bell,
+  Zap,
 } from 'lucide-react';
 import {
   Dialog,
@@ -150,7 +151,7 @@ export default function FormSettingsDialog({
         </DialogHeader>
 
         <Tabs defaultValue="general" className="px-6 pt-4" dir="rtl">
-          <TabsList className="w-full grid grid-cols-4">
+          <TabsList className="w-full grid grid-cols-4 gap-1">
             <TabsTrigger value="general" className="gap-1.5 text-xs sm:text-sm">
               <Type className="h-3.5 w-3.5" />
               عمومی
@@ -304,11 +305,13 @@ export default function FormSettingsDialog({
           <TabsContent value="notifications" className="mt-4 pb-6">
             <ScrollArea className="max-h-[60vh]">
               <div className="space-y-5 px-1">
-                {/* Notification Toggle */}
-                <div className="space-y-3">
+                {/* Email Notification Toggle */}
+                <div className="rounded-xl border border-violet-100 dark:border-violet-900/40 bg-gradient-to-br from-violet-50/50 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10 p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="settings-notif-toggle" className="text-sm font-medium flex items-center gap-2">
-                      <Bell className="h-3.5 w-3.5 text-violet-500" />
+                      <div className="flex size-7 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/40">
+                        <Bell className="h-3.5 w-3.5 text-violet-500" />
+                      </div>
                       اعلان ایمیل هنگام دریافت پاسخ جدید
                     </Label>
                     <Switch
@@ -320,17 +323,7 @@ export default function FormSettingsDialog({
                       className="data-[state=checked]:bg-violet-500"
                     />
                   </div>
-                </div>
-
-                <Separator />
-
-                {/* Notification Email */}
-                <div className="space-y-2">
-                  <Label htmlFor="settings-notif-email" className="text-sm font-medium">
-                    آدرس ایمیل برای دریافت اعلان‌ها
-                  </Label>
                   <Input
-                    id="settings-notif-email"
                     type="email"
                     value={draftTheme.notificationEmail || ''}
                     onChange={(e) =>
@@ -341,12 +334,99 @@ export default function FormSettingsDialog({
                     className="text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
                     disabled={!draftTheme.notificationEnabled}
                   />
-                  <div className="flex items-start gap-2 rounded-lg bg-violet-50 dark:bg-violet-950/20 p-3 border border-violet-100 dark:border-violet-900/40">
-                    <Bell className="h-4 w-4 text-violet-500 shrink-0 mt-0.5" />
-                    <p className="text-xs text-violet-700 dark:text-violet-300 leading-relaxed">
-                      هر بار که پاسخ جدیدی ثبت شود، ایمیلی حاوی خلاصه پاسخ برای شما ارسال می‌شود
+                  {draftTheme.notificationEnabled && (
+                    <p className="text-xs text-violet-600 dark:text-violet-400">
+                      هر بار که پاسخ جدیدی ثبت شود، ایمیلی حاوی خلاصه پاسخ ارسال می‌شود
                     </p>
+                  )}
+                </div>
+
+                {/* Daily Summary */}
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="settings-daily-summary" className="text-sm font-medium flex items-center gap-2">
+                    <div className="flex size-7 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/40">
+                      <AlignRight className="h-3.5 w-3.5 text-blue-500" />
+                    </div>
+                    خلاصه روزانه پاسخ‌ها
+                  </Label>
+                  <Switch
+                    id="settings-daily-summary"
+                    checked={draftTheme.dailySummary || false}
+                    onCheckedChange={(checked) =>
+                      setDraftTheme({ ...draftTheme, dailySummary: checked })
+                    }
+                    className="data-[state=checked]:bg-blue-500"
+                  />
+                </div>
+
+                <Separator />
+
+                {/* Webhook Integration */}
+                <div className="rounded-xl border border-emerald-100 dark:border-emerald-900/40 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 dark:from-emerald-950/20 dark:to-teal-950/10 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="settings-webhook" className="text-sm font-medium flex items-center gap-2">
+                      <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/40">
+                        <Zap className="h-3.5 w-3.5 text-emerald-500" />
+                      </div>
+                      وب‌هوک (Webhook)
+                    </Label>
+                    <Switch
+                      id="settings-webhook-toggle"
+                      checked={!!draftTheme.webhookUrl}
+                      onCheckedChange={(checked) =>
+                        setDraftTheme({ ...draftTheme, webhookUrl: checked ? 'https://' : '' })
+                      }
+                      className="data-[state=checked]:bg-emerald-500"
+                    />
                   </div>
+                  <Input
+                    type="url"
+                    value={draftTheme.webhookUrl || ''}
+                    onChange={(e) =>
+                      setDraftTheme({ ...draftTheme, webhookUrl: e.target.value })
+                    }
+                    placeholder="https://your-server.com/webhook"
+                    dir="ltr"
+                    className="text-sm focus-visible:ring-emerald-500/40 focus-visible:border-emerald-400 transition-all duration-200"
+                    disabled={!draftTheme.webhookUrl}
+                  />
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400">
+                    با دریافت هر پاسخ، داده‌ها به این آدرس ارسال می‌شود
+                  </p>
+                </div>
+
+                {/* Telegram Notification */}
+                <div className="rounded-xl border border-sky-100 dark:border-sky-900/40 bg-gradient-to-br from-sky-50/50 to-cyan-50/30 dark:from-sky-950/20 dark:to-cyan-950/10 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="settings-telegram" className="text-sm font-medium flex items-center gap-2">
+                      <div className="flex size-7 items-center justify-center rounded-lg bg-sky-100 dark:bg-sky-900/40">
+                        <Send className="h-3.5 w-3.5 text-sky-500" />
+                      </div>
+                      اعلان تلگرام
+                    </Label>
+                    <Switch
+                      id="settings-telegram-toggle"
+                      checked={draftTheme.telegramNotification || false}
+                      onCheckedChange={(checked) =>
+                        setDraftTheme({ ...draftTheme, telegramNotification: checked })
+                      }
+                      className="data-[state=checked]:bg-sky-500"
+                    />
+                  </div>
+                  <Input
+                    type="text"
+                    value={draftTheme.telegramChatId || ''}
+                    onChange={(e) =>
+                      setDraftTheme({ ...draftTheme, telegramChatId: e.target.value })
+                    }
+                    placeholder="Chat ID تلگرام"
+                    dir="ltr"
+                    className="text-sm focus-visible:ring-sky-500/40 focus-visible:border-sky-400 transition-all duration-200"
+                    disabled={!draftTheme.telegramNotification}
+                  />
+                  <p className="text-xs text-sky-600 dark:text-sky-400">
+                    Chat ID تلگرام را وارد کنید تا پاسخ‌ها به صورت خودکار ارسال شود
+                  </p>
                 </div>
               </div>
             </ScrollArea>
