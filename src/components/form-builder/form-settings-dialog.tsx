@@ -11,6 +11,7 @@ import {
   Check,
   Layout,
   Bell,
+  Send,
   Zap,
 } from 'lucide-react';
 import {

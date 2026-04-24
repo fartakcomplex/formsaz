@@ -1,18 +1,24 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const initialized = useRef(false);
 
   const handleScroll = useCallback(() => {
     setIsVisible(window.scrollY > 300);
   }, []);
 
   useEffect(() => {
+    if (!initialized.current) {
+      // Check initial scroll position on mount (e.g. if page is restored from bfcache)
+      initialized.current = true;
+      requestAnimationFrame(() => {
+        setIsVisible(window.scrollY > 300);
+      });
+    }
     window.addEventListener('scroll', handleScroll, { passive: true });
-    // Check initial scroll position (e.g. if page is restored from bfcache)
-    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
