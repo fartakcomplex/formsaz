@@ -153,20 +153,28 @@ function useAnimatedCounter(end: number, duration: number = 2, isInView: boolean
 
 /* ── Floating particles component ── */
 function FloatingParticles({ count = 20, className = '' }: { count?: number; className?: string }) {
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => { setMounted(true); }, []);
+
   const particles = React.useMemo(() => {
+    // Use a simple seeded pseudo-random to avoid hydration mismatch
+    const seed = (i: number) => ((i * 2654435761) >>> 0) % 1000 / 1000;
     return Array.from({ length: count }).map((_, i) => ({
       id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 3 + 1.5,
-      duration: Math.random() * 6 + 4,
-      delay: Math.random() * 4,
-      opacity: Math.random() * 0.3 + 0.1,
+      x: seed(i + 1) * 100,
+      y: seed(i + 100) * 100,
+      size: seed(i + 200) * 3 + 1.5,
+      duration: seed(i + 300) * 6 + 4,
+      delay: seed(i + 400) * 4,
+      opacity: seed(i + 500) * 0.3 + 0.1,
+      drift: seed(i + 600) > 0.5 ? 15 : -15,
     }));
   }, [count]);
 
+  if (!mounted) return <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`} suppressHydrationWarning />;
+
   return (
-    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
+    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`} suppressHydrationWarning>
       {particles.map((p) => (
         <motion.div
           key={p.id}
@@ -177,9 +185,10 @@ function FloatingParticles({ count = 20, className = '' }: { count?: number; cla
             width: p.size,
             height: p.size,
           }}
+          suppressHydrationWarning
           animate={{
             y: [0, -30, 0],
-            x: [0, Math.random() > 0.5 ? 15 : -15, 0],
+            x: [0, p.drift, 0],
             opacity: [p.opacity, p.opacity + 0.2, p.opacity],
           }}
           transition={{

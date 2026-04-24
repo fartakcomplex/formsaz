@@ -137,14 +137,15 @@ function QuestionTitle({ question, index, themeColor, totalQuestions }: { questi
         <motion.span
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 20, delay: 0.05 }}
-          className="flex items-center justify-center size-8 rounded-full text-sm font-bold shrink-0 mt-0.5"
+          transition={{ type: 'spring', stiffness: 500, damping: 18, delay: 0.05 }}
+          className="flex items-center justify-center size-9 rounded-full text-sm font-bold shrink-0 mt-0.5 shadow-sm"
           style={{
-            backgroundColor: `${themeColor}1a`,
-            color: themeColor,
+            background: `linear-gradient(135deg, ${themeColor}, ${themeColor}cc)`,
+            color: '#ffffff',
+            boxShadow: `0 2px 8px ${themeColor}40`,
           }}
         >
-          {index + 1}
+          {toPersianDigit(index + 1)}
         </motion.span>
         <div className="flex-1 min-w-0">
           <motion.div
@@ -1213,17 +1214,17 @@ function isQuestionVisible(
   }
 }
 
-function SuccessScreen({ customMessage, formId, onReturn }: { customMessage?: string; formId?: string; onReturn: () => void }) {
+function SuccessScreen({ customMessage, formId, onReturn, onResubmit }: { customMessage?: string; formId?: string; onReturn: () => void; onResubmit?: () => void }) {
   const [copied, setCopied] = useState(false);
-  const confettiColors = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316'];
+  const confettiColors = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316', '#06b6d4', '#84cc16'];
   const confettiParticles = React.useMemo(() => {
-    return Array.from({ length: 36 }).map((_, i) => ({
+    return Array.from({ length: 40 }).map((_, i) => ({
       id: i,
       color: confettiColors[i % confettiColors.length],
       left: Math.random() * 100,
-      delay: Math.random() * 2.5,
-      duration: 2.5 + Math.random() * 2.5,
-      size: 4 + Math.random() * 8,
+      delay: Math.random() * 2,
+      duration: 2 + Math.random() * 3,
+      size: 4 + Math.random() * 10,
       rotation: Math.random() * 360,
     }));
   }, []);
@@ -1256,7 +1257,7 @@ function SuccessScreen({ customMessage, formId, onReturn }: { customMessage?: st
               height: p.size,
               borderRadius: Math.random() > 0.5 ? '2px' : '50%',
               animationDuration: `${p.duration}s`,
-              animationDelay: `${0.3 + p.delay}s`,
+              animationDelay: `${0.2 + p.delay}s`,
               transform: `rotate(${p.rotation}deg)`,
             }}
           />
@@ -1265,24 +1266,24 @@ function SuccessScreen({ customMessage, formId, onReturn }: { customMessage?: st
 
       {/* Framer-motion burst particles */}
       <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 12 }).map((_, i) => {
+        {Array.from({ length: 16 }).map((_, i) => {
           const color = confettiColors[i % confettiColors.length];
           const left = Math.random() * 100;
           const delay = Math.random() * 1.5;
-          const duration = 2 + Math.random() * 1.5;
+          const duration = 2 + Math.random() * 2;
           return (
             <motion.div
               key={`burst-${i}`}
               initial={{ opacity: 0, y: 0, scale: 0 }}
               animate={{
                 opacity: [0, 1, 1, 0],
-                y: [0, -80 - Math.random() * 60, -160 - Math.random() * 40],
-                x: [(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 100, (Math.random() - 0.5) * 80],
-                scale: [0, 1.3, 0.6],
+                y: [0, -80 - Math.random() * 80, -180 - Math.random() * 60],
+                x: [(Math.random() - 0.5) * 40, (Math.random() - 0.5) * 120, (Math.random() - 0.5) * 100],
+                scale: [0, 1.4, 0.4],
               }}
               transition={{
                 duration,
-                delay: 0.4 + delay,
+                delay: 0.3 + delay,
                 ease: 'easeOut',
               }}
               className="absolute rounded-full"
@@ -1290,8 +1291,8 @@ function SuccessScreen({ customMessage, formId, onReturn }: { customMessage?: st
                 backgroundColor: color,
                 left: `${left}%`,
                 bottom: '35%',
-                width: 5 + Math.random() * 5,
-                height: 5 + Math.random() * 5,
+                width: 5 + Math.random() * 6,
+                height: 5 + Math.random() * 6,
               }}
             />
           );
@@ -1307,23 +1308,31 @@ function SuccessScreen({ customMessage, formId, onReturn }: { customMessage?: st
         {/* Pulsing glow behind checkmark */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.1, 0.3] }}
+          animate={{ scale: [1, 1.6, 1], opacity: [0.3, 0.08, 0.3] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-          className="absolute top-12 sm:top-16 size-40 rounded-full bg-emerald-400/20 blur-2xl"
+          className="absolute top-8 sm:top-12 size-48 rounded-full bg-emerald-400/20 blur-3xl"
         />
 
+        {/* Animated Checkmark with bounce */}
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-          className="relative flex size-24 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-200 dark:shadow-emerald-900/40 mb-8"
+          animate={{ scale: [0, 1.15, 1] }}
+          transition={{ delay: 0.15, type: 'spring', stiffness: 260, damping: 14 }}
+          className="relative flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-200 dark:shadow-emerald-900/40 mb-8"
         >
+          {/* Rotating ring */}
+          <motion.div
+            initial={{ rotate: -90 }}
+            animate={{ rotate: 270 }}
+            transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.4 }}
+            className="absolute inset-0 rounded-full border-2 border-dashed border-emerald-300/40 dark:border-emerald-500/30"
+          />
           <motion.div
             initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
+            animate={{ scale: [0, 1.2, 1] }}
+            transition={{ delay: 0.45, type: 'spring', stiffness: 350, damping: 15 }}
           >
-            <svg className="size-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="size-14 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <motion.path
                 d="M5 13l4 4L19 7"
                 initial={{ pathLength: 0 }}
@@ -1333,34 +1342,36 @@ function SuccessScreen({ customMessage, formId, onReturn }: { customMessage?: st
             </svg>
           </motion.div>
         </motion.div>
+
+        {/* Gradient title */}
         <motion.h2
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-2xl font-bold text-gray-900 dark:text-white mb-3"
+          transition={{ delay: 0.35 }}
+          className="text-2xl sm:text-3xl font-extrabold mb-3 bg-gradient-to-l from-emerald-600 via-violet-600 to-purple-600 dark:from-emerald-400 dark:via-violet-400 dark:to-purple-400 bg-clip-text text-transparent"
         >
           پاسخ شما با موفقیت ثبت شد!
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="text-gray-500 dark:text-zinc-400 max-w-md"
+          transition={{ delay: 0.5 }}
+          className="text-gray-500 dark:text-zinc-400 max-w-md text-sm sm:text-base"
         >
           {customMessage || 'از وقتی که برای پاسخگویی گذاشتید، سپاسگزاریم. پاسخ شما ثبت و ذخیره شد.'}
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="mt-8 flex flex-col items-center gap-4"
+          transition={{ delay: 0.7 }}
+          className="mt-8 flex flex-col items-center gap-3 w-full max-w-xs"
         >
           {/* Copy link button */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleCopyLink}
-            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 dark:hover:bg-violet-950/50 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 dark:hover:bg-violet-950/50 transition-colors shadow-sm w-full justify-center"
           >
             {copied ? (
               <>
@@ -1375,12 +1386,32 @@ function SuccessScreen({ customMessage, formId, onReturn }: { customMessage?: st
             )}
           </motion.button>
 
+          {/* Resubmit button */}
+          {onResubmit && (
+            <motion.button
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.85 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={onResubmit}
+              className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 dark:shadow-violet-900/40 hover:shadow-xl transition-all w-full justify-center"
+              style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)' }}
+            >
+              <Send className="size-4" />
+              ارسال پاسخ جدید
+            </motion.button>
+          )}
+
+          {/* Return to dashboard button */}
           <motion.button
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.95 }}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={onReturn}
-            className="inline-flex items-center gap-2 rounded-full px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 dark:shadow-violet-900/40 hover:shadow-xl transition-shadow"
-            style={{ backgroundColor: '#7c3aed' }}
+            className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-gray-600 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-white transition-colors shadow-sm w-full justify-center"
           >
             <LayoutDashboard className="size-4" />
             بازگشت به داشبورد
@@ -1660,6 +1691,13 @@ export default function FormFill() {
     }
   };
 
+  const handleResubmit = useCallback(() => {
+    setIsSubmitted(false);
+    setAnswers({});
+    setErrors({});
+    setCurrentPage(0);
+  }, []);
+
   if (!fillForm) {
     return (
       <div dir="rtl" className="min-h-screen form-fill-bg bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center">
@@ -1706,6 +1744,7 @@ export default function FormFill() {
             customMessage={customThankYouMessage}
             formId={fillForm?.id}
             onReturn={() => { setFillForm(null); setCurrentView('dashboard'); }}
+            onResubmit={handleResubmit}
           />
         </div>
       </div>
@@ -1790,10 +1829,62 @@ export default function FormFill() {
             </motion.div>
           )}
           <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{fillForm.title}</h1>
-            {fillForm.description && (
-              <p className="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed">{fillForm.description}</p>
-            )}
+            <div className="flex items-start gap-4">
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{fillForm.title}</h1>
+                {fillForm.description && (
+                  <p className="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed">{fillForm.description}</p>
+                )}
+              </div>
+              {/* Progress Ring */}
+              {visibleInputQuestions.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 20 }}
+                  className="relative shrink-0"
+                >
+                  <svg width="56" height="56" viewBox="0 0 56 56" className="-rotate-90">
+                    {/* Background circle */}
+                    <circle
+                      cx="28" cy="28" r="24"
+                      fill="none"
+                      className="stroke-gray-100 dark:stroke-zinc-800"
+                      strokeWidth="4"
+                    />
+                    {/* Progress circle */}
+                    <motion.circle
+                      cx="28" cy="28" r="24"
+                      fill="none"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray={2 * Math.PI * 24}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 24 }}
+                      animate={{ strokeDashoffset: 2 * Math.PI * 24 * (1 - progressPercent / 100) }}
+                      transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+                      style={{
+                        stroke: progressPercent < 25 ? '#ef4444' : progressPercent < 50 ? '#f59e0b' : progressPercent < 75 ? '#8b5cf6' : '#10b981',
+                      }}
+                    />
+                  </svg>
+                  {/* Percentage text */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <motion.span
+                      key={progressPercent}
+                      initial={{ scale: 1.3, opacity: 0.5 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                      className="text-xs font-bold"
+                      style={{
+                        color: progressPercent < 25 ? '#ef4444' : progressPercent < 50 ? '#f59e0b' : progressPercent < 75 ? '#8b5cf6' : '#10b981',
+                      }}
+                    >
+                      {toPersianDigit(progressPercent)}٪
+                    </motion.span>
+                  </div>
+                </motion.div>
+              )}
+            </div>
           </div>
         </motion.div>
 

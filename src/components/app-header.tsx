@@ -14,7 +14,6 @@ import {
   Sun,
   Moon,
   Shield,
-  Bell,
   Plus,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,12 +23,9 @@ import {
   SheetTrigger,
   SheetTitle,
 } from '@/components/ui/sheet';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { useAppStore, type ViewType } from '@/lib/store';
+import NotificationBell from '@/components/notifications/notification-bell';
+import QuickSearch, { QuickSearchTrigger } from '@/components/quick-search';
 
 const navItems: Record<string, { label: string; icon: React.ReactNode; view?: ViewType }[]> = {
   landing: [
@@ -111,54 +107,7 @@ function ThemeToggle() {
   );
 }
 
-function NotificationBell() {
-  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => setMounted(true), []);
-
-  if (!mounted) {
-    return (
-      <div className="size-9 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse" />
-    );
-  }
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="relative flex size-9 items-center justify-center rounded-full bg-gray-100 hover:bg-violet-100 dark:bg-gray-800 dark:hover:bg-violet-900/40 transition-colors duration-200"
-          title="اعلان‌ها"
-        >
-          <Bell className="size-[18px] text-gray-600 dark:text-gray-400" />
-          <span className="absolute -top-0.5 -left-0.5 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-[9px] font-bold text-white shadow-sm">
-            ۰
-          </span>
-        </motion.button>
-      </PopoverTrigger>
-      <PopoverContent
-        align="end"
-        sideOffset={8}
-        className="w-72 glass rounded-xl border border-violet-200/30 dark:border-violet-500/20 p-0 overflow-hidden"
-      >
-        {/* Header with gradient */}
-        <div className="bg-gradient-to-l from-violet-500 to-purple-600 px-4 py-3">
-          <h3 className="text-sm font-bold text-white">اعلان‌ها</h3>
-        </div>
-        {/* Empty state */}
-        <div className="flex flex-col items-center justify-center py-8 px-4">
-          <div className="flex size-12 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/30 mb-3">
-            <Bell className="size-6 text-violet-500 dark:text-violet-400" />
-          </div>
-          <p className="text-sm text-muted-foreground text-center">
-            بدون اعلان جدید
-          </p>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
 
 export default function AppHeader() {
   const { currentView, previousView, setCurrentView, currentForm } = useAppStore();
@@ -296,8 +245,9 @@ export default function AppHeader() {
           </AnimatePresence>
         </nav>
 
-        {/* Left side: Theme toggle + Notifications + Auth/User + Mobile menu */}
+        {/* Left side: Quick Search + Theme toggle + Notifications + Auth/User + Mobile menu */}
         <div className="flex items-center gap-2">
+          <QuickSearchTrigger />
           <ThemeToggle />
 
           {showUserAvatar && <NotificationBell />}
@@ -423,6 +373,8 @@ export default function AppHeader() {
           </div>
         </div>
       </div>
+      {/* Quick Search Dialog (global) */}
+      <QuickSearch />
     </motion.header>
   );
 }

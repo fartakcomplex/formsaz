@@ -1129,6 +1129,27 @@ function toPersianDigits(num: number): string {
   return num.toString().replace(/\d/g, (d) => PERSIAN_DIGITS[parseInt(d, 10)]);
 }
 
+// ── Helper: Format response time (seconds) to Persian string ────────────────
+function formatResponseTime(seconds: number): string {
+  if (seconds < 60) {
+    return `${toPersianDigits(Math.round(seconds))} ثانیه`;
+  }
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.round(seconds % 60);
+  if (minutes < 60) {
+    if (remainingSeconds === 0) {
+      return `${toPersianDigits(minutes)} دقیقه`;
+    }
+    return `${toPersianDigits(minutes)} دقیقه و ${toPersianDigits(remainingSeconds)} ثانیه`;
+  }
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  if (remainingMinutes === 0) {
+    return `${toPersianDigits(hours)} ساعت`;
+  }
+  return `${toPersianDigits(hours)} ساعت و ${toPersianDigits(remainingMinutes)} دقیقه`;
+}
+
 // ── Helper: Format cell value for table display ─────────────────────────────
 function formatCellDisplay(question: FormQuestion, rawValue: string | null | undefined): string {
   if (!rawValue) return '—';
@@ -1626,7 +1647,7 @@ export default function ResultsView() {
             {/* Analytics Overview Cards */}
             <motion.div
               variants={staggerContainer}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6"
+              className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-4 sm:mb-6"
             >
               <StatCard
                 icon={<Users className="size-5 text-white" />}
@@ -1655,6 +1676,14 @@ export default function ResultsView() {
                 value={analytics?.avgPerDay ?? 0}
                 color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
                 delay={0.15}
+              />
+              <StatCard
+                icon={<Clock className="size-5 text-white" />}
+                label="میانگین زمان پاسخ‌دهی"
+                value={analytics?.avgResponseTime ? formatResponseTime(analytics.avgResponseTime) : 'بدون داده'}
+                subtitle={analytics?.avgResponseTime ? undefined : 'هنوز پاسخی ثبت نشده'}
+                color="bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700"
+                delay={0.2}
               />
             </motion.div>
 
@@ -1836,7 +1865,7 @@ export default function ResultsView() {
                     <Clock className="size-4 text-amber-500" />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">میانگین زمان تکمیل:</span>
                     <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 border-0 text-xs font-semibold">
-                      {toPersianDigits(analytics?.avgResponseTime ?? 3)} دقیقه
+                      {analytics?.avgResponseTime ? formatResponseTime(analytics.avgResponseTime) : 'بدون داده'}
                     </Badge>
                   </div>
                 </div>

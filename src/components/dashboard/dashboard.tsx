@@ -49,6 +49,7 @@ import {
   Upload,
   FileJson,
   FileUp,
+  Star,
 } from 'lucide-react';
 import {
   BarChart,
@@ -1053,17 +1054,47 @@ function StatCard({
 function WelcomeIllustration() {
   return (
     <div className="relative w-full max-w-sm mx-auto">
-      {/* Background orbs */}
+      {/* Animated floating orbs in background */}
       <motion.div
-        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+        animate={{ scale: [1, 1.2, 1], opacity: [0.25, 0.45, 0.25], y: [0, -10, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -top-4 -right-4 size-32 rounded-full bg-gradient-to-br from-violet-200 to-purple-300 dark:from-violet-800/30 dark:to-purple-800/30 blur-xl"
+        className="absolute -top-8 -right-8 size-40 rounded-full bg-gradient-to-br from-violet-200 to-purple-300 dark:from-violet-800/30 dark:to-purple-800/30 blur-2xl"
       />
       <motion.div
-        animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        className="absolute -bottom-2 -left-6 size-40 rounded-full bg-gradient-to-br from-fuchsia-200 to-pink-300 dark:from-fuchsia-800/20 dark:to-pink-800/20 blur-xl"
+        animate={{ scale: [1, 1.18, 1], opacity: [0.18, 0.38, 0.18], y: [0, 8, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+        className="absolute -bottom-4 -left-8 size-48 rounded-full bg-gradient-to-br from-fuchsia-200 to-pink-300 dark:from-fuchsia-800/20 dark:to-pink-800/20 blur-2xl"
       />
+      <motion.div
+        animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.3, 0.15] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        className="absolute top-1/2 -right-12 size-24 rounded-full bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-800/15 dark:to-orange-800/15 blur-xl"
+      />
+      {/* Small floating dots */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          animate={{
+            y: [0, -15 - i * 5, 0],
+            x: [(i % 2 === 0 ? 5 : -5), 0, (i % 2 === 0 ? -5 : 5)],
+            opacity: [0.2, 0.5, 0.2],
+          }}
+          transition={{
+            duration: 3 + i * 0.5,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: i * 0.4,
+          }}
+          className="absolute rounded-full"
+          style={{
+            width: 4 + i * 1.5,
+            height: 4 + i * 1.5,
+            top: `${10 + i * 15}%`,
+            left: `${5 + i * 18}%`,
+            backgroundColor: ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1', '#a855f7'][i],
+          }}
+        />
+      ))}
 
       {/* Main form document */}
       <motion.div
@@ -1080,15 +1111,15 @@ function WelcomeIllustration() {
           <rect x="16" y="8" width="200" height="270" rx="16" fill="white" className="dark:fill-gray-800" stroke="currentColor" />
           <rect x="16" y="8" width="200" height="270" rx="16" stroke="currentColor" strokeWidth="1.5" className="text-gray-200 dark:text-gray-700" fill="none" />
 
-          {/* Header bar */}
-          <rect x="16" y="8" width="200" height="44" rx="16" className="fill-gradient-top" />
-          <rect x="16" y="36" width="200" height="16" className="fill-gradient-top" />
-
           {/* Gradient for header using defs */}
           <defs>
             <linearGradient id="headerGrad" x1="16" y1="8" x2="216" y2="52" gradientUnits="userSpaceOnUse">
               <stop stopColor="#8b5cf6" />
               <stop offset="1" stopColor="#a855f7" />
+            </linearGradient>
+            <linearGradient id="plusBtnGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop stopColor="#10b981" />
+              <stop offset="1" stopColor="#059669" />
             </linearGradient>
           </defs>
           <rect x="16" y="8" width="200" height="44" rx="16" fill="url(#headerGrad)" />
@@ -1146,6 +1177,17 @@ function WelcomeIllustration() {
           >
             <rect x="66" y="256" width="100" height="14" rx="7" fill="url(#headerGrad)" />
           </motion.g>
+
+          {/* Plus button overlay on the document corner */}
+          <motion.g
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.9, type: 'spring', stiffness: 300, damping: 15 }}
+          >
+            <circle cx="200" cy="265" r="14" fill="url(#plusBtnGrad)" />
+            <rect x="195" y="262" width="10" height="2" rx="1" fill="white" />
+            <rect x="199" y="258" width="2" height="10" rx="1" fill="white" />
+          </motion.g>
         </svg>
 
         {/* Floating pencil */}
@@ -1167,6 +1209,17 @@ function WelcomeIllustration() {
         >
           <div className="size-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-200/50 dark:shadow-emerald-500/20">
             <Check className="size-4 text-white" />
+          </div>
+        </motion.div>
+
+        {/* Floating star */}
+        <motion.div
+          animate={{ y: [0, -10, 0], rotate: [0, 10, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+          className="absolute top-4 -right-3"
+        >
+          <div className="size-8 rounded-lg bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
+            <Star className="size-3.5 text-white fill-white" />
           </div>
         </motion.div>
       </motion.div>
@@ -1323,22 +1376,32 @@ function EmptyState({
         <WelcomeIllustration />
       </motion.div>
 
-      {/* Welcome text */}
+      {/* Welcome text with gradient */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
         className="text-center mb-8"
       >
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-3">
+        <motion.h2
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-3"
+        >
           به فرمساز{' '}
-          <span className="bg-gradient-to-l from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
             خوش آمدید!
           </span>
-        </h2>
-        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md">
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.45 }}
+          className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md"
+        >
           اولین فرم خود را بسازید یا از الگوهای آماده استفاده کنید
-        </p>
+        </motion.p>
       </motion.div>
 
       {/* Quick-start cards */}
@@ -1359,9 +1422,13 @@ function EmptyState({
             <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-2xl">
               <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
             </div>
-            <div className={`relative flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} shadow-lg ${item.shadowColor} group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
+            <motion.div
+              whileHover={{ rotate: [0, -5, 5, 0] }}
+              transition={{ duration: 0.4 }}
+              className={`relative flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} shadow-lg ${item.shadowColor} group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}
+            >
               {item.icon}
-            </div>
+            </motion.div>
             <div className="text-center relative">
               <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">
                 {item.title}

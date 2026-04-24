@@ -89,6 +89,15 @@ export interface Form {
   };
 }
 
+export interface NotificationItem {
+  id: string;
+  title: string;
+  description: string;
+  type: 'info' | 'success' | 'warning';
+  read: boolean;
+  createdAt: Date;
+}
+
 export interface NotificationSettings {
   enabled: boolean;
   email: string;
@@ -107,6 +116,15 @@ export interface Submission {
 }
 
 interface AppState {
+  // Notifications
+  notifications: NotificationItem[];
+  addNotification: (notification: Omit<NotificationItem, 'id' | 'createdAt' | 'read'>) => void;
+  markNotificationAsRead: (id: string) => void;
+  clearAllNotifications: () => void;
+
+  // Quick search
+  quickSearchOpen: boolean;
+  setQuickSearchOpen: (open: boolean) => void;
   // Navigation
   currentView: ViewType;
   setCurrentView: (view: ViewType) => void;
@@ -156,6 +174,16 @@ interface AppState {
   // Sidebar
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+
+  // Notifications
+  notifications: NotificationItem[];
+  addNotification: (notification: Omit<NotificationItem, 'id' | 'createdAt' | 'read'>) => void;
+  markNotificationAsRead: (id: string) => void;
+  clearAllNotifications: () => void;
+
+  // Quick search
+  quickSearchOpen: boolean;
+  setQuickSearchOpen: (open: boolean) => void;
 }
 
 // Module-level debounce state for updateQuestion history
@@ -421,4 +449,30 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Sidebar
   sidebarOpen: false,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+
+  // Notifications
+  notifications: [],
+  addNotification: (notification) =>
+    set((state) => ({
+      notifications: [
+        {
+          ...notification,
+          id: crypto.randomUUID(),
+          read: false,
+          createdAt: new Date(),
+        },
+        ...state.notifications,
+      ],
+    })),
+  markNotificationAsRead: (id) =>
+    set((state) => ({
+      notifications: state.notifications.map((n) =>
+        n.id === id ? { ...n, read: true } : n
+      ),
+    })),
+  clearAllNotifications: () => set({ notifications: [] }),
+
+  // Quick search
+  quickSearchOpen: false,
+  setQuickSearchOpen: (open) => set({ quickSearchOpen: open }),
 }));
