@@ -1760,3 +1760,216 @@
   transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               opacity 0.2s ease;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SESSION 16: Enhanced Animations & Visual Polish
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── 60. Float animation variants ──────────────────────────────────────── */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes float-medium {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes float-fast {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-6px) rotate(1deg); }
+  75% { transform: translateY(-12px) rotate(-1deg); }
+}
+.animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
+.animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
+.animate-float-fast { animation: float-fast 3s ease-in-out infinite; }
+
+/* ─── 61. Spotlight effect for cards (follows mouse cursor) ────────────── */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, oklch(0.65 0.22 270 / 12%) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transform: translate(-50%, -50%);
+  top: var(--mouse-y, 50%);
+  left: var(--mouse-x, 50%);
+}
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+.dark .spotlight-card::before {
+  background: radial-gradient(circle, oklch(0.55 0.24 270 / 15%) 0%, transparent 70%);
+}
+
+/* ─── 62. Morphing blob background ──────────────────────────────────────── */
+@keyframes blob-morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+  75% { border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%; }
+}
+.morphing-blob {
+  animation: blob-morph 10s ease-in-out infinite;
+}
+
+/* ─── 63. Text reveal animation (word by word) ─────────────────────────── */
+@keyframes text-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  to {
+    clip-path: inset(0 0% 0 0);
+    opacity: 1;
+  }
+}
+.text-reveal {
+  animation: text-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ─── 64. Magnetic button effect ───────────────────────────────────────── */
+.magnetic-btn {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── 65. Gradient text with warm tones ────────────────────────────────── */
+.text-gradient-warm {
+  background: linear-gradient(135deg, oklch(0.65 0.22 270), oklch(0.65 0.20 320), oklch(0.70 0.18 30));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-cool {
+  background: linear-gradient(135deg, oklch(0.55 0.20 250), oklch(0.60 0.22 270), oklch(0.65 0.18 293));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── 66. Scroll-triggered fade-in with stagger ────────────────────────── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── 67. Border spin animation for loading states ─────────────────────── */
+@keyframes border-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.border-spin {
+  position: relative;
+}
+.border-spin::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, oklch(0.65 0.22 270), oklch(0.65 0.20 320), transparent, oklch(0.65 0.22 270));
+  animation: border-spin 2s linear infinite;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.border-spin.loading::before {
+  opacity: 1;
+}
+
+/* ─── 68. Micro-interaction: Button press scale ────────────────────────── */
+.btn-press {
+  transition: transform 0.1s ease;
+}
+.btn-press:active {
+  transform: scale(0.96);
+}
+
+/* ─── 69. Ornamental dot pattern for section dividers ──────────────────── */
+.dot-divider {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+.dot-divider::before,
+.dot-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, oklch(0.65 0.18 293 / 25%), transparent);
+}
+.dot-divider-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: oklch(0.65 0.22 270 / 40%);
+}
+
+/* ─── 70. Glassmorphism with colored tint ──────────────────────────────── */
+.glass-violet {
+  background: oklch(0.55 0.24 270 / 8%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid oklch(0.55 0.24 270 / 15%);
+}
+.dark .glass-violet {
+  background: oklch(0.55 0.24 270 / 12%);
+  border-color: oklch(0.55 0.24 270 / 20%);
+}
+
+.glass-emerald {
+  background: oklch(0.65 0.18 160 / 8%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid oklch(0.65 0.18 160 / 15%);
+}
+.dark .glass-emerald {
+  background: oklch(0.65 0.18 160 / 12%);
+  border-color: oklch(0.65 0.18 160 / 20%);
+}
+
+/* ─── 71. Scroll progress indicator at page top ────────────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, oklch(0.65 0.22 270), oklch(0.65 0.20 320), oklch(0.60 0.18 293));
+  transform-origin: left;
+  transform: scaleX(var(--scroll-progress, 0));
+  z-index: 9999;
+  transition: transform 0.1s linear;
+}
+
+/* ─── 72. Smooth tilt card on mouse move (CSS-only version) ────────────── */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease;
+}
+.tilt-card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
+}
+
+/* ─── 73. Text shadow glow effect ─────────────────────────────────────── */
+.text-glow-violet {
+  text-shadow: 0 0 20px oklch(0.65 0.22 270 / 30%),
+               0 0 40px oklch(0.65 0.22 270 / 15%);
+}
+.dark .text-glow-violet {
+  text-shadow: 0 0 20px oklch(0.55 0.24 270 / 40%),
+               0 0 40px oklch(0.55 0.24 270 / 20%);
+}

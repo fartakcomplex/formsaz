@@ -10,6 +10,7 @@ import ResultsView from '@/components/dashboard/results-view';
 import TemplateLibraryPage from '@/components/dashboard/template-library-page';
 import dynamic from 'next/dynamic';
 import AppHeader from '@/components/app-header';
+import { ScrollToTop } from '@/components/ui/scroll-to-top';
 
 const AdminPanel = dynamic(() => import('@/components/admin/admin-panel'), { ssr: false });
 const UserPanel = dynamic(() => import('@/components/user-panel/user-panel'), { ssr: false });
@@ -54,6 +55,7 @@ export default function Home() {
           </div>
         </motion.div>
       </AnimatePresence>
+      <ScrollToTop />
     </div>
   );
 }

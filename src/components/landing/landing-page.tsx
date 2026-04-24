@@ -992,71 +992,78 @@ function HowItWorksSection() {
             </div>
 
             {steps.map((step, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 40 }}
-                animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                transition={{ duration: 0.6, delay: i * 0.15, ease: 'easeOut' }}
-                className="relative z-10"
-              >
-                <div className="text-center">
-                  {/* Step number gradient circle + icon */}
-                  <div className="relative mx-auto mb-8">
-                    {/* Outer glow ring */}
-                    <motion.div
-                      initial={{ scale: 0.5, opacity: 0 }}
-                      animate={stepsInView ? { scale: 1, opacity: 1 } : { scale: 0.5, opacity: 0 }}
-                      transition={{ duration: 0.5, delay: i * 0.15 + 0.2, ease: 'easeOut' }}
-                      className={`absolute inset-[-8px] rounded-full bg-gradient-to-br ${step.gradient} opacity-20 blur-xl`}
-                    />
-                    {/* Main circle with gradient */}
-                    <motion.div
-                      whileHover={{ y: -6, scale: 1.1 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      className={`relative inline-flex size-[88px] items-center justify-center rounded-full bg-gradient-to-br ${step.gradient} shadow-xl ${step.shadowColor} ring-4 ring-white dark:ring-gray-950 ${step.ringColor}`}
-                    >
-                      {/* Large gradient number */}
-                      <motion.span
-                        initial={{ scale: 0, rotate: -90 }}
-                        animate={stepsInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -90 }}
-                        transition={{ duration: 0.5, delay: i * 0.15 + 0.1, type: 'spring', stiffness: 200 }}
-                        className="absolute inset-0 flex items-center justify-center text-3xl font-black text-white/20 select-none"
-                      >
-                        {step.number}
-                      </motion.span>
-                      {/* Icon */}
+              <React.Fragment key={i}>
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                  transition={{ duration: 0.6, delay: i * 0.2, ease: 'easeOut' }}
+                  className="relative z-10"
+                >
+                  <div className="text-center">
+                    {/* Step number gradient circle + icon */}
+                    <div className="relative mx-auto mb-8">
+                      {/* Outer glow ring */}
                       <motion.div
-                        initial={{ scale: 0 }}
-                        animate={stepsInView ? { scale: 1 } : { scale: 0 }}
-                        transition={{ duration: 0.4, delay: i * 0.15 + 0.25, type: 'spring', stiffness: 300 }}
-                        className="relative flex size-12 items-center justify-center rounded-2xl bg-white/25 backdrop-blur-sm"
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={stepsInView ? { scale: 1, opacity: 1 } : { scale: 0.5, opacity: 0 }}
+                        transition={{ duration: 0.5, delay: i * 0.2 + 0.2, ease: 'easeOut' }}
+                        className={`absolute inset-[-8px] rounded-full bg-gradient-to-br ${step.gradient} opacity-20 blur-xl`}
+                      />
+                      {/* Main circle with gradient */}
+                      <motion.div
+                        whileHover={{ y: -6, scale: 1.1 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        className={`relative inline-flex size-[88px] items-center justify-center rounded-full bg-gradient-to-br ${step.gradient} shadow-xl ${step.shadowColor} ring-4 ring-white dark:ring-gray-950 ${step.ringColor}`}
                       >
-                        <step.icon className="h-6 w-6 text-white" />
+                        {/* Large gradient number */}
+                        <motion.span
+                          initial={{ scale: 0, rotate: -90 }}
+                          animate={stepsInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -90 }}
+                          transition={{ duration: 0.5, delay: i * 0.2 + 0.1, type: 'spring', stiffness: 200 }}
+                          className="absolute inset-0 flex items-center justify-center text-3xl font-black text-white/20 select-none"
+                        >
+                          {step.number}
+                        </motion.span>
+                        {/* Icon */}
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={stepsInView ? { scale: 1 } : { scale: 0 }}
+                          transition={{ duration: 0.4, delay: i * 0.2 + 0.25, type: 'spring', stiffness: 300 }}
+                          className="relative flex size-12 items-center justify-center rounded-2xl bg-white/25 backdrop-blur-sm"
+                        >
+                          <step.icon className="h-6 w-6 text-white" />
+                        </motion.div>
                       </motion.div>
-                    </motion.div>
+                    </div>
+
+                    {/* Title */}
+                    <motion.h3
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                      transition={{ duration: 0.4, delay: i * 0.2 + 0.3 }}
+                      className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-3"
+                    >
+                      {step.title}
+                    </motion.h3>
+
+                    {/* Description */}
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                      transition={{ duration: 0.4, delay: i * 0.2 + 0.4 }}
+                      className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto"
+                    >
+                      {step.description}
+                    </motion.p>
                   </div>
-
-                  {/* Title */}
-                  <motion.h3
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                    transition={{ duration: 0.4, delay: i * 0.15 + 0.3 }}
-                    className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-3"
-                  >
-                    {step.title}
-                  </motion.h3>
-
-                  {/* Description */}
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                    transition={{ duration: 0.4, delay: i * 0.15 + 0.4 }}
-                    className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto"
-                  >
-                    {step.description}
-                  </motion.p>
-                </div>
-              </motion.div>
+                </motion.div>
+                {/* Mobile-only dot divider between steps */}
+                {i < steps.length - 1 && (
+                  <div className="dot-divider md:hidden py-2">
+                    <div className="dot-divider-dot" />
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
         </div>
@@ -1297,9 +1304,9 @@ function FAQSection() {
               <AccordionItem
                 key={i}
                 value={`faq-${i}`}
-                className="border border-gray-100 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow data-[state=open]:shadow-lg data-[state=open]:shadow-indigo-500/[0.05] data-[state=open]:border-indigo-100 overflow-hidden"
+                className="border border-gray-100 rounded-xl bg-white shadow-sm hover:shadow-md hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 transition-all data-[state=open]:shadow-lg data-[state=open]:shadow-indigo-500/[0.05] data-[state=open]:border-indigo-100 overflow-hidden"
               >
-                <AccordionTrigger className="px-6 py-4 text-right text-base font-semibold text-gray-900 hover:no-underline hover:text-indigo-600 transition-colors [&[data-state=open]>svg]:text-indigo-600">
+                <AccordionTrigger className="px-6 py-4 text-right text-base font-semibold text-gray-900 hover:no-underline hover:text-indigo-600 transition-colors [&[data-state=open]>svg]:text-indigo-600 [&[data-state=open]>svg]:rotate-180 [&>svg]:transition-transform [&>svg]:duration-300">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-5 text-sm text-gray-500 leading-relaxed">
@@ -1870,9 +1877,13 @@ function CTASection() {
 
 function Footer() {
   const [showBackTop, setShowBackTop] = React.useState(false);
+  const [showPulseDot, setShowPulseDot] = React.useState(false);
 
   React.useEffect(() => {
-    const onScroll = () => setShowBackTop(window.scrollY > 400);
+    const onScroll = () => {
+      setShowBackTop(window.scrollY > 400);
+      setShowPulseDot(window.scrollY > window.innerHeight);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -2006,7 +2017,25 @@ function Footer() {
         </div>
       </div>
 
-      {/* Back to top button */}
+      {/* Floating pulse dot — back to top indicator */}
+      <AnimatePresence>
+        {showPulseDot && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-6 left-6 z-40 flex items-center justify-center group"
+            title="بازگشت به بالا"
+          >
+            <span className="absolute size-6 rounded-full bg-violet-500/30 pulse-dot" />
+            <span className="relative size-3 rounded-full bg-violet-500 shadow-lg shadow-violet-500/50 group-hover:bg-violet-400 transition-colors" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Back to top button (appears later) */}
       <AnimatePresence>
         {showBackTop && (
           <motion.button
@@ -2015,7 +2044,7 @@ function Footer() {
             exit={{ opacity: 0, scale: 0.8, y: 10 }}
             transition={{ duration: 0.2 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-6 left-6 z-40 flex items-center justify-center size-11 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-1 transition-all"
+            className="fixed bottom-16 left-6 z-40 flex items-center justify-center size-11 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-1 transition-all"
             title="بازگشت به بالا"
           >
             <ArrowUp className="size-5" />
@@ -2029,8 +2058,26 @@ function Footer() {
 /* ──────────────────────────── Main Landing Page ──────────────────────────── */
 
 export default function LandingPage() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+      setScrollProgress(Math.min(progress, 1));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <div dir="rtl" className="min-h-screen flex flex-col bg-white font-sans antialiased">
+      {/* Scroll progress indicator */}
+      <div
+        className="scroll-progress"
+        style={{ '--scroll-progress': scrollProgress } as React.CSSProperties}
+      />
       <Navbar />
       <main className="flex-1">
         <HeroSection />

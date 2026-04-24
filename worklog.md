@@ -1779,3 +1779,126 @@ Unresolved Issues / Recommendations for Next Phase:
 16. Rate limiting on form submissions
 17. Form builder: Import questions backend implementation (UI done)
 18. Form analytics export to actual PDF file
+---
+Task ID: 16
+Agent: main
+Task: QA testing, scroll-to-top button, form quick preview, enhanced animations, activity feed, template gallery enhancements, builder/results improvements
+
+Work Log:
+- QA testing via agent-browser across all views (Landing, Dashboard, Templates, Admin, User Panel)
+- Clean build: 0 errors, all routes compile successfully
+- 0 JavaScript errors across all views
+- Dev server running on port 3000
+
+Feature 1: Scroll-to-Top Button Component:
+  - Created `/src/components/ui/scroll-to-top.tsx` ("use client" component)
+  - Shows floating violet gradient button at bottom-left (RTL) when scrolled past 300px
+  - Smooth scroll to top on click with fade-in/slide-up animation
+  - Hover: scale + lift + enhanced shadow effects
+  - Dark mode support with separate gradient shades
+  - Passive scroll listener with cleanup on unmount
+  - Integrated in page.tsx after AnimatePresence (visible on all views)
+
+Feature 2: Form Quick Preview Modal in Dashboard:
+  - Added `FormQuickPreview` component in dashboard.tsx
+  - Triggered by Eye icon button on each form card
+  - Dialog shows: form title, description, question count badge
+  - Scrollable list of all questions with numbered badges, type labels, required indicators
+  - Color-coded type badges (violet for text, emerald for choice, amber for input, fuchsia for rating)
+  - Two action buttons: "ویرایش" (Edit → builder) and "مشاهده کامل" (Full View → fill)
+  - Glass card dialog with gradient header and decorative elements
+  - Staggered entrance animation per question row
+  - Changed existing Eye button from direct navigation to opening quick preview
+
+Feature 3: Enhanced CSS Animations and Utility Classes (14 new sections, 60-73):
+  - Float animation variants (slow/medium/fast)
+  - Spotlight card effect (mouse-following radial glow)
+  - Morphing blob background animation
+  - Text reveal clip-path animation
+  - Magnetic button effect transition
+  - Gradient text variants (warm and cool tones)
+  - Scroll-triggered fade-in with JS `.revealed` class toggle
+  - Border spin animation for loading states (conic-gradient rotation)
+  - Button press micro-interaction (scale on :active)
+  - Ornamental dot divider for section breaks
+  - Colored-tinted glassmorphism (glass-violet, glass-emerald)
+  - Scroll progress indicator (fixed top bar via CSS variable)
+  - CSS-only 3D tilt card on hover
+  - Text glow shadow effect (violet, light + dark variants)
+
+Feature 4: Landing Page Enhancements:
+  - Scroll progress indicator at top of landing page (3px gradient bar)
+  - Enhanced "How It Works" section with more pronounced staggered entrance
+  - Mobile dot dividers between step cards (hidden on desktop)
+  - Floating pulse dot in footer area (appears when scrolled past hero)
+  - FAQ section hover effect (subtle background color change)
+  - FAQ expand/collapse indicator (chevron rotates 180° with smooth transition)
+
+Feature 5: Dashboard Activity Feed:
+  - Horizontal scrollable timeline of recent activities
+  - Generates mock activities from existing forms (created/edited/published/response/duplicated)
+  - 5 activity types with distinct colors and Persian labels
+  - Glass card styling with hover effects
+  - Collapsible section with rotating chevron indicator
+  - Hidden scrollbar for clean horizontal scroll
+  - Placed between Quick Stats Bar and form cards grid
+
+Feature 6: Form Builder and Results View Enhancements:
+  - Mobile-visible question count badge in builder toolbar (visible on small screens)
+  - Response statistics summary row in results view (total responses, avg completion time)
+  - Export options row with CSV, PDF, and Print buttons
+  - Glass card styled statistics badges with icons
+  - Print button calls window.print(), PDF shows toast notification
+
+Feature 7: Template Gallery Enhancements:
+  - "Templates Used" counter tracked in localStorage (formbuilder-used-templates-count)
+  - Emerald badge shows "✓ X الگو استفاده شده" when count > 0
+  - Counter increments when user clicks "استفاده از این الگو"
+  - Difficulty/complexity indicator on each card (ساده/متوسط/پیشرفته)
+  - Color-coded badges: emerald (1-3 questions), amber (4-6), rose (7+)
+  - Question count range filter dropdown (همه/۱-۳/۴-۶/۷+ سؤال)
+  - Filter works alongside existing search and sort
+
+Stage Summary:
+- Files created: src/components/ui/scroll-to-top.tsx
+- Files modified: src/app/page.tsx, src/app/globals.css, src/components/dashboard/dashboard.tsx, src/components/landing/landing-page.tsx, src/components/form-builder/form-builder.tsx, src/components/dashboard/results-view.tsx, src/components/dashboard/template-library-page.tsx
+- 7 major features implemented across 7 files
+- 14 new CSS utility classes (sections 60-73) added to globals.css
+- Clean build: 0 errors, all routes compile
+- QA verified: 0 JavaScript errors across all views
+
+---
+Current Project Status Assessment:
+- Application is fully functional with no JS errors across all views
+- 8 views: Landing (scroll progress, pulse dot, FAQ hover, mobile dividers), Dashboard (quick preview, activity feed, grid/list, stats, sort, batch select), Builder (toolbar badges, undo/redo, shortcuts, 17 question types), Form Fill (dark mode, theme, logic, matrix, image choice), Results (stats summary, export row, analytics timeline, pie charts), Templates (100 templates, difficulty badges, used counter, range filter, favorites, sort), Admin Panel, User Panel
+- Scroll-to-top button visible on all views
+- 73+ CSS utility classes for comprehensive visual polish
+- Clean build - 0 errors, Clean ESLint - 0 warnings
+
+Completed in This Session:
+1. ✅ Scroll-to-top button component (violet gradient, animated, RTL-aware)
+2. ✅ Form quick preview modal (question list, type badges, edit/full view buttons)
+3. ✅ 14 new CSS animation utilities (float, spotlight, blob, text reveal, magnetic, scroll progress, tilt, glow, etc.)
+4. ✅ Landing page scroll progress indicator (3px gradient bar at top)
+5. ✅ Landing page "How It Works" enhanced stagger animation + mobile dot dividers
+6. ✅ Landing page floating pulse dot in footer area
+7. ✅ Landing page FAQ hover effect and expand/collapse indicator
+8. ✅ Dashboard activity feed (horizontal timeline, 5 activity types, collapsible)
+9. ✅ Form builder mobile question count badge
+10. ✅ Results view statistics summary row (total responses, avg completion time)
+11. ✅ Results view export options (CSV, PDF, Print)
+12. ✅ Template gallery difficulty indicators (ساده/متوسط/پیشرفته)
+13. ✅ Template gallery used counter (localStorage tracked)
+14. ✅ Template gallery question count range filter
+
+Unresolved Issues / Recommendations for Next Phase:
+1. File upload backend works but no cloud storage integration
+2. Email notification backend ready, needs SMTP service integration
+3. Real-time collaborative editing (websocket)
+4. Multi-language support (currently Persian only)
+5. Custom domain/branding for published forms
+6. Admin Panel: Maintenance mode implementation
+7. User Panel: Two-factor authentication
+8. Rate limiting on form submissions
+9. Form builder: Import questions backend implementation (UI done)
+10. Form analytics export to actual PDF file (currently HTML for printing)

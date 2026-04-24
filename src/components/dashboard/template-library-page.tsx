@@ -83,6 +83,25 @@ function saveFavorites(ids: string[]) {
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
 }
 
+/* ─── Templates-used storage ─────────────────────────────────────────────── */
+
+const USED_TEMPLATES_KEY = 'formbuilder-used-templates-count';
+
+function getUsedTemplatesCount(): number {
+  if (typeof window === 'undefined') return 0;
+  try {
+    const raw = localStorage.getItem(USED_TEMPLATES_KEY);
+    return raw ? parseInt(raw, 10) || 0 : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function incrementUsedTemplatesCount() {
+  const current = getUsedTemplatesCount();
+  localStorage.setItem(USED_TEMPLATES_KEY, String(current + 1));
+}
+
 /* ─── Category config ───────────────────────────────────────────────────── */
 
 const categoryTabs: { value: string; label: string; icon: React.ReactNode }[] = [
@@ -154,6 +173,14 @@ const dialogVariants = {
 function TemplateIcon({ name, className }: { name: string; className?: string }) {
   const IconComponent = (LucideIcons as Record<string, React.ComponentType<{ className?: string }>>)[name] || LucideIcons.FileText;
   return <IconComponent className={className} />;
+}
+
+/* ─── Difficulty helper ──────────────────────────────────────────────────── */
+
+function getDifficulty(count: number): { label: string; bg: string; text: string; darkBg: string; darkText: string } {
+  if (count <= 3) return { label: 'ساده', bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-900/30', darkText: 'dark:text-emerald-400' };
+  if (count <= 6) return { label: 'متوسط', bg: 'bg-amber-100', text: 'text-amber-700', darkBg: 'dark:bg-amber-900/30', darkText: 'dark:text-amber-400' };
+  return { label: 'پیشرفته', bg: 'bg-rose-100', text: 'text-rose-700', darkBg: 'dark:bg-rose-900/30', darkText: 'dark:text-rose-400' };
 }
 
 /* ─── Question type helpers ──────────────────────────────────────────────── */
@@ -523,9 +550,21 @@ function TemplateCard({
           </div>
 
           <div className="flex items-center justify-between mt-auto pt-2">
-            <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
-              <Layers className="size-3.5" />
-              <span>{template.questionCount} سؤال</span>
+            <div className="flex items-center gap-1.5">
+              <span
+                className={cn(
+                  'text-[10px] font-medium px-1.5 py-0.5 rounded-full border-0',
+                  getDifficulty(template.questionCount).bg,
+                  getDifficulty(template.questionCount).text,
+                  getDifficulty(template.questionCount).darkBg,
+                  getDifficulty(template.questionCount).darkText
+                )}
+              >
+                {getDifficulty(template.questionCount).label}
+              </span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">
+                {template.questionCount} سؤال
+              </span>
             </div>
 
             <div className="flex items-center gap-1.5">
@@ -554,6 +593,7 @@ function TemplateCard({
 /* ─── Main Template Library Page ────────────────────────────────────────── */
 
 type SortOption = 'default' | 'most-questions' | 'least-questions' | 'alpha-asc' | 'alpha-desc';
+type QuestionFilterOption = 'all' | '1-3' | '4-6' | '7+';
 
 export default function TemplateLibraryPage() {
   const [activeTab, setActiveTab] = useState('all');
@@ -563,11 +603,14 @@ export default function TemplateLibraryPage() {
   const [previewTemplate, setPreviewTemplate] = useState<TemplateData | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>('default');
+  const [questionFilter, setQuestionFilter] = useState<QuestionFilterOption>('all');
+  const [usedCount, setUsedCount] = useState(0);
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
 
-  // Load favorites from localStorage
+  // Load favorites & used count from localStorage
   useEffect(() => {
     setFavorites(getFavorites());
+    setUsedCount(getUsedTemplatesCount());
   }, []);
 
   const toggleFavorite = useCallback((templateId: string) => {
@@ -601,6 +644,15 @@ export default function TemplateLibraryPage() {
       );
     }
 
+    // Filter by question count range
+    if (questionFilter === '1-3') {
+      result = result.filter((t) => t.questionCount >= 1 && t.questionCount <= 3);
+    } else if (questionFilter === '4-6') {
+      result = result.filter((t) => t.questionCount >= 4 && t.questionCount <= 6);
+    } else if (questionFilter === '7+') {
+      result = result.filter((t) => t.questionCount >= 7);
+    }
+
     // Sort
     switch (sortBy) {
       case 'most-questions':
@@ -618,7 +670,7 @@ export default function TemplateLibraryPage() {
     }
 
     return result;
-  }, [activeTab, searchQuery, sortBy, favorites]);
+  }, [activeTab, searchQuery, sortBy, favorites, questionFilter]);
 
   const totalPages = Math.ceil(filteredTemplates.length / ITEMS_PER_PAGE);
   const paginatedTemplates = filteredTemplates.slice(
@@ -638,6 +690,11 @@ export default function TemplateLibraryPage() {
 
   const handleSortChange = useCallback((value: string) => {
     setSortBy(value as SortOption);
+    setCurrentPage(1);
+  }, []);
+
+  const handleQuestionFilterChange = useCallback((value: string) => {
+    setQuestionFilter(value as QuestionFilterOption);
     setCurrentPage(1);
   }, []);
 
@@ -667,6 +724,8 @@ export default function TemplateLibraryPage() {
         setCurrentForm(newForm);
         setCurrentView('builder');
         setPreviewTemplate(null);
+        incrementUsedTemplatesCount();
+        setUsedCount((c) => c + 1);
       }
     } catch (err) {
       console.error('Failed to create form from template:', err);
@@ -757,6 +816,21 @@ export default function TemplateLibraryPage() {
             <p className="text-base sm:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
               از میان الگوهای حرفه‌ای انتخاب کنید و در کمتر از ۳۰ ثانیه فرم خود را بسازید
             </p>
+          </motion.div>
+
+          {/* Templates used badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="flex justify-center mb-3"
+          >
+            {usedCount > 0 && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 border border-white/20 text-white/90 text-xs font-medium backdrop-blur-sm">
+                <Check className="size-3 text-emerald-300" />
+                {usedCount} الگو استفاده شده
+              </span>
+            )}
           </motion.div>
 
           {/* Search bar */}
@@ -850,6 +924,17 @@ export default function TemplateLibraryPage() {
             )}
           </div>
           <div className="flex items-center gap-2">
+            <Select value={questionFilter} onValueChange={handleQuestionFilterChange}>
+              <SelectTrigger className="h-8 w-[130px] text-xs rounded-lg border-gray-200 dark:border-gray-700">
+                <SelectValue placeholder="تعداد سؤال" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">همه</SelectItem>
+                <SelectItem value="1-3">۱-۳ سؤال</SelectItem>
+                <SelectItem value="4-6">۴-۶ سؤال</SelectItem>
+                <SelectItem value="7+">۷+ سؤال</SelectItem>
+              </SelectContent>
+            </Select>
             <ArrowUpDown className="size-3.5 text-gray-400" />
             <Select value={sortBy} onValueChange={handleSortChange}>
               <SelectTrigger className="h-8 w-[150px] text-xs rounded-lg border-gray-200 dark:border-gray-700">
@@ -871,7 +956,7 @@ export default function TemplateLibraryPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-8">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${activeTab}-${searchQuery}-${currentPage}-${sortBy}`}
+            key={`${activeTab}-${searchQuery}-${currentPage}-${sortBy}-${questionFilter}`}
             variants={containerVariants}
             initial="hidden"
             animate="visible"

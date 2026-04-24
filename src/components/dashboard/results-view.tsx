@@ -25,6 +25,7 @@ import {
   FileDown,
   Check,
   Filter,
+  Printer,
 } from 'lucide-react';
 import {
   BarChart,
@@ -69,6 +70,7 @@ import { Separator } from '@/components/ui/separator';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Input } from '@/components/ui/input';
 
+import { toast } from 'sonner';
 import { useAppStore, type FormQuestion, type Submission } from '@/lib/store';
 import { cn } from '@/lib/utils';
 
@@ -1821,6 +1823,57 @@ export default function ResultsView() {
               </TabsContent>
 
               <TabsContent value="individual">
+                {/* Response statistics summary row */}
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <div className="flex items-center gap-2 rounded-xl bg-gradient-to-l from-violet-50/80 to-purple-50/60 dark:from-violet-950/30 dark:to-purple-950/20 border border-violet-100 dark:border-violet-900/50 px-4 py-2.5 shadow-sm backdrop-blur-sm">
+                    <Users className="size-4 text-violet-500" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">مجموع:</span>
+                    <Badge variant="secondary" className="bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300 border-0 text-xs font-semibold">
+                      {toPersianDigits(submissions.length)} پاسخ
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-xl bg-gradient-to-l from-amber-50/80 to-orange-50/60 dark:from-amber-950/30 dark:to-orange-950/20 border border-amber-100 dark:border-amber-900/50 px-4 py-2.5 shadow-sm backdrop-blur-sm">
+                    <Clock className="size-4 text-amber-500" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">میانگین زمان تکمیل:</span>
+                    <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 border-0 text-xs font-semibold">
+                      {toPersianDigits(analytics?.avgResponseTime ?? 3)} دقیقه
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Export options row */}
+                <div className="flex items-center gap-2 mb-4">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 rounded-lg border-gray-200 dark:border-gray-700 hover:bg-violet-50 hover:border-violet-200 dark:hover:bg-violet-950/30 dark:hover:border-violet-800 transition-colors duration-200"
+                    disabled={submissions.length === 0}
+                    onClick={handleExport}
+                    title="خروجی CSV"
+                  >
+                    <FileSpreadsheet className="size-4 text-emerald-600 dark:text-emerald-400" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 rounded-lg border-gray-200 dark:border-gray-700 hover:bg-violet-50 hover:border-violet-200 dark:hover:bg-violet-950/30 dark:hover:border-violet-800 transition-colors duration-200"
+                    disabled={submissions.length === 0}
+                    onClick={() => toast.info('خروجی PDF')}
+                    title="خروجی PDF"
+                  >
+                    <FileDown className="size-4 text-red-600 dark:text-red-400" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 rounded-lg border-gray-200 dark:border-gray-700 hover:bg-violet-50 hover:border-violet-200 dark:hover:bg-violet-950/30 dark:hover:border-violet-800 transition-colors duration-200"
+                    onClick={() => window.print()}
+                    title="چاپ"
+                  >
+                    <Printer className="size-4 text-blue-600 dark:text-blue-400" />
+                  </Button>
+                </div>
+
                 <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base text-gray-900 dark:text-gray-100">

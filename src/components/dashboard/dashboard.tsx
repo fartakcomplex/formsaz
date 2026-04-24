@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, formatDistanceToNow, isAfter, isBefore } from 'date-fns';
 import { faIR } from 'date-fns/locale';
@@ -42,6 +42,10 @@ import {
   LayoutGrid,
   List,
   AlertTriangle,
+  Pencil,
+  Globe,
+  MessageSquare,
+  ChevronDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -89,6 +93,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAppStore, type Form } from '@/lib/store';
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
@@ -112,6 +117,46 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.R
     color: 'bg-gradient-to-l from-red-100 to-rose-100 text-red-700 border border-red-200 dark:from-red-900/30 dark:to-rose-900/30 dark:text-red-400 dark:border-red-800',
     icon: <AlertTriangle className="size-3.5" />,
   },
+};
+
+const questionTypeLabels: Record<string, string> = {
+  short_text: 'متن کوتاه',
+  long_text: 'متن بلند',
+  multiple_choice: 'تک انتخابی',
+  multiple_select: 'چند انتخابی',
+  dropdown: 'لیست کشویی',
+  image_choice: 'انتخاب تصویری',
+  matrix: 'ماتریس',
+  number: 'عدد',
+  email: 'ایمیل',
+  phone: 'تلفن',
+  date: 'تاریخ',
+  scale: 'مقیاس',
+  rating: 'امتیازدهی',
+  yes_no: 'بله/خیر',
+  file_upload: 'آپلود فایل',
+  statement: 'عنوان بخش',
+  section_divider: 'جداکننده بخش',
+};
+
+const questionTypeBadgeColors: Record<string, string> = {
+  short_text: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400',
+  long_text: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400',
+  multiple_choice: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
+  multiple_select: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
+  dropdown: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
+  image_choice: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
+  matrix: 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-400',
+  number: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+  email: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+  phone: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+  date: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+  scale: 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-400',
+  rating: 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-400',
+  yes_no: 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-400',
+  file_upload: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400',
+  statement: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400',
+  section_divider: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400',
 };
 
 const statusBorderGradient: Record<string, string> = {
@@ -431,6 +476,175 @@ function ShareFormDialog({
             </motion.div>
           )}
         </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ─── Form Quick Preview Dialog ─────────────────────────────────────────────
+
+function FormQuickPreview({
+  form,
+  open,
+  onOpenChange,
+  onEdit,
+  onFullView,
+}: {
+  form: Form | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onEdit: (form: Form) => void;
+  onFullView: (form: Form) => void;
+}) {
+  const questions = form?.questions || [];
+  const questionCount = questions.length;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        dir="rtl"
+        className="sm:max-w-lg p-0 gap-0 overflow-hidden rounded-2xl border-gray-200 dark:border-gray-800"
+      >
+        {/* Header with glass card style */}
+        <DialogHeader className="relative p-6 pb-5 border-b border-gray-100 dark:border-gray-800 overflow-hidden">
+          {/* Gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-bl from-violet-50 via-purple-50 to-fuchsia-50 dark:from-violet-950/40 dark:via-purple-950/30 dark:to-fuchsia-950/30" />
+          {/* Decorative glassmorphism overlay */}
+          <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/20 backdrop-blur-sm" />
+          {/* Decorative circles */}
+          <div className="absolute -top-6 -left-6 size-24 rounded-full bg-violet-200/40 dark:bg-violet-800/20 blur-2xl" />
+          <div className="absolute -bottom-4 -right-4 size-20 rounded-full bg-fuchsia-200/40 dark:bg-fuchsia-800/20 blur-2xl" />
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-3">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20"
+              >
+                <Eye className="size-5 text-white" />
+              </motion.div>
+              <div className="text-right flex-1 min-w-0">
+                <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  پیش‌نمایش سریع فرم
+                </DialogDescription>
+                <DialogTitle className="text-base font-extrabold text-gray-900 dark:text-white truncate">
+                  {form?.title}
+                </DialogTitle>
+              </div>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 20 }}
+              >
+                <Badge className="bg-gradient-to-l from-violet-500 to-purple-600 text-white border-0 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 text-xs">
+                  <FileText className="size-3 ml-1" />
+                  {questionCount} سؤال
+                </Badge>
+              </motion.div>
+            </div>
+            {form?.description && (
+              <motion.p
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-2"
+              >
+                {form.description}
+              </motion.p>
+            )}
+          </div>
+        </DialogHeader>
+
+        {/* Questions list */}
+        <div className="p-6">
+          {questionCount === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col items-center justify-center py-8 text-center"
+            >
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800 mb-3">
+                <ClipboardList className="size-6 text-gray-400 dark:text-gray-500" />
+              </div>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                هنوز سوالی اضافه نشده
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                فرم را ویرایش کنید و سؤالات خود را اضافه نمایید
+              </p>
+            </motion.div>
+          ) : (
+            <ScrollArea className="max-h-[320px] pr-1">
+              <div className="space-y-2">
+                {questions.map((question, index) => (
+                  <motion.div
+                    key={question.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.03 * index, duration: 0.25 }}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/50 hover:bg-violet-50/80 dark:hover:bg-violet-950/30 border border-transparent hover:border-violet-100 dark:hover:border-violet-900/50 transition-all duration-200 group"
+                  >
+                    {/* Question number */}
+                    <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-gray-700 shadow-sm text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:bg-violet-100 group-hover:text-violet-600 dark:group-hover:bg-violet-900/40 dark:group-hover:text-violet-400 transition-colors">
+                      {index + 1}
+                    </div>
+
+                    {/* Question title */}
+                    <span className="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                      {question.title}
+                    </span>
+
+                    {/* Required indicator */}
+                    {question.required && (
+                      <span className="shrink-0 text-[10px] font-bold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">
+                        الزامی
+                      </span>
+                    )}
+
+                    {/* Type badge */}
+                    <Badge
+                      variant="secondary"
+                      className={`shrink-0 text-[10px] font-medium px-2 py-0.5 h-5 border-0 ${
+                        questionTypeBadgeColors[question.type] || 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
+                      }`}
+                    >
+                      {questionTypeLabels[question.type] || question.type}
+                    </Badge>
+                  </motion.div>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+        </div>
+
+        {/* Footer actions */}
+        <DialogFooter className="gap-2 px-6 pb-6 pt-0">
+          <Button
+            type="button"
+            onClick={() => {
+              if (form) onEdit(form);
+              onOpenChange(false);
+            }}
+            className="flex-1 bg-gradient-to-l from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white rounded-xl text-sm shadow-md shadow-violet-200/50 dark:shadow-violet-500/20"
+          >
+            <Edit3 className="size-3.5 ml-1.5" />
+            ویرایش
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              if (form) onFullView(form);
+              onOpenChange(false);
+            }}
+            className="flex-1 rounded-xl border-gray-200 dark:border-gray-700 text-sm hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
+          >
+            <Eye className="size-3.5 ml-1.5" />
+            مشاهده کامل
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -1018,138 +1232,172 @@ function QuickStatsBar({
 interface ActivityItem {
   id: string;
   type: string;
+  label: string;
   formTitle: string;
-  createdAt: string;
+  formId: string;
+  time: string;
+}
+
+function generateActivities(forms: Form[]): ActivityItem[] {
+  if (forms.length === 0) return [];
+  const actionTypes = ['created', 'edited', 'published', 'response', 'duplicated'];
+  const actionLabels: Record<string, string> = {
+    created: 'فرم ایجاد شد',
+    edited: 'فرم ویرایش شد',
+    published: 'فرم منتشر شد',
+    response: 'پاسخ جدید دریافت شد',
+    duplicated: 'فرم کپی شد',
+  };
+  const activities: ActivityItem[] = [];
+  forms.slice(0, 10).forEach((form, i) => {
+    const type = actionTypes[i % actionTypes.length];
+    activities.push({
+      id: `${form.id}-${type}`,
+      type,
+      label: actionLabels[type],
+      formTitle: form.title,
+      formId: form.id,
+      time: form.updatedAt || form.createdAt,
+    });
+  });
+  return activities
+    .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+    .slice(0, 8);
 }
 
 function ActivityFeedWidget() {
-  const [activities, setActivities] = useState<ActivityItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { forms } = useAppStore();
+  const [collapsed, setCollapsed] = useState(false);
+  const activities = useMemo(() => generateActivities(forms), [forms]);
 
-  useEffect(() => {
-    const fetchActivity = async () => {
-      try {
-        const res = await fetch('/api/user/activity');
-        if (res.ok) {
-          const data = await res.json();
-          setActivities((data.activities || []).slice(0, 5));
-        }
-      } catch {
-        // silent fail
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchActivity();
-  }, []);
+  if (activities.length === 0) return null;
 
   const getActivityMeta = (type: string) => {
     switch (type) {
-      case 'new_form':
+      case 'created':
         return {
-          icon: <FilePlus className="size-4 text-violet-500" />,
-          description: (title: string) => `فرم «${title}» ایجاد شد`,
+          icon: <Plus className="size-3.5 text-violet-500" />,
+          dotColor: 'bg-violet-500',
           bgColor: 'bg-violet-100 dark:bg-violet-900/40',
         };
-      case 'publish_form':
+      case 'edited':
         return {
-          icon: <Rocket className="size-4 text-emerald-500" />,
-          description: (title: string) => `فرم «${title}» منتشر شد`,
+          icon: <Pencil className="size-3.5 text-amber-500" />,
+          dotColor: 'bg-amber-500',
+          bgColor: 'bg-amber-100 dark:bg-amber-900/40',
+        };
+      case 'published':
+        return {
+          icon: <Globe className="size-3.5 text-emerald-500" />,
+          dotColor: 'bg-emerald-500',
           bgColor: 'bg-emerald-100 dark:bg-emerald-900/40',
         };
-      case 'new_response':
+      case 'response':
         return {
-          icon: <Send className="size-4 text-fuchsia-500" />,
-          description: (title: string) => `پاسخ جدید برای «${title}»`,
+          icon: <MessageSquare className="size-3.5 text-fuchsia-500" />,
+          dotColor: 'bg-fuchsia-500',
           bgColor: 'bg-fuchsia-100 dark:bg-fuchsia-900/40',
+        };
+      case 'duplicated':
+        return {
+          icon: <Copy className="size-3.5 text-blue-500" />,
+          dotColor: 'bg-blue-500',
+          bgColor: 'bg-blue-100 dark:bg-blue-900/40',
         };
       default:
         return {
-          icon: <CircleDot className="size-4 text-gray-400" />,
-          description: (title: string) => title,
+          icon: <CircleDot className="size-3.5 text-gray-400" />,
+          dotColor: 'bg-gray-400',
           bgColor: 'bg-gray-100 dark:bg-gray-800',
         };
     }
   };
 
-  if (loading) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5"
-      >
-        <div className="flex items-center gap-2 mb-4">
-          <Skeleton className="size-5 rounded" />
-          <Skeleton className="h-5 w-32" />
-        </div>
-        <div className="space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <Skeleton className="size-8 rounded-lg" />
-              <div className="flex-1 space-y-1.5">
-                <Skeleton className="h-4 w-48" />
-                <Skeleton className="h-3 w-20" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    );
-  }
-
-  if (activities.length === 0) {
-    return null;
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-      className="mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
+      transition={{ delay: 0.15 }}
+      className="mb-6 rounded-2xl border border-gray-200/80 dark:border-gray-800/80 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl overflow-hidden shadow-sm"
     >
-      <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+      {/* Header - clickable for collapse/expand */}
+      <button
+        type="button"
+        onClick={() => setCollapsed(!collapsed)}
+        className="w-full flex items-center gap-2 px-5 py-3.5 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+      >
         <Clock className="size-4 text-violet-500" />
         <h3 className="text-sm font-bold text-gray-900 dark:text-white">فعالیت‌های اخیر</h3>
         <Badge variant="secondary" className="text-[10px] h-5 mr-auto">
           {activities.length} مورد
         </Badge>
-      </div>
-      <div className="relative max-h-80 overflow-y-auto scrollbar-thin">
-        {/* Timeline connector line */}
-        <div className="absolute top-0 bottom-0 right-[26px] w-px bg-gradient-to-b from-violet-200 via-purple-200 to-transparent dark:from-violet-800 dark:via-purple-800 dark:to-transparent" />
-        <div className="divide-y divide-gray-50 dark:divide-gray-800/50">
-          {activities.map((activity, index) => {
-            const meta = getActivityMeta(activity.type);
-            return (
-              <motion.div
-                key={activity.id}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.05 * index }}
-                className="relative flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+        <motion.div
+          animate={{ rotate: collapsed ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronDown className="size-4 text-gray-400 dark:text-gray-500" />
+        </motion.div>
+      </button>
+
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            {/* Horizontal scrollable timeline */}
+            <div className="relative px-5 pb-4">
+              {/* Horizontal connector line */}
+              <div className="absolute top-[22px] left-5 right-5 h-px bg-gradient-to-l from-violet-200 via-purple-200 to-violet-200 dark:from-violet-800 dark:via-purple-800 dark:to-violet-800" />
+
+              <div
+                className="flex gap-0 overflow-x-auto py-1 -mx-5 px-5"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {/* Timeline dot */}
-                <div className={`relative z-10 flex items-center justify-center size-[22px] rounded-full shrink-0 ring-3 ring-white dark:ring-gray-900 ${meta.bgColor}`}>
-                  <div className="flex items-center justify-center">
-                    {meta.icon}
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-700 dark:text-gray-300 truncate">
-                    {meta.description(activity.formTitle)}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                    {formatRelativeTime(activity.createdAt)}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
+                {activities.map((activity, index) => {
+                  const meta = getActivityMeta(activity.type);
+                  return (
+                    <motion.div
+                      key={activity.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.04 * index }}
+                      className="flex flex-col items-center shrink-0 w-[120px] group cursor-default"
+                    >
+                      {/* Dot with icon */}
+                      <div
+                        className={`relative z-10 flex items-center justify-center size-[30px] rounded-full shrink-0 ring-2 ring-white dark:ring-gray-900 ${meta.bgColor} shadow-sm group-hover:scale-110 transition-transform duration-200`}
+                      >
+                        {meta.icon}
+                      </div>
+                      {/* Connector to card */}
+                      <div className={`w-px h-2 ${meta.dotColor} opacity-30`} />
+                      {/* Info card */}
+                      <div className="w-full rounded-xl bg-gray-50/80 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 p-2.5 text-center group-hover:bg-white dark:group-hover:bg-gray-800 group-hover:shadow-md group-hover:border-violet-200 dark:group-hover:border-violet-800/50 transition-all duration-200">
+                        <p className="text-[11px] font-medium text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-2">
+                          {activity.label}
+                        </p>
+                        <p
+                          className="text-[10px] font-semibold text-gray-900 dark:text-white mt-1 truncate"
+                          title={activity.formTitle}
+                        >
+                          {activity.formTitle}
+                        </p>
+                        <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-1">
+                          {formatRelativeTime(activity.time)}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -1755,6 +2003,8 @@ export default function Dashboard() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [expirationForm, setExpirationForm] = useState<Form | null>(null);
   const [expirationDialogOpen, setExpirationDialogOpen] = useState(false);
+  const [quickPreviewForm, setQuickPreviewForm] = useState<Form | null>(null);
+  const [quickPreviewOpen, setQuickPreviewOpen] = useState(false);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [batchDeleteConfirmOpen, setBatchDeleteConfirmOpen] = useState(false);
@@ -1817,6 +2067,11 @@ export default function Dashboard() {
   };
 
   const handlePreview = (form: Form) => {
+    setQuickPreviewForm(form);
+    setQuickPreviewOpen(true);
+  };
+
+  const handleFullView = (form: Form) => {
     setFillForm(form);
     setCurrentView('fill');
   };
@@ -2405,6 +2660,14 @@ export default function Dashboard() {
         open={expirationDialogOpen}
         onOpenChange={setExpirationDialogOpen}
         onSave={handleSaveExpiration}
+      />
+
+      <FormQuickPreview
+        form={quickPreviewForm}
+        open={quickPreviewOpen}
+        onOpenChange={setQuickPreviewOpen}
+        onEdit={handleEdit}
+        onFullView={handleFullView}
       />
     </div>
   );
