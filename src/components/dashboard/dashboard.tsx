@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, formatDistanceToNow, isAfter, isBefore } from 'date-fns';
 import { faIR } from 'date-fns/locale';
@@ -46,7 +46,20 @@ import {
   Globe,
   MessageSquare,
   ChevronDown,
+  Upload,
+  FileJson,
+  FileUp,
 } from 'lucide-react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -94,7 +107,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useAppStore, type Form } from '@/lib/store';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useAppStore, type Form, type FormQuestion } from '@/lib/store';
+import { useTheme } from 'next-themes';
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   draft: {
@@ -184,22 +200,142 @@ function formatDate(dateStr: string): string {
   }
 }
 
-function getExpirationStatus(expiresAt: string | null | undefined): { isExpired: boolean; text: string; color: string } {
-  if (!expiresAt) return { isExpired: false, text: '', color: '' };
-  const now = new Date();
-  const expDate = new Date(expiresAt);
-  if (isBefore(expDate, now)) {
-    return {
-      isExpired: true,
-      text: 'منقضی',
-      color: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800',
-    };
-  }
-  return {
-    isExpired: false,
-    text: `منقضی در ${formatDate(expiresAt)}`,
-    color: 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800',
+
+interface ExportedFormJSON {
+  version: string;
+  exportedAt: string;
+  form: {
+    title: string;
+    description: string;
+    theme: string;
+    status: string;
+    questions: FormQuestion[];
   };
+}
+
+function ImportFormDialog({ open, onOpenChange, onImport }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onImport: (title: string, description: string, theme: string, questions: FormQuestion[]) => Promise<void>;
+}) {
+  const [jsonText, setJsonText] = useState('');
+  const [preview, setPreview] = useState<{ title: string; description: string; theme: string; status: string; questions: FormQuestion[] } | null>(null);
+  const [error, setError] = useState('');
+  const [importing, setImporting] = useState(false);
+
+  const resetState = () => {
+    setJsonText('');
+    setPreview(null);
+    setError('');
+    setImporting(false);
+  };
+
+  const handleOpenChange = (isOpen: boolean) => {
+    if (isOpen) resetState();
+    onOpenChange(isOpen);
+  };
+
+  const validateAndPreview = (text: string) => {
+    setError('');
+    setPreview(null);
+    if (!text.trim()) {
+      setError('لطفاً JSON را وارد کنید');
+      return;
+    }
+    let parsed: ExportedFormJSON;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      setError('فرمت JSON نامعتبر است.');
+      return;
+    }
+    if (!parsed.version || !parsed.form) {
+      setError('فرمت فایل پشتیبانی نمی‌شود.');
+      return;
+    }
+    if (!Array.isArray(parsed.form.questions)) {
+      setError('سؤالات فرم نامعتبر هستند.');
+      return;
+    }
+    setPreview(parsed.form);
+  };
+
+  const handleImportClick = async () => {
+    if (!preview) return;
+    setImporting(true);
+    try {
+      await onImport(preview.title, preview.description, preview.theme, preview.questions);
+      onOpenChange(false);
+    } catch {
+      toast.error('خطا در وارد کردن فرم');
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent dir="rtl" className="sm:max-w-lg p-0 gap-0 overflow-hidden rounded-2xl border-gray-200 dark:border-gray-800">
+        <DialogHeader className="p-6 pb-4 bg-gradient-to-l from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/40 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-sm">
+              <Upload className="size-5 text-violet-500" />
+            </div>
+            <div className="text-right">
+              <DialogTitle className="text-base font-bold text-gray-900 dark:text-white">ورود از JSON</DialogTitle>
+              <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">فرم خود را از فایل JSON وارد کنید</DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+        <div className="p-6 space-y-4">
+          <Textarea
+            placeholder="JSON فرم را اینجا وارد کنید..."
+            value={jsonText}
+            onChange={(e) => setJsonText(e.target.value)}
+            className="min-h-[160px] rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-mono resize-none focus:border-violet-300 focus:ring-violet-100"
+            dir="ltr"
+          />
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => validateAndPreview(jsonText)} className="flex-1 rounded-xl border-gray-200 dark:border-gray-700 text-sm">
+              <Eye className="size-3.5 ml-1.5" />
+              پیش‌نمایش
+            </Button>
+          </div>
+          {error && (
+            <div className="flex items-start gap-2 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 p-3">
+              <AlertTriangle className="size-4 text-red-500 shrink-0 mt-0.5" />
+              <p className="text-xs text-red-700 dark:text-red-400 leading-relaxed">{error}</p>
+            </div>
+          )}
+          {preview && (
+            <div className="rounded-xl border border-violet-200 dark:border-violet-800 bg-violet-50/50 dark:bg-violet-950/20 p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/50">
+                  <Eye className="size-4 text-violet-600 dark:text-violet-400" />
+                </div>
+                <span className="text-sm font-bold text-gray-800 dark:text-gray-200">پیش‌نمایش فرم</span>
+              </div>
+              <div className="space-y-1.5">
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{preview.title}</p>
+                {preview.description && <p className="text-xs text-gray-500 dark:text-gray-400">{preview.description}</p>}
+                <Badge className="bg-gradient-to-l from-violet-500 to-purple-600 text-white border-0 text-[10px] px-2 h-5">
+                  {preview.questions.length} سؤال
+                </Badge>
+              </div>
+            </div>
+          )}
+          {preview && (
+            <DialogFooter className="gap-2">
+              <Button variant="outline" onClick={() => onOpenChange(false)} className="rounded-xl border-gray-200 dark:border-gray-700 text-sm">انصراف</Button>
+              <Button onClick={handleImportClick} disabled={importing} className="flex-1 bg-violet-500 hover:bg-violet-600 text-white rounded-xl text-sm shadow-md">
+                {importing ? <span className="loading-dots"><span /></span> : 'ایجاد فرم'}
+              </Button>
+            </DialogFooter>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 // ─── Share Form Dialog ─────────────────────────────────────────────────────
@@ -771,6 +907,35 @@ function ExpirationDateDialog({
   );
 }
 
+// ─── Animated Counter Hook ─────────────────────────────────────────────────
+
+function useAnimatedCounter(target: number, duration: number = 1200) {
+  const [count, setCount] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    startTimeRef.current = null;
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) startTimeRef.current = timestamp;
+      const elapsed = timestamp - startTimeRef.current;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [target, duration]);
+
+  return count;
+}
+
 // ─── Stat Card ──────────────────────────────────────────────────────────────
 
 function MiniSparkline({ trend = 'up', color = '#8b5cf6' }: { trend?: 'up' | 'down'; color?: string }) {
@@ -809,6 +974,7 @@ function StatCard({
   colorDark,
   sparkTrend,
   sparkColor,
+  percentChange,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -817,24 +983,64 @@ function StatCard({
   colorDark: string;
   sparkTrend?: 'up' | 'down';
   sparkColor?: string;
+  percentChange?: number;
 }) {
+  const numericValue = typeof value === 'number' ? value : parseInt(String(value), 10) || 0;
+  const animatedValue = useAnimatedCounter(numericValue);
+  const isUp = (percentChange ?? 0) >= 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative flex items-center gap-4 rounded-2xl border bg-white/60 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-lg transition-all duration-300 border-gray-200/80 dark:border-gray-800/80 backdrop-blur-xl hover:-translate-y-0.5"
+      whileHover={{ scale: 1.03 }}
+      className="relative flex items-center gap-3 rounded-2xl border bg-white/60 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-lg transition-all duration-300 border-gray-200/80 dark:border-gray-800/80 backdrop-blur-xl group cursor-default"
     >
+      {/* Pulse ring on hover */}
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-l from-violet-500/5 to-purple-500/5 dark:from-violet-400/5 dark:to-purple-400/5" />
+      </div>
+
       <div
-        className={`flex size-11 items-center justify-center rounded-xl shadow-sm ${color} ${colorDark}`}
+        className={`relative flex size-11 items-center justify-center rounded-xl shadow-sm ${color} ${colorDark} shrink-0`}
       >
         {icon}
+        {/* Pulse dot */}
+        <motion.div
+          className="absolute -top-0.5 -left-0.5 size-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-gray-900"
+          animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0.4, 0.8] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-2xl font-extrabold text-gray-900 dark:text-white tabular-nums">{value}</p>
+      <div className="relative flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <p className="text-2xl font-extrabold text-gray-900 dark:text-white tabular-nums count-animate">
+            {typeof value === 'number' ? animatedValue : value}
+          </p>
+          {percentChange !== undefined && (
+            <motion.span
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, type: 'spring', stiffness: 400, damping: 20 }}
+              className={`inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                isUp
+                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
+                  : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+              }`}
+            >
+              {isUp ? (
+                <TrendingUp className="size-3" />
+              ) : (
+                <TrendingUp className="size-3 rotate-180" />
+              )}
+              {Math.abs(percentChange)}%
+            </motion.span>
+          )}
+        </div>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{label}</p>
       </div>
       {sparkTrend && sparkColor && (
-        <div className="w-16 h-5 opacity-70">
+        <div className="w-14 h-5 opacity-70 shrink-0">
           <MiniSparkline trend={sparkTrend} color={sparkColor} />
         </div>
       )}
@@ -1187,10 +1393,38 @@ function QuickStatsBar({
   totalViews: number;
 }) {
   const stats = [
-    { label: 'کل فرم‌ها', value: totalForms, icon: <FileText className="size-4" /> },
-    { label: 'منتشر شده', value: publishedCount, icon: <CircleDot className="size-4" /> },
-    { label: 'کل پاسخ‌ها', value: totalSubmissions, icon: <Send className="size-4" /> },
-    { label: 'کل بازدیدها', value: totalViews, icon: <Eye className="size-4" /> },
+    {
+      label: 'کل فرم‌ها',
+      value: totalForms,
+      icon: <FileText className="size-4" />,
+      percentChange: 12,
+      sparkTrend: 'up' as const,
+      sparkColor: '#a78bfa',
+    },
+    {
+      label: 'منتشر شده',
+      value: publishedCount,
+      icon: <CircleDot className="size-4" />,
+      percentChange: 8,
+      sparkTrend: 'up' as const,
+      sparkColor: '#34d399',
+    },
+    {
+      label: 'کل پاسخ‌ها',
+      value: totalSubmissions,
+      icon: <Send className="size-4" />,
+      percentChange: -3,
+      sparkTrend: 'down' as const,
+      sparkColor: '#f87171',
+    },
+    {
+      label: 'کل بازدیدها',
+      value: totalViews,
+      icon: <Eye className="size-4" />,
+      percentChange: 24,
+      sparkTrend: 'up' as const,
+      sparkColor: '#818cf8',
+    },
   ];
 
   return (
@@ -1206,22 +1440,216 @@ function QuickStatsBar({
 
       <div className="relative flex items-center justify-around gap-2 py-4 px-4 sm:px-8">
         {stats.map((stat, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.15 + index * 0.08 }}
-            className="flex items-center gap-3"
-          >
-            <div className="flex items-center justify-center size-9 rounded-xl bg-white/20 backdrop-blur-sm">
-              <span className="text-white">{stat.icon}</span>
-            </div>
-            <div>
-              <p className="text-lg sm:text-xl font-bold text-white">{stat.value}</p>
-              <p className="text-[11px] text-white/70">{stat.label}</p>
-            </div>
-          </motion.div>
+          <AnimatedStatItem key={index} stat={stat} index={index} />
         ))}
+      </div>
+    </motion.div>
+  );
+}
+
+function AnimatedStatItem({
+  stat,
+  index,
+}: {
+  stat: {
+    label: string;
+    value: number;
+    icon: React.ReactNode;
+    percentChange: number;
+    sparkTrend: 'up' | 'down';
+    sparkColor: string;
+  };
+  index: number;
+}) {
+  const animatedValue = useAnimatedCounter(stat.value, 1400 + index * 200);
+  const isUp = stat.percentChange >= 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.15 + index * 0.08, type: 'spring', stiffness: 300, damping: 20 }}
+      whileHover={{ scale: 1.08, y: -2 }}
+      className="flex flex-col items-center gap-1.5 cursor-default group"
+    >
+      <div className="flex items-center gap-2.5">
+        <div className="relative flex items-center justify-center size-9 rounded-xl bg-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors duration-300">
+          <span className="text-white">{stat.icon}</span>
+          <motion.div
+            className="absolute -top-0.5 -left-0.5 size-2 rounded-full bg-emerald-300 border border-white/50"
+            animate={{ scale: [1, 1.5, 1], opacity: [0.7, 0.3, 0.7] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: index * 0.3 }}
+          />
+        </div>
+        <div className="text-center">
+          <p className="text-lg sm:text-xl font-bold text-white tabular-nums">{animatedValue}</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <p className="text-[11px] text-white/70">{stat.label}</p>
+        <motion.span
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.8 + index * 0.1, type: 'spring', stiffness: 500, damping: 25 }}
+          className={`inline-flex items-center gap-0.5 text-[9px] font-bold px-1 py-px rounded-sm ${
+            isUp
+              ? 'bg-emerald-400/30 text-emerald-100'
+              : 'bg-red-400/30 text-red-100'
+          }`}
+        >
+          {isUp ? '▲' : '▼'}
+          {Math.abs(stat.percentChange)}%
+        </motion.span>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Weekly Activity Chart ──────────────────────────────────────────────────
+
+const weeklyData = [
+  { day: 'شنبه', responses: 12, views: 45 },
+  { day: 'یکشنبه', responses: 19, views: 62 },
+  { day: 'دوشنبه', responses: 8, views: 31 },
+  { day: 'سه‌شنبه', responses: 24, views: 78 },
+  { day: 'چهارشنبه', responses: 15, views: 55 },
+  { day: 'پنجشنبه', responses: 31, views: 95 },
+  { day: 'جمعه', responses: 7, views: 22 },
+];
+
+function WeeklyActivityChart() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.35, duration: 0.5, ease: 'easeOut' }}
+      className="relative mb-6 rounded-2xl overflow-hidden glass-card-strong p-5 sm:p-6"
+    >
+      {/* Decorative gradient orbs */}
+      <div className="absolute -top-8 -right-8 size-32 rounded-full bg-violet-300/20 dark:bg-violet-600/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-8 -left-8 size-28 rounded-full bg-fuchsia-300/20 dark:bg-fuchsia-600/10 blur-3xl pointer-events-none" />
+
+      {/* Header */}
+      <div className="relative flex items-center justify-between mb-5">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
+            <BarChart3 className="size-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">فعالیت هفتگی</h3>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">۷ روز اخیر</p>
+          </div>
+        </div>
+        <Badge
+          variant="outline"
+          className="text-[10px] font-medium border-violet-200 dark:border-violet-800 text-violet-600 dark:text-violet-400 bg-violet-50/50 dark:bg-violet-950/30"
+        >
+          <TrendingUp className="size-3 ml-1" />
+          مقایسه با هفته قبل
+        </Badge>
+      </div>
+
+      {/* Chart */}
+      <div className="relative" dir="ltr">
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart
+            data={weeklyData}
+            margin={{ top: 5, right: 5, left: -20, bottom: 5 }}
+            barCategoryGap="20%"
+          >
+            <defs>
+              <linearGradient id="barGradientResponses" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8b5cf6" stopOpacity={1} />
+                <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.7} />
+              </linearGradient>
+              <linearGradient id="barGradientViews" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.85} />
+                <stop offset="100%" stopColor="#6d28d9" stopOpacity={0.55} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke={isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}
+            />
+            <XAxis
+              dataKey="day"
+              tick={{ fill: isDark ? '#9ca3af' : '#6b7280', fontSize: 11, fontFamily: 'Vazirmatn, system-ui' }}
+              axisLine={{ stroke: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }}
+              tickLine={false}
+              dy={8}
+            />
+            <YAxis
+              tick={{ fill: isDark ? '#9ca3af' : '#6b7280', fontSize: 11 }}
+              axisLine={false}
+              tickLine={false}
+              dx={-4}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                border: `1px solid ${isDark ? 'rgba(139,92,246,0.2)' : 'rgba(139,92,246,0.15)'}`,
+                borderRadius: '12px',
+                boxShadow: isDark
+                  ? '0 8px 32px rgba(0,0,0,0.4)'
+                  : '0 8px 32px rgba(139,92,246,0.1)',
+                fontFamily: 'Vazirmatn, system-ui',
+                fontSize: '12px',
+                direction: 'rtl',
+                padding: '10px 14px',
+              }}
+              labelStyle={{
+                color: isDark ? '#e5e7eb' : '#374151',
+                fontWeight: 700,
+                marginBottom: '4px',
+                fontSize: '12px',
+              }}
+              itemStyle={{
+                color: isDark ? '#d1d5db' : '#4b5563',
+                padding: '2px 0',
+              }}
+              formatter={(value: number, name: string) => {
+                const label = name === 'responses' ? 'پاسخ‌ها' : 'بازدیدها';
+                return [value, label];
+              }}
+              cursor={{ fill: isDark ? 'rgba(139,92,246,0.05)' : 'rgba(139,92,246,0.04)' }}
+            />
+            <Legend
+              verticalAlign="top"
+              align="left"
+              iconType="circle"
+              iconSize={8}
+              wrapperStyle={{
+                fontSize: '11px',
+                fontFamily: 'Vazirmatn, system-ui',
+                paddingBottom: '8px',
+                direction: 'rtl',
+              }}
+              formatter={(value: string) => {
+                return value === 'responses' ? 'پاسخ‌ها' : 'بازدیدها';
+              }}
+            />
+            <Bar
+              dataKey="responses"
+              fill="url(#barGradientResponses)"
+              radius={[6, 6, 0, 0]}
+              maxBarSize={36}
+              animationDuration={1200}
+              animationEasing="ease-out"
+            />
+            <Bar
+              dataKey="views"
+              fill="url(#barGradientViews)"
+              radius={[6, 6, 0, 0]}
+              maxBarSize={36}
+              animationDuration={1400}
+              animationEasing="ease-out"
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </motion.div>
   );
@@ -1437,6 +1865,7 @@ function FormCard({
   onDuplicate,
   onShare,
   onSetExpiration,
+  onExport,
   selectMode,
   selected,
   onToggleSelect,
@@ -1450,6 +1879,7 @@ function FormCard({
   onDuplicate: (form: Form) => void;
   onShare: (form: Form) => void;
   onSetExpiration: (form: Form) => void;
+  onExport: (form: Form) => void;
   selectMode?: boolean;
   selected?: boolean;
   onToggleSelect?: (id: string) => void;
@@ -1644,6 +2074,10 @@ function FormCard({
                     <Copy className="size-4 ml-2 text-gray-500" />
                     کپی فرم
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onExport(form)}>
+                    <Download className="size-4 ml-2 text-emerald-500" />
+                    خروجی JSON
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -1682,8 +2116,16 @@ function FormCard({
 
 // ─── Form List Row ─────────────────────────────────────────────────────────
 
+const statusDotColor: Record<string, string> = {
+  draft: 'bg-amber-400 dark:bg-amber-500',
+  published: 'bg-emerald-400 dark:bg-emerald-500',
+  closed: 'bg-zinc-400 dark:bg-zinc-500',
+  expired: 'bg-red-400 dark:bg-red-500',
+};
+
 function FormListRow({
   form,
+  index,
   onEdit,
   onPreview,
   onResults,
@@ -1691,12 +2133,14 @@ function FormListRow({
   onDuplicate,
   onShare,
   onSetExpiration,
+  onExport,
   selectMode,
   selected,
   onToggleSelect,
   getEffectiveStatus,
 }: {
   form: Form;
+  index: number;
   onEdit: (form: Form) => void;
   onPreview: (form: Form) => void;
   onResults: (form: Form) => void;
@@ -1704,6 +2148,7 @@ function FormListRow({
   onDuplicate: (form: Form) => void;
   onShare: (form: Form) => void;
   onSetExpiration: (form: Form) => void;
+  onExport: (form: Form) => void;
   selectMode?: boolean;
   selected?: boolean;
   onToggleSelect?: (id: string) => void;
@@ -1712,149 +2157,153 @@ function FormListRow({
   const effectiveStatus = getEffectiveStatus(form);
   const status = statusConfig[effectiveStatus] || statusConfig.draft;
   const questionCount = form.questions?.length || 0;
+  const isEven = index % 2 === 0;
 
   return (
-    <Card className={`overflow-hidden transition-all duration-200 group bg-white dark:bg-gray-900 hover:shadow-lg ${
-      selected
-        ? 'border-violet-400 dark:border-violet-600 ring-2 ring-violet-200 dark:ring-violet-800'
-        : 'border-gray-200 dark:border-gray-800'
-    }`}>
-      <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4">
-        {/* Checkbox in select mode */}
-        {selectMode && (
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => onToggleSelect?.(form.id)}
-            className="shrink-0"
-          >
-            {selected ? (
-              <div className="flex size-5 items-center justify-center rounded-md bg-violet-500 text-white">
-                <Check className="size-3.5" strokeWidth={3} />
-              </div>
-            ) : (
-              <div className="flex size-5 items-center justify-center rounded-md border-2 border-gray-300 dark:border-gray-600 group-hover:border-violet-400 dark:group-hover:border-violet-500 transition-colors" />
-            )}
-          </motion.button>
-        )}
+    <div
+      className={`group relative flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-3.5 border-b border-gray-100 dark:border-gray-800/60 transition-all duration-200 ${
+        isEven
+          ? 'bg-white dark:bg-gray-900'
+          : 'bg-gray-50/70 dark:bg-gray-900/50'
+      } hover:bg-violet-50/60 dark:hover:bg-violet-950/20 ${
+        selected
+          ? 'ring-2 ring-violet-200 dark:ring-violet-800 ring-inset'
+          : ''
+      }`}
+    >
+      {/* Checkbox in select mode */}
+      {selectMode && (
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={() => onToggleSelect?.(form.id)}
+          className="shrink-0"
+        >
+          {selected ? (
+            <div className="flex size-5 items-center justify-center rounded-md bg-violet-500 text-white">
+              <Check className="size-3.5" strokeWidth={3} />
+            </div>
+          ) : (
+            <div className="flex size-5 items-center justify-center rounded-md border-2 border-gray-300 dark:border-gray-600 group-hover:border-violet-400 dark:group-hover:border-violet-500 transition-colors" />
+          )}
+        </motion.button>
+      )}
 
-        {/* Status indicator line */}
-        <div className={`shrink-0 w-1 h-10 rounded-full bg-gradient-to-b ${effectiveStatus === 'expired' ? 'from-red-400 to-rose-500' : effectiveStatus === 'published' ? 'from-emerald-400 to-green-500' : effectiveStatus === 'closed' ? 'from-zinc-300 to-zinc-400' : 'from-amber-400 to-yellow-500'}`} />
+      {/* Status dot */}
+      <div className="shrink-0 flex items-center justify-center w-6">
+        <span className={`size-2.5 rounded-full ${statusDotColor[effectiveStatus] || statusDotColor.draft}`} title={status.label} />
+      </div>
 
-        {/* Form info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-0.5">
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate">{form.title}</h3>
-            {form.description && (
-              <span className="hidden sm:inline text-xs text-gray-400 dark:text-gray-500 truncate max-w-[200px]">
-                — {form.description}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 flex-wrap text-xs text-gray-400 dark:text-gray-500">
-            <Badge variant="outline" className={`text-[10px] px-1.5 py-0 h-5 ${status.color}`}>
-              {status.icon}
-              {status.label}
-            </Badge>
-            <span className="flex items-center gap-1">
-              <FileText className="size-3" />
-              {questionCount} سؤال
-            </span>
-            <span className="flex items-center gap-1">
-              <Send className="size-3" />
-              {form._count?.submissions || 0} پاسخ
-            </span>
-            <span className="hidden sm:flex items-center gap-1">
-              <Eye className="size-3" />
-              {form.viewCount || 0} بازدید
-            </span>
-            <span className="hidden md:flex items-center gap-1">
-              <Calendar className="size-3" />
-              {formatRelativeTime(form.createdAt)}
-            </span>
-          </div>
+      {/* Form title & description */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate">{form.title}</h3>
+          <Badge variant="outline" className={`hidden sm:inline-flex text-[10px] px-1.5 py-0 h-5 shrink-0 ${status.color}`}>
+            {status.icon}
+            {status.label}
+          </Badge>
         </div>
-
-        {/* Action buttons */}
-        {!selectMode && (
-          <div className="flex items-center gap-1.5 shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-lg size-8 p-0 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
-              onClick={() => onEdit(form)}
-              title="ویرایش"
-            >
-              <Edit3 className="size-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-lg size-8 p-0 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
-              onClick={() => onPreview(form)}
-              title="پیش‌نمایش"
-            >
-              <Eye className="size-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-lg size-8 p-0 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
-              onClick={() => onResults(form)}
-              title="نتایج"
-            >
-              <BarChart3 className="size-3.5" />
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="rounded-lg size-8 p-0 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-                  <MoreHorizontal className="size-3.5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-44">
-                <DropdownMenuItem onClick={() => onShare(form)}>
-                  <Share2 className="size-4 ml-2 text-purple-500" />
-                  اشتراک‌گذاری
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onSetExpiration(form)}>
-                  <Clock className="size-4 ml-2 text-orange-500" />
-                  تاریخ انقضا
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onDuplicate(form)}>
-                  <Copy className="size-4 ml-2 text-gray-500" />
-                  کپی فرم
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50" onSelect={(e) => e.preventDefault()}>
-                      <Trash2 className="size-4 ml-2" />
-                      حذف
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent dir="rtl">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>حذف فرم</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        آیا از حذف فرم «{form.title}» مطمئن هستید؟
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="rounded-lg">انصراف</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => onDelete(form)}
-                        className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                      >
-                        حذف فرم
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        {form.description && (
+          <p className="text-xs text-gray-400 dark:text-gray-500 truncate mt-0.5">{form.description}</p>
         )}
       </div>
-    </Card>
+
+      {/* Question count */}
+      <div className="hidden sm:flex flex-col items-center w-16 shrink-0">
+        <span className="text-sm font-bold text-gray-700 dark:text-gray-200 tabular-nums">{questionCount}</span>
+        <span className="text-[10px] text-gray-400 dark:text-gray-500">سؤال</span>
+      </div>
+
+      {/* Submission count */}
+      <div className="hidden sm:flex flex-col items-center w-16 shrink-0">
+        <span className="text-sm font-bold text-gray-700 dark:text-gray-200 tabular-nums">{form._count?.submissions || 0}</span>
+        <span className="text-[10px] text-gray-400 dark:text-gray-500">پاسخ</span>
+      </div>
+
+      {/* Last updated */}
+      <div className="hidden md:flex flex-col items-center w-28 shrink-0">
+        <span className="text-xs text-gray-500 dark:text-gray-400 tabular-nums">{formatRelativeTime(form.updatedAt)}</span>
+      </div>
+
+      {/* Action buttons - hover on desktop, always on mobile */}
+      {!selectMode && (
+        <div className="flex items-center gap-1 shrink-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-lg size-8 p-0 hover:bg-violet-100 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+            onClick={() => onEdit(form)}
+            title="ویرایش"
+          >
+            <Pencil className="size-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-lg size-8 p-0 hover:bg-violet-100 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+            onClick={() => onShare(form)}
+            title="اشتراک‌گذاری"
+          >
+            <Share2 className="size-3.5" />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="rounded-lg size-8 p-0 hover:bg-violet-100 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                <MoreHorizontal className="size-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-44">
+              <DropdownMenuItem onClick={() => onPreview(form)}>
+                <Eye className="size-4 ml-2 text-violet-500" />
+                پیش‌نمایش
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onResults(form)}>
+                <BarChart3 className="size-4 ml-2 text-fuchsia-500" />
+                نتایج
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onSetExpiration(form)}>
+                <Clock className="size-4 ml-2 text-orange-500" />
+                تاریخ انقضا
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onDuplicate(form)}>
+                <Copy className="size-4 ml-2 text-gray-500" />
+                کپی فرم
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onExport(form)}>
+                <Download className="size-4 ml-2 text-emerald-500" />
+                خروجی JSON
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50" onSelect={(e) => e.preventDefault()}>
+                    <Trash2 className="size-4 ml-2" />
+                    حذف
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+                <AlertDialogContent dir="rtl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>حذف فرم</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      آیا از حذف فرم «{form.title}» مطمئن هستید؟
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="rounded-lg">انصراف</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => onDelete(form)}
+                      className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                    >
+                      حذف فرم
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -2008,6 +2457,7 @@ export default function Dashboard() {
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [batchDeleteConfirmOpen, setBatchDeleteConfirmOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const fetchForms = useCallback(async () => {
     try {
@@ -2209,6 +2659,69 @@ export default function Dashboard() {
     }
   };
 
+  const handleExport = (form: Form) => {
+    try {
+      const exportData: ExportedFormJSON = {
+        version: '1.0',
+        exportedAt: new Date().toISOString(),
+        form: {
+          title: form.title,
+          description: form.description || '',
+          theme: form.theme || 'default',
+          status: form.status || 'draft',
+          questions: (form.questions || []).map((q, i) => ({
+            ...q,
+            order: q.order ?? i,
+          })),
+        },
+      };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${form.title}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success('فرم با موفقیت خروجی شد');
+    } catch {
+      toast.error('خطا در خروجی گرفتن از فرم');
+    }
+  };
+
+  const handleImport = async (title: string, description: string, theme: string, questions: FormQuestion[]) => {
+    try {
+      const questionsPayload = questions.map((q, i) => ({
+        ...q,
+        order: q.order ?? i,
+      }));
+
+      const res = await fetch('/api/forms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          description,
+          theme,
+          questions: questionsPayload,
+        }),
+      });
+
+      if (res.ok) {
+        const newForm = await res.json();
+        setForms([newForm, ...forms]);
+        toast.success(`فرم «${title}» با موفقیت وارد شد`);
+      } else {
+        toast.error('خطا در ایجاد فرم از فایل JSON');
+      }
+    } catch (err) {
+      console.error('Failed to import form:', err);
+      toast.error('خطا در وارد کردن فرم');
+      throw err;
+    }
+  };
+
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -2382,6 +2895,14 @@ export default function Dashboard() {
               <Plus className="size-4 ml-2" />
               ایجاد فرم جدید
             </Button>
+            <Button
+              variant="outline"
+              onClick={() => setImportDialogOpen(true)}
+              className="border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 rounded-xl px-5 font-medium w-full sm:w-auto h-10 transition-colors text-gray-700 dark:text-gray-300"
+            >
+              <Upload className="size-4 ml-2 text-emerald-500" />
+              ورود از JSON
+            </Button>
           </div>
         </div>
 
@@ -2518,6 +3039,9 @@ export default function Dashboard() {
               totalViews={totalViews}
             />
 
+            {/* Weekly Activity Chart */}
+            <WeeklyActivityChart />
+
             {/* Activity Feed Widget */}
             <ActivityFeedWidget />
 
@@ -2548,6 +3072,7 @@ export default function Dashboard() {
                         onDuplicate={handleDuplicate}
                         onShare={handleShare}
                         onSetExpiration={handleSetExpiration}
+                        onExport={handleExport}
                         selectMode={selectMode}
                         selected={selectedIds.has(form.id)}
                         onToggleSelect={toggleSelect}
@@ -2563,8 +3088,16 @@ export default function Dashboard() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.25 }}
-                  className="flex flex-col gap-3"
+                  className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm"
                 >
+                  {/* Table header - hidden on mobile */}
+                  <div className="hidden sm:grid sm:grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 px-5 py-2.5 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
+                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">عنوان فرم</span>
+                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 w-16 text-center">سؤالات</span>
+                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 w-16 text-center">پاسخ‌ها</span>
+                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 w-28 text-center">بروزرسانی</span>
+                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 w-[104px] text-center">عملیات</span>
+                  </div>
                   {filteredAndSortedForms.map((form, index) => (
                     <motion.div
                       key={form.id}
@@ -2575,6 +3108,7 @@ export default function Dashboard() {
                     >
                       <FormListRow
                         form={form}
+                        index={index}
                         onEdit={handleEdit}
                         onPreview={handlePreview}
                         onResults={handleResults}
@@ -2582,6 +3116,7 @@ export default function Dashboard() {
                         onDuplicate={handleDuplicate}
                         onShare={handleShare}
                         onSetExpiration={handleSetExpiration}
+                        onExport={handleExport}
                         selectMode={selectMode}
                         selected={selectedIds.has(form.id)}
                         onToggleSelect={toggleSelect}

@@ -40,12 +40,12 @@ interface QuestionTypeItem {
   category: string;
 }
 
-const categoryColors: Record<string, { gradient: string; dotColor: string; darkGradient: string }> = {
-  'متن': { gradient: 'from-violet-500/10 to-purple-500/10', dotColor: 'bg-violet-500', darkGradient: 'from-violet-500/15 to-purple-500/15' },
-  'انتخاب': { gradient: 'from-emerald-500/10 to-teal-500/10', dotColor: 'bg-emerald-500', darkGradient: 'from-emerald-500/15 to-teal-500/15' },
-  'ورودی': { gradient: 'from-amber-500/10 to-orange-500/10', dotColor: 'bg-amber-500', darkGradient: 'from-amber-500/15 to-orange-500/15' },
-  'ارزیابی': { gradient: 'from-fuchsia-500/10 to-pink-500/10', dotColor: 'bg-fuchsia-500', darkGradient: 'from-fuchsia-500/15 to-pink-500/15' },
-  'متفرقه': { gradient: 'from-gray-500/10 to-slate-500/10', dotColor: 'bg-gray-500', darkGradient: 'from-gray-500/15 to-slate-500/15' },
+const categoryColors: Record<string, { gradient: string; dotColor: string; darkGradient: string; borderColor: string; darkBorderColor: string }> = {
+  'متن': { gradient: 'from-violet-500/10 to-purple-500/10', dotColor: 'bg-violet-500', darkGradient: 'from-violet-500/15 to-purple-500/15', borderColor: 'border-r-violet-500', darkBorderColor: 'dark:border-r-violet-400' },
+  'انتخاب': { gradient: 'from-emerald-500/10 to-teal-500/10', dotColor: 'bg-emerald-500', darkGradient: 'from-emerald-500/15 to-teal-500/15', borderColor: 'border-r-emerald-500', darkBorderColor: 'dark:border-r-emerald-400' },
+  'ورودی': { gradient: 'from-amber-500/10 to-orange-500/10', dotColor: 'bg-amber-500', darkGradient: 'from-amber-500/15 to-orange-500/15', borderColor: 'border-r-amber-500', darkBorderColor: 'dark:border-r-amber-400' },
+  'ارزیابی': { gradient: 'from-fuchsia-500/10 to-pink-500/10', dotColor: 'bg-fuchsia-500', darkGradient: 'from-fuchsia-500/15 to-pink-500/15', borderColor: 'border-r-fuchsia-500', darkBorderColor: 'dark:border-r-fuchsia-400' },
+  'متفرقه': { gradient: 'from-gray-500/10 to-slate-500/10', dotColor: 'bg-gray-500', darkGradient: 'from-gray-500/15 to-slate-500/15', borderColor: 'border-r-slate-500', darkBorderColor: 'dark:border-r-slate-400' },
 };
 
 const questionTypes: QuestionTypeItem[] = [
@@ -240,13 +240,26 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
                         <button
                           onClick={() => handleAddQuestion(qt.type)}
                           className={cn(
-                            'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-right transition-all duration-200 ease-out',
-                            'hover:scale-[1.02] hover:shadow-md hover:border-violet-200 dark:hover:border-violet-800',
-                            'dark:hover:border-violet-800/60',
+                            'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-right transition-all duration-200 ease-out',
+                            'hover:scale-[1.03] hover:shadow-md',
                             'active:scale-[0.98]',
-                            'border border-transparent hover:border-violet-200 dark:hover:border-violet-800/60'
+                            'border border-transparent',
+                            'bg-white dark:bg-zinc-900/40',
+                            'hover:bg-violet-50/50 dark:hover:bg-violet-950/20',
+                            'hover:border-muted/60 dark:hover:border-muted/40'
                           )}
                         >
+                          {/* Colored right border indicator on hover */}
+                          <div
+                            className="absolute top-1 bottom-1 right-0 w-[3px] rounded-l opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            style={{
+                              backgroundColor: category === 'متن' ? '#8b5cf6'
+                                : category === 'انتخاب' ? '#10b981'
+                                : category === 'ورودی' ? '#f59e0b'
+                                : category === 'ارزیابی' ? '#d946ef'
+                                : '#64748b'
+                            }}
+                          />
                           <div className={cn(
                             'flex h-8 w-8 shrink-0 items-center justify-center rounded-md',
                             'bg-muted/60 text-muted-foreground transition-all duration-200',
@@ -256,18 +269,12 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
                           )}>
                             {qt.icon}
                           </div>
-                          {/* Colored category dot indicator */}
-                          <span className={cn(
-                            'w-1.5 h-1.5 rounded-full shrink-0 transition-transform duration-200',
-                            colors.dotColor,
-                            'opacity-60 group-hover:opacity-100'
-                          )} />
                           <span className="text-sm font-medium">{qt.label}</span>
                           {/* Info icon */}
                           <Info className="size-3 ml-auto text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent side="left" sideOffset={8} className="max-w-[200px]">
+                      <TooltipContent side="left" sideOffset={8} className="max-w-[220px]">
                         <p className="text-sm font-medium">{qt.label}</p>
                         <p className="text-xs text-muted-foreground">{qt.description}</p>
                       </TooltipContent>

@@ -502,11 +502,11 @@ function SortableQuestionCard({
       <div
         onClick={onSelect}
         className={cn(
-          'relative flex-1 cursor-pointer border-2 pl-7 pr-5 transition-all duration-200',
+          'relative flex-1 cursor-pointer border-2 pl-7 pr-5 transition-all duration-300 ease-out',
           isDragging && 'shadow-lg ring-2 ring-primary/20',
           isSelected
             ? 'shadow-lg'
-            : 'border-transparent bg-white hover:border-muted hover:shadow-sm dark:bg-zinc-900/50'
+            : 'border-transparent bg-white dark:bg-zinc-900/50 hover:border-muted hover:shadow-md hover:scale-[1.005] hover:bg-violet-50/40 dark:hover:bg-violet-950/10'
         )}
         style={
           isSelected
@@ -627,10 +627,14 @@ function SortableQuestionCard({
         {/* Answer preview */}
         <QuestionAnswerPreview question={question} />
 
+        {/* Hover gradient left border accent */}
+        {!isSelected && (
+          <div className="absolute top-0 left-0 h-full w-[3px] rounded-r opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 bg-gradient-to-b from-violet-400 via-purple-500 to-fuchsia-500" />
+        )}
         {/* Selected indicator - left border accent */}
         {isSelected && (
           <div
-            className="absolute top-0 left-0 h-full w-[3px] rounded-r"
+            className="absolute top-0 left-0 h-full w-[3px] rounded-r bg-gradient-to-b from-violet-400 via-purple-500 to-fuchsia-500"
             style={{ backgroundColor: primaryColor }}
           />
         )}
@@ -857,35 +861,96 @@ export default function FormPreview({
 
 function EmptyState({ onAdd, primaryColor }: { onAdd: () => void; primaryColor: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div
-        className="flex h-16 w-16 items-center justify-center mb-4"
-        style={{
-          backgroundColor: `${primaryColor}1a`,
-          borderRadius: '16px',
-        }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="flex flex-col items-center justify-center py-16 text-center"
+    >
+      {/* Animated SVG illustration */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, duration: 0.5, type: 'spring', stiffness: 200, damping: 20 }}
+        className="relative mb-6"
       >
-        <FileText className="h-8 w-8" style={{ color: primaryColor }} />
-      </div>
-      <h3 className="text-lg font-semibold text-foreground mb-2">فرم خود را بسازید</h3>
-      <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-        از پنل سمت راست نوع سؤال مورد نظر خود را انتخاب و به فرم اضافه کنید.
-        <br />
-        <span className="text-xs text-muted-foreground/70 mt-1 inline-block">
-          سؤالات را با کشیدن جابجا کنید
-        </span>
-      </p>
-      <Button
-        onClick={onAdd}
-        className="text-white gap-2"
-        style={{
-          backgroundColor: primaryColor,
-          borderRadius: '8px',
-        }}
+        {/* Floating decoration circles */}
+        <motion.div
+          animate={{ y: [-4, 4, -4] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-3 -right-3 h-6 w-6 rounded-full bg-violet-200/60 dark:bg-violet-700/40"
+        />
+        <motion.div
+          animate={{ y: [3, -3, 3] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+          className="absolute -bottom-2 -left-2 h-4 w-4 rounded-full bg-fuchsia-200/60 dark:bg-fuchsia-700/40"
+        />
+        {/* Main document SVG */}
+        <svg
+          width="80"
+          height="96"
+          viewBox="0 0 80 96"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="drop-shadow-lg"
+        >
+          {/* Document body */}
+          <rect x="8" y="4" width="64" height="88" rx="8" className="fill-white dark:fill-zinc-800" stroke={primaryColor} strokeWidth="2" />
+          {/* Document lines */}
+          <rect x="20" y="24" width="30" height="3" rx="1.5" className="fill-violet-300/70 dark:fill-violet-600/50" />
+          <rect x="20" y="34" width="40" height="3" rx="1.5" className="fill-violet-200/50 dark:fill-violet-700/30" />
+          <rect x="20" y="44" width="25" height="3" rx="1.5" className="fill-violet-200/50 dark:fill-violet-700/30" />
+          <rect x="20" y="54" width="35" height="3" rx="1.5" className="fill-violet-200/50 dark:fill-violet-700/30" />
+          {/* Plus circle */}
+          <circle cx="56" cy="74" r="16" fill={primaryColor} opacity="0.9" />
+          <path d="M49 74H63" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M56 67V81" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+      </motion.div>
+
+      <motion.h3
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.4 }}
+        className="text-lg font-bold text-foreground mb-2"
       >
-        <Plus className="h-4 w-4" />
-        افزودن اولین سؤال
-      </Button>
-    </div>
+        سؤال اول خود را اضافه کنید
+      </motion.h3>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45, duration: 0.4 }}
+        className="text-sm text-muted-foreground mb-1 max-w-xs"
+      >
+        از منوی سمت راست یک نوع سؤال انتخاب کنید
+      </motion.p>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.55, duration: 0.4 }}
+        className="text-xs text-muted-foreground/60 mb-6"
+      >
+        سؤالات را با کشیدن جابجا کنید
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.4 }}
+      >
+        <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+          <Button
+            onClick={onAdd}
+            className="text-white gap-2 shadow-md hover:shadow-lg transition-shadow duration-300"
+            style={{
+              backgroundColor: primaryColor,
+              borderRadius: '10px',
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            افزودن اولین سؤال
+          </Button>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }

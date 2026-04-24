@@ -1902,3 +1902,119 @@ Unresolved Issues / Recommendations for Next Phase:
 8. Rate limiting on form submissions
 9. Form builder: Import questions backend implementation (UI done)
 10. Form analytics export to actual PDF file (currently HTML for printing)
+
+---
+Task ID: 9
+Agent: main
+Task: QA testing, form import/export, dashboard grid/list view, landing page enhancements, weekly activity chart, form builder polish
+
+Work Log:
+- QA testing: Build ✅ clean, ESLint ✅ clean (0 errors, 0 warnings), all pages render correctly
+- Landing page screenshots captured (agent-browser): hero with all sections, dashboard welcome state, templates gallery
+- 0 JavaScript errors found during QA
+
+Feature 1: Form Import/Export (JSON):
+  - ExportedFormJSON TypeScript interface with version, exportedAt, and form schema
+  - ImportFormDialog component: textarea for JSON paste, validate/preview button, import action
+  - JSON validation: checks version, form structure, questions array
+  - Preview shows form title, description, question count badge
+  - "ایجاد فرم" button creates form via API from imported data
+  - handleExport function in Dashboard: creates downloadable JSON blob with form data
+  - Export button "خروجی JSON" added to form dropdown menu with Download icon
+  - Error handling for invalid JSON, missing fields
+  - Toast notifications for success/error states
+
+Feature 2: Dashboard Grid/List View Toggle:
+  - ViewMode type ('grid' | 'list') with localStorage persistence
+  - Toggle buttons (LayoutGrid/List icons) between search and "ایجاد فرم جدید"
+  - Active button: violet-500 background with white text
+  - AnimatePresence mode="wait" for smooth view transitions
+  - Grid view: existing card-based layout (default)
+  - List view: table-like rows with structured columns
+    - Table header row (hidden on mobile): عنوان فرم | سؤالات | پاسخ‌ها | بروزرسانی | عملیات
+    - Alternating row colors (white / gray-50)
+    - Status dot (colored circle: green/amber/gray)
+    - Question count, submission count, relative time
+    - Action buttons: Pencil (edit), Share2 (share), MoreHorizontal (dropdown menu)
+    - Hover: violet-50 tinted background
+    - Mobile: simplified layout, actions always visible
+
+Feature 3: Landing Page Visual Enhancements (7 sections):
+  - Hero: Animated noise/grain overlay, 4th floating gradient orb, glassmorphism CTA button borders, animated gradient border on mockup
+  - Features: Expandable "بررسی بیشتر" cards with extra descriptions, icon background circles, gradient-border-hover on cards
+  - Use Cases: bg-grid-pattern-sm background, gradient overlays, card scale animations
+  - How It Works: Gradient connector line with animated light sweep, pulsing glow on center step
+  - FAQ: Search/filter input, 5 category tabs (همه/عمومی/قابلیت‌ها/امنیت/قیمت‌گذاری), chevron rotation animation, gradient background, empty state
+  - Integrations: Enhanced hover (y:-6, scale:1.04), color-matched glow, gradient divider connecting line
+  - CTA: More vibrant gradient (added fuchsia), 3 additional floating particles, social proof badges (۱۰,۰۰۰+ کاربر فعال, رتبه ۱ فرم‌ساز ایرانی, آپتایم ۹۹.۹٪)
+
+Feature 4: Dashboard Weekly Activity Chart:
+  - WeeklyActivityChart component with Recharts BarChart
+  - Mock data: 7 days of Persian week with responses and views
+  - Violet/purple gradient bars with SVG linear gradients
+  - Glassmorphism container (glass-card-strong class)
+  - Dark mode support (adapted grid, axis, tooltip, cursor)
+  - Persian labels and legend
+  - Animated entrance (opacity + y translate)
+  - Responsive (ResponsiveContainer 260px height)
+
+Feature 5: Enhanced Stat Cards with Animated Counters:
+  - useAnimatedCounter hook: requestAnimationFrame with ease-out cubic easing
+  - Numbers count up from 0 to target on mount
+  - Percentage change badges (▲/▼ with emerald/red coloring)
+  - Pulse dot animation on stat icons
+  - Hover: scale(1.03) with violet gradient overlay
+  - Sparkline/trend indicators
+
+Feature 6: Form Builder Micro-Interactions:
+  - Question card hover: scale(1.005), shadow-md, violet bg tint, gradient left border on hover
+  - Question type badges: colored right border by category, enhanced hover scale(1.03), tooltip width
+  - Properties panel: collapsible sections with animated height, colored violet accent bars, section icons (FileQuestion, Type, SlidersHorizontal, GitBranch, Settings), rotating chevron, smooth question switching animation
+  - Empty builder state: SVG illustration, floating decoration circles, staggered entrance animations, CTA button
+
+Stage Summary:
+- Files modified: dashboard.tsx (import/export, grid/list view, weekly chart, animated stats), landing-page.tsx (7 section enhancements), form-preview.tsx (card hover, empty state), question-types.tsx (badge enhancements), properties-panel.tsx (collapsible sections, icons, animations)
+- 6 major features implemented in this session
+- Build passes cleanly, ESLint passes cleanly (0 errors, 0 warnings)
+
+---
+Current Project Status Assessment:
+- Application is fully functional with no JS errors across all views
+- 8 views: Landing (7 enhanced sections), Dashboard (grid/list view, weekly chart, animated stats, import/export), Builder (16 question types, micro-interactions, collapsible properties), Form Fill (conditional logic, theme), Results (analytics, pie charts), Templates (100 templates), Admin, User Panel
+- Form import/export via JSON (full round-trip)
+- Dashboard grid/list view toggle with localStorage persistence
+- Weekly activity bar chart with animated counters
+- Enhanced landing page with 7 polished sections
+- Form builder with refined micro-interactions and animations
+- Dark mode working across all components
+- Clean ESLint - no warnings or errors
+- Dev server compiles without errors
+
+Completed in This Session:
+1. ✅ Form export to JSON (downloadable .json file)
+2. ✅ Form import from JSON (paste, validate, preview, create)
+3. ✅ Dashboard grid/list view toggle with localStorage
+4. ✅ Enhanced list view with table-like rows and hover actions
+5. ✅ Landing page hero: noise overlay, 4th orb, glassmorphism buttons, gradient mockup border
+6. ✅ Landing page features: expandable cards, icon backgrounds, gradient borders
+7. ✅ Landing page use cases: grid pattern, gradient overlays, card animations
+8. ✅ Landing page how it works: gradient connector, pulsing glow
+9. ✅ Landing page FAQ: search filter, category tabs, chevron rotation
+10. ✅ Landing page integrations: enhanced hover with glow
+11. ✅ Landing page CTA: vibrant gradient, floating particles, social proof badges
+12. ✅ Weekly activity bar chart (Recharts with violet gradient bars)
+13. ✅ Animated stat counters (count up from 0)
+14. ✅ Question card hover effects (gradient border, scale, shadow)
+15. ✅ Question type badge colored borders by category
+16. ✅ Properties panel collapsible sections with animated accents
+17. ✅ Properties panel section icons and smooth transitions
+18. ✅ Empty builder state with SVG illustration
+
+Unresolved Issues / Recommendations for Next Phase:
+1. File upload is UI-only (no actual file handling backend)
+2. Email notifications on form submission
+3. Custom domain/branding for published forms
+4. Real-time collaborative form editing (websocket)
+5. Form analytics export to PDF
+6. Multi-language support (currently Persian only)
+7. File upload backend implementation

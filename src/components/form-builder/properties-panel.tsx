@@ -16,6 +16,9 @@ import {
   ChevronDown,
   Eye,
   Upload,
+  ShieldCheck,
+  SlidersHorizontal,
+  FileQuestion,
 } from 'lucide-react';
 import { useAppStore, FormQuestion, QuestionConfig, QuestionOption, ImageOption, QuestionLogic, ConditionRule } from '@/lib/store';
 import { cn } from '@/lib/utils';
@@ -1235,10 +1238,29 @@ export default function PropertiesPanel() {
     useAppStore();
 
   const selectedQuestion = questions.find((q) => q.id === selectedQuestionId);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    type: true,
+    title: true,
+    required: false,
+    config: true,
+    logic: false,
+    actions: false,
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
 
   if (!selectedQuestion) {
     return (
-      <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+      <motion.div
+        key="empty-panel"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.3 }}
+        className="flex h-full flex-col items-center justify-center px-6 text-center"
+      >
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted mb-4">
           <Settings className="h-7 w-7 text-muted-foreground" />
         </div>
@@ -1246,7 +1268,7 @@ export default function PropertiesPanel() {
         <p className="text-xs text-muted-foreground leading-relaxed">
           یک سؤال را از فرم انتخاب کنید تا تنظیمات آن نمایش داده شود
         </p>
-      </div>
+      </motion.div>
     );
   }
 
@@ -1280,7 +1302,13 @@ export default function PropertiesPanel() {
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <motion.div
+      key={selectedQuestion.id}
+      initial={{ opacity: 0, x: 10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+      className="flex h-full flex-col"
+    >
       {/* Panel header */}
       <div className="flex items-center justify-between border-b px-4 py-3">
         <h3 className="text-sm font-semibold text-foreground">تنظیمات سؤال</h3>
@@ -1298,116 +1326,283 @@ export default function PropertiesPanel() {
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-4 space-y-6">
-          {/* Question Type */}
-          <div className="space-y-2">
-            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              نوع سؤال
-            </Label>
-            <QuestionTypeSelector question={selectedQuestion} />
-          </div>
+        <div className="p-4 space-y-1">
+          {/* ===== Section: Question Type ===== */}
+          <Collapsible open={openSections.type} onOpenChange={() => toggleSection('type')}>
+            <CollapsibleTrigger asChild>
+              <button className={cn(
+                'group flex items-center justify-between w-full rounded-lg px-3 py-2.5 text-right transition-all duration-200 hover:bg-muted/60',
+                openSections.type && 'bg-violet-50/60 dark:bg-violet-950/20'
+              )}>
+                <div className="flex items-center gap-2">
+                  <div className={cn(
+                    'w-[3px] h-4 rounded-full transition-colors duration-200',
+                    openSections.type ? 'bg-violet-500' : 'bg-transparent group-hover:bg-violet-300 dark:group-hover:bg-violet-700'
+                  )} />
+                  <FileQuestion className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    نوع سؤال
+                  </span>
+                </div>
+                <ChevronDown className={cn(
+                  'h-4 w-4 text-muted-foreground/60 transition-transform duration-300',
+                  openSections.type && 'rotate-180'
+                )} />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-2 pb-1 px-1">
+                  <QuestionTypeSelector question={selectedQuestion} />
+                </div>
+              </motion.div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <Separator />
+          <Separator className="my-1" />
 
-          {/* Question Title */}
-          <div className="space-y-2">
-            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              متن سؤال
-            </Label>
-            <Textarea
-              value={selectedQuestion.title}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              placeholder="متن سؤال را وارد کنید..."
-              className="text-sm min-h-[80px] resize-none focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
-              dir="rtl"
-            />
-          </div>
+          {/* ===== Section: Question Title ===== */}
+          <Collapsible open={openSections.title} onOpenChange={() => toggleSection('title')}>
+            <CollapsibleTrigger asChild>
+              <button className={cn(
+                'group flex items-center justify-between w-full rounded-lg px-3 py-2.5 text-right transition-all duration-200 hover:bg-muted/60',
+                openSections.title && 'bg-violet-50/60 dark:bg-violet-950/20'
+              )}>
+                <div className="flex items-center gap-2">
+                  <div className={cn(
+                    'w-[3px] h-4 rounded-full transition-colors duration-200',
+                    openSections.title ? 'bg-violet-500' : 'bg-transparent group-hover:bg-violet-300 dark:group-hover:bg-violet-700'
+                  )} />
+                  <Type className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    متن سؤال
+                  </span>
+                </div>
+                <ChevronDown className={cn(
+                  'h-4 w-4 text-muted-foreground/60 transition-transform duration-300',
+                  openSections.title && 'rotate-180'
+                )} />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-2 pb-1 px-1">
+                  <Textarea
+                    value={selectedQuestion.title}
+                    onChange={(e) => handleTitleChange(e.target.value)}
+                    placeholder="متن سؤال را وارد کنید..."
+                    className="text-sm min-h-[80px] resize-none focus-visible:ring-violet-500/40 focus-visible:border-violet-400 transition-all duration-200"
+                    dir="rtl"
+                  />
+                </div>
+              </motion.div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <Separator />
+          <Separator className="my-1" />
 
-          {/* Required Toggle */}
-          <div className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-3 transition-all duration-200 hover:border-violet-200 dark:hover:border-violet-800/50">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm cursor-pointer" htmlFor="required-toggle">
-                پاسخدهی اجباری
-              </Label>
-              {selectedQuestion.required && (
-                <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-5">
-                  الزامی
-                </Badge>
-              )}
+          {/* ===== Section: Required Toggle ===== */}
+          <div className="rounded-lg px-1 py-1">
+            <div className={cn(
+              'flex items-center justify-between rounded-lg border px-3 py-3 transition-all duration-200',
+              selectedQuestion.required
+                ? 'border-violet-200 bg-violet-50/50 dark:border-violet-800/50 dark:bg-violet-950/20'
+                : 'border-transparent bg-muted/20 hover:border-violet-200/60 dark:hover:border-violet-800/40'
+            )}>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className={cn(
+                  'h-4 w-4 transition-colors duration-200',
+                  selectedQuestion.required ? 'text-violet-600 dark:text-violet-400' : 'text-muted-foreground'
+                )} />
+                <Label className="text-sm cursor-pointer" htmlFor="required-toggle">
+                  پاسخدهی اجباری
+                </Label>
+                {selectedQuestion.required && (
+                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-5">
+                    الزامی
+                  </Badge>
+                )}
+              </div>
+              <Switch
+                id="required-toggle"
+                checked={selectedQuestion.required}
+                onCheckedChange={handleRequiredChange}
+              />
             </div>
-            <Switch
-              id="required-toggle"
-              checked={selectedQuestion.required}
-              onCheckedChange={handleRequiredChange}
-            />
           </div>
 
-          <Separator />
+          <Separator className="my-1" />
 
-          {/* Type-specific configuration */}
-          <div className="transition-all duration-200">
-            <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-3 border-r-2 border-r-violet-400 dark:border-r-violet-600 pr-2">
-              تنظیمات
-            </Label>
-            <TypeConfigSection question={selectedQuestion} />
-          </div>
+          {/* ===== Section: Type-specific Configuration ===== */}
+          <Collapsible open={openSections.config} onOpenChange={() => toggleSection('config')}>
+            <CollapsibleTrigger asChild>
+              <button className={cn(
+                'group flex items-center justify-between w-full rounded-lg px-3 py-2.5 text-right transition-all duration-200 hover:bg-muted/60',
+                openSections.config && 'bg-violet-50/60 dark:bg-violet-950/20'
+              )}>
+                <div className="flex items-center gap-2">
+                  <div className={cn(
+                    'w-[3px] h-4 rounded-full transition-colors duration-200',
+                    openSections.config ? 'bg-violet-500' : 'bg-transparent group-hover:bg-violet-300 dark:group-hover:bg-violet-700'
+                  )} />
+                  <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    تنظیمات
+                  </span>
+                </div>
+                <ChevronDown className={cn(
+                  'h-4 w-4 text-muted-foreground/60 transition-transform duration-300',
+                  openSections.config && 'rotate-180'
+                )} />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-2 pb-1 px-1">
+                  <TypeConfigSection question={selectedQuestion} />
+                </div>
+              </motion.div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <Separator />
+          <Separator className="my-1" />
 
-          {/* Conditional Logic */}
-          <div>
-            <ConditionalLogicSection
-              question={selectedQuestion}
-              otherQuestions={questions.filter((q) => q.id !== selectedQuestion.id)}
-            />
-          </div>
+          {/* ===== Section: Conditional Logic ===== */}
+          <Collapsible open={openSections.logic} onOpenChange={() => toggleSection('logic')}>
+            <CollapsibleTrigger asChild>
+              <button className={cn(
+                'group flex items-center justify-between w-full rounded-lg px-3 py-2.5 text-right transition-all duration-200 hover:bg-muted/60',
+                openSections.logic && 'bg-violet-50/60 dark:bg-violet-950/20'
+              )}>
+                <div className="flex items-center gap-2">
+                  <div className={cn(
+                    'w-[3px] h-4 rounded-full transition-colors duration-200',
+                    openSections.logic ? 'bg-violet-500' : 'bg-transparent group-hover:bg-violet-300 dark:group-hover:bg-violet-700'
+                  )} />
+                  <GitBranch className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    منطق شرطی
+                  </span>
+                </div>
+                <ChevronDown className={cn(
+                  'h-4 w-4 text-muted-foreground/60 transition-transform duration-300',
+                  openSections.logic && 'rotate-180'
+                )} />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-2 pb-1 px-1">
+                  <ConditionalLogicSection
+                    question={selectedQuestion}
+                    otherQuestions={questions.filter((q) => q.id !== selectedQuestion.id)}
+                  />
+                </div>
+              </motion.div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <Separator />
+          <Separator className="my-1" />
 
-          {/* Action buttons */}
-          <div className="flex flex-col gap-2 pb-4">
-            {/* Preview Question Button */}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full gap-2 justify-start text-sm transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 dark:hover:border-violet-700 dark:hover:bg-violet-950/30"
-                >
-                  <Eye className="h-4 w-4" />
-                  پیش‌نمایش سؤال
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-lg" dir="rtl">
-                <DialogHeader>
-                  <DialogTitle className="text-right text-sm">پیش‌نمایش سؤال</DialogTitle>
-                </DialogHeader>
-                <QuestionMiniPreview question={selectedQuestion} />
-              </DialogContent>
-            </Dialog>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full gap-2 justify-start text-sm transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 dark:hover:border-violet-700 dark:hover:bg-violet-950/30"
-              onClick={handleDuplicate}
-            >
-              <Copy className="h-4 w-4" />
-              کپی سؤال
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full gap-2 justify-start text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 dark:hover:bg-red-950/30 dark:border-red-800"
-              onClick={handleDelete}
-            >
-              <Trash2 className="h-4 w-4" />
-              حذف سؤال
-            </Button>
-          </div>
+          {/* ===== Section: Actions ===== */}
+          <Collapsible open={openSections.actions} onOpenChange={() => toggleSection('actions')}>
+            <CollapsibleTrigger asChild>
+              <button className={cn(
+                'group flex items-center justify-between w-full rounded-lg px-3 py-2.5 text-right transition-all duration-200 hover:bg-muted/60',
+                openSections.actions && 'bg-violet-50/60 dark:bg-violet-950/20'
+              )}>
+                <div className="flex items-center gap-2">
+                  <div className={cn(
+                    'w-[3px] h-4 rounded-full transition-colors duration-200',
+                    openSections.actions ? 'bg-violet-500' : 'bg-transparent group-hover:bg-violet-300 dark:group-hover:bg-violet-700'
+                  )} />
+                  <Settings className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    عملیات
+                  </span>
+                </div>
+                <ChevronDown className={cn(
+                  'h-4 w-4 text-muted-foreground/60 transition-transform duration-300',
+                  openSections.actions && 'rotate-180'
+                )} />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-2 pb-4 px-1 flex flex-col gap-2">
+                  {/* Preview Question Button */}
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 justify-start text-sm transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 dark:hover:border-violet-700 dark:hover:bg-violet-950/30"
+                      >
+                        <Eye className="h-4 w-4" />
+                        پیش‌نمایش سؤال
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-lg" dir="rtl">
+                      <DialogHeader>
+                        <DialogTitle className="text-right text-sm">پیش‌نمایش سؤال</DialogTitle>
+                      </DialogHeader>
+                      <QuestionMiniPreview question={selectedQuestion} />
+                    </DialogContent>
+                  </Dialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2 justify-start text-sm transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 dark:hover:border-violet-700 dark:hover:bg-violet-950/30"
+                    onClick={handleDuplicate}
+                  >
+                    <Copy className="h-4 w-4" />
+                    کپی سؤال
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2 justify-start text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 dark:hover:bg-red-950/30 dark:border-red-800"
+                    onClick={handleDelete}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    حذف سؤال
+                  </Button>
+                </div>
+              </motion.div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       </ScrollArea>
-    </div>
+    </motion.div>
   );
 }

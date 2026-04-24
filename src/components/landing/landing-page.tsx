@@ -24,6 +24,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Input } from '@/components/ui/input';
 import {
   FileQuestion,
   Palette,
@@ -39,6 +40,7 @@ import {
   HeartPulse,
   ArrowLeft,
   ChevronDown,
+  ChevronUp,
   Star,
   Zap,
   Shield,
@@ -57,6 +59,10 @@ import {
   Rocket,
   Send,
   ArrowUp,
+  Search,
+  Award,
+  UsersRound,
+  Clock,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -392,21 +398,27 @@ function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background decorations */}
       <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/80 via-violet-50/50 to-white dark:from-indigo-950/50 dark:via-violet-950/30 dark:to-gray-950" />
-      {/* Animated gradient mesh blobs */}
+      {/* Animated gradient orbs with breathing animations */}
       <motion.div
-        className="absolute top-[10%] right-[8%] w-80 h-80 bg-indigo-300/25 dark:bg-indigo-600/15 rounded-full blur-3xl"
-        animate={{ x: [0, 30, -20, 0], y: [0, -20, 15, 0], scale: [1, 1.1, 0.95, 1] }}
+        className="absolute top-[8%] right-[6%] w-80 h-80 bg-indigo-300/30 dark:bg-indigo-600/15 rounded-full blur-3xl"
+        animate={{ x: [0, 30, -20, 0], y: [0, -20, 15, 0], scale: [1, 1.15, 0.95, 1] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute bottom-[15%] left-[5%] w-96 h-96 bg-violet-300/25 dark:bg-violet-600/15 rounded-full blur-3xl"
-        animate={{ x: [0, -25, 20, 0], y: [0, 15, -25, 0], scale: [1, 0.95, 1.1, 1] }}
+        className="absolute bottom-[12%] left-[4%] w-96 h-96 bg-violet-300/30 dark:bg-violet-600/15 rounded-full blur-3xl"
+        animate={{ x: [0, -25, 20, 0], y: [0, 15, -25, 0], scale: [1, 0.9, 1.15, 1] }}
         transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
       <motion.div
-        className="absolute top-[40%] left-[40%] w-64 h-64 bg-fuchsia-200/20 dark:bg-fuchsia-600/10 rounded-full blur-3xl"
-        animate={{ x: [0, 15, -30, 0], y: [0, -30, 20, 0], scale: [1, 1.15, 0.9, 1] }}
+        className="absolute top-[35%] left-[38%] w-72 h-72 bg-fuchsia-200/25 dark:bg-fuchsia-600/12 rounded-full blur-3xl"
+        animate={{ x: [0, 15, -30, 0], y: [0, -30, 20, 0], scale: [1, 1.2, 0.85, 1] }}
         transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+      />
+      {/* 4th breathing orb */}
+      <motion.div
+        className="absolute top-[55%] right-[15%] w-56 h-56 bg-purple-200/20 dark:bg-purple-600/10 rounded-full blur-3xl"
+        animate={{ x: [0, -20, 10, 0], y: [0, 25, -10, 0], scale: [1, 1.25, 0.9, 1], opacity: [0.6, 1, 0.6, 0.8] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-indigo-200/10 to-violet-200/10 rounded-full blur-3xl" />
 
@@ -422,11 +434,13 @@ function HeroSection() {
         }}
       />
 
-      {/* Noise texture overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] pointer-events-none"
+      {/* Animated noise/grain texture overlay */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        animate={{ opacity: [0.018, 0.03, 0.018] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
           backgroundSize: '256px 256px',
         }}
@@ -481,23 +495,31 @@ function HeroSection() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Button
-            size="lg"
-            onClick={() => setCurrentView('dashboard')}
-            className="w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all rounded-xl px-8"
-          >
-            شروع رایگان
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold rounded-xl px-8 border-gray-200 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-600 transition-all"
-            onClick={() => setCurrentView('dashboard')}
-          >
-            مشاهده نمونه‌ها
-            <ChevronDown className="h-4 w-4" />
-          </Button>
+          <div className="relative group">
+            {/* Glassmorphism border glow on hover */}
+            <div className="absolute -inset-[2px] rounded-xl bg-gradient-to-l from-indigo-500/0 via-violet-500/0 to-fuchsia-500/0 group-hover:from-indigo-500/60 group-hover:via-violet-500/60 group-hover:to-fuchsia-500/60 blur-sm transition-all duration-500 opacity-0 group-hover:opacity-100" />
+            <Button
+              size="lg"
+              onClick={() => setCurrentView('dashboard')}
+              className="relative w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all rounded-xl px-8"
+            >
+              شروع رایگان
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </div>
+          <div className="relative group">
+            {/* Glassmorphism border glow on hover */}
+            <div className="absolute -inset-[2px] rounded-xl bg-gradient-to-l from-indigo-400/0 via-violet-400/0 to-fuchsia-400/0 group-hover:from-indigo-400/50 group-hover:via-violet-400/50 group-hover:to-fuchsia-400/50 blur-sm transition-all duration-500 opacity-0 group-hover:opacity-100" />
+            <Button
+              size="lg"
+              variant="outline"
+              className="relative w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold rounded-xl px-8 border-gray-200 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-600 transition-all backdrop-blur-sm"
+              onClick={() => setCurrentView('dashboard')}
+            >
+              مشاهده نمونه‌ها
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </div>
         </motion.div>
 
         {/* Animated Stats with counters */}
@@ -530,6 +552,23 @@ function HeroSection() {
               animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.03, 1] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             />
+
+            {/* Animated gradient border on the mockup */}
+            <motion.div
+              className="absolute -inset-[1.5px] rounded-2xl overflow-hidden"
+              animate={{ opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <motion.div
+                className="absolute inset-0"
+                animate={{ backgroundPosition: ['0% 0%', '100% 100%'] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+                style={{
+                  backgroundSize: '200% 200%',
+                  backgroundImage: 'linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #6366f1, #8b5cf6)',
+                }}
+              />
+            </motion.div>
 
             {/* Subtle reflection below mockup */}
             <div className="absolute -bottom-12 left-[5%] right-[5%] h-20 bg-gradient-to-b from-gray-300/20 via-gray-300/5 to-transparent rounded-full blur-2xl dark:from-gray-600/10" />
@@ -708,57 +747,140 @@ function TrustedBySection() {
 
 /* ──────────────────────────── Features Section ──────────────────────────── */
 
+function FeatureCard({ feature, index }: { feature: typeof featuresData[0]; index: number }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <motion.div key={index} variants={staggerChild}>
+      <Card className="gradient-border-hover group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-default overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+        {/* Animated gradient top border (2px) */}
+        <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-l ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+        {/* Animated gradient border on hover */}
+        <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${feature.gradient} p-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500`}>
+          <div className="w-full h-full rounded-[10px] bg-white dark:bg-gray-900" />
+        </div>
+
+        {/* Spotlight glow effect on hover */}
+        <div className={`absolute -inset-1 rounded-xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.08] blur-xl transition-opacity duration-500`} />
+
+        <CardContent className="p-6 relative z-10">
+          {/* Icon with gradient background circle pattern */}
+          <div className="relative mb-5">
+            {/* Background circle with gradient */}
+            <div className={`absolute inset-[-6px] rounded-full bg-gradient-to-br ${feature.gradient} opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-500`} />
+            <div
+              className={`relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
+            >
+              <feature.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
+            </div>
+          </div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{feature.title}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{feature.description}</p>
+
+          {/* Expandable section */}
+          <AnimatePresence>
+            {expanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="overflow-hidden"
+              >
+                <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-100 dark:border-gray-800 pt-3">
+                  {feature.extraDescription}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Learn More link */}
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="mt-3 flex items-center gap-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors animated-underline"
+          >
+            {expanded ? 'بستن' : 'بررسی بیشتر'}
+            <motion.span
+              animate={{ rotate: expanded ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ChevronDown className="h-3.5 w-3.5" />
+            </motion.span>
+          </button>
+        </CardContent>
+
+        {/* Subtle gradient overlay on hover */}
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-500/[0.03] to-violet-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      </Card>
+    </motion.div>
+  );
+}
+
+const featuresData = [
+  {
+    icon: FileQuestion,
+    title: 'بیش از ۲۰ نوع سوال',
+    description:
+      'از متن ساده تا مقیاس امتیازدهی، ماتریسی، آپلود فایل و شبکه. هر نوع سوالی که نیاز داشته باشید.',
+    extraDescription:
+      'شامل انواع متن کوتاه و بلند، چند گزینه‌ای، چک‌باکس، دراپ‌داون، مقیاس NPS، ماتریسی، تاریخ، زمان، آپلود فایل، امضای دیجیتال و موارد دیگر.',
+    gradient: 'from-blue-500 to-indigo-500',
+    shadowColor: 'shadow-blue-500/20',
+  },
+  {
+    icon: Palette,
+    title: 'طراحی گرافیکی فرم',
+    description:
+      'فرم خود را با رنگ‌ها، فونت‌ها و تم‌های متنوع سفارشی کنید و برند خود را منعکس نمایید.',
+    extraDescription:
+      'از تم‌های آماده استفاده کنید یا رنگ‌ها، لوگو، فونت و پس‌زمینه را به دلخواه تنظیم نمایید. پشتیبانی کامل از RTL و فونت‌های فارسی.',
+    gradient: 'from-pink-500 to-rose-500',
+    shadowColor: 'shadow-pink-500/20',
+  },
+  {
+    icon: GitBranch,
+    title: 'منطق شرطی و امتیازدهی',
+    description:
+      'با منطق شرطی هوشمند، مسیر پاسخ‌دهی را شخصی‌سازی و با امتیازدهی نتایج را ارزیابی کنید.',
+    extraDescription:
+      'قابلیت نمایش/مخفی کردن سوالات بر اساس پاسخ، پرش به سوال خاص، پایان فرم شرطی و محاسبه امتیاز خودکار.',
+    gradient: 'from-amber-500 to-orange-500',
+    shadowColor: 'shadow-amber-500/20',
+  },
+  {
+    icon: BarChart3,
+    title: 'نمودار و تحلیل آماری',
+    description:
+      'نتایج را با نمودارهای متنوع و گزارش‌های تحلیلی به صورت لحظه‌ای مشاهده و تحلیل کنید.',
+    extraDescription:
+      'نمودارهای دایره‌ای، میله‌ای، خطی و جدولی. فیلتر بر اساس تاریخ، دستگاه و پاسخ‌دهنده. گزارش PDF قابل دانلود.',
+    gradient: 'from-emerald-500 to-teal-500',
+    shadowColor: 'shadow-emerald-500/20',
+  },
+  {
+    icon: Download,
+    title: 'خروجی اکسل و CSV',
+    description:
+      'تمامی پاسخ‌ها را به صورت فایل اکسل یا CSV دانلود کنید و در ابزارهای دیگر استفاده نمایید.',
+    extraDescription:
+      'خروجی با فرمت‌های XLSX و CSV، قابلیت فیلتر قبل از دانلود، پشتیبانی از کاراکترهای فارسی و سازگاری با اکسل و گوگل شیت.',
+    gradient: 'from-violet-500 to-purple-500',
+    shadowColor: 'shadow-violet-500/20',
+  },
+  {
+    icon: Smartphone,
+    title: 'کاملاً واکنش‌گرا',
+    description:
+      'فرم‌ها در تمام دستگاه‌ها از موبایل تا دسکتاپ به بهترین شکل نمایش داده می‌شوند.',
+    extraDescription:
+      'طراحی واکنش‌گرا با تست روی بیش از ۵۰ دستگاه، پشتیبانی از حالت آفلاین و بهینه‌سازی سرعت بارگذاری.',
+    gradient: 'from-cyan-500 to-sky-500',
+    shadowColor: 'shadow-cyan-500/20',
+  },
+];
+
 function FeaturesSection() {
-  const features = [
-    {
-      icon: FileQuestion,
-      title: 'بیش از ۲۰ نوع سوال',
-      description:
-        'از متن ساده تا مقیاس امتیازدهی، ماتریسی، آپلود فایل و شبکه. هر نوع سوالی که نیاز داشته باشید.',
-      gradient: 'from-blue-500 to-indigo-500',
-      shadowColor: 'shadow-blue-500/20',
-    },
-    {
-      icon: Palette,
-      title: 'طراحی گرافیکی فرم',
-      description:
-        'فرم خود را با رنگ‌ها، فونت‌ها و تم‌های متنوع سفارشی کنید و برند خود را منعکس نمایید.',
-      gradient: 'from-pink-500 to-rose-500',
-      shadowColor: 'shadow-pink-500/20',
-    },
-    {
-      icon: GitBranch,
-      title: 'منطق شرطی و امتیازدهی',
-      description:
-        'با منطق شرطی هوشمند، مسیر پاسخ‌دهی را شخصی‌سازی و با امتیازدهی نتایج را ارزیابی کنید.',
-      gradient: 'from-amber-500 to-orange-500',
-      shadowColor: 'shadow-amber-500/20',
-    },
-    {
-      icon: BarChart3,
-      title: 'نمودار و تحلیل آماری',
-      description:
-        'نتایج را با نمودارهای متنوع و گزارش‌های تحلیلی به صورت لحظه‌ای مشاهده و تحلیل کنید.',
-      gradient: 'from-emerald-500 to-teal-500',
-      shadowColor: 'shadow-emerald-500/20',
-    },
-    {
-      icon: Download,
-      title: 'خروجی اکسل و CSV',
-      description:
-        'تمامی پاسخ‌ها را به صورت فایل اکسل یا CSV دانلود کنید و در ابزارهای دیگر استفاده نمایید.',
-      gradient: 'from-violet-500 to-purple-500',
-      shadowColor: 'shadow-violet-500/20',
-    },
-    {
-      icon: Smartphone,
-      title: 'کاملاً واکنش‌گرا',
-      description:
-        'فرم‌ها در تمام دستگاه‌ها از موبایل تا دسکتاپ به بهترین شکل نمایش داده می‌شوند.',
-      gradient: 'from-cyan-500 to-sky-500',
-      shadowColor: 'shadow-cyan-500/20',
-    },
-  ];
+  const features = featuresData;
 
   return (
     <section id="features" className="relative py-24 sm:py-32 bg-white dark:bg-gray-950">
@@ -787,33 +909,7 @@ function FeaturesSection() {
         {/* Feature Grid */}
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, i) => (
-            <motion.div key={i} variants={staggerChild}>
-              <Card className="group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-default overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                {/* Animated gradient top border (2px) */}
-                <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-l ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                {/* Animated gradient border on hover */}
-                <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${feature.gradient} p-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500`}>
-                  <div className="w-full h-full rounded-[10px] bg-white dark:bg-gray-900" />
-                </div>
-
-                {/* Spotlight glow effect on hover */}
-                <div className={`absolute -inset-1 rounded-xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.08] blur-xl transition-opacity duration-500`} />
-
-                <CardContent className="p-6 relative z-10">
-                  {/* Animated icon container */}
-                  <div
-                    className={`relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} mb-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
-                  >
-                    <feature.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{feature.title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{feature.description}</p>
-                </CardContent>
-
-                {/* Subtle gradient overlay on hover */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-500/[0.03] to-violet-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              </Card>
-            </motion.div>
+            <FeatureCard key={i} feature={feature} index={i} />
           ))}
         </StaggerContainer>
       </div>
@@ -876,8 +972,14 @@ function UseCasesSection() {
   ];
 
   return (
-    <section id="use-cases" className="relative py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 to-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="use-cases" className="relative py-24 sm:py-32 overflow-hidden">
+      {/* Background grid pattern */}
+      <div className="absolute inset-0 bg-grid-pattern-sm" />
+      {/* Gradient overlay at top for smooth blending */}
+      <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white dark:from-gray-950 to-transparent z-[1]" />
+      {/* Gradient overlay at bottom for smooth blending */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-gray-950 to-transparent z-[1]" />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-[2]">
         {/* Section Header */}
         <FadeInSection className="text-center mb-16 sm:mb-20">
           <Badge
@@ -897,13 +999,13 @@ function UseCasesSection() {
         {/* Use Case Grid */}
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {useCases.map((useCase, i) => (
-            <motion.div key={i} variants={staggerChild}>
-              <Card className="group relative h-full border-gray-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-500/[0.06] transition-all duration-300 hover:-translate-y-1 cursor-default overflow-hidden">
+            <motion.div key={i} variants={staggerChild} whileHover={{ scale: 1.03 }} transition={{ duration: 0.2 }}>
+              <Card className="group relative h-full border-gray-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-500/[0.08] transition-all duration-300 hover:-translate-y-1 cursor-default overflow-hidden">
                 {/* Colored top stripe */}
                 <div className={`h-1.5 w-full bg-gradient-to-l ${useCase.color}`} />
                 <CardContent className="p-6">
                   <div
-                    className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${useCase.iconBg} mb-4`}
+                    className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${useCase.iconBg} mb-4 group-hover:scale-110 transition-transform duration-300`}
                   >
                     <useCase.icon className={`h-5 w-5 ${useCase.iconColor}`} />
                   </div>
@@ -959,7 +1061,9 @@ function HowItWorksSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: '-60px' });
 
   return (
-    <section className="relative py-24 sm:py-32 bg-white dark:bg-gray-950 overflow-hidden">
+    <section className="relative py-24 sm:py-32 overflow-hidden">
+      {/* Subtle background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-indigo-50/30 to-white dark:from-gray-950 dark:via-indigo-950/10 dark:to-gray-950" />
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.015]" style={{
         backgroundImage: `radial-gradient(circle, #6366f1 1px, transparent 1px)`,
@@ -986,9 +1090,16 @@ function HowItWorksSection() {
         {/* Steps */}
         <div ref={stepsRef} className="relative">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-            {/* Dotted connector lines (desktop only) */}
-            <div className="hidden md:block absolute top-[48px] right-[20%] left-[20%] z-0">
-              <div className="relative h-0 steps-connector" />
+            {/* Gradient connector line (desktop only) */}
+            <div className="hidden md:block absolute top-[44px] right-[20%] left-[20%] z-0">
+              <div className="relative h-[3px] rounded-full overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-l from-indigo-300/40 via-violet-300/50 to-purple-300/40 dark:from-indigo-600/30 dark:via-violet-600/40 dark:to-purple-600/30" />
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-l from-indigo-500 via-violet-500 to-purple-500"
+                  animate={{ x: ['100%', '-100%'] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
+                />
+              </div>
             </div>
 
             {steps.map((step, i) => (
@@ -1009,11 +1120,11 @@ function HowItWorksSection() {
                         transition={{ duration: 0.5, delay: i * 0.2 + 0.2, ease: 'easeOut' }}
                         className={`absolute inset-[-8px] rounded-full bg-gradient-to-br ${step.gradient} opacity-20 blur-xl`}
                       />
-                      {/* Main circle with gradient */}
+                      {/* Main circle with gradient + pulsing glow on center step */}
                       <motion.div
                         whileHover={{ y: -6, scale: 1.1 }}
                         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                        className={`relative inline-flex size-[88px] items-center justify-center rounded-full bg-gradient-to-br ${step.gradient} shadow-xl ${step.shadowColor} ring-4 ring-white dark:ring-gray-950 ${step.ringColor}`}
+                        className={`relative inline-flex size-[88px] items-center justify-center rounded-full bg-gradient-to-br ${step.gradient} shadow-xl ${step.shadowColor} ring-4 ring-white dark:ring-gray-950 ${step.ringColor} ${i === 1 ? 'breathing-glow' : ''}`}
                       >
                         {/* Large gradient number */}
                         <motion.span
@@ -1245,42 +1356,65 @@ function TestimonialsSection() {
 /* ──────────────────────────── FAQ Section ──────────────────────────── */
 
 function FAQSection() {
-  const faqs = [
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('همه');
+
+  const categories = ['همه', 'عمومی', 'قابلیت‌ها', 'امنیت', 'قیمت‌گذاری'];
+
+  const faqItems = [
     {
       question: 'آیا استفاده از فرم‌ساز رایگان است؟',
       answer:
         'بله! شما می‌توانید به صورت کاملاً رایگان فرم بسازید، مدیریت کنید و نتایج را تحلیل نمایید. پلن رایگان شامل تمام امکانات اصلی است. برای امکانات پیشرفته‌تر، پلن‌های حرفه‌ای نیز موجود است.',
+      category: 'قیمت‌گذاری',
     },
     {
       question: 'چه نوع سوالاتی پشتیبانی می‌شود؟',
       answer:
         'فرم‌ساز بیش از ۲۰ نوع سوال شامل متن کوتاه و بلند، چند گزینه‌ای، چک‌باکس، مقیاس امتیازدهی، ماتریسی، دراپ‌داون، آپلود فایل، تاریخ و زمان، شبکه و منوی کشویی را پشتیبانی می‌کند.',
+      category: 'قابلیت‌ها',
     },
     {
       question: 'آیا می‌توانم فرم را به زبان فارسی بسازم؟',
       answer:
         'بله! فرم‌ساز به صورت کامل از زبان فارسی و راست‌چین (RTL) پشتیبانی می‌کند. تمام عناصر فرم شامل برچسب‌ها، دکمه‌ها و پیام‌ها به صورت خودکار راست‌چین نمایش داده می‌شوند.',
+      category: 'عمومی',
     },
     {
       question: 'محدودیت تعداد پاسخ‌ها چقدر است؟',
       answer:
         'در پلن رایگان، هر فرم می‌تواند تا ۱۰۰ پاسخ دریافت کند. در پلن‌های حرفه‌ای این محدودیت به ۱۰,۰۰۰ و نامحدود افزایش می‌یابد. همچنین می‌توانید در هر لحظه پاسخ‌ها را به صورت اکسل دانلود کنید.',
+      category: 'قیمت‌گذاری',
     },
     {
       question: 'آیا امکان منطق شرطی در فرم وجود دارد؟',
       answer:
         'بله! با استفاده از منطق شرطی می‌توانید بر اساس پاسخ کاربر، سوالات خاصی را نمایش یا مخفی کنید، کاربر را به صفحه دیگری هدایت کنید یا فرم را به پایان برسانید.',
+      category: 'قابلیت‌ها',
     },
     {
       question: 'اطلاعات کاربران چگونه محافظت می‌شود؟',
       answer:
         'ما امنیت داده‌ها را جدی می‌گیریم. تمام ارتباطات با رمزنگاری SSL محافظت می‌شوند، داده‌ها بر روی سرورهای امن ذخیره می‌گردند و ما در قبال حریم خصوصی شما متعهد هستیم.',
+      category: 'امنیت',
     },
   ];
 
+  const filteredFaqs = faqItems.filter((faq) => {
+    const matchesCategory = activeCategory === 'همه' || faq.category === activeCategory;
+    const matchesSearch = searchQuery === '' || faq.question.includes(searchQuery) || faq.answer.includes(searchQuery);
+    return matchesCategory && matchesSearch;
+  });
+
   return (
-    <section className="relative py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 to-white">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+    <section className="relative py-24 sm:py-32 overflow-hidden">
+      {/* Gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-50/80 via-white to-gray-50/80 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950" />
+      {/* Subtle decorative elements */}
+      <div className="absolute top-0 right-[10%] w-64 h-64 bg-violet-100/30 dark:bg-violet-900/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-[10%] w-80 h-80 bg-indigo-100/30 dark:bg-indigo-900/10 rounded-full blur-3xl" />
+
+      <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <FadeInSection className="text-center mb-12 sm:mb-16">
           <Badge
@@ -1297,23 +1431,65 @@ function FAQSection() {
           </p>
         </FadeInSection>
 
+        {/* Search Input */}
+        <FadeInSection delay={0.1}>
+          <div className="relative mb-6">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="جستجو در سوالات..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-11 pr-10 pl-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 text-sm focus-visible:ring-indigo-500/20"
+            />
+          </div>
+        </FadeInSection>
+
+        {/* Category Tabs */}
+        <FadeInSection delay={0.15}>
+          <div className="flex flex-wrap gap-2 mb-8">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-4 py-1.5 text-xs font-medium rounded-full transition-all duration-200 ${
+                  activeCategory === cat
+                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 shadow-sm'
+                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </FadeInSection>
+
         {/* FAQ Accordion */}
         <FadeInSection delay={0.2}>
           <Accordion type="single" collapsible className="space-y-3">
-            {faqs.map((faq, i) => (
-              <AccordionItem
-                key={i}
-                value={`faq-${i}`}
-                className="border border-gray-100 rounded-xl bg-white shadow-sm hover:shadow-md hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 transition-all data-[state=open]:shadow-lg data-[state=open]:shadow-indigo-500/[0.05] data-[state=open]:border-indigo-100 overflow-hidden"
-              >
-                <AccordionTrigger className="px-6 py-4 text-right text-base font-semibold text-gray-900 hover:no-underline hover:text-indigo-600 transition-colors [&[data-state=open]>svg]:text-indigo-600 [&[data-state=open]>svg]:rotate-180 [&>svg]:transition-transform [&>svg]:duration-300">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="px-6 pb-5 text-sm text-gray-500 leading-relaxed">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
+            {filteredFaqs.length === 0 ? (
+              <div className="text-center py-8 text-gray-400 text-sm">
+                نتیجه‌ای یافت نشد. لطفاً عبارت دیگری جستجو کنید.
+              </div>
+            ) : (
+              filteredFaqs.map((faq, i) => (
+                <AccordionItem
+                  key={i}
+                  value={`faq-${i}`}
+                  className="border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900 shadow-sm hover:shadow-md hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 transition-all data-[state=open]:shadow-lg data-[state=open]:shadow-indigo-500/[0.05] data-[state=open]:border-indigo-100 dark:data-[state=open]:border-indigo-800 overflow-hidden"
+                >
+                  <AccordionTrigger className="px-6 py-4 text-right text-base font-semibold text-gray-900 dark:text-gray-100 hover:no-underline hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors [&[data-state=open]>svg]:text-indigo-600 [&[data-state=open]>svg]:rotate-180 [&>svg]:transition-transform [&>svg]:duration-300">
+                    <span className="flex items-center gap-2">
+                      {faq.question}
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 font-normal">{faq.category}</span>
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-5 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))
+            )}
           </Accordion>
         </FadeInSection>
       </div>
@@ -1421,6 +1597,11 @@ function IntegrationsSection() {
           </div>
         </FadeInSection>
 
+        {/* Connecting line pattern between integration icons (desktop) */}
+        <div className="hidden lg:block absolute top-[45%] right-[8%] left-[8%] h-[1px] pointer-events-none">
+          <div className="gradient-divider" />
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {integrations.map((integration, index) => (
             <motion.div
@@ -1429,19 +1610,21 @@ function IntegrationsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ delay: index * 0.06, duration: 0.4 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className="group relative p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg hover:shadow-violet-100/50 dark:hover:shadow-violet-900/20 transition-all duration-300 cursor-pointer"
+              whileHover={{ y: -6, scale: 1.04 }}
+              className="group relative p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-xl hover:shadow-violet-100/60 dark:hover:shadow-violet-900/30 transition-all duration-300 cursor-pointer"
             >
+              {/* Hover glow effect */}
+              <div className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${integration.color} opacity-0 group-hover:opacity-[0.15] blur-xl transition-opacity duration-500`} />
               {/* Colored icon circle */}
-              <div className={`flex items-center justify-center size-12 rounded-xl bg-gradient-to-br ${integration.color} shadow-lg mb-4 group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`relative flex items-center justify-center size-12 rounded-xl bg-gradient-to-br ${integration.color} shadow-lg mb-4 group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
                 {integration.icon}
               </div>
               {/* Name */}
-              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">
+              <h3 className="relative text-base font-bold text-gray-900 dark:text-white mb-1.5">
                 {integration.name}
               </h3>
               {/* Description */}
-              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+              <p className="relative text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                 {integration.description}
               </p>
             </motion.div>
@@ -1724,75 +1907,90 @@ function CTASection() {
 
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
-      {/* Animated shifting gradient background */}
+      {/* More vibrant animated shifting gradient background */}
       <motion.div
         className="absolute inset-0"
         animate={{
           backgroundPosition: ['0% 50%', '50% 100%', '100% 50%', '50% 0%', '0% 50%'],
         }}
-        transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
         style={{
           backgroundSize: '400% 400%',
-          backgroundImage: 'linear-gradient(135deg, #4f46e5, #7c3aed, #9333ea, #6366f1, #4f46e5)',
+          backgroundImage: 'linear-gradient(135deg, #4338ca, #7c3aed, #9333ea, #6366f1, #a855f7, #4338ca)',
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/50 to-transparent" />
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
         backgroundSize: '32px 32px',
       }} />
 
-      {/* Floating geometric shapes */}
+      {/* Floating geometric shapes - more varied */}
       <motion.div
-        className="absolute top-[15%] right-[8%] w-16 h-16 border-2 border-white/20 rounded-xl"
+        className="absolute top-[12%] right-[6%] w-16 h-16 border-2 border-white/20 rounded-xl"
         animate={{ y: [0, -25, 0], rotate: [0, 45, 0], scale: [1, 1.1, 1] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute bottom-[20%] left-[10%] w-12 h-12 border-2 border-white/15 rounded-full"
+        className="absolute bottom-[18%] left-[8%] w-12 h-12 border-2 border-white/15 rounded-full"
         animate={{ y: [0, 20, 0], x: [0, 10, 0], scale: [1, 1.15, 1] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       />
       <motion.div
-        className="absolute top-[30%] left-[20%] w-8 h-8 bg-white/10 rounded-lg"
+        className="absolute top-[28%] left-[18%] w-8 h-8 bg-white/10 rounded-lg"
         animate={{ y: [0, -15, 0], rotate: [0, 90, 0], scale: [1, 1.2, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
       />
       <motion.div
-        className="absolute bottom-[35%] right-[18%] w-6 h-6 bg-white/10 rounded-full"
+        className="absolute bottom-[32%] right-[16%] w-6 h-6 bg-white/10 rounded-full"
         animate={{ y: [0, -20, 0], scale: [1, 1.3, 1] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
       <motion.div
-        className="absolute top-[60%] left-[35%] w-10 h-10 border border-white/10 rotate-45"
+        className="absolute top-[58%] left-[32%] w-10 h-10 border border-white/10 rotate-45"
         animate={{ y: [0, 15, 0], rotate: [45, 135, 45] }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
       <motion.div
-        className="absolute top-[10%] left-[45%] w-5 h-5 bg-yellow-300/30 rounded-full"
+        className="absolute top-[8%] left-[42%] w-5 h-5 bg-yellow-300/30 rounded-full"
         animate={{ y: [0, -12, 0], opacity: [0.3, 0.6, 0.3] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
       />
       <motion.div
-        className="absolute bottom-[15%] right-[35%] w-4 h-4 bg-pink-300/25 rotate-12"
+        className="absolute bottom-[12%] right-[32%] w-4 h-4 bg-pink-300/25 rotate-12"
         animate={{ y: [0, 18, 0], rotate: [12, 72, 12] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
       />
-      {/* Additional varied shapes */}
       <motion.div
-        className="absolute top-[45%] right-[5%] w-14 h-14 border-2 border-white/10 rounded-full"
+        className="absolute top-[42%] right-[4%] w-14 h-14 border-2 border-white/10 rounded-full"
         animate={{ y: [0, -18, 0], x: [0, 12, 0], scale: [1, 0.9, 1] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2.5 }}
       />
       <motion.div
-        className="absolute bottom-[40%] left-[25%] w-7 h-7 bg-cyan-300/20 rounded-lg"
+        className="absolute bottom-[38%] left-[22%] w-7 h-7 bg-cyan-300/20 rounded-lg"
         animate={{ y: [0, -22, 0], rotate: [0, -45, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1.8 }}
       />
       <motion.div
-        className="absolute top-[20%] right-[30%] w-3 h-3 bg-amber-300/20 rotate-45"
+        className="absolute top-[18%] right-[28%] w-3 h-3 bg-amber-300/20 rotate-45"
         animate={{ y: [0, 10, 0], opacity: [0.2, 0.5, 0.2], rotate: [45, 135, 45] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+      />
+      {/* Additional animated particles */}
+      <motion.div
+        className="absolute top-[65%] right-[40%] w-2 h-2 bg-white/20 rounded-full"
+        animate={{ y: [0, -30, 0], opacity: [0.1, 0.5, 0.1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+      />
+      <motion.div
+        className="absolute top-[22%] left-[55%] w-3 h-3 bg-fuchsia-300/15 rounded-full"
+        animate={{ y: [0, -20, 0], scale: [1, 1.5, 1], opacity: [0.15, 0.4, 0.15] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+      />
+      <motion.div
+        className="absolute bottom-[50%] right-[55%] w-5 h-5 bg-violet-300/10 rounded-md rotate-45"
+        animate={{ y: [0, 12, 0], rotate: [45, 180, 45], opacity: [0.1, 0.3, 0.1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2.2 }}
       />
 
       {/* Animated glow orbs */}
@@ -1802,11 +2000,33 @@ function CTASection() {
 
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
         <FadeInSection>
+          {/* Social proof badges */}
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
+            className="flex flex-wrap items-center justify-center gap-3 mb-8"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium backdrop-blur-sm shadow-lg shadow-black/5">
+              <UsersRound className="h-4 w-4" />
+              ۱۰,۰۰۰+ کاربر فعال
+            </div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium backdrop-blur-sm shadow-lg shadow-black/5">
+              <Award className="h-4 w-4" />
+              رتبه ۱ فرم‌ساز ایرانی
+            </div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium backdrop-blur-sm shadow-lg shadow-black/5">
+              <Clock className="h-4 w-4" />
+              آپتایم ۹۹.۹٪
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium mb-8 backdrop-blur-sm shadow-lg shadow-black/5"
           >
             <Star className="h-4 w-4 text-yellow-300 fill-yellow-300" />
@@ -1817,7 +2037,7 @@ function CTASection() {
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
             className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight"
           >
             همین حالا شروع کنید!
@@ -1826,7 +2046,7 @@ function CTASection() {
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
             className="mt-6 mx-auto max-w-xl text-lg text-indigo-100 leading-relaxed"
           >
             ثبت‌نام در کمتر از ۳۰ ثانیه. بدون نیاز به کارت بانکی.
@@ -1838,7 +2058,7 @@ function CTASection() {
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             {/* CTA button with pulse animation */}
