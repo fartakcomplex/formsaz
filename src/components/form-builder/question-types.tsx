@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Type,
   AlignRight,
@@ -18,9 +18,9 @@ import {
   FileText,
   ImageIcon,
   LayoutGrid,
-  Minus as SectionMinus,
   Heading,
-  Info,
+  CircleHelp,
+  ChevronLeft,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -29,8 +29,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { Badge } from '@/components/ui/badge';
 import { useAppStore, FormQuestion } from '@/lib/store';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface QuestionTypeItem {
   type: string;
@@ -40,12 +42,80 @@ interface QuestionTypeItem {
   category: string;
 }
 
-const categoryColors: Record<string, { gradient: string; dotColor: string; darkGradient: string; borderColor: string; darkBorderColor: string }> = {
-  'متن': { gradient: 'from-violet-500/10 to-purple-500/10', dotColor: 'bg-violet-500', darkGradient: 'from-violet-500/15 to-purple-500/15', borderColor: 'border-r-violet-500', darkBorderColor: 'dark:border-r-violet-400' },
-  'انتخاب': { gradient: 'from-emerald-500/10 to-teal-500/10', dotColor: 'bg-emerald-500', darkGradient: 'from-emerald-500/15 to-teal-500/15', borderColor: 'border-r-emerald-500', darkBorderColor: 'dark:border-r-emerald-400' },
-  'ورودی': { gradient: 'from-amber-500/10 to-orange-500/10', dotColor: 'bg-amber-500', darkGradient: 'from-amber-500/15 to-orange-500/15', borderColor: 'border-r-amber-500', darkBorderColor: 'dark:border-r-amber-400' },
-  'ارزیابی': { gradient: 'from-fuchsia-500/10 to-pink-500/10', dotColor: 'bg-fuchsia-500', darkGradient: 'from-fuchsia-500/15 to-pink-500/15', borderColor: 'border-r-fuchsia-500', darkBorderColor: 'dark:border-r-fuchsia-400' },
-  'متفرقه': { gradient: 'from-gray-500/10 to-slate-500/10', dotColor: 'bg-gray-500', darkGradient: 'from-gray-500/15 to-slate-500/15', borderColor: 'border-r-slate-500', darkBorderColor: 'dark:border-r-slate-400' },
+const categoryAccentColors: Record<string, { border: string; bg: string; text: string; dot: string; hoverBg: string; iconBg: string; iconText: string; darkBorder: string; darkHoverBg: string; darkIconBg: string; darkIconText: string }> = {
+  'متن': {
+    border: 'border-r-violet-400',
+    bg: 'bg-violet-50/40',
+    text: 'text-violet-600',
+    dot: 'bg-violet-500',
+    hoverBg: 'hover:bg-violet-50/80 dark:hover:bg-violet-950/30',
+    iconBg: 'group-hover:bg-violet-100 dark:group-hover:bg-violet-900/40',
+    iconText: 'group-hover:text-violet-600 dark:group-hover:text-violet-400',
+    darkBorder: 'dark:border-r-violet-500',
+    darkHoverBg: 'dark:hover:bg-violet-950/30',
+    darkIconBg: 'dark:group-hover:bg-violet-900/40',
+    darkIconText: 'dark:group-hover:text-violet-400',
+  },
+  'انتخاب': {
+    border: 'border-r-emerald-400',
+    bg: 'bg-emerald-50/40',
+    text: 'text-emerald-600',
+    dot: 'bg-emerald-500',
+    hoverBg: 'hover:bg-emerald-50/80 dark:hover:bg-emerald-950/30',
+    iconBg: 'group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40',
+    iconText: 'group-hover:text-emerald-600 dark:group-hover:text-emerald-400',
+    darkBorder: 'dark:border-r-emerald-500',
+    darkHoverBg: 'dark:hover:bg-emerald-950/30',
+    darkIconBg: 'dark:group-hover:bg-emerald-900/40',
+    darkIconText: 'dark:group-hover:text-emerald-400',
+  },
+  'ورودی': {
+    border: 'border-r-amber-400',
+    bg: 'bg-amber-50/40',
+    text: 'text-amber-600',
+    dot: 'bg-amber-500',
+    hoverBg: 'hover:bg-amber-50/80 dark:hover:bg-amber-950/30',
+    iconBg: 'group-hover:bg-amber-100 dark:group-hover:bg-amber-900/40',
+    iconText: 'group-hover:text-amber-600 dark:group-hover:text-amber-400',
+    darkBorder: 'dark:border-r-amber-500',
+    darkHoverBg: 'dark:hover:bg-amber-950/30',
+    darkIconBg: 'dark:group-hover:bg-amber-900/40',
+    darkIconText: 'dark:group-hover:text-amber-400',
+  },
+  'ارزیابی': {
+    border: 'border-r-fuchsia-400',
+    bg: 'bg-fuchsia-50/40',
+    text: 'text-fuchsia-600',
+    dot: 'bg-fuchsia-500',
+    hoverBg: 'hover:bg-fuchsia-50/80 dark:hover:bg-fuchsia-950/30',
+    iconBg: 'group-hover:bg-fuchsia-100 dark:group-hover:bg-fuchsia-900/40',
+    iconText: 'group-hover:text-fuchsia-600 dark:group-hover:text-fuchsia-400',
+    darkBorder: 'dark:border-r-fuchsia-500',
+    darkHoverBg: 'dark:hover:bg-fuchsia-950/30',
+    darkIconBg: 'dark:group-hover:bg-fuchsia-900/40',
+    darkIconText: 'dark:group-hover:text-fuchsia-400',
+  },
+  'متفرقه': {
+    border: 'border-r-slate-400',
+    bg: 'bg-slate-50/40',
+    text: 'text-slate-600',
+    dot: 'bg-slate-500',
+    hoverBg: 'hover:bg-slate-50/80 dark:hover:bg-slate-800/30',
+    iconBg: 'group-hover:bg-slate-100 dark:group-hover:bg-slate-800/40',
+    iconText: 'group-hover:text-slate-600 dark:group-hover:text-slate-400',
+    darkBorder: 'dark:border-r-slate-500',
+    darkHoverBg: 'dark:hover:bg-slate-800/30',
+    darkIconBg: 'dark:group-hover:bg-slate-800/40',
+    darkIconText: 'dark:group-hover:text-slate-400',
+  },
+};
+
+const categoryGradients: Record<string, string> = {
+  'متن': 'from-violet-500/8 to-purple-500/4 dark:from-violet-500/12 dark:to-purple-500/6',
+  'انتخاب': 'from-emerald-500/8 to-teal-500/4 dark:from-emerald-500/12 dark:to-teal-500/6',
+  'ورودی': 'from-amber-500/8 to-orange-500/4 dark:from-amber-500/12 dark:to-orange-500/6',
+  'ارزیابی': 'from-fuchsia-500/8 to-pink-500/4 dark:from-fuchsia-500/12 dark:to-pink-500/6',
+  'متفرقه': 'from-slate-500/8 to-gray-500/4 dark:from-slate-500/12 dark:to-gray-500/6',
 };
 
 const questionTypes: QuestionTypeItem[] = [
@@ -161,12 +231,18 @@ function getDefaultTitle(type: string): string {
   return titles[type] || 'سؤال جدید';
 }
 
+function toPersianDigits(str: string): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return str.replace(/\d/g, (d) => persianDigits[parseInt(d)]);
+}
+
 interface QuestionTypesProps {
   collapsed?: boolean;
 }
 
 export default function QuestionTypes({ collapsed = false }: QuestionTypesProps) {
   const { questions, addQuestion } = useAppStore();
+  const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
 
   const handleAddQuestion = (type: string) => {
     const newQuestion: FormQuestion = {
@@ -178,6 +254,10 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
       config: getDefaultConfig(type),
     };
     addQuestion(newQuestion);
+  };
+
+  const toggleCategory = (category: string) => {
+    setCollapsedCategories((prev) => ({ ...prev, [category]: !prev[category] }));
   };
 
   if (collapsed) {
@@ -207,85 +287,177 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-        <h3 className="text-sm font-semibold text-foreground">نوع سؤال</h3>
-        <p className="text-xs text-muted-foreground mt-0.5">برای افزودن کلیک کنید</p>
+      {/* ===== Enhanced Sidebar Header ===== */}
+      <div className="px-4 py-4 border-b border-gray-200/60 dark:border-gray-800/60">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
+            نوع سؤال
+          </h3>
+          <Badge
+            variant="secondary"
+            className="shrink-0 bg-violet-100/80 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300 border-0 text-[10px] px-1.5 py-0 gap-0.5 font-semibold"
+          >
+            <CircleHelp className="h-2.5 w-2.5" />
+            {toPersianDigits(String(questions.length))}
+          </Badge>
+        </div>
+        <p className="text-[11px] text-muted-foreground/70 mt-1 leading-relaxed">
+          یک نوع سؤال انتخاب کنید
+        </p>
       </div>
+
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-l from-transparent via-violet-300/40 dark:via-violet-700/30 to-transparent" />
+
       <ScrollArea className="flex-1">
-        <div className="sidebar-scroll-fade py-2">
+        <div className="sidebar-scroll-fade py-3">
           {categories.map((category, catIdx) => {
             const items = questionTypes.filter((qt) => qt.category === category);
-            const colors = categoryColors[category] || categoryColors['متفرقه'];
+            const colors = categoryAccentColors[category] || categoryAccentColors['متفرقه'];
+            const isCollapsed = collapsedCategories[category] ?? false;
+
             return (
               <div key={category}>
-                {catIdx > 0 && <Separator className="my-2 mx-4" />}
-                {/* Category header with gradient background */}
-                <div className={cn(
-                  'mx-2 rounded-lg px-3 py-1.5',
-                  'bg-gradient-to-l from-violet-500/[0.07] to-purple-500/[0.04] dark:from-violet-500/[0.10] dark:to-purple-500/[0.06]',
-                  'border border-transparent'
-                )}>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-violet-700 dark:text-violet-300 flex items-center gap-2">
+                {catIdx > 0 && (
+                  <div className="my-2 mx-4 h-px bg-gradient-to-l from-transparent via-gray-200/80 dark:via-gray-700/40 to-transparent" />
+                )}
+
+                {/* ===== Collapsible Category Header ===== */}
+                <button
+                  onClick={() => toggleCategory(category)}
+                  className={cn(
+                    'group/cat mx-2 flex w-[calc(100%-1rem)] items-center justify-between rounded-xl px-3 py-2 mb-1',
+                    'bg-gradient-to-l transition-all duration-200',
+                    categoryGradients[category],
+                    'hover:shadow-sm hover:shadow-violet-100/30 dark:hover:shadow-violet-950/20'
+                  )}
+                >
+                  <span className="flex items-center gap-2.5">
                     <span className={cn(
-                      'w-2 h-2 rounded-full shrink-0',
-                      colors.dotColor
+                      'w-2 h-2 rounded-full shrink-0 transition-transform duration-200 group-hover/cat:scale-125',
+                      colors.dot
                     )} />
-                    {category}
+                    <span className={cn(
+                      'text-[10px] font-bold uppercase tracking-wider',
+                      colors.text
+                    )}>
+                      {category}
+                    </span>
+                    <span className="text-[9px] text-muted-foreground/50 font-medium">
+                      {toPersianDigits(String(items.length))}
+                    </span>
                   </span>
-                </div>
-                <div className="grid grid-cols-1 gap-0.5 px-2">
-                  {items.map((qt) => (
-                    <Tooltip key={qt.type}>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={() => handleAddQuestion(qt.type)}
-                          className={cn(
-                            'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-right transition-all duration-200 ease-out',
-                            'hover:scale-[1.03] hover:shadow-md',
-                            'active:scale-[0.98]',
-                            'border border-transparent',
-                            'bg-white dark:bg-zinc-900/40',
-                            'hover:bg-violet-50/50 dark:hover:bg-violet-950/20',
-                            'hover:border-muted/60 dark:hover:border-muted/40'
-                          )}
-                        >
-                          {/* Colored right border indicator on hover */}
-                          <div
-                            className="absolute top-1 bottom-1 right-0 w-[3px] rounded-l opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                            style={{
-                              backgroundColor: category === 'متن' ? '#8b5cf6'
-                                : category === 'انتخاب' ? '#10b981'
-                                : category === 'ورودی' ? '#f59e0b'
-                                : category === 'ارزیابی' ? '#d946ef'
-                                : '#64748b'
-                            }}
-                          />
-                          <div className={cn(
-                            'flex h-8 w-8 shrink-0 items-center justify-center rounded-md',
-                            'bg-muted/60 text-muted-foreground transition-all duration-200',
-                            'group-hover:bg-violet-100 group-hover:text-violet-600',
-                            'dark:group-hover:bg-violet-900 dark:group-hover:text-violet-400',
-                            'group-hover:shadow-sm'
-                          )}>
-                            {qt.icon}
-                          </div>
-                          <span className="text-sm font-medium">{qt.label}</span>
-                          {/* Info icon */}
-                          <Info className="size-3 ml-auto text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="left" sideOffset={8} className="max-w-[220px]">
-                        <p className="text-sm font-medium">{qt.label}</p>
-                        <p className="text-xs text-muted-foreground">{qt.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
+                  <motion.div
+                    animate={{ rotate: isCollapsed ? 0 : 180 }}
+                    transition={{ duration: 0.25, ease: 'easeInOut' }}
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5 text-muted-foreground/40" />
+                  </motion.div>
+                </button>
+
+                {/* ===== Question Type Buttons ===== */}
+                <AnimatePresence initial={false}>
+                  {!isCollapsed && (
+                    <motion.div
+                      key={category}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="grid grid-cols-1 gap-0.5 px-2 pb-1">
+                        {items.map((qt, idx) => (
+                          <motion.div
+                            key={qt.type}
+                            initial={{ opacity: 0, x: 8 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.15, delay: idx * 0.03 }}
+                          >
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <motion.button
+                                  whileHover={{ x: -4 }}
+                                  whileTap={{ scale: 0.97 }}
+                                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                  onClick={() => handleAddQuestion(qt.type)}
+                                  className={cn(
+                                    'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-right transition-all duration-200 ease-out',
+                                    'border border-transparent',
+                                    'bg-white/80 dark:bg-zinc-900/50',
+                                    colors.hoverBg,
+                                    'hover:shadow-md hover:shadow-black/[0.03] dark:hover:shadow-black/20',
+                                    'active:scale-[0.98]',
+                                    // Colored right border on hover
+                                    colors.border, 'dark:' + colors.darkBorder,
+                                    'border-r-[3px] border-r-transparent',
+                                    'hover:border-r-current',
+                                    'hover:border-muted/30 dark:hover:border-muted/30'
+                                  )}
+                                >
+                                  {/* Icon container */}
+                                  <div className={cn(
+                                    'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+                                    'bg-muted/50 text-muted-foreground transition-all duration-200',
+                                    colors.iconBg, colors.iconText,
+                                    'group-hover:shadow-sm'
+                                  )}>
+                                    {qt.icon}
+                                  </div>
+
+                                  {/* Label */}
+                                  <div className="flex-1 min-w-0">
+                                    <span className="text-sm font-medium block truncate group-hover:text-foreground transition-colors">
+                                      {qt.label}
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground/60 block truncate">
+                                      {qt.description}
+                                    </span>
+                                  </div>
+
+                                  {/* Plus indicator */}
+                                  <motion.div
+                                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted/40 text-muted-foreground/30 opacity-0 group-hover:opacity-100 transition-all duration-200"
+                                    whileHover={{ scale: 1.15 }}
+                                  >
+                                    <PlusIcon className="h-3 w-3" />
+                                  </motion.div>
+                                </motion.button>
+                              </TooltipTrigger>
+                              <TooltipContent side="left" sideOffset={8} className="max-w-[220px]">
+                                <p className="text-sm font-medium">{qt.label}</p>
+                                <p className="text-xs text-muted-foreground">{qt.description}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
         </div>
       </ScrollArea>
     </div>
+  );
+}
+
+/* Plus icon inline */
+function PlusIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
   );
 }

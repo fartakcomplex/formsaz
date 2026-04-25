@@ -61,6 +61,10 @@ import {
   Award,
   UsersRound,
   Clock,
+  Rocket,
+  Play,
+  FileText,
+  Globe,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -2055,7 +2059,7 @@ function CTASection() {
 
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
-      {/* More vibrant animated shifting gradient background */}
+      {/* Animated gradient background — violet → purple → fuchsia */}
       <motion.div
         className="absolute inset-0"
         animate={{
@@ -2064,176 +2068,190 @@ function CTASection() {
         transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
         style={{
           backgroundSize: '400% 400%',
-          backgroundImage: 'linear-gradient(135deg, #4338ca, #7c3aed, #9333ea, #6366f1, #a855f7, #4338ca)',
+          backgroundImage:
+            'linear-gradient(135deg, oklch(0.55 0.27 293), oklch(0.53 0.25 280), oklch(0.52 0.27 305), oklch(0.50 0.24 293), oklch(0.55 0.27 293))',
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/50 to-transparent" />
-      <div className="absolute inset-0 opacity-10" style={{
-        backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
-        backgroundSize: '32px 32px',
-      }} />
+      {/* Glassmorphism overlay */}
+      <div className="absolute inset-0 bg-white/[0.04] backdrop-blur-[2px]" />
+      {/* Dot pattern overlay for texture */}
+      <div
+        className="absolute inset-0 opacity-[0.07]"
+        style={{
+          backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)',
+          backgroundSize: '28px 28px',
+        }}
+      />
 
-      {/* Floating geometric shapes - more varied */}
+      {/* Animated floating shapes */}
+      {/* Large circle top-right */}
       <motion.div
-        className="absolute top-[12%] right-[6%] w-16 h-16 border-2 border-white/20 rounded-xl"
-        animate={{ y: [0, -25, 0], rotate: [0, 45, 0], scale: [1, 1.1, 1] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-[8%] right-[5%] w-20 h-20 border-2 border-white/15 rounded-full"
+        animate={{ y: [0, -30, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
+      {/* Medium square bottom-left */}
       <motion.div
-        className="absolute bottom-[18%] left-[8%] w-12 h-12 border-2 border-white/15 rounded-full"
-        animate={{ y: [0, 20, 0], x: [0, 10, 0], scale: [1, 1.15, 1] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className="absolute bottom-[15%] left-[7%] w-14 h-14 border-2 border-white/15 rounded-xl"
+        animate={{ y: [0, 25, 0], rotate: [0, 45, 0], scale: [1, 1.1, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       />
+      {/* Small filled circle */}
       <motion.div
-        className="absolute top-[28%] left-[18%] w-8 h-8 bg-white/10 rounded-lg"
-        animate={{ y: [0, -15, 0], rotate: [0, 90, 0], scale: [1, 1.2, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+        className="absolute top-[30%] left-[15%] w-6 h-6 bg-white/10 rounded-full"
+        animate={{ y: [0, -18, 0], x: [0, 10, 0], scale: [1, 1.3, 1] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
       />
+      {/* Small filled square */}
       <motion.div
-        className="absolute bottom-[32%] right-[16%] w-6 h-6 bg-white/10 rounded-full"
-        animate={{ y: [0, -20, 0], scale: [1, 1.3, 1] }}
+        className="absolute bottom-[35%] right-[12%] w-5 h-5 bg-white/10 rounded-sm"
+        animate={{ y: [0, -22, 0], rotate: [0, 90, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
+      {/* Diamond shape */}
       <motion.div
-        className="absolute top-[58%] left-[32%] w-10 h-10 border border-white/10 rotate-45"
+        className="absolute top-[55%] left-[30%] w-10 h-10 border border-white/10 rotate-45 rounded-sm"
         animate={{ y: [0, 15, 0], rotate: [45, 135, 45] }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
+      {/* Tiny accent circle */}
       <motion.div
-        className="absolute top-[8%] left-[42%] w-5 h-5 bg-yellow-300/30 rounded-full"
-        animate={{ y: [0, -12, 0], opacity: [0.3, 0.6, 0.3] }}
+        className="absolute top-[10%] left-[45%] w-4 h-4 bg-yellow-300/25 rounded-full"
+        animate={{ y: [0, -14, 0], opacity: [0.25, 0.55, 0.25] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
       />
+      {/* Tiny accent rectangle */}
       <motion.div
-        className="absolute bottom-[12%] right-[32%] w-4 h-4 bg-pink-300/25 rotate-12"
-        animate={{ y: [0, 18, 0], rotate: [12, 72, 12] }}
+        className="absolute bottom-[20%] right-[30%] w-5 h-3 bg-pink-300/20 rounded-full"
+        animate={{ y: [0, 20, 0], rotate: [0, 60, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
       />
+      {/* Large ring */}
       <motion.div
-        className="absolute top-[42%] right-[4%] w-14 h-14 border-2 border-white/10 rounded-full"
-        animate={{ y: [0, -18, 0], x: [0, 12, 0], scale: [1, 0.9, 1] }}
+        className="absolute top-[40%] right-[3%] w-16 h-16 border-2 border-white/[0.08] rounded-full"
+        animate={{ y: [0, -20, 0], x: [0, 14, 0], scale: [1, 0.9, 1] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2.5 }}
       />
+      {/* Medium filled rounded rect */}
       <motion.div
-        className="absolute bottom-[38%] left-[22%] w-7 h-7 bg-cyan-300/20 rounded-lg"
-        animate={{ y: [0, -22, 0], rotate: [0, -45, 0] }}
+        className="absolute bottom-[40%] left-[20%] w-8 h-8 bg-cyan-300/15 rounded-lg"
+        animate={{ y: [0, -24, 0], rotate: [0, -45, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1.8 }}
       />
+      {/* Tiny diamond */}
       <motion.div
-        className="absolute top-[18%] right-[28%] w-3 h-3 bg-amber-300/20 rotate-45"
-        animate={{ y: [0, 10, 0], opacity: [0.2, 0.5, 0.2], rotate: [45, 135, 45] }}
+        className="absolute top-[20%] right-[25%] w-3 h-3 bg-amber-300/15 rotate-45"
+        animate={{ y: [0, 12, 0], opacity: [0.15, 0.45, 0.15], rotate: [45, 135, 45] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
       />
-      {/* Additional animated particles */}
+      {/* Micro particles */}
       <motion.div
-        className="absolute top-[65%] right-[40%] w-2 h-2 bg-white/20 rounded-full"
-        animate={{ y: [0, -30, 0], opacity: [0.1, 0.5, 0.1] }}
+        className="absolute top-[68%] right-[42%] w-2 h-2 bg-white/15 rounded-full"
+        animate={{ y: [0, -32, 0], opacity: [0.1, 0.4, 0.1] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
       />
       <motion.div
-        className="absolute top-[22%] left-[55%] w-3 h-3 bg-fuchsia-300/15 rounded-full"
-        animate={{ y: [0, -20, 0], scale: [1, 1.5, 1], opacity: [0.15, 0.4, 0.15] }}
+        className="absolute top-[24%] left-[58%] w-3 h-3 bg-fuchsia-300/12 rounded-full"
+        animate={{ y: [0, -22, 0], scale: [1, 1.5, 1], opacity: [0.12, 0.35, 0.12] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
       />
       <motion.div
-        className="absolute bottom-[50%] right-[55%] w-5 h-5 bg-violet-300/10 rounded-md rotate-45"
-        animate={{ y: [0, 12, 0], rotate: [45, 180, 45], opacity: [0.1, 0.3, 0.1] }}
+        className="absolute bottom-[48%] right-[58%] w-5 h-5 bg-violet-300/[0.07] rounded-md rotate-45"
+        animate={{ y: [0, 14, 0], rotate: [45, 180, 45], opacity: [0.07, 0.22, 0.07] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2.2 }}
       />
 
       {/* Animated glow orbs */}
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-violet-300/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-400/10 rounded-full blur-3xl" />
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-white/[0.08] rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-violet-300/15 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-400/[0.06] rounded-full blur-3xl" />
 
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
         <FadeInSection>
-          {/* Social proof badges */}
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-wrap items-center justify-center gap-3 mb-8"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium backdrop-blur-sm shadow-lg shadow-black/5">
-              <UsersRound className="h-4 w-4" />
-              ۱۰,۰۰۰+ کاربر فعال
-            </div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium backdrop-blur-sm shadow-lg shadow-black/5">
-              <Award className="h-4 w-4" />
-              رتبه ۱ فرم‌ساز ایرانی
-            </div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium backdrop-blur-sm shadow-lg shadow-black/5">
-              <Clock className="h-4 w-4" />
-              آپتایم ۹۹.۹٪
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-medium mb-8 backdrop-blur-sm shadow-lg shadow-black/5"
-          >
-            <Star className="h-4 w-4 text-yellow-300 fill-yellow-300" />
-            عضو بیش از ۵۰,۰۰۰ کاربر خوشحال شوید
-          </motion.div>
-
+          {/* Heading */}
           <motion.h2
-            initial={{ y: 20, opacity: 0 }}
+            initial={{ y: 24, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight"
+            transition={{ duration: 0.6, delay: 0.05 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight"
           >
             همین حالا شروع کنید!
           </motion.h2>
+
+          {/* Subtitle */}
           <motion.p
-            initial={{ y: 20, opacity: 0 }}
+            initial={{ y: 24, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mt-6 mx-auto max-w-2xl text-base sm:text-lg text-white/85 leading-relaxed"
+          >
+            هزاران سازمان از فرمساز برای جمع‌آوری داده‌ها استفاده می‌کنند. رایگان شروع کنید و تفاوت را احساس کنید.
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ y: 24, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="mt-6 mx-auto max-w-xl text-lg text-indigo-100 leading-relaxed"
-          >
-            ثبت‌نام در کمتر از ۳۰ ثانیه. بدون نیاز به کارت بانکی.
-            <br />
-            اولین فرم خود را همین امروز بسازید.
-          </motion.p>
-
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.35 }}
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            {/* CTA button with pulse animation */}
+            {/* Primary CTA — pulse animation */}
             <motion.div
               className="relative"
               animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             >
-              {/* Pulse ring behind button */}
               <motion.div
-                className="absolute inset-0 rounded-xl bg-white/20"
-                animate={{ scale: [1, 1.15], opacity: [0.3, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+                className="absolute inset-0 rounded-2xl bg-white/20"
+                animate={{ scale: [1, 1.18], opacity: [0.35, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' }}
               />
               <Button
                 size="lg"
                 onClick={() => setCurrentView('dashboard')}
-                className="relative w-full sm:w-auto min-w-[220px] h-14 text-base font-bold bg-white text-indigo-600 hover:bg-indigo-50 shadow-2xl shadow-black/15 hover:shadow-black/25 hover:-translate-y-1 transition-all rounded-xl px-10 group"
+                className="relative w-full sm:w-auto min-w-[200px] h-14 text-base font-bold bg-white text-violet-700 hover:bg-violet-50 shadow-2xl shadow-black/15 hover:shadow-black/25 hover:-translate-y-1 transition-all rounded-2xl px-8 gap-2 group"
               >
+                <Rocket className="h-5 w-5" />
                 شروع رایگان
-                <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
               </Button>
             </motion.div>
-            <div className="flex items-center gap-2 text-white/70 text-sm">
-              <Shield className="h-4 w-4" />
-              بدون نیاز به کارت بانکی
-            </div>
+
+            {/* Secondary CTA — outline */}
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full sm:w-auto min-w-[200px] h-14 text-base font-bold bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-all rounded-2xl px-8 gap-2 group"
+            >
+              <Play className="h-5 w-5" />
+              مشاهده نمونه‌ها
+            </Button>
+          </motion.div>
+
+          {/* Trust indicators row */}
+          <motion.div
+            initial={{ y: 24, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-white/70"
+          >
+            <span className="inline-flex items-center gap-1.5">
+              <Check className="h-4 w-4 text-emerald-300" />
+              بیش از ۵۰,۰۰۰ فرم ساخته شده
+            </span>
+            <span className="hidden sm:inline-block w-px h-4 bg-white/25" />
+            <span className="inline-flex items-center gap-1.5">
+              <Check className="h-4 w-4 text-emerald-300" />
+              ۹۹.۹٪ آپتایم
+            </span>
+            <span className="hidden sm:inline-block w-px h-4 bg-white/25" />
+            <span className="inline-flex items-center gap-1.5">
+              <Check className="h-4 w-4 text-emerald-300" />
+              پشتیبانی ۲۴/۷
+            </span>
           </motion.div>
         </FadeInSection>
       </div>
@@ -2260,128 +2278,256 @@ function Footer() {
     {
       name: 'تلگرام',
       icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
         </svg>
       ),
       href: '#',
-      hoverColor: 'hover:text-sky-400 hover:bg-sky-400/10',
+      hoverColor: 'hover:text-sky-400 hover:border-sky-400/30 hover:bg-sky-400/10',
+    },
+    {
+      name: 'توییتر',
+      icon: (
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      ),
+      href: '#',
+      hoverColor: 'hover:text-gray-200 hover:border-gray-300/20 hover:bg-gray-300/10',
     },
     {
       name: 'اینستاگرام',
       icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
           <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
         </svg>
       ),
       href: '#',
-      hoverColor: 'hover:text-pink-400 hover:bg-pink-400/10',
-    },
-    {
-      name: 'توییتر',
-      icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-        </svg>
-      ),
-      href: '#',
-      hoverColor: 'hover:text-gray-300 hover:bg-gray-300/10',
+      hoverColor: 'hover:text-pink-400 hover:border-pink-400/30 hover:bg-pink-400/10',
     },
     {
       name: 'لینکدین',
       icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
           <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
         </svg>
       ),
       href: '#',
-      hoverColor: 'hover:text-blue-400 hover:bg-blue-400/10',
+      hoverColor: 'hover:text-blue-400 hover:border-blue-400/30 hover:bg-blue-400/10',
     },
   ];
 
   return (
-    <footer className="bg-gray-900 text-gray-400 mt-auto">
-      {/* Gradient top border */}
-      <div className="h-px bg-gradient-to-l from-indigo-500 via-violet-500 to-purple-500" />
+    <footer className="relative mt-auto">
+      {/* Gradient divider — violet to transparent at top */}
+      <div className="h-px bg-gradient-to-l from-transparent via-violet-500 to-transparent" />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600">
-                <ClipboardList className="h-4 w-4 text-white" />
+      {/* Dark background with subtle gradient + glassmorphism */}
+      <div className="relative bg-gray-950 overflow-hidden">
+        {/* Subtle gradient overlay */}
+        <div
+          className="absolute inset-0 opacity-60"
+          style={{
+            background:
+              'radial-gradient(ellipse at 20% 0%, oklch(0.35 0.12 293 / 15%) 0%, transparent 60%), radial-gradient(ellipse at 80% 100%, oklch(0.30 0.10 270 / 10%) 0%, transparent 60%)',
+          }}
+        />
+        {/* Glassmorphism layer */}
+        <div className="absolute inset-0 backdrop-blur-[1px]" />
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 lg:py-16">
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+              {/* Column 1 — Brand + description */}
+              <div className="sm:col-span-2 lg:col-span-1">
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-500/20">
+                    <FileText className="h-4.5 w-4.5 text-white" />
+                  </div>
+                  <span className="text-lg font-bold text-white tracking-tight">فرم‌ساز</span>
+                </div>
+                <p className="text-sm leading-relaxed text-gray-400 max-w-[260px]">
+                  فرمساز آنلاین، ابزار حرفه‌ای ساخت فرم، پرسشنامه و نظرسنجی
+                </p>
+
+                {/* Social Media Icons — glassmorphism circular containers */}
+                <div className="flex items-center gap-2.5 mt-6">
+                  {socialLinks.map((social, i) => (
+                    <motion.a
+                      key={social.name}
+                      href={social.href}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.1 * i, duration: 0.4 }}
+                      whileHover={{ scale: 1.12, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`flex h-10 w-10 items-center justify-center rounded-full text-gray-500 border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm transition-all duration-200 ${social.hoverColor}`}
+                      title={social.name}
+                    >
+                      {social.icon}
+                    </motion.a>
+                  ))}
+                </div>
               </div>
-              <span className="text-lg font-bold text-white">فرم‌ساز</span>
+
+              {/* Column 2 — محصول */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+              >
+                <h4 className="text-sm font-semibold text-white mb-5 flex items-center gap-2">
+                  <span className="inline-block w-1 h-4 rounded-full bg-gradient-to-b from-violet-400 to-fuchsia-500" />
+                  محصول
+                </h4>
+                <ul className="space-y-3 text-sm">
+                  <li>
+                    <a href="#features" className="text-gray-400 hover:text-violet-300 hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1.5 group">
+                      <span className="w-0 h-px bg-violet-400 group-hover:w-3 transition-all duration-200" />
+                      ساخت فرم
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#pricing" className="text-gray-400 hover:text-violet-300 hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1.5 group">
+                      <span className="w-0 h-px bg-violet-400 group-hover:w-3 transition-all duration-200" />
+                      الگوهای آماده
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#use-cases" className="text-gray-400 hover:text-violet-300 hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1.5 group">
+                      <span className="w-0 h-px bg-violet-400 group-hover:w-3 transition-all duration-200" />
+                      نظرسنجی
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#pricing" className="text-gray-400 hover:text-violet-300 hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1.5 group">
+                      <span className="w-0 h-px bg-violet-400 group-hover:w-3 transition-all duration-200" />
+                      فرم استخدام
+                    </a>
+                  </li>
+                </ul>
+              </motion.div>
+
+              {/* Column 3 — شرکت */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                <h4 className="text-sm font-semibold text-white mb-5 flex items-center gap-2">
+                  <span className="inline-block w-1 h-4 rounded-full bg-gradient-to-b from-violet-400 to-fuchsia-500" />
+                  شرکت
+                </h4>
+                <ul className="space-y-3 text-sm">
+                  <li>
+                    <span className="text-gray-500 hover:text-violet-300 transition-colors duration-200 cursor-default inline-flex items-center gap-1.5">
+                      <span className="w-1 h-px bg-gray-700" />
+                      درباره ما
+                    </span>
+                  </li>
+                  <li>
+                    <span className="text-gray-500 hover:text-violet-300 transition-colors duration-200 cursor-default inline-flex items-center gap-1.5">
+                      <span className="w-1 h-px bg-gray-700" />
+                      بلاگ
+                    </span>
+                  </li>
+                  <li>
+                    <span className="text-gray-500 hover:text-violet-300 transition-colors duration-200 cursor-default inline-flex items-center gap-1.5">
+                      <span className="w-1 h-px bg-gray-700" />
+                      تماس با ما
+                    </span>
+                  </li>
+                  <li>
+                    <span className="text-gray-500 hover:text-violet-300 transition-colors duration-200 cursor-default inline-flex items-center gap-1.5">
+                      <span className="w-1 h-px bg-gray-700" />
+                      فرصت‌های شغلی
+                    </span>
+                  </li>
+                </ul>
+              </motion.div>
+
+              {/* Column 4 — پشتیبانی */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <h4 className="text-sm font-semibold text-white mb-5 flex items-center gap-2">
+                  <span className="inline-block w-1 h-4 rounded-full bg-gradient-to-b from-violet-400 to-fuchsia-500" />
+                  پشتیبانی
+                </h4>
+                <ul className="space-y-3 text-sm">
+                  <li>
+                    <span className="text-gray-500 hover:text-violet-300 transition-colors duration-200 cursor-default inline-flex items-center gap-1.5">
+                      <span className="w-1 h-px bg-gray-700" />
+                      مرکز راهنما
+                    </span>
+                  </li>
+                  <li>
+                    <span className="text-gray-500 hover:text-violet-300 transition-colors duration-200 cursor-default inline-flex items-center gap-1.5">
+                      <span className="w-1 h-px bg-gray-700" />
+                      مستندات API
+                    </span>
+                  </li>
+                  <li>
+                    <span className="text-gray-500 hover:text-violet-300 transition-colors duration-200 cursor-default inline-flex items-center gap-1.5">
+                      <span className="w-1 h-px bg-gray-700" />
+                      شرایط استفاده
+                    </span>
+                  </li>
+                  <li>
+                    <span className="text-gray-500 hover:text-violet-300 transition-colors duration-200 cursor-default inline-flex items-center gap-1.5">
+                      <span className="w-1 h-px bg-gray-700" />
+                      حریم خصوصی
+                    </span>
+                  </li>
+                </ul>
+              </motion.div>
             </div>
-            <p className="text-sm leading-relaxed max-w-xs">
-              ساخت فرم، پرسشنامه و نظرسنجی آنلاین به صورت رایگان و حرفه‌ای.
+          </motion.div>
+
+          {/* Separator */}
+          <div className="gradient-divider my-8" />
+
+          {/* Bottom bar */}
+          <motion.div
+            initial={{ y: 15, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="flex flex-col sm:flex-row items-center justify-between gap-4"
+          >
+            {/* Copyright */}
+            <p className="text-xs text-gray-500">
+              © ۱۴۰۴ فرمساز. تمامی حقوق محفوظ است.
             </p>
 
-            {/* Social Media Icons */}
-            <div className="flex items-center gap-2 mt-5">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.name}
-                  href={social.href}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-all duration-200 ${social.hoverColor}`}
-                  title={social.name}
-                >
-                  {social.icon}
-                </motion.a>
-              ))}
+            <div className="flex items-center gap-4">
+              {/* Made in Iran */}
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <span>ساخته شده با</span>
+                <HeartPulse className="h-3 w-3 text-red-400" />
+                <span>در ایران</span>
+              </div>
+
+              {/* Language toggle */}
+              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] text-xs text-gray-400 hover:text-violet-300 hover:border-violet-500/20 hover:bg-violet-500/[0.06] transition-all duration-200">
+                <Globe className="h-3.5 w-3.5" />
+                فارسی
+              </button>
             </div>
-          </div>
-
-          {/* Product */}
-          <div>
-            <h4 className="text-sm font-semibold text-white mb-4">محصول</h4>
-            <ul className="space-y-2.5 text-sm">
-              <li><a href="#features" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">ویژگی‌ها</a></li>
-              <li><a href="#use-cases" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">محیط‌های کاربردی</a></li>
-              <li><a href="#pricing" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">قیمت‌گذاری</a></li>
-              <li><span className="text-gray-600 cursor-default">الگوهای آماده</span></li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h4 className="text-sm font-semibold text-white mb-4">شرکت</h4>
-            <ul className="space-y-2.5 text-sm">
-              <li><span className="text-gray-600 cursor-default">درباره ما</span></li>
-              <li><span className="text-gray-600 cursor-default">بلاگ</span></li>
-              <li><span className="text-gray-600 cursor-default">تماس با ما</span></li>
-              <li><span className="text-gray-600 cursor-default">فرصت‌های شغلی</span></li>
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h4 className="text-sm font-semibold text-white mb-4">پشتیبانی</h4>
-            <ul className="space-y-2.5 text-sm">
-              <li><span className="text-gray-600 cursor-default">مرکز راهنما</span></li>
-              <li><span className="text-gray-600 cursor-default">مستندات API</span></li>
-              <li><span className="text-gray-600 cursor-default">حریم خصوصی</span></li>
-              <li><span className="text-gray-600 cursor-default">شرایط استفاده</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <Separator className="my-8 bg-gray-800" />
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-gray-500">
-            © ۱۴۰۴ فرم‌ساز. تمامی حقوق محفوظ است.
-          </p>
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            <span>ساخته‌شده با</span>
-            <HeartPulse className="h-3 w-3 text-red-400" />
-            <span>در ایران</span>
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -2412,7 +2558,7 @@ function Footer() {
             exit={{ opacity: 0, scale: 0.8, y: 10 }}
             transition={{ duration: 0.2 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-16 left-6 z-40 flex items-center justify-center size-11 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-1 transition-all"
+            className="fixed bottom-16 left-6 z-40 flex items-center justify-center size-11 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:-translate-y-1 transition-all"
             title="بازگشت به بالا"
           >
             <ArrowUp className="size-5" />

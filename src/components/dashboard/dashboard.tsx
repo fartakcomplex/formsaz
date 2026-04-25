@@ -2073,6 +2073,8 @@ function FormCard({
     : statusBorderGradient[form.status] || statusBorderGradient.draft;
   const questionCount = form.questions?.length || 0;
   const expiration = getExpirationStatus(form.expiresAt);
+  const isFavorited = useAppStore((s) => s.favoriteFormIds.includes(form.id));
+  const toggleFavoriteForm = useAppStore((s) => s.toggleFavoriteForm);
 
   return (
     <motion.div
@@ -2150,10 +2152,39 @@ function FormCard({
                 </CardDescription>
               )}
             </div>
-            <Badge variant="outline" className={`shrink-0 text-xs flex items-center gap-1.5 ${status.color}`}>
-              <span className={`size-2 rounded-full ${effectiveStatus === 'published' ? 'bg-emerald-500' : effectiveStatus === 'expired' ? 'bg-red-500' : effectiveStatus === 'closed' ? 'bg-zinc-400' : 'bg-amber-400'}`} />
-              {status.label}
-            </Badge>
+            <div className="flex items-center gap-2 shrink-0">
+              <motion.button
+                whileTap={{ scale: 0.85 }}
+                onClick={() => toggleFavoriteForm(form.id)}
+                className="relative p-1.5 rounded-lg transition-colors hover:bg-amber-50 dark:hover:bg-amber-950/30"
+                title={isFavorited ? 'حذف از برگزیده‌ها' : 'افزودن به برگزیده‌ها'}
+              >
+                {isFavorited && (
+                  <motion.div
+                    layoutId={`fav-glow-card-${form.id}`}
+                    className="absolute inset-0 rounded-lg bg-amber-100/70 dark:bg-amber-900/30"
+                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  />
+                )}
+                <motion.span
+                  animate={isFavorited ? { scale: [1, 1.3, 1], rotate: [0, -15, 0] } : { scale: 1 }}
+                  transition={{ duration: 0.35 }}
+                  className="relative"
+                >
+                  <Star
+                    className={`size-4.5 transition-colors duration-200 ${
+                      isFavorited
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'text-gray-300 dark:text-gray-600 hover:text-amber-400 dark:hover:text-amber-400'
+                    }`}
+                  />
+                </motion.span>
+              </motion.button>
+              <Badge variant="outline" className={`text-xs flex items-center gap-1.5 ${status.color}`}>
+                <span className={`size-2 rounded-full ${effectiveStatus === 'published' ? 'bg-emerald-500' : effectiveStatus === 'expired' ? 'bg-red-500' : effectiveStatus === 'closed' ? 'bg-zinc-400' : 'bg-amber-400'}`} />
+                {status.label}
+              </Badge>
+            </div>
           </div>
         </CardHeader>
 
@@ -2339,6 +2370,8 @@ function FormListRow({
   const status = statusConfig[effectiveStatus] || statusConfig.draft;
   const questionCount = form.questions?.length || 0;
   const isEven = index % 2 === 0;
+  const isFavorited = useAppStore((s) => s.favoriteFormIds.includes(form.id));
+  const toggleFavoriteForm = useAppStore((s) => s.toggleFavoriteForm);
 
   return (
     <div
@@ -2368,6 +2401,35 @@ function FormListRow({
           )}
         </motion.button>
       )}
+
+      {/* Favorite star button */}
+      <motion.button
+        whileTap={{ scale: 0.85 }}
+        onClick={() => toggleFavoriteForm(form.id)}
+        className="relative shrink-0 p-1 rounded-md transition-colors hover:bg-amber-50 dark:hover:bg-amber-950/30"
+        title={isFavorited ? 'حذف از برگزیده‌ها' : 'افزودن به برگزیده‌ها'}
+      >
+        {isFavorited && (
+          <motion.div
+            layoutId={`fav-glow-row-${form.id}`}
+            className="absolute inset-0 rounded-md bg-amber-100/70 dark:bg-amber-900/30"
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          />
+        )}
+        <motion.span
+          animate={isFavorited ? { scale: [1, 1.3, 1], rotate: [0, -15, 0] } : { scale: 1 }}
+          transition={{ duration: 0.35 }}
+          className="relative"
+        >
+          <Star
+            className={`size-4 transition-colors duration-200 ${
+              isFavorited
+                ? 'fill-amber-400 text-amber-400'
+                : 'text-gray-300 dark:text-gray-600 hover:text-amber-400 dark:hover:text-amber-400'
+            }`}
+          />
+        </motion.span>
+      </motion.button>
 
       {/* Status dot */}
       <div className="shrink-0 flex items-center justify-center w-6">
@@ -2751,11 +2813,13 @@ export default function Dashboard() {
     addToDeletedForms,
     activityLog,
     addActivity,
+    favoriteFormIds,
   } = useAppStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [showFavorites, setShowFavorites] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('dashboard-view-mode') as ViewMode) || 'grid';
@@ -2801,7 +2865,8 @@ export default function Dashboard() {
         form.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (form.description && form.description.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesStatus = statusFilter === 'all' || form.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      const matchesFavorite = !showFavorites || favoriteFormIds.includes(form.id);
+      return matchesSearch && matchesStatus && matchesFavorite;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -3252,6 +3317,29 @@ export default function Dashboard() {
                 className="pr-11 h-11 rounded-full border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/80 text-gray-900 dark:text-white transition-all duration-300 focus-visible:border-violet-400 focus-visible:ring-2 focus-visible:ring-violet-200/50 dark:focus-visible:border-violet-600 dark:focus-visible:ring-violet-800/50 shadow-sm focus-visible:shadow-violet-100/50 dark:focus-visible:shadow-violet-900/20"
               />
             </div>
+            {/* Favorites toggle */}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowFavorites((v) => !v)}
+              className={`flex items-center gap-1.5 h-10 px-3 sm:px-4 rounded-xl border text-sm font-medium transition-all duration-200 ${
+                showFavorites
+                  ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 shadow-sm'
+                  : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-amber-300 dark:hover:border-amber-700 hover:text-amber-600 dark:hover:text-amber-400'
+              }`}
+              title="فقط برگزیده‌ها"
+            >
+              <Star className={`size-4 ${showFavorites ? 'fill-amber-400 text-amber-400' : ''}`} />
+              <span className="hidden sm:inline">فقط برگزیده‌ها</span>
+              {favoriteFormIds.length > 0 && (
+                <span className={`flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold ${
+                  showFavorites
+                    ? 'bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                }`}>
+                  {favoriteFormIds.length}
+                </span>
+              )}
+            </motion.button>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-40 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 <SelectValue placeholder="وضعیت" />

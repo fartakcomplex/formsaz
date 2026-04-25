@@ -34,6 +34,8 @@ import {
   BookOpen,
   Link2,
   Clock,
+  Share2,
+  RotateCcw,
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -1214,7 +1216,7 @@ function isQuestionVisible(
   }
 }
 
-function SuccessScreen({ customMessage, formId, onReturn, onResubmit }: { customMessage?: string; formId?: string; onReturn: () => void; onResubmit?: () => void }) {
+function SuccessScreen({ customMessage, formId, formTitle, onReturn, onResubmit }: { customMessage?: string; formId?: string; formTitle?: string; onReturn: () => void; onResubmit?: () => void }) {
   const [copied, setCopied] = useState(false);
   const confettiColors = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316', '#06b6d4', '#84cc16'];
   const confettiParticles = React.useMemo(() => {
@@ -1241,8 +1243,75 @@ function SuccessScreen({ customMessage, formId, onReturn, onResubmit }: { custom
     }
   };
 
+  const floatingShapes = React.useMemo(() => {
+    return Array.from({ length: 8 }).map((_, i) => ({
+      id: i,
+      size: 20 + Math.random() * 40,
+      left: 5 + Math.random() * 90,
+      top: 5 + Math.random() * 90,
+      delay: Math.random() * 3,
+      duration: 4 + Math.random() * 4,
+      color: confettiColors[i % confettiColors.length],
+      shape: i % 3, // 0=circle, 1=square, 2=diamond
+    }));
+  }, []);
+
+  const [showMessage, setShowMessage] = useState(false);
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowMessage(true), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleShare = async () => {
+    if (!formId) return;
+    const link = `formsaz.ir/f/${formId}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: formTitle || 'فرم', url: link });
+      } catch { /* user cancelled */ }
+    } else {
+      try {
+        await navigator.clipboard.writeText(link);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      } catch { /* fallback */ }
+    }
+  };
+
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden min-h-screen flex items-center justify-center py-8 px-4">
+      {/* Floating decorative shapes */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {floatingShapes.map((shape) => (
+          <motion.div
+            key={`shape-${shape.id}`}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{
+              opacity: [0, 0.12, 0.12, 0],
+              scale: [0.5, 1, 1, 0.5],
+              y: [0, -15, -15, -30],
+              rotate: [0, 90, 180, 270],
+            }}
+            transition={{
+              duration: shape.duration,
+              delay: 0.5 + shape.delay,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+            className="absolute"
+            style={{
+              left: `${shape.left}%`,
+              top: `${shape.top}%`,
+              width: shape.size,
+              height: shape.size,
+              backgroundColor: shape.color,
+              borderRadius: shape.shape === 0 ? '50%' : shape.shape === 1 ? '8px' : '4px',
+              transform: shape.shape === 2 ? 'rotate(45deg)' : undefined,
+            }}
+          />
+        ))}
+      </div>
+
       {/* CSS Confetti Particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {confettiParticles.map((p) => (
@@ -1299,128 +1368,177 @@ function SuccessScreen({ customMessage, formId, onReturn, onResubmit }: { custom
         })}
       </div>
 
+      {/* Glassmorphism Card */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-        className="flex flex-col items-center justify-center py-16 px-4 text-center relative z-10"
+        className="relative z-10 w-full max-w-md"
       >
-        {/* Pulsing glow behind checkmark */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: [1, 1.6, 1], opacity: [0.3, 0.08, 0.3] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-          className="absolute top-8 sm:top-12 size-48 rounded-full bg-emerald-400/20 blur-3xl"
-        />
+        <div className="relative rounded-3xl border border-white/30 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl shadow-2xl shadow-violet-200/50 dark:shadow-violet-900/30 p-8 sm:p-10">
+          {/* Top gradient accent line */}
+          <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl" style={{ background: 'linear-gradient(90deg, #7c3aed, #8b5cf6, #a78bfa, #6d28d9)' }} />
 
-        {/* Animated Checkmark with bounce */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: [0, 1.15, 1] }}
-          transition={{ delay: 0.15, type: 'spring', stiffness: 260, damping: 14 }}
-          className="relative flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-200 dark:shadow-emerald-900/40 mb-8"
-        >
-          {/* Rotating ring */}
+          {/* Pulsing glow behind checkmark */}
           <motion.div
-            initial={{ rotate: -90 }}
-            animate={{ rotate: 270 }}
-            transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.4 }}
-            className="absolute inset-0 rounded-full border-2 border-dashed border-emerald-300/40 dark:border-emerald-500/30"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: [1, 1.6, 1], opacity: [0.3, 0.08, 0.3] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+            className="absolute -top-4 left-1/2 -translate-x-1/2 size-40 rounded-full bg-emerald-400/20 blur-3xl"
           />
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: [0, 1.2, 1] }}
-            transition={{ delay: 0.45, type: 'spring', stiffness: 350, damping: 15 }}
-          >
-            <svg className="size-14 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <motion.path
-                d="M5 13l4 4L19 7"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-              />
-            </svg>
-          </motion.div>
-        </motion.div>
 
-        {/* Gradient title */}
-        <motion.h2
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="text-2xl sm:text-3xl font-extrabold mb-3 bg-gradient-to-l from-emerald-600 via-violet-600 to-purple-600 dark:from-emerald-400 dark:via-violet-400 dark:to-purple-400 bg-clip-text text-transparent"
-        >
-          پاسخ شما با موفقیت ثبت شد!
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-gray-500 dark:text-zinc-400 max-w-md text-sm sm:text-base"
-        >
-          {customMessage || 'از وقتی که برای پاسخگویی گذاشتید، سپاسگزاریم. پاسخ شما ثبت و ذخیره شد.'}
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="mt-8 flex flex-col items-center gap-3 w-full max-w-xs"
-        >
-          {/* Copy link button */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={handleCopyLink}
-            className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 dark:hover:bg-violet-950/50 transition-colors shadow-sm w-full justify-center"
-          >
-            {copied ? (
-              <>
-                <Check className="size-4" />
-                لینک کپی شد!
-              </>
-            ) : (
-              <>
-                <Link2 className="size-4" />
-                کپی لینک فرم
-              </>
-            )}
-          </motion.button>
-
-          {/* Resubmit button */}
-          {onResubmit && (
-            <motion.button
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.85 }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={onResubmit}
-              className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 dark:shadow-violet-900/40 hover:shadow-xl transition-all w-full justify-center"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)' }}
+          {/* Content */}
+          <div className="relative flex flex-col items-center text-center">
+            {/* Animated Checkmark with bounce */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: [0, 1.15, 1] }}
+              transition={{ delay: 0.15, type: 'spring', stiffness: 260, damping: 14 }}
+              className="relative flex size-24 sm:size-28 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-200/60 dark:shadow-emerald-900/40 mb-6"
             >
-              <Send className="size-4" />
-              ارسال پاسخ جدید
-            </motion.button>
-          )}
+              {/* Rotating ring */}
+              <motion.div
+                initial={{ rotate: -90 }}
+                animate={{ rotate: 270 }}
+                transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.4 }}
+                className="absolute inset-0 rounded-full border-2 border-dashed border-emerald-300/40 dark:border-emerald-500/30"
+              />
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: [0, 1.2, 1] }}
+                transition={{ delay: 0.45, type: 'spring', stiffness: 350, damping: 15 }}
+              >
+                <svg className="size-12 sm:size-14 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <motion.path
+                    d="M5 13l4 4L19 7"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                  />
+                </svg>
+              </motion.div>
+            </motion.div>
 
-          {/* Return to dashboard button */}
-          <motion.button
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.95 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={onReturn}
-            className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-gray-600 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-white transition-colors shadow-sm w-full justify-center"
-          >
-            <LayoutDashboard className="size-4" />
-            بازگشت به داشبورد
-          </motion.button>
-          <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-zinc-500">
-            <FileText className="size-4" />
-            <span>فرم‌ساز</span>
+            {/* Heading */}
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="text-2xl sm:text-3xl font-extrabold mb-2 bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent"
+            >
+              با تشکر از پاسخ شما!
+            </motion.h2>
+
+            {/* Form title subtitle */}
+            {formTitle && (
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.42 }}
+                className="text-sm font-medium text-gray-600 dark:text-zinc-400 mb-3 max-w-xs truncate"
+              >
+                {formTitle}
+              </motion.p>
+            )}
+
+            {/* Animated success message */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={showMessage ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+              className="mb-2"
+            >
+              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 px-4 py-1.5">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={showMessage ? { scale: 1 } : { scale: 0 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                >
+                  <CheckCircle2 className="size-4 text-emerald-500" />
+                </motion.div>
+                <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
+                  پاسخ شما با موفقیت ثبت شد
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Custom or default message */}
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.55 }}
+              className="text-gray-500 dark:text-zinc-400 max-w-sm text-sm leading-relaxed"
+            >
+              {customMessage || 'از وقتی که برای پاسخگویی گذاشتید، سپاسگزاریم.'}
+            </motion.p>
+
+            {/* Subtle hint */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.6 }}
+              className="text-xs text-gray-400 dark:text-zinc-500 mt-1 mb-6"
+            >
+              در صورت نیاز، می‌توانید فرم را دوباره پر کنید
+            </motion.p>
+
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="w-full flex flex-col gap-2.5"
+            >
+              {/* Primary: Back to Dashboard */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onReturn}
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all w-full"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)' }}
+              >
+                <LayoutDashboard className="size-4" />
+                بازگشت به داشبورد
+              </motion.button>
+
+              {/* Outline: Fill Again */}
+              {onResubmit && (
+                <motion.button
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.82 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={onResubmit}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-gray-700 dark:text-zinc-300 bg-white/80 dark:bg-zinc-800/80 border border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-700 hover:border-violet-200 dark:hover:border-violet-800 transition-all w-full"
+                >
+                  <RotateCcw className="size-4" />
+                  پر کردن فرم مجدد
+                </motion.button>
+              )}
+
+              {/* Outline: Share Form */}
+              <motion.button
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleShare}
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-gray-700 dark:text-zinc-300 bg-white/80 dark:bg-zinc-800/80 border border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-700 hover:border-violet-200 dark:hover:border-violet-800 transition-all w-full"
+              >
+                <Share2 className="size-4" />
+                {copied ? 'لینک کپی شد!' : 'اشتراک‌گذاری فرم'}
+              </motion.button>
+            </motion.div>
+
+            {/* Branding */}
+            <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-zinc-500 mt-6">
+              <FileText className="size-3.5" />
+              <span>فرم‌ساز</span>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </div>
   );
@@ -1756,6 +1874,7 @@ export default function FormFill() {
           <SuccessScreen
             customMessage={customThankYouMessage}
             formId={fillForm?.id}
+            formTitle={fillForm?.title}
             onReturn={() => { setFillForm(null); setCurrentView('dashboard'); }}
             onResubmit={handleResubmit}
           />

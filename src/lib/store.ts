@@ -210,6 +210,10 @@ interface AppState {
   // Quick search
   quickSearchOpen: boolean;
   setQuickSearchOpen: (open: boolean) => void;
+
+  // Favorites
+  favoriteFormIds: string[];
+  toggleFavoriteForm: (id: string) => void;
 }
 
 // Module-level debounce state for updateQuestion history
@@ -532,4 +536,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Quick search
   quickSearchOpen: false,
   setQuickSearchOpen: (open) => set({ quickSearchOpen: open }),
+
+  // Favorites
+  favoriteFormIds: [],
+  toggleFavoriteForm: (id) =>
+    set((state) => ({
+      favoriteFormIds: state.favoriteFormIds.includes(id)
+        ? state.favoriteFormIds.filter((fid) => fid !== id)
+        : [...state.favoriteFormIds, id],
+    })),
 }));

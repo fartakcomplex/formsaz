@@ -375,18 +375,25 @@ function ChoiceQuestionChart({
         <>
           <ChartContainer config={chartConfig} className="h-56 w-full">
             <BarChart data={chartData} layout="vertical" margin={{ right: 0, left: 0, top: 5, bottom: 5 }}>
+              <defs>
+                <linearGradient id="choiceBarGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#a78bfa" stopOpacity={1} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
+              <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} style={{ fontFamily: 'Vazirmatn, sans-serif' }} />
               <YAxis
                 dataKey="name"
                 type="category"
                 width={120}
                 tick={{ fontSize: 11 }}
+                style={{ fontFamily: 'Vazirmatn, sans-serif' }}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={24}>
+              <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={24} animationDuration={800} animationEasing="ease-out">
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                  <Cell key={`cell-${index}`} fill={entry.fill} fillOpacity={0.85} />
                 ))}
               </Bar>
             </BarChart>
@@ -550,13 +557,19 @@ function ScaleQuestionChart({
       ) : (
         <ChartContainer config={chartConfig} className="h-48 w-full">
           <BarChart data={chartData} margin={{ right: 0, left: 0, top: 5, bottom: 5 }}>
+            <defs>
+              <linearGradient id="scaleBarGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8b5cf6" stopOpacity={1} />
+                <stop offset="100%" stopColor="#6366f1" stopOpacity={0.8} />
+              </linearGradient>
+            </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-            <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+            <XAxis dataKey="name" tick={{ fontSize: 12 }} style={{ fontFamily: 'Vazirmatn, sans-serif' }} />
+            <YAxis allowDecimals={false} tick={{ fontSize: 12 }} style={{ fontFamily: 'Vazirmatn, sans-serif' }} />
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={28}>
+            <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={28} fill="url(#scaleBarGradient)" animationDuration={800} animationEasing="ease-out">
               {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.fill} />
+                <Cell key={`cell-${index}`} fill={entry.fill} fillOpacity={0.85} />
               ))}
             </Bar>
           </BarChart>
@@ -1057,6 +1070,44 @@ function MiniPieCard({
   );
 }
 
+function CompletionProgressRing({ percent, size = 36 }: { percent: number; size?: number }) {
+  const strokeWidth = 3;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percent / 100) * circumference;
+  const color = percent >= 75 ? '#10b981' : percent >= 50 ? '#8b5cf6' : percent >= 25 ? '#f59e0b' : '#ef4444';
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" className="stroke-gray-200 dark:stroke-gray-700" strokeWidth={strokeWidth} />
+      <motion.circle
+        cx={size / 2} cy={size / 2} r={radius}
+        fill="none"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeDasharray={circumference}
+        initial={{ strokeDashoffset: circumference }}
+        animate={{ strokeDashoffset: offset }}
+        transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+      />
+    </svg>
+  );
+}
+
+function getRelativeTime(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffMins < 1) return 'لحظاتی پیش';
+  if (diffMins < 60) return `${toPersianDigits(diffMins)} دقیقه پیش`;
+  if (diffHours < 24) return `${toPersianDigits(diffHours)} ساعت پیش`;
+  if (diffDays < 7) return `${toPersianDigits(diffDays)} روز پیش`;
+  return formatPersianDate(dateStr);
+}
+
 function IndividualResponse({
   submission,
   questions,
@@ -1066,42 +1117,91 @@ function IndividualResponse({
   questions: FormQuestion[];
   index: number;
 }) {
+  const isComplete = questions.every((q) =>
+    submission.responses.find((r) => r.questionId === q.id && r.value && r.value.trim() !== '')
+  );
+  const answeredCount = questions.filter((q) =>
+    submission.responses.find((r) => r.questionId === q.id && r.value && r.value.trim() !== '')
+  ).length;
+  const completionPercent = questions.length > 0 ? Math.round((answeredCount / questions.length) * 100) : 0;
+
   return (
-    <AccordionItem value={submission.id} className="border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-px">
-      <AccordionTrigger className="hover:bg-violet-50/50 dark:hover:bg-violet-950/20 rounded-lg px-4 transition-colors duration-200">
-        <div className="flex items-center gap-3 text-right">
-          <div className="flex size-8 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 text-xs font-bold shrink-0">
-            {index + 1}
-          </div>
-          <div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              پاسخ‌دهنده {index + 1}
-            </span>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-              {formatDate(submission.createdAt)}
-            </p>
-          </div>
-        </div>
-      </AccordionTrigger>
-      <AccordionContent className="px-4 pb-4">
-        <div className="space-y-3 rounded-xl border bg-gray-50/50 dark:bg-gray-900/50 p-4 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800/50 transition-colors duration-200">
-          {questions.map((q) => {
-            const response = submission.responses.find((r) => r.questionId === q.id);
-            return (
-              <div key={q.id} className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{q.title}</span>
-                <span className="text-sm text-gray-800 dark:text-gray-200">
-                  {response?.value || '—'}
+    <motion.div
+      variants={staggerItem}
+    >
+      <AccordionItem value={submission.id} className="border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-violet-200 dark:hover:border-violet-800/50">
+        <AccordionTrigger className="hover:bg-violet-50/50 dark:hover:bg-violet-950/20 rounded-xl px-4 transition-colors duration-200">
+          <div className="flex items-center gap-3 text-right">
+            {/* Status indicator + number */}
+            <div className="relative shrink-0">
+              <div className={`flex size-9 items-center justify-center rounded-full text-xs font-bold ${isComplete ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'}`}>
+                {index + 1}
+              </div>
+              {/* Mini completion ring */}
+              <div className="absolute -top-0.5 -right-0.5">
+                <CompletionProgressRing percent={completionPercent} size={14} />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  پاسخ‌دهنده {index + 1}
                 </span>
-                {q !== questions[questions.length - 1] && (
-                  <Separator className="mt-2 bg-gray-200 dark:bg-gray-700" />
+                {isComplete ? (
+                  <Badge variant="secondary" className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px] px-1.5 py-0 h-4">
+                    <Check className="size-2.5 ml-0.5" />
+                    کامل
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800 text-[10px] px-1.5 py-0 h-4">
+                    ناقص
+                  </Badge>
                 )}
               </div>
-            );
-          })}
-        </div>
-      </AccordionContent>
-    </AccordionItem>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  {formatDate(submission.createdAt)}
+                </p>
+                <span className="text-[10px] text-gray-300 dark:text-gray-600">
+                  ·
+                </span>
+                <span className="text-[10px] text-gray-400 dark:text-gray-500">
+                  {getRelativeTime(submission.createdAt)}
+                </span>
+                <span className="text-[10px] text-gray-300 dark:text-gray-600">
+                  ·
+                </span>
+                <span className="text-[10px] text-violet-500 dark:text-violet-400 font-medium">
+                  {toPersianDigits(answeredCount)}/{toPersianDigits(questions.length)} پاسخ
+                </span>
+              </div>
+            </div>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent className="px-4 pb-4">
+          <div className="space-y-3 rounded-xl border bg-gray-50/50 dark:bg-gray-900/50 p-4 dark:border-gray-800 hover:border-violet-200 dark:hover:border-violet-800/50 transition-colors duration-200">
+            {questions.map((q) => {
+              const response = submission.responses.find((r) => r.questionId === q.id);
+              const hasValue = response?.value && response.value.trim() !== '';
+              return (
+                <div key={q.id} className="flex flex-col gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className={`size-1.5 rounded-full shrink-0 ${hasValue ? 'bg-emerald-400' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{q.title}</span>
+                  </div>
+                  <span className={`text-sm pr-3.5 ${hasValue ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 dark:text-gray-500 italic'}`}>
+                    {hasValue ? (response?.value?.length > 100 ? response.value.slice(0, 100) + '...' : response.value) : 'بدون پاسخ'}
+                  </span>
+                  {q !== questions[questions.length - 1] && (
+                    <Separator className="mt-2 bg-gray-200 dark:bg-gray-700" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </motion.div>
   );
 }
 
@@ -1728,12 +1828,13 @@ export default function ResultsView() {
                       content={({ active, payload, label }) => {
                         if (!active || !payload?.length) return null;
                         return (
-                          <div className="rounded-xl border bg-white dark:bg-gray-900 shadow-xl p-3 text-right glass" dir="rtl">
-                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                          <div className="rounded-xl border border-white/20 dark:border-white/10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl shadow-violet-200/30 dark:shadow-violet-900/20 p-3.5 text-right" dir="rtl">
+                            <p className="text-[11px] font-medium text-gray-400 dark:text-gray-500 mb-1">
                               {formatPersianDate(label as string)}
                             </p>
-                            <p className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                              {payload[0].value} پاسخ
+                            <p className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
+                              <span className="inline-flex size-2 rounded-full bg-violet-500" />
+                              {toPersianDigits(payload[0].value as number)} پاسخ
                             </p>
                           </div>
                         );
@@ -1852,23 +1953,66 @@ export default function ResultsView() {
               </TabsContent>
 
               <TabsContent value="individual">
-                {/* Response statistics summary row */}
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <div className="flex items-center gap-2 rounded-xl bg-gradient-to-l from-violet-50/80 to-purple-50/60 dark:from-violet-950/30 dark:to-purple-950/20 border border-violet-100 dark:border-violet-900/50 px-4 py-2.5 shadow-sm backdrop-blur-sm">
-                    <Users className="size-4 text-violet-500" />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">مجموع:</span>
-                    <Badge variant="secondary" className="bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300 border-0 text-xs font-semibold">
-                      {toPersianDigits(submissions.length)} پاسخ
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-xl bg-gradient-to-l from-amber-50/80 to-orange-50/60 dark:from-amber-950/30 dark:to-orange-950/20 border border-amber-100 dark:border-amber-900/50 px-4 py-2.5 shadow-sm backdrop-blur-sm">
-                    <Clock className="size-4 text-amber-500" />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">میانگین زمان تکمیل:</span>
-                    <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 border-0 text-xs font-semibold">
-                      {analytics?.avgResponseTime ? formatResponseTime(analytics.avgResponseTime) : 'بدون داده'}
-                    </Badge>
-                  </div>
-                </div>
+                {/* Enhanced Response statistics summary row */}
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="show"
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4"
+                >
+                  <motion.div
+                    variants={staggerItem}
+                    className="flex items-center gap-2.5 rounded-xl bg-gradient-to-l from-violet-50/80 to-purple-50/60 dark:from-violet-950/30 dark:to-purple-950/20 border border-violet-100 dark:border-violet-900/50 px-4 py-3 shadow-sm backdrop-blur-sm"
+                  >
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/50">
+                      <Users className="size-4 text-violet-500" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{toPersianDigits(submissions.length)}</p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400">کل پاسخ‌ها</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    variants={staggerItem}
+                    className="flex items-center gap-2.5 rounded-xl bg-gradient-to-l from-amber-50/80 to-orange-50/60 dark:from-amber-950/30 dark:to-orange-950/20 border border-amber-100 dark:border-amber-900/50 px-4 py-3 shadow-sm backdrop-blur-sm"
+                  >
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/50">
+                      <Clock className="size-4 text-amber-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{analytics?.avgResponseTime ? formatResponseTime(analytics.avgResponseTime) : '—'}</p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400">میانگین زمان</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    variants={staggerItem}
+                    className="flex items-center gap-2.5 rounded-xl bg-gradient-to-l from-emerald-50/80 to-green-50/60 dark:from-emerald-950/30 dark:to-green-950/20 border border-emerald-100 dark:border-emerald-900/50 px-4 py-3 shadow-sm backdrop-blur-sm"
+                  >
+                    <div className="relative flex size-9 items-center justify-center">
+                      <CompletionProgressRing percent={completionRate} size={36} />
+                      <span className="absolute text-[9px] font-bold text-gray-700 dark:text-gray-300">{toPersianDigits(completionRate)}٪</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{toPersianDigits(completionRate)}٪</p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400">نرخ تکمیل</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    variants={staggerItem}
+                    className="flex items-center gap-2.5 rounded-xl bg-gradient-to-l from-blue-50/80 to-cyan-50/60 dark:from-blue-950/30 dark:to-cyan-950/20 border border-blue-100 dark:border-blue-900/50 px-4 py-3 shadow-sm backdrop-blur-sm"
+                  >
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/50">
+                      <Activity className="size-4 text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{submissions.length > 0 ? getRelativeTime(submissions[submissions.length - 1].createdAt) : '—'}</p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400">آخرین پاسخ</p>
+                    </div>
+                  </motion.div>
+                </motion.div>
 
                 {/* Export options row */}
                 <div className="flex items-center gap-2 mb-4">
@@ -1913,16 +2057,22 @@ export default function ResultsView() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                      {submissions.map((sub, idx) => (
-                        <IndividualResponse
-                          key={sub.id}
-                          submission={sub}
-                          questions={questions}
-                          index={idx}
-                        />
-                      ))}
-                    </Accordion>
+                    <motion.div
+                      variants={staggerContainer}
+                      initial="hidden"
+                      animate="show"
+                    >
+                      <Accordion type="single" collapsible className="w-full">
+                        {submissions.map((sub, idx) => (
+                          <IndividualResponse
+                            key={sub.id}
+                            submission={sub}
+                            questions={questions}
+                            index={idx}
+                          />
+                        ))}
+                      </Accordion>
+                    </motion.div>
                   </CardContent>
                 </Card>
               </TabsContent>

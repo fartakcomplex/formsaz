@@ -14,6 +14,7 @@ import {
   Calendar,
   GitBranch,
   ChevronDown,
+  ChevronLeft,
   Eye,
   Upload,
   ShieldCheck,
@@ -22,6 +23,10 @@ import {
   Layers,
   Pencil,
   CheckIcon,
+  Undo2,
+  Redo2,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react';
 import { useAppStore, FormQuestion, QuestionConfig, QuestionOption, ImageOption, QuestionLogic, ConditionRule, FormSection } from '@/lib/store';
 import { cn } from '@/lib/utils';
@@ -1397,10 +1402,11 @@ function SectionsEditor() {
 /* Main Properties Panel            */
 /* =============================== */
 export default function PropertiesPanel() {
-  const { questions, selectedQuestionId, updateQuestion, removeQuestion, setSelectedQuestionId } =
+  const { questions, selectedQuestionId, updateQuestion, removeQuestion, setSelectedQuestionId, canUndo, canRedo, undo, redo, duplicateQuestion, moveQuestionUp, moveQuestionDown } =
     useAppStore();
 
   const selectedQuestion = questions.find((q) => q.id === selectedQuestionId);
+  const selectedQuestionIndex = questions.findIndex((q) => q.id === selectedQuestionId);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     type: true,
     title: true,
@@ -1424,11 +1430,13 @@ export default function PropertiesPanel() {
         transition={{ duration: 0.3 }}
         className="flex h-full flex-col items-center justify-center px-6 text-center"
       >
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted mb-4">
-          <Settings className="h-7 w-7 text-muted-foreground" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 mb-4">
+          <Settings className="h-7 w-7 text-violet-400" />
         </div>
-        <h3 className="text-sm font-semibold text-foreground mb-1">تنظیمات سؤال</h3>
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <h3 className="text-sm font-bold bg-gradient-to-l from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent mb-1.5">
+          تنظیمات سؤال
+        </h3>
+        <p className="text-xs text-muted-foreground/70 leading-relaxed">
           یک سؤال را از فرم انتخاب کنید تا تنظیمات آن نمایش داده شود
         </p>
       </motion.div>
@@ -1472,21 +1480,153 @@ export default function PropertiesPanel() {
       transition={{ duration: 0.25, ease: 'easeOut' }}
       className="flex h-full flex-col"
     >
-      {/* Panel header */}
-      <div className="flex items-center justify-between border-b px-4 py-3">
-        <h3 className="text-sm font-semibold text-foreground">تنظیمات سؤال</h3>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={() => setSelectedQuestionId(null)}
-              className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+      {/* ===== Enhanced Panel Header ===== */}
+      <div className="border-b border-gray-200/60 dark:border-gray-800/60 px-4 py-3 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <h3 className="text-sm font-bold bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
+              تنظیمات سؤال
+            </h3>
+            <Badge
+              variant="secondary"
+              className="shrink-0 bg-violet-100/80 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300 border-0 text-[10px] px-1.5 py-0 gap-0.5 font-semibold tabular-nums"
             >
-              <X className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="left">بستن</TooltipContent>
-        </Tooltip>
+              #{toPersianDigits(String(selectedQuestionIndex + 1))}
+            </Badge>
+          </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setSelectedQuestionId(null)}
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-all"
+              >
+                <X className="h-4 w-4" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent side="left">بستن</TooltipContent>
+          </Tooltip>
+        </div>
+
+        {/* ===== Quick Actions Toolbar (Glassmorphism) ===== */}
+        <div className="flex items-center justify-center gap-1 rounded-xl bg-gradient-to-l from-white/80 to-white/40 dark:from-zinc-800/80 dark:to-zinc-900/40 backdrop-blur-sm border border-gray-200/60 dark:border-gray-700/40 px-2 py-1.5 shadow-sm">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={undo}
+                disabled={!canUndo}
+                className={cn(
+                  'flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200',
+                  canUndo
+                    ? 'text-muted-foreground hover:bg-violet-100 hover:text-violet-600 dark:hover:bg-violet-900/40 dark:hover:text-violet-400'
+                    : 'text-muted-foreground/25 cursor-not-allowed'
+                )}
+              >
+                <Undo2 className="h-3.5 w-3.5" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">برگشت</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={redo}
+                disabled={!canRedo}
+                className={cn(
+                  'flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200',
+                  canRedo
+                    ? 'text-muted-foreground hover:bg-violet-100 hover:text-violet-600 dark:hover:bg-violet-900/40 dark:hover:text-violet-400'
+                    : 'text-muted-foreground/25 cursor-not-allowed'
+                )}
+              >
+                <Redo2 className="h-3.5 w-3.5" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">دوباره</TooltipContent>
+          </Tooltip>
+
+          <div className="w-px h-4 bg-gray-200/60 dark:bg-gray-700/40 mx-0.5" />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={() => moveQuestionUp(selectedQuestion.id)}
+                disabled={selectedQuestionIndex <= 0}
+                className={cn(
+                  'flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200',
+                  selectedQuestionIndex > 0
+                    ? 'text-muted-foreground hover:bg-emerald-100 hover:text-emerald-600 dark:hover:bg-emerald-900/40 dark:hover:text-emerald-400'
+                    : 'text-muted-foreground/25 cursor-not-allowed'
+                )}
+              >
+                <ArrowUp className="h-3.5 w-3.5" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">جابجایی به بالا</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={() => moveQuestionDown(selectedQuestion.id)}
+                disabled={selectedQuestionIndex >= questions.length - 1}
+                className={cn(
+                  'flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200',
+                  selectedQuestionIndex < questions.length - 1
+                    ? 'text-muted-foreground hover:bg-emerald-100 hover:text-emerald-600 dark:hover:bg-emerald-900/40 dark:hover:text-emerald-400'
+                    : 'text-muted-foreground/25 cursor-not-allowed'
+                )}
+              >
+                <ArrowDown className="h-3.5 w-3.5" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">جابجایی به پایین</TooltipContent>
+          </Tooltip>
+
+          <div className="w-px h-4 bg-gray-200/60 dark:bg-gray-700/40 mx-0.5" />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={() => duplicateQuestion(selectedQuestion.id)}
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-amber-100 hover:text-amber-600 dark:hover:bg-amber-900/40 dark:hover:text-amber-400 transition-all duration-200"
+              >
+                <Copy className="h-3.5 w-3.5" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">کپی سؤال</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={handleDelete}
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-all duration-200"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </motion.button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">حذف سؤال</TooltipContent>
+          </Tooltip>
+        </div>
       </div>
+
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-l from-transparent via-violet-300/40 dark:via-violet-700/30 to-transparent" />
 
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-1">
@@ -1528,7 +1668,8 @@ export default function PropertiesPanel() {
             </CollapsibleContent>
           </Collapsible>
 
-          <Separator className="my-1" />
+          {/* Gradient section divider */}
+          <div className="my-1 h-px bg-gradient-to-l from-transparent via-gray-200/60 dark:via-gray-700/30 to-transparent" />
 
           {/* ===== Section: Question Title ===== */}
           <Collapsible open={openSections.title} onOpenChange={() => toggleSection('title')}>
@@ -1574,7 +1715,8 @@ export default function PropertiesPanel() {
             </CollapsibleContent>
           </Collapsible>
 
-          <Separator className="my-1" />
+          {/* Gradient section divider */}
+          <div className="my-1 h-px bg-gradient-to-l from-transparent via-gray-200/60 dark:via-gray-700/30 to-transparent" />
 
           {/* ===== Section: Required Toggle ===== */}
           <div className="rounded-lg px-1 py-1">
@@ -1606,7 +1748,8 @@ export default function PropertiesPanel() {
             </div>
           </div>
 
-          <Separator className="my-1" />
+          {/* Gradient section divider */}
+          <div className="my-1 h-px bg-gradient-to-l from-transparent via-gray-200/60 dark:via-gray-700/30 to-transparent" />
 
           {/* ===== Section: Type-specific Configuration ===== */}
           <Collapsible open={openSections.config} onOpenChange={() => toggleSection('config')}>
@@ -1646,7 +1789,8 @@ export default function PropertiesPanel() {
             </CollapsibleContent>
           </Collapsible>
 
-          <Separator className="my-1" />
+          {/* Gradient section divider */}
+          <div className="my-1 h-px bg-gradient-to-l from-transparent via-gray-200/60 dark:via-gray-700/30 to-transparent" />
 
           {/* ===== Section: Conditional Logic ===== */}
           <Collapsible open={openSections.logic} onOpenChange={() => toggleSection('logic')}>
@@ -1689,7 +1833,8 @@ export default function PropertiesPanel() {
             </CollapsibleContent>
           </Collapsible>
 
-          <Separator className="my-1" />
+          {/* Gradient section divider */}
+          <div className="my-1 h-px bg-gradient-to-l from-transparent via-gray-200/60 dark:via-gray-700/30 to-transparent" />
 
           {/* ===== Section: Actions ===== */}
           <Collapsible open={openSections.actions} onOpenChange={() => toggleSection('actions')}>
@@ -1765,7 +1910,8 @@ export default function PropertiesPanel() {
             </CollapsibleContent>
           </Collapsible>
 
-          <Separator className="my-1" />
+          {/* Gradient section divider */}
+          <div className="my-1 h-px bg-gradient-to-l from-transparent via-gray-200/60 dark:via-gray-700/30 to-transparent" />
 
           {/* ===== Section: Sections (بخش‌بندی) ===== */}
           <Collapsible open={openSections.sections ?? false} onOpenChange={() => toggleSection('sections')}>
