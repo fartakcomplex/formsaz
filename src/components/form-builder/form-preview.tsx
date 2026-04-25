@@ -43,7 +43,7 @@ import {
   CheckIcon,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useAppStore, FormQuestion, FormTheme } from '@/lib/store';
+import { useAppStore, FormQuestion, FormTheme, FormSection } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -709,7 +709,7 @@ export default function FormPreview({
   formTheme,
   onDescriptionChange,
 }: FormPreviewProps) {
-  const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion, duplicateQuestion, moveQuestionUp, moveQuestionDown, setQuestions, reorderQuestions } = useAppStore();
+  const { questions, selectedQuestionId, setSelectedQuestionId, removeQuestion, duplicateQuestion, moveQuestionUp, moveQuestionDown, setQuestions, reorderQuestions, sections } = useAppStore();
   const [showTypeMenu, setShowTypeMenu] = React.useState<number | 'end' | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -809,27 +809,42 @@ export default function FormPreview({
               onDragEnd={handleDragEnd}
             >
               <SortableContext items={questionIds} strategy={verticalListSortingStrategy}>
-                {questions.map((q, idx) => (
-                  <React.Fragment key={q.id}>
-                    {idx > 0 && (
-                      <AddSeparator onClick={() => handleAddAt(idx)} primaryColor={primaryColor} />
-                    )}
-                    <SortableQuestionCard
-                      question={q}
-                      index={idx}
-                      isSelected={selectedQuestionId === q.id}
-                      onSelect={() => setSelectedQuestionId(q.id)}
-                      onDelete={() => handleDelete(q.id)}
-                      onDuplicate={() => duplicateQuestion(q.id)}
-                      onMoveUp={() => moveQuestionUp(q.id)}
-                      onMoveDown={() => moveQuestionDown(q.id)}
-                      onAddAfter={() => handleAddAt(idx + 1)}
-                      primaryColor={primaryColor}
-                      isFirst={idx === 0}
-                      isLast={idx === questions.length - 1}
-                    />
-                  </React.Fragment>
-                ))}
+                {questions.map((q, idx) => {
+                  // Check if this question belongs to a section and is the first question of that section
+                  const section = sections.find((s) => s.questionIds.includes(q.id));
+                  const isFirstInSection = section && section.questionIds[0] === q.id;
+
+                  return (
+                    <React.Fragment key={q.id}>
+                      {/* Section header before first question of a section */}
+                      {isFirstInSection && (
+                        <SectionHeader
+                          section={section}
+                          index={sections.indexOf(section)}
+                          primaryColor={primaryColor}
+                          borderRadius={borderRadius}
+                        />
+                      )}
+                      {idx > 0 && (
+                        <AddSeparator onClick={() => handleAddAt(idx)} primaryColor={primaryColor} />
+                      )}
+                      <SortableQuestionCard
+                        question={q}
+                        index={idx}
+                        isSelected={selectedQuestionId === q.id}
+                        onSelect={() => setSelectedQuestionId(q.id)}
+                        onDelete={() => handleDelete(q.id)}
+                        onDuplicate={() => duplicateQuestion(q.id)}
+                        onMoveUp={() => moveQuestionUp(q.id)}
+                        onMoveDown={() => moveQuestionDown(q.id)}
+                        onAddAfter={() => handleAddAt(idx + 1)}
+                        primaryColor={primaryColor}
+                        isFirst={idx === 0}
+                        isLast={idx === questions.length - 1}
+                      />
+                    </React.Fragment>
+                  );
+                })}
               </SortableContext>
 
               {/* Drag overlay */}
@@ -856,6 +871,62 @@ export default function FormPreview({
         </div>
       </ScrollArea>
     </div>
+  );
+}
+
+/* ========== Section Header Component ========== */
+
+function SectionHeader({
+  section,
+  index,
+  primaryColor,
+  borderRadius,
+}: {
+  section: FormSection;
+  index: number;
+  primaryColor: string;
+  borderRadius: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.05 }}
+      className="my-4"
+    >
+      <div
+        className="px-5 py-4 text-white shadow-md"
+        style={{
+          background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}bb)`,
+          borderRadius: `${borderRadius}px`,
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 backdrop-blur"
+            style={{ borderRadius: `${Math.max(borderRadius - 4, 4)}px` }}
+          >
+            <span className="text-sm font-bold">
+              {toPersianDigits(String(index + 1))}
+            </span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base font-bold truncate">{section.title}</h3>
+            {section.description && (
+              <p className="text-xs text-white/80 mt-0.5 line-clamp-2">{section.description}</p>
+            )}
+          </div>
+        </div>
+      </div>
+      {/* Gradient divider */}
+      <div
+        className="h-1 mt-0"
+        style={{
+          background: `linear-gradient(to left, ${primaryColor}40, ${primaryColor}10, transparent)`,
+          borderRadius: `0 0 ${borderRadius}px ${borderRadius}px`,
+        }}
+      />
+    </motion.div>
   );
 }
 

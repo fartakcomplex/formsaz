@@ -19,8 +19,11 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   FileQuestion,
+  Layers,
+  Pencil,
+  CheckIcon,
 } from 'lucide-react';
-import { useAppStore, FormQuestion, QuestionConfig, QuestionOption, ImageOption, QuestionLogic, ConditionRule } from '@/lib/store';
+import { useAppStore, FormQuestion, QuestionConfig, QuestionOption, ImageOption, QuestionLogic, ConditionRule, FormSection } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -1231,6 +1234,166 @@ function QuestionMiniPreview({ question }: { question: FormQuestion }) {
 }
 
 /* =============================== */
+/* Sections Editor Component        */
+/* =============================== */
+function SectionsEditor() {
+  const { sections, questions, addSection, updateSection, removeSection, moveQuestionToSection } = useAppStore();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+
+  const handleAddSection = () => {
+    const title = `بخش ${toPersianDigits(String(sections.length + 1))}`;
+    addSection(title);
+  };
+
+  const startEdit = (section: FormSection) => {
+    setEditingId(section.id);
+    setEditTitle(section.title);
+    setEditDesc(section.description || '');
+  };
+
+  const saveEdit = () => {
+    if (editingId) {
+      updateSection(editingId, { title: editTitle, description: editDesc });
+      setEditingId(null);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+  };
+
+  const getQuestionCount = (section: FormSection) => {
+    return section.questionIds.filter((qid) => questions.some((q) => q.id === qid)).length;
+  };
+
+  const unassignedQuestions = questions.filter(
+    (q) => !sections.some((s) => s.questionIds.includes(q.id))
+  );
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          بخش‌بندی سؤالات
+        </Label>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleAddSection}
+              className="h-7 gap-1 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              افزودن بخش جدید
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="left">افزودن بخش جدید</TooltipContent>
+        </Tooltip>
+      </div>
+
+      {sections.length === 0 ? (
+        <div className="text-center py-4 px-3 rounded-lg border border-dashed border-muted-foreground/20 bg-muted/10">
+          <Layers className="h-5 w-5 text-muted-foreground/40 mx-auto mb-2" />
+          <p className="text-xs text-muted-foreground">هنوز بخشی ایجاد نشده است</p>
+          <p className="text-[10px] text-muted-foreground/60 mt-1">سؤالات خود را با بخش‌بندی دسته‌بندی کنید</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {sections.map((section, idx) => (
+            <motion.div
+              key={section.id}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+              className="group/sec rounded-lg border bg-muted/20 p-3 transition-all duration-200 hover:bg-violet-50/40 hover:border-violet-200 dark:hover:bg-violet-950/15 dark:hover:border-violet-800/40"
+            >
+              {editingId === section.id ? (
+                <div className="space-y-2">
+                  <Input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="h-8 text-sm focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
+                    placeholder="عنوان بخش..."
+                    dir="rtl"
+                    autoFocus
+                  />
+                  <Textarea
+                    value={editDesc}
+                    onChange={(e) => setEditDesc(e.target.value)}
+                    className="text-xs min-h-[50px] resize-none focus-visible:ring-violet-500/40 focus-visible:border-violet-400"
+                    placeholder="توضیحات بخش (اختیاری)..."
+                    dir="rtl"
+                  />
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={saveEdit}
+                      className="flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium bg-violet-500 text-white hover:bg-violet-600 transition-colors"
+                    >
+                      <CheckIcon className="h-3 w-3" />
+                      ذخیره
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      className="rounded-md px-2 py-1 text-[10px] text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    >
+                      انصراف
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-2 flex-1 min-w-0">
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 text-[10px] font-bold mt-0.5">
+                        {toPersianDigits(String(idx + 1))}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium text-foreground truncate">{section.title}</h4>
+                        {section.description && (
+                          <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{section.description}</p>
+                        )}
+                        <span className="text-[10px] text-muted-foreground/60 mt-1 block">
+                          {toPersianDigits(String(getQuestionCount(section)))} سؤال
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover/sec:opacity-100">
+                      <button
+                        onClick={() => startEdit(section)}
+                        className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                        title="ویرایش بخش"
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </button>
+                      <button
+                        onClick={() => removeSection(section.id)}
+                        className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-red-100 hover:text-red-500 transition-colors"
+                        title="حذف بخش"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {unassignedQuestions.length > 0 && sections.length > 0 && (
+        <div className="text-[10px] text-muted-foreground/60 text-center pt-1">
+          {toPersianDigits(String(unassignedQuestions.length))} سؤال بدون بخش
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* =============================== */
 /* Main Properties Panel            */
 /* =============================== */
 export default function PropertiesPanel() {
@@ -1597,6 +1760,46 @@ export default function PropertiesPanel() {
                     <Trash2 className="h-4 w-4" />
                     حذف سؤال
                   </Button>
+                </div>
+              </motion.div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          <Separator className="my-1" />
+
+          {/* ===== Section: Sections (بخش‌بندی) ===== */}
+          <Collapsible open={openSections.sections ?? false} onOpenChange={() => toggleSection('sections')}>
+            <CollapsibleTrigger asChild>
+              <button className={cn(
+                'group flex items-center justify-between w-full rounded-lg px-3 py-2.5 text-right transition-all duration-200 hover:bg-muted/60',
+                (openSections.sections ?? false) && 'bg-violet-50/60 dark:bg-violet-950/20'
+              )}>
+                <div className="flex items-center gap-2">
+                  <div className={cn(
+                    'w-[3px] h-4 rounded-full transition-colors duration-200',
+                    (openSections.sections ?? false) ? 'bg-violet-500' : 'bg-transparent group-hover:bg-violet-300 dark:group-hover:bg-violet-700'
+                  )} />
+                  <Layers className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    بخش‌بندی
+                  </span>
+                </div>
+                <ChevronDown className={cn(
+                  'h-4 w-4 text-muted-foreground/60 transition-transform duration-300',
+                  (openSections.sections ?? false) && 'rotate-180'
+                )} />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-2 pb-4 px-1">
+                  <SectionsEditor />
                 </div>
               </motion.div>
             </CollapsibleContent>

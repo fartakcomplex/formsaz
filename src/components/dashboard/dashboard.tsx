@@ -110,7 +110,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useAppStore, type Form, type FormQuestion } from '@/lib/store';
+import { useAppStore, type Form, type FormQuestion, type ActivityItem } from '@/lib/store';
 import { useTheme } from 'next-themes';
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
@@ -905,6 +905,86 @@ function ExpirationDateDialog({
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// ─── Activity Widget ──────────────────────────────────────────────────────
+
+function ActivityWidget({ activityLog }: { activityLog: ActivityItem[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const displayItems = expanded ? activityLog.slice(0, 10) : activityLog.slice(0, 5);
+
+  const typeConfig: Record<string, { icon: React.ReactNode; label: string; color: string }> = {
+    create: { icon: <Plus className="size-3.5" />, label: 'ایجاد', color: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400' },
+    edit: { icon: <Edit3 className="size-3.5" />, label: 'ویرایش', color: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' },
+    publish: { icon: <Send className="size-3.5" />, label: 'انتشار', color: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' },
+    submit: { icon: <MessageSquare className="size-3.5" />, label: 'پاسخ', color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400' },
+    delete: { icon: <Trash2 className="size-3.5" />, label: 'حذف', color: 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400' },
+    duplicate: { icon: <Copy className="size-3.5" />, label: 'کپی', color: 'bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-600 dark:text-fuchsia-400' },
+  };
+
+  const formatRelativeTime = (date: Date): string => {
+    try {
+      return formatDistanceToNow(date, { addSuffix: true, locale: faIR });
+    } catch {
+      return '';
+    }
+  };
+
+  if (activityLog.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2, duration: 0.4 }}
+      className="mb-6 sm:mb-8 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm"
+    >
+      <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="flex size-8 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/40">
+            <Clock className="size-4 text-violet-600 dark:text-violet-400" />
+          </div>
+          <h2 className="text-sm font-bold text-gray-900 dark:text-white">فعالیت‌های اخیر</h2>
+        </div>
+        {activityLog.length > 5 && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-xs font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+          >
+            {expanded ? 'نمایش کمتر' : 'مشاهده همه'}
+          </button>
+        )}
+      </div>
+      <ScrollArea className="max-h-[320px]">
+        <div className="divide-y divide-gray-50 dark:divide-gray-800/50">
+          {displayItems.map((item, idx) => {
+            const config = typeConfig[item.type] || typeConfig.create;
+            return (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.04, duration: 0.2 }}
+                className="flex items-start gap-3 px-5 py-3 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+              >
+                <div className={`flex size-8 shrink-0 items-center justify-center rounded-lg mt-0.5 ${config.color}`}>
+                  {config.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
+                    {config.label} فرم «{item.formTitle}»
+                  </p>
+                  <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
+                    {formatRelativeTime(item.timestamp)}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </ScrollArea>
+    </motion.div>
   );
 }
 
@@ -2502,6 +2582,8 @@ export default function Dashboard() {
     setCurrentForm,
     setFillForm,
     addToDeletedForms,
+    activityLog,
+    addActivity,
   } = useAppStore();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -2574,6 +2656,7 @@ export default function Dashboard() {
   const publishedForms = forms.filter((f) => f.status === 'published').length;
 
   const handleCreateNew = () => {
+    addActivity({ type: 'create', formTitle: 'فرم جدید', formId: '' });
     setCurrentForm(null);
     setCurrentView('builder');
   };
@@ -2628,6 +2711,7 @@ export default function Dashboard() {
 
   const handleDelete = async (form: Form) => {
     try {
+      addActivity({ type: 'delete', formTitle: form.title, formId: form.id });
       const res = await fetch(`/api/forms/${form.id}`, { method: 'DELETE' });
       if (res.ok) {
         addToDeletedForms(form);
@@ -2654,6 +2738,7 @@ export default function Dashboard() {
   const handleDuplicate = async (form: Form) => {
     try {
       setDuplicating(form.id);
+      addActivity({ type: 'duplicate', formTitle: form.title, formId: form.id });
       const questionsPayload = (form.questions || []).map((q, i) => ({
         ...q,
         order: i,
@@ -2687,6 +2772,7 @@ export default function Dashboard() {
 
   const handlePublishFromShare = async (form: Form) => {
     try {
+      addActivity({ type: 'publish', formTitle: form.title, formId: form.id });
       const res = await fetch(`/api/forms/${form.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -2910,6 +2996,9 @@ export default function Dashboard() {
             sparkColor="#9333ea"
           />
         </div>
+
+        {/* Activity Log Widget */}
+        <ActivityWidget activityLog={activityLog} />
 
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">

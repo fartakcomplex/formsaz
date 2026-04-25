@@ -89,6 +89,21 @@ export interface Form {
   };
 }
 
+export interface FormSection {
+  id: string;
+  title: string;
+  description?: string;
+  questionIds: string[];
+}
+
+export interface ActivityItem {
+  id: string;
+  type: 'create' | 'edit' | 'publish' | 'submit' | 'delete' | 'duplicate';
+  formTitle: string;
+  formId: string;
+  timestamp: Date;
+}
+
 export interface NotificationItem {
   id: string;
   title: string;
@@ -164,6 +179,17 @@ interface AppState {
   // Form theme
   formTheme: FormTheme;
   setFormTheme: (theme: Partial<FormTheme>) => void;
+
+  // Sections
+  sections: FormSection[];
+  addSection: (title: string) => void;
+  updateSection: (id: string, updates: Partial<FormSection>) => void;
+  removeSection: (id: string) => void;
+  moveQuestionToSection: (questionId: string, sectionId: string | null) => void;
+
+  // Activity Log
+  activityLog: ActivityItem[];
+  addActivity: (item: Omit<ActivityItem, 'id' | 'timestamp'>) => void;
 
   // Dashboard
   submissions: Submission[];
@@ -436,6 +462,37 @@ export const useAppStore = create<AppState>((set, get) => ({
     set((state) => ({
       formTheme: { ...state.formTheme, ...theme },
     })),
+
+  // Sections
+  sections: [],
+  addSection: (title) => set((state) => ({
+    sections: [...state.sections, { id: crypto.randomUUID(), title, description: '', questionIds: [] }],
+  })),
+  updateSection: (id, updates) => set((state) => ({
+    sections: state.sections.map((s) => (s.id === id ? { ...s, ...updates } : s)),
+  })),
+  removeSection: (id) => set((state) => ({
+    sections: state.sections.filter((s) => s.id !== id),
+  })),
+  moveQuestionToSection: (questionId, sectionId) => set((state) => ({
+    sections: state.sections.map((s) => {
+      const qids = s.questionIds.filter((qid) => qid !== questionId);
+      if (s.id === sectionId) {
+        return { ...s, questionIds: [...qids, questionId] };
+      }
+      return { ...s, questionIds: qids };
+    }),
+  })),
+
+  // Activity Log
+  activityLog: [],
+  addActivity: (item) => set((state) => {
+    const newLog = [
+      { ...item, id: crypto.randomUUID(), timestamp: new Date() },
+      ...state.activityLog,
+    ];
+    return { activityLog: newLog.slice(0, 20) };
+  }),
 
   // Dashboard
   submissions: [],

@@ -1067,7 +1067,7 @@ function IndividualResponse({
   index: number;
 }) {
   return (
-    <AccordionItem value={submission.id} className="border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden transition-shadow duration-200 hover:shadow-sm">
+    <AccordionItem value={submission.id} className="border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-px">
       <AccordionTrigger className="hover:bg-violet-50/50 dark:hover:bg-violet-950/20 rounded-lg px-4 transition-colors duration-200">
         <div className="flex items-center gap-3 text-right">
           <div className="flex size-8 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 text-xs font-bold shrink-0">
@@ -1728,7 +1728,7 @@ export default function ResultsView() {
                       content={({ active, payload, label }) => {
                         if (!active || !payload?.length) return null;
                         return (
-                          <div className="rounded-lg border bg-white dark:bg-gray-900 shadow-lg p-3 text-right" dir="rtl">
+                          <div className="rounded-xl border bg-white dark:bg-gray-900 shadow-xl p-3 text-right glass" dir="rtl">
                             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                               {formatPersianDate(label as string)}
                             </p>

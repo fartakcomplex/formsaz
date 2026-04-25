@@ -1523,6 +1523,19 @@ export default function FormFill() {
   const currentSection = isMultiPageMode ? sections[currentPage] : null;
   const currentSectionQuestions = currentSection?.questions || [];
 
+  // Find which section the current single question belongs to (single-question mode)
+  const currentQuestionSection = useMemo(() => {
+    if (isMultiPageMode || !currentQuestion) return null;
+    const allVisible = questions.filter((q) => isQuestionVisible(q, answers));
+    const allSections = splitIntoSections(allVisible);
+    for (const sec of allSections) {
+      if (sec.questions.some((q) => q.id === currentQuestion.id)) {
+        return sec;
+      }
+    }
+    return null;
+  }, [isMultiPageMode, currentQuestion, questions, answers]);
+
   // Keep currentPage in sync when visible questions change
   useEffect(() => {
     if (totalPages === 0) {
@@ -1962,7 +1975,9 @@ export default function FormFill() {
               <span className="text-xs font-medium text-gray-500 dark:text-zinc-400">
                 {isMultiPageMode
                   ? `بخش ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalSections)}`
-                  : `سؤال ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalPages)}`}
+                  : currentQuestionSection && currentQuestionSection.title
+                    ? `بخش «${currentQuestionSection.title}» — سؤال ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalPages)}`
+                    : `سؤال ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalPages)}`}
               </span>
               <div className="flex items-center gap-2">
                 <span className="flex items-center gap-1 text-[10px] text-gray-400 dark:text-zinc-500">
