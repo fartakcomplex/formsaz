@@ -201,6 +201,40 @@ function formatDate(dateStr: string): string {
   }
 }
 
+function getExpirationStatus(expiresAt: string | null): { text: string; color: string; isExpired: boolean } {
+  if (!expiresAt) return { text: '', color: '', isExpired: false };
+  try {
+    const expDate = new Date(expiresAt);
+    const now = new Date();
+    const isExpired = isBefore(expDate, now);
+
+    if (isExpired) {
+      return {
+        text: 'منقضی شده',
+        color: 'text-red-600 dark:text-red-400 border-red-200 dark:border-red-800',
+        isExpired: true,
+      };
+    }
+
+    const diffDays = Math.ceil((expDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays <= 3) {
+      return {
+        text: `${diffDays} روز مانده`,
+        color: 'text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+        isExpired: false,
+      };
+    }
+
+    return {
+      text: formatDistanceToNow(expDate, { addSuffix: true, locale: faIR }),
+      color: 'text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700',
+      isExpired: false,
+    };
+  } catch {
+    return { text: '', color: '', isExpired: false };
+  }
+}
+
 
 interface ExportedFormJSON {
   version: string;
@@ -2569,6 +2603,139 @@ function RecentActivityFeed() {
   );
 }
 
+// ─── Welcome Banner ────────────────────────────────────────────────────────
+
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'صبح بخیر';
+  if (hour < 17) return 'ظهر بخیر';
+  if (hour < 21) return 'عصر بخیر';
+  return 'شب بخیر';
+}
+
+function WelcomeBanner({
+  activeForms,
+  totalSubmissions,
+  onCreateNew,
+}: {
+  activeForms: number;
+  totalSubmissions: number;
+  onCreateNew: () => void;
+}) {
+  const greeting = getGreeting();
+  const userName = 'کاربر گرامی';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="relative overflow-hidden rounded-2xl mb-6 sm:mb-8 welcome-banner-gradient shadow-xl"
+    >
+      {/* Floating decorative shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Top-right circle */}
+        <motion.div
+          animate={{ y: [0, -8, 0], x: [0, 4, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-8 -left-8 size-32 sm:size-40 rounded-full bg-white/10 blur-xl"
+        />
+        {/* Bottom-left circle */}
+        <motion.div
+          animate={{ y: [0, 6, 0], x: [0, -5, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          className="absolute -bottom-10 -right-10 size-28 sm:size-36 rounded-full bg-white/8 blur-2xl"
+        />
+        {/* Small accent circle top-left */}
+        <motion.div
+          animate={{ y: [0, -5, 0], scale: [1, 1.05, 1] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+          className="absolute top-4 left-4 sm:top-6 sm:left-6 size-12 sm:size-16 rounded-full bg-white/10 blur-lg"
+        />
+        {/* Small accent circle bottom-right */}
+        <motion.div
+          animate={{ y: [0, 4, 0], scale: [1, 0.95, 1] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+          className="absolute bottom-4 right-6 sm:bottom-6 sm:right-10 size-10 sm:size-14 rounded-full bg-white/15 blur-md"
+        />
+        {/* Diamond shape */}
+        <motion.div
+          animate={{ rotate: [0, 90, 180, 270, 360] }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 size-6 sm:size-8 rounded-sm bg-white/10 blur-sm rotate-45 hidden sm:block"
+        />
+      </div>
+
+      {/* Glassmorphism overlay */}
+      <div className="absolute inset-0 bg-white/5 dark:bg-black/10 backdrop-blur-[2px]" />
+
+      {/* Content */}
+      <div className="relative z-10 px-5 sm:px-8 py-6 sm:py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          {/* Text content */}
+          <div className="flex-1 min-w-0">
+            {/* Greeting */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <h2 className="text-xl sm:text-2xl font-extrabold text-white mb-1.5">
+                {greeting}، {userName}! 👋
+              </h2>
+            </motion.div>
+
+            {/* Motivational message */}
+            <motion.p
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.35, duration: 0.5 }}
+              className="text-sm sm:text-base text-white/80 leading-relaxed mb-4 sm:mb-0"
+            >
+              امروز فرم جدیدی بسازید و پاسخ‌ها را جمع‌آوری کنید!
+            </motion.p>
+
+            {/* Quick stats badges - glassmorphism */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+              className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-5"
+            >
+              <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/15 dark:bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs sm:text-sm font-medium">
+                <FileText className="size-4" />
+                <span>{activeForms} فرم فعال</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/15 dark:bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs sm:text-sm font-medium">
+                <Send className="size-4" />
+                <span>{totalSubmissions} پاسخ امروز</span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.5, type: 'spring', stiffness: 200, damping: 20 }}
+            className="shrink-0"
+          >
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Button
+                onClick={onCreateNew}
+                className="w-full sm:w-auto bg-white hover:bg-white/90 text-violet-700 font-bold rounded-xl px-6 py-3 text-sm shadow-lg shadow-black/10 hover:shadow-xl transition-shadow"
+              >
+                <Rocket className="size-4 ml-2" />
+                ایجاد فرم جدید
+              </Button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Dashboard ──────────────────────────────────────────────────────────────
 
 type SortOption = 'newest' | 'oldest' | 'most_responses' | 'least_responses';
@@ -2957,6 +3124,13 @@ export default function Dashboard() {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-50/50 dark:bg-gray-950">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Welcome Banner */}
+        <WelcomeBanner
+          activeForms={publishedForms}
+          totalSubmissions={totalSubmissions}
+          onCreateNew={handleCreateNew}
+        />
+
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <StatCard

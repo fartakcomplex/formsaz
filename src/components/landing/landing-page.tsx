@@ -54,9 +54,7 @@ import {
   Building2,
   Quote,
   Sparkles,
-  CheckCircle2,
   CircleDot,
-  Rocket,
   Send,
   ArrowUp,
   Search,
@@ -1654,17 +1652,20 @@ function PricingSection() {
     {
       name: 'رایگان',
       icon: CircleDot,
-      priceMonthly: 'رایگان همیشگی',
-      priceYearly: 'رایگان همیشگی',
-      description: 'مناسب برای شروع و استفاده شخصی',
+      priceMonthly: '۰',
+      priceYearly: '۰',
+      priceUnit: 'تومان',
+      description: 'مناسب برای شروع و استفاده‌های شخصی',
       features: [
         { text: 'تا ۵ فرم فعال', included: true },
         { text: '۱۰۰ پاسخ در هر فرم', included: true },
-        { text: 'تم‌های پایه', included: true },
+        { text: '۱۰ فیلد سوال در هر فرم', included: true },
+        { text: 'تم‌های پایه و پیش‌فرض', included: true },
         { text: 'خروجی CSV', included: true },
-        { text: 'آمار اولیه', included: true },
-        { text: 'منطق شرطی', included: false },
-        { text: 'خروجی اکسل', included: false },
+        { text: 'آمار و گزارش اولیه', included: true },
+        { text: 'حذف لوگوی پرسلاین', included: false },
+        { text: 'منطق شرطی و شاخه‌ای', included: false },
+        { text: 'خروجی اکسل و PDF', included: false },
         { text: 'پشتیبانی اولویت‌دار', included: false },
       ],
       buttonLabel: 'شروع رایگان',
@@ -1674,17 +1675,20 @@ function PricingSection() {
     {
       name: 'حرفه‌ای',
       icon: Crown,
-      priceMonthly: '۴۹,۰۰۰ تومان / ماه',
-      priceYearly: '۳۹,۰۰۰ تومان / ماه',
+      priceMonthly: '۴۹,۰۰۰',
+      priceYearly: '۳۹,۰۰۰',
+      priceUnit: 'تومان / ماه',
       description: 'مناسب برای کسب‌وکارهای در حال رشد',
       features: [
         { text: 'فرم نامحدود', included: true },
         { text: '۱۰,۰۰۰ پاسخ در هر فرم', included: true },
-        { text: 'تم‌های سفارشی', included: true },
-        { text: 'خروجی CSV و اکسل', included: true },
-        { text: 'آمار پیشرفته', included: true },
+        { text: 'فیلد سوال نامحدود', included: true },
+        { text: 'تم‌های سفارشی و برندسازی', included: true },
+        { text: 'خروجی CSV، اکسل و PDF', included: true },
+        { text: 'آمار پیشرفته و نمودارهای تعاملی', included: true },
         { text: 'منطق شرطی و شاخه‌ای', included: true },
-        { text: 'پشتیبانی اولویت‌دار', included: true },
+        { text: 'حذف لوگوی پرسلاین', included: true },
+        { text: 'پشتیبانی اولویت‌دار ۲۴/۷', included: true },
         { text: 'دامنه سفارشی', included: false },
       ],
       buttonLabel: 'شروع دوره آزمایشی',
@@ -1695,18 +1699,21 @@ function PricingSection() {
     {
       name: 'سازمانی',
       icon: Building2,
-      priceMonthly: 'تماس بگیرید',
-      priceYearly: 'تماس بگیرید',
+      priceMonthly: '',
+      priceYearly: '',
+      priceUnit: '',
       description: 'مناسب برای سازمان‌ها و تیم‌های بزرگ',
       features: [
-        { text: 'همه امکانات حرفه‌ای', included: true },
+        { text: 'همه امکانات پلن حرفه‌ای', included: true },
         { text: 'پاسخ نامحدود', included: true },
-        { text: 'همکاری تیمی', included: true },
-        { text: 'دامنه سفارشی', included: true },
-        { text: 'دسترسی API', included: true },
-        { text: 'ورود یکپارچه (SSO)', included: true },
-        { text: 'پشتیبانی اختصاصی', included: true },
-        { text: 'SLA تضمین‌شده', included: true },
+        { text: 'همکاری تیمی با مدیریت نقش‌ها', included: true },
+        { text: 'دامنه سفارشی و برندینگ کامل', included: true },
+        { text: 'دسترسی API و وب‌هوک', included: true },
+        { text: 'ورود یکپارچه (SSO) و SAML', included: true },
+        { text: 'حذف کامل محدودیت فیلدها', included: true },
+        { text: 'پشتیبانی اختصاصی و مدیر حساب', included: true },
+        { text: 'SLA تضمین‌شده ۹۹.۹٪', included: true },
+        { text: 'قرارداد سفارشی و فاکتور رسمی', included: true },
       ],
       buttonLabel: 'تماس با فروش',
       buttonVariant: 'outline' as const,
@@ -1718,7 +1725,7 @@ function PricingSection() {
     <section id="pricing" className="relative py-24 sm:py-32 bg-white dark:bg-gray-950 overflow-hidden">
       {/* Particle/dot pattern background */}
       <div
-        className="absolute inset-0 opacity-[0.04]"
+        className="absolute inset-0 opacity-[0.04] dark:opacity-[0.06]"
         style={{
           backgroundImage: `radial-gradient(circle, #8b5cf6 1px, transparent 1px)`,
           backgroundSize: '28px 28px',
@@ -1726,33 +1733,44 @@ function PricingSection() {
       />
 
       {/* Decorative glows */}
-      <div className="absolute top-0 left-1/4 w-72 h-72 bg-indigo-200/30 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-200/30 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-1/4 w-72 h-72 bg-indigo-200/30 dark:bg-indigo-500/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-200/30 dark:bg-violet-500/10 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-fuchsia-100/20 dark:bg-fuchsia-500/5 rounded-full blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <FadeInSection className="text-center mb-12 sm:mb-16">
-          <Badge
-            variant="secondary"
-            className="mb-4 px-3 py-1 text-xs font-medium bg-indigo-100/80 text-indigo-700 border-indigo-200/50"
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
           >
-            <Sparkles className="h-3 w-3 ml-1" />
-            قیمت‌گذاری
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-            پلن مناسب خود را انتخاب کنید
+            <Badge
+              variant="secondary"
+              className="mb-4 px-4 py-1.5 text-xs font-medium bg-indigo-100/80 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border-indigo-200/50 dark:border-indigo-800/50"
+            >
+              <Sparkles className="h-3 w-3 ml-1" />
+              قیمت‌گذاری
+            </Badge>
+          </motion.div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            پلن مناسب خود را{' '}
+            <span className="bg-gradient-to-l from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
+              انتخاب کنید
+            </span>
           </h2>
-          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 leading-relaxed">
-            بدون هزینه پنهان. هر زمان که بخواهید ارتقا یا لغو کنید.
+          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
+            بدون هزینه پنهان، بدون قرارداد بلندمدت. هر زمان که بخواهید ارتقا یا لغو کنید.
           </p>
 
           {/* Monthly / Yearly Toggle */}
-          <div className="mt-8 inline-flex items-center gap-3 bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-1.5">
+          <div className="mt-8 inline-flex items-center gap-3 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full px-2 py-1.5 border border-gray-200/50 dark:border-gray-700/50">
             <span
-              className={`text-sm font-medium px-3 py-1 rounded-full transition-colors ${
+              className={`text-sm font-medium px-4 py-1.5 rounded-full transition-all duration-300 ${
                 !isYearly
                   ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-500'
+                  : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               ماهانه
@@ -1763,14 +1781,14 @@ function PricingSection() {
               className="data-[state=checked]:bg-indigo-600"
             />
             <span
-              className={`text-sm font-medium px-3 py-1 rounded-full transition-colors ${
+              className={`text-sm font-medium px-4 py-1.5 rounded-full transition-all duration-300 ${
                 isYearly
                   ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-500'
+                  : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               سالانه
-              <Badge className="mr-1.5 px-1.5 py-0 text-[10px] bg-emerald-100 text-emerald-700 border-emerald-200/50">
+              <Badge className="mr-1.5 px-1.5 py-0 text-[10px] bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-800/50">
                 ۲۰٪ تخفیف
               </Badge>
             </span>
@@ -1778,134 +1796,255 @@ function PricingSection() {
         </FadeInSection>
 
         {/* Pricing Cards */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto items-start">
           {plans.map((plan, i) => (
-            <motion.div key={i} variants={staggerChild} className="relative">
-              {/* Popular badge */}
+            <motion.div
+              key={i}
+              variants={staggerChild}
+              whileHover={{ y: -8, transition: { duration: 0.3, ease: 'easeOut' } }}
+              className="relative"
+            >
+              {/* Popular badge with glow */}
               {plan.badge && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                  <Badge className="px-4 py-1 text-xs font-semibold bg-gradient-to-l from-indigo-600 to-violet-600 text-white border-0 shadow-lg shadow-indigo-500/25">
-                    <Rocket className="h-3 w-3 ml-1" />
-                    {plan.badge}
-                  </Badge>
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.3 }}
+                  >
+                    <Badge className="px-5 py-1.5 text-xs font-bold bg-gradient-to-l from-indigo-600 via-violet-600 to-purple-600 text-white border-0 shadow-lg shadow-indigo-500/30 dark:shadow-indigo-500/50 relative overflow-hidden">
+                      {/* Animated shine on badge */}
+                      <motion.div
+                        className="absolute inset-0"
+                        animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                        style={{
+                          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)',
+                          backgroundSize: '50% 100%',
+                        }}
+                      />
+                      <span className="relative flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-yellow-300 text-yellow-300" />
+                        {plan.badge}
+                      </span>
+                    </Badge>
+                  </motion.div>
                 </div>
               )}
 
-              <Card
-                className={`group relative h-full transition-all duration-300 hover:-translate-y-1 overflow-hidden ${
-                  plan.highlight
-                    ? 'border-indigo-200 dark:border-indigo-800 shadow-xl shadow-indigo-500/10 hover:shadow-2xl hover:shadow-indigo-500/20 bg-gradient-to-b from-white via-indigo-50/30 to-white dark:from-gray-900 dark:via-indigo-950/20 dark:to-gray-900'
-                    : 'border-gray-200 dark:border-gray-800 hover:border-indigo-100 dark:hover:border-indigo-800 hover:shadow-xl hover:shadow-indigo-500/[0.06] bg-white dark:bg-gray-900'
-                }`}
-              >
-                {/* Gradient border glow on hover for highlighted card */}
-                {plan.highlight && (
-                  <div className="absolute -inset-px rounded-xl bg-gradient-to-b from-indigo-500/20 via-violet-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                )}
-
-                {/* Shimmer/shine animation for recommended plan */}
-                {plan.highlight && (
-                  <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
-                    <motion.div
-                      className="absolute inset-0 -translate-x-full"
-                      animate={{ translateX: ['-100%', '100%'] }}
-                      transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, ease: 'linear' }}
-                    >
-                      <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
-                    </motion.div>
-                  </div>
-                )}
-
-                <CardContent className="p-6 lg:p-8 flex flex-col h-full">
-                  {/* Plan icon + name */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                        plan.highlight
-                          ? 'bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/25'
-                          : 'bg-gray-100 dark:bg-gray-800'
-                      }`}
-                    >
-                      <plan.icon
-                        className={`h-5 w-5 ${
-                          plan.highlight ? 'text-white' : 'text-gray-600 dark:text-gray-400'
-                        }`}
-                      />
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                      {plan.name}
-                    </h3>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-sm text-gray-500 mb-4">{plan.description}</p>
-
-                  {/* Price */}
-                  <div className="mb-6">
-                    <div className="text-2xl font-extrabold text-gray-900 dark:text-white">
-                      {isYearly ? plan.priceYearly : plan.priceMonthly}
-                    </div>
-                    {isYearly && plan.name !== 'رایگان' && plan.name !== 'سازمانی' && (
-                      <div className="mt-1 text-xs text-emerald-600 font-medium">
-                        صرفه‌جویی سالانه ≈ ۱۲۰,۰۰۰ تومان
-                      </div>
-                    )}
-                  </div>
-
-                  <Separator className="mb-6" />
-
-                  {/* Features list */}
-                  <ul className="space-y-3 flex-1 mb-8">
-                    {plan.features.map((feature, fIdx) => (
-                      <li key={fIdx} className="flex items-start gap-2.5">
-                        {feature.included ? (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                        ) : (
-                          <CircleDot className="h-4 w-4 text-gray-300 dark:text-gray-600 shrink-0 mt-0.5" />
-                        )}
-                        <span
-                          className={`text-sm ${
-                            feature.included
-                              ? 'text-gray-700 dark:text-gray-300'
-                              : 'text-gray-400 dark:text-gray-600 line-through'
-                          }`}
-                        >
-                          {feature.text}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* CTA Button */}
-                  <Button
-                    size="lg"
-                    variant={plan.buttonVariant}
-                    onClick={() => setCurrentView('dashboard')}
-                    className={`w-full rounded-xl font-semibold transition-all ${
-                      plan.highlight
-                        ? 'bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5'
-                        : plan.name === 'سازمانی'
-                        ? 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600'
-                        : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600'
-                    }`}
-                  >
-                    {plan.buttonLabel}
-                    <ArrowLeft className="h-4 w-4" />
-                  </Button>
-                </CardContent>
-              </Card>
+              {/* Gradient border wrapper for highlighted card */}
+              {plan.highlight ? (
+                <div className="relative p-[2px] rounded-2xl bg-gradient-to-b from-indigo-500 via-violet-500 to-purple-600 shadow-2xl shadow-indigo-500/20 dark:shadow-indigo-500/30">
+                  {/* Animated gradient border glow */}
+                  <motion.div
+                    className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-indigo-400 via-violet-500 to-purple-600 opacity-50 blur-sm"
+                    animate={{ opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                  <Card className="relative h-full overflow-hidden bg-white dark:bg-gray-900 rounded-2xl border-0 shadow-none">
+                    <PricingCardInner plan={plan} isYearly={isYearly} setCurrentView={setCurrentView} />
+                  </Card>
+                </div>
+              ) : (
+                <Card className="group relative h-full overflow-hidden border border-gray-200/80 dark:border-gray-800/80 hover:border-indigo-200 dark:hover:border-indigo-800 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl hover:shadow-xl hover:shadow-indigo-500/[0.08] transition-shadow duration-300 rounded-2xl">
+                  {/* Subtle glassmorphism top highlight */}
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-l from-transparent via-gray-300/50 dark:via-gray-700/50 to-transparent" />
+                  <PricingCardInner plan={plan} isYearly={isYearly} setCurrentView={setCurrentView} />
+                </Card>
+              )}
             </motion.div>
           ))}
         </StaggerContainer>
 
-        {/* Bottom note */}
-        <FadeInSection delay={0.4} className="mt-12 text-center">
-          <p className="text-sm text-gray-500">
-            تمام پلن‌ها شامل رمزنگاری SSL، پشتیبانی فارسی و آپتایم ۹۹.۹٪ هستند.
-          </p>
+        {/* Trust indicators */}
+        <FadeInSection delay={0.5} className="mt-14">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <Shield className="h-4 w-4 text-emerald-500" />
+              <span>رمزنگاری SSL</span>
+            </div>
+            <div className="hidden sm:block w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <Clock className="h-4 w-4 text-emerald-500" />
+              <span>آپتایم ۹۹.۹٪</span>
+            </div>
+            <div className="hidden sm:block w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <MessageSquareHeart className="h-4 w-4 text-emerald-500" />
+              <span>پشتیبانی فارسی</span>
+            </div>
+            <div className="hidden sm:block w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <Zap className="h-4 w-4 text-emerald-500" />
+              <span>لغو آنی</span>
+            </div>
+          </div>
         </FadeInSection>
       </div>
     </section>
+  );
+}
+
+/* ── Inner Pricing Card Content ── */
+
+interface PricingPlan {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  priceMonthly: string;
+  priceYearly: string;
+  priceUnit: string;
+  description: string;
+  features: { text: string; included: boolean }[];
+  buttonLabel: string;
+  buttonVariant: 'outline' | 'default';
+  highlight: boolean;
+  badge?: string;
+}
+
+function PricingCardInner({
+  plan,
+  isYearly,
+  setCurrentView,
+}: {
+  plan: PricingPlan;
+  isYearly: boolean;
+  setCurrentView: (view: string) => void;
+}) {
+  return (
+    <>
+      {/* Shimmer/shine animation for highlighted card */}
+      {plan.highlight && (
+        <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+          <motion.div
+            className="absolute inset-0 -translate-x-full"
+            animate={{ translateX: ['-100%', '100%'] }}
+            transition={{ duration: 4, repeat: Infinity, repeatDelay: 3, ease: 'linear' }}
+          >
+            <div className="w-1/4 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent skew-x-12" />
+          </motion.div>
+        </div>
+      )}
+
+      <CardContent className="relative p-6 lg:p-8 flex flex-col h-full">
+        {/* Plan icon + name */}
+        <div className="flex items-center gap-3 mb-2">
+          <motion.div
+            whileHover={{ rotate: [0, -10, 10, 0] }}
+            transition={{ duration: 0.5 }}
+          >
+            <div
+              className={`flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-300 ${
+                plan.highlight
+                  ? 'bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/40'
+                  : 'bg-gray-100 dark:bg-gray-800'
+              }`}
+            >
+              <plan.icon
+                className={`h-5 w-5 ${
+                  plan.highlight ? 'text-white' : 'text-gray-600 dark:text-gray-400'
+                }`}
+              />
+            </div>
+          </motion.div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{plan.name}</h3>
+        </div>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">{plan.description}</p>
+
+        {/* Price */}
+        <div className="mb-6">
+          {plan.name === 'سازمانی' ? (
+            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">
+              تماس بگیرید
+            </div>
+          ) : plan.name === 'رایگان' ? (
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-extrabold text-gray-900 dark:text-white">۰</span>
+              <span className="text-lg font-semibold text-gray-500 dark:text-gray-400">تومان</span>
+            </div>
+          ) : (
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
+                {isYearly ? plan.priceYearly : plan.priceMonthly}
+              </span>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {plan.priceUnit}
+              </span>
+            </div>
+          )}
+          {isYearly && plan.name === 'حرفه‌ای' && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mt-1.5"
+            >
+              <Badge className="px-2 py-0.5 text-[10px] font-medium bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-800/50">
+                صرفه‌جویی سالانه ≈ ۱۲۰,۰۰۰ تومان
+              </Badge>
+            </motion.div>
+          )}
+          {plan.name === 'سازمانی' && (
+            <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+              قیمت بر اساس نیاز و مقیاس سازمان شما تعیین می‌شود
+            </p>
+          )}
+        </div>
+
+        <Separator className="mb-6 opacity-60" />
+
+        {/* Features list */}
+        <ul className="space-y-3 flex-1 mb-8">
+          {plan.features.map((feature, fIdx) => (
+            <motion.li
+              key={fIdx}
+              initial={{ opacity: 0, x: 10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: fIdx * 0.04 }}
+              className="flex items-start gap-2.5"
+            >
+              {feature.included ? (
+                <div className="flex h-5 w-5 shrink-0 mt-0.5 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950/60">
+                  <Check className="h-3 w-3 text-emerald-600 dark:text-emerald-400" strokeWidth={3} />
+                </div>
+              ) : (
+                <div className="flex h-5 w-5 shrink-0 mt-0.5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800/60">
+                  <X className="h-3 w-3 text-gray-400 dark:text-gray-600" strokeWidth={3} />
+                </div>
+              )}
+              <span
+                className={`text-sm leading-relaxed ${
+                  feature.included
+                    ? 'text-gray-700 dark:text-gray-300'
+                    : 'text-gray-400 dark:text-gray-600 line-through'
+                }`}
+              >
+                {feature.text}
+              </span>
+            </motion.li>
+          ))}
+        </ul>
+
+        {/* CTA Button */}
+        <Button
+          size="lg"
+          variant={plan.buttonVariant}
+          onClick={() => setCurrentView('dashboard')}
+          className={`w-full rounded-xl font-semibold transition-all duration-300 ${
+            plan.highlight
+              ? 'bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/40 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0'
+              : plan.name === 'سازمانی'
+              ? 'border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400 hover:-translate-y-0.5 active:translate-y-0'
+              : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400 hover:-translate-y-0.5 active:translate-y-0'
+          }`}
+        >
+          {plan.buttonLabel}
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+      </CardContent>
+    </>
   );
 }
 
