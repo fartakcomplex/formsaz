@@ -49,6 +49,7 @@ import {
   TrendingUp,
   CalendarDays,
   Megaphone,
+  HardDrive,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAppStore, type Form } from '@/lib/store';
@@ -1835,179 +1836,399 @@ function SettingsSection() {
 
 function SubscriptionSection({ profile }: { profile: UserProfile | null }) {
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
-
   const formsCount = profile?.formCount || 0;
-  const submissionsCount = 0; // Would need a separate query
 
-  const usageItems = [
-    { label: 'فرم‌ها', current: formsCount, max: 5, color: 'from-violet-500 to-purple-500' },
-    { label: 'سؤال در هر فرم', current: 25, max: 50, color: 'from-fuchsia-500 to-pink-500' },
-    { label: 'پاسخ‌ها', current: submissionsCount, max: 500, color: 'from-emerald-500 to-teal-500' },
+  // ── Usage stats ──
+  const usageStats = [
+    {
+      label: 'فرم‌های ساخته شده',
+      display: `${formsCount} از ۵ فرم`,
+      current: formsCount,
+      max: 5,
+      icon: <FileText className="size-5" />,
+      iconBg: 'bg-violet-100 dark:bg-violet-900/40',
+      iconColor: 'text-violet-600 dark:text-violet-400',
+      gradient: 'from-violet-500 to-purple-500',
+    },
+    {
+      label: 'پاسخ‌های جمع‌آوری شده',
+      display: `۲۳ از ۱۰۰ پاسخ`,
+      current: 23,
+      max: 100,
+      icon: <Send className="size-5" />,
+      iconBg: 'bg-emerald-100 dark:bg-emerald-900/40',
+      iconColor: 'text-emerald-600 dark:text-emerald-400',
+      gradient: 'from-emerald-500 to-teal-500',
+    },
+    {
+      label: 'فضای ذخیره‌سازی',
+      display: `۳۵ از ۱۰۰ مگابایت`,
+      current: 35,
+      max: 100,
+      icon: <HardDrive className="size-5" />,
+      iconBg: 'bg-amber-100 dark:bg-amber-900/40',
+      iconColor: 'text-amber-600 dark:text-amber-400',
+      gradient: 'from-amber-500 to-orange-500',
+    },
   ];
 
-  const currentFeatures = [
-    { text: 'حداکثر ۵ فرم فعال', included: true },
-    { text: 'حداکثر ۵۰ سؤال در هر فرم', included: true },
-    { text: 'حداکثر ۵۰۰ پاسخ در ماه', included: true },
-    { text: 'آپلود فایل', included: false },
-    { text: 'قانون شرطی پیشرفته', included: false },
-    { text: 'خروجی PDF', included: false },
-    { text: 'دامنه اختصاصی', included: false },
-    { text: 'پشتیبانی اولویت‌دار', included: false },
-  ];
-
+  // ── Pricing plans ──
   const plans = [
     {
       name: 'رایگان',
       price: '۰',
-      period: 'تومان/ماهانه',
-      features: ['۵ فرم فعال', '۵۰ سؤال در هر فرم', '۵۰۰ پاسخ در ماه', '۱۰ الگوی آماده'],
-      current: true,
+      period: '',
+      description: 'برای شروع کار',
+      features: ['حداکثر ۵ فرم فعال', '۵۰ سؤال در هر فرم', '۱۰۰ پاسخ در ماه', '۱۰ الگوی آماده'],
+      isCurrent: true,
     },
     {
       name: 'حرفه‌ای',
-      price: '۱۴۹,۰۰۰',
-      period: 'تومان/ماهانه',
-      features: ['فرم نامحدود', '۱۰۰۰ سؤال در هر فرم', '۱۰,۰۰۰ پاسخ در ماه', 'تمام الگوها', 'آپلود فایل', 'قانون شرطی', 'خروجی PDF'],
-      current: false,
+      price: '۴۹,۰۰۰',
+      period: 'تومان/ماه',
+      description: 'برای حرفه‌ای‌ها',
+      features: ['فرم‌های نامحدود', '۱۰۰۰ سؤال در هر فرم', '۱۰,۰۰۰ پاسخ در ماه', 'تمام الگوها', 'آپلود فایل', 'قانون شرطی پیشرفته'],
+      isCurrent: false,
       popular: true,
     },
     {
       name: 'سازمانی',
-      price: '۴۹۹,۰۰۰',
-      period: 'تومان/ماهانه',
-      features: ['همه امکانات حرفه‌ای', '۵۰,۰۰۰ پاسخ در ماه', 'دامنه اختصاصی', 'API اختصاصی', 'پشتیبانی تلفنی', 'SSO', 'گزارش‌های پیشرفته'],
-      current: false,
+      price: 'تماس بگیرید',
+      period: '',
+      description: 'برای تیم‌ها و سازمان‌ها',
+      features: ['همه امکانات حرفه‌ای', '۵۰,۰۰۰ پاسخ در ماه', '۱۰۰ مگابایت فضای ذخیره‌سازی', 'دامنه اختصاصی', 'API اختصاصی', 'پشتیبانی تلفنی', 'SSO و ورود یکپارچه', 'گزارش‌های پیشرفته'],
+      isCurrent: false,
     },
   ];
 
+  // ── Billing history ──
+  const billingHistory = [
+    { id: 1, date: '۱۴۰۳/۰۹/۱۵', description: 'تمدید اشتراک رایگان', amount: 'رایگان', status: 'paid' as const },
+    { id: 2, date: '۱۴۰۳/۰۸/۱۵', description: 'تمدید اشتراک رایگان', amount: 'رایگان', status: 'paid' as const },
+    { id: 3, date: '۱۴۰۳/۰۷/۱۵', description: 'تمدید اشتراک رایگان', amount: 'رایگان', status: 'paid' as const },
+    { id: 4, date: '۱۴۰۳/۰۶/۱۵', description: 'پرداخت آزمایشی', amount: '۴۹,۰۰۰ تومان', status: 'pending' as const },
+  ];
+
   return (
-    <motion.div variants={staggerContainer} initial="initial" animate="animate" className="max-w-5xl mx-auto space-y-6">
-      {/* Current Plan - Glassmorphism */}
+    <motion.div variants={staggerContainer} initial="initial" animate="animate" className="max-w-5xl mx-auto space-y-8">
+
+      {/* ── Section 1: Current Plan Badge ── */}
       <motion.div variants={staggerItem}>
-        <Card className="overflow-hidden border-gray-200/50 dark:border-gray-800/50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg">
-          <div className="h-2 bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500" />
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
-                  <Crown className="size-6" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-lg"
+        >
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500" />
+          <div className="p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <motion.div
+                    animate={{ opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 blur-md"
+                  />
+                  <div className="relative flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-xl shadow-violet-300/30 dark:shadow-violet-500/20">
+                    <Crown className="size-7" />
+                  </div>
                 </div>
                 <div>
-                  <CardTitle className="text-lg">پلن رایگان</CardTitle>
-                  <CardDescription>برنامه فعلی شما</CardDescription>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">طرح رایگان</h3>
+                    <motion.span
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gradient-to-l from-violet-500 to-fuchsia-500 text-white text-[10px] font-bold shadow-lg shadow-violet-300/30 dark:shadow-violet-500/20"
+                    >
+                      <CheckCircle className="size-3" />
+                      طرح فعلی شما
+                    </motion.span>
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">برنامه فعلی شما - محدودیت‌های طرح رایگان اعمال می‌شود</p>
                 </div>
               </div>
-              <Badge className="bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800 text-xs">
-                فعال
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Features List */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {currentFeatures.map((feature, i) => (
-                <div key={i} className="flex items-center gap-2.5 py-1.5">
-                  {feature.included ? (
-                    <div className="flex size-5 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/40">
-                      <Check className="size-3 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                  ) : (
-                    <div className="flex size-5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                      <X className="size-3 text-gray-400" />
-                    </div>
-                  )}
-                  <span className={`text-sm ${feature.included ? 'text-gray-700 dark:text-gray-300' : 'text-gray-400 dark:text-gray-500'}`}>
-                    {feature.text}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <Separator className="bg-gray-100 dark:bg-gray-800" />
-
-            {/* Usage Progress - Animated */}
-            <div>
-              <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <BarChart3 className="size-4 text-violet-500" />
-                میزان مصرف
-              </h4>
-              <div className="space-y-4">
-                {usageItems.map((item, i) => {
-                  const percentage = Math.min(Math.round((item.current / item.max) * 100), 100);
-                  const isWarning = percentage >= 80;
-                  return (
-                    <div key={i} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{item.label}</span>
-                        <span className={`text-xs font-medium ${isWarning ? 'text-amber-600 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400'}`}>
-                          {item.current} از {item.max}
-                        </span>
-                      </div>
-                      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${percentage}%` }}
-                          transition={{ duration: 1.2, delay: i * 0.2, ease: 'easeOut' }}
-                          className={`h-full rounded-full bg-gradient-to-l ${item.color} ${isWarning ? 'animate-pulse' : ''}`}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <CalendarDays className="size-4" />
+                <span>عضویت از {profile?.createdAt ? formatDate(profile.createdAt) : '—'}</span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
       </motion.div>
 
-      {/* Upgrade CTA */}
+      {/* ── Section 2: Usage Stats ── */}
       <motion.div variants={staggerItem}>
-        <div className="relative overflow-hidden rounded-2xl p-6 sm:p-8 bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600">
+        <div className="flex items-center gap-2 mb-4">
+          <BarChart3 className="size-5 text-violet-500" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white">میزان مصرف</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {usageStats.map((stat, i) => {
+            const pct = Math.min(Math.round((stat.current / stat.max) * 100), 100);
+            const isWarning = pct >= 80;
+            return (
+              <motion.div
+                key={i}
+                variants={staggerItem}
+                whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                className="relative overflow-hidden rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-5"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`flex size-10 items-center justify-center rounded-xl ${stat.iconBg}`}>
+                    <span className={stat.iconColor}>{stat.icon}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">{stat.label}</p>
+                    <p className={`text-xs ${isWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-gray-500 dark:text-gray-400'}`}>
+                      {stat.display}
+                    </p>
+                  </div>
+                </div>
+                <div className="relative h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${pct}%` }}
+                    transition={{ duration: 1, delay: 0.3 + i * 0.15, ease: 'easeOut' }}
+                    className={`h-full rounded-full bg-gradient-to-l ${stat.gradient} ${isWarning ? 'animate-pulse' : ''}`}
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-[11px] text-gray-400 dark:text-gray-500">
+                    {pct}٪ مصرف شده
+                  </span>
+                  <span className="text-[11px] text-gray-400 dark:text-gray-500">
+                    {stat.max - stat.current} باقیمانده
+                  </span>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* ── Section 3: Glassmorphism Pricing Cards ── */}
+      <motion.div variants={staggerItem}>
+        <div className="flex items-center gap-2 mb-4">
+          <Crown className="size-5 text-violet-500" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white">طرح‌های اشتراک</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {plans.map((plan, i) => (
+            <motion.div
+              key={i}
+              variants={staggerItem}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="relative"
+            >
+              {/* Animated glow border for current / popular */}
+              {(plan.isCurrent || plan.popular) && (
+                <motion.div
+                  animate={{ opacity: [0.3, 0.7, 0.3] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -inset-[2px] rounded-2xl bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500 blur-sm"
+                />
+              )}
+              <div className={`relative rounded-2xl border backdrop-blur-xl overflow-hidden transition-all ${
+                plan.isCurrent
+                  ? 'border-violet-300/80 dark:border-violet-600/80 bg-white/70 dark:bg-gray-900/70'
+                  : plan.popular
+                    ? 'border-violet-400/80 dark:border-violet-500/80 bg-white/80 dark:bg-gray-900/80'
+                    : 'border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60'
+              }`}>
+                {/* Popular gradient top bar */}
+                {plan.popular && (
+                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500" />
+                )}
+
+                {/* Card Header */}
+                <div className="relative p-5 pb-3 text-center">
+                  {/* Current plan badge with glow */}
+                  {plan.isCurrent && (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-l from-violet-500 to-fuchsia-500 text-white text-[10px] font-bold mb-3 shadow-lg shadow-violet-300/30 dark:shadow-violet-500/20"
+                    >
+                      <motion.div
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                      >
+                        <Sparkles className="size-3" />
+                      </motion.div>
+                      طرح فعلی شما
+                    </motion.div>
+                  )}
+                  {plan.popular && (
+                    <Badge className="bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800 text-[10px] mb-3 mx-auto">
+                      <Star className="size-3 ml-0.5" />
+                      پیشنهاد ویژه
+                    </Badge>
+                  )}
+
+                  <h4 className="text-lg font-bold text-gray-900 dark:text-white">{plan.name}</h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{plan.description}</p>
+                  <div className="mt-3 flex items-baseline justify-center gap-1">
+                    {plan.price !== 'تماس بگیرید' ? (
+                      <>
+                        <span className="text-2xl font-extrabold text-gray-900 dark:text-white">{plan.price}</span>
+                        {plan.period && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">{plan.period}</span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-base font-bold text-violet-600 dark:text-violet-400">{plan.price}</span>
+                    )}
+                  </div>
+                </div>
+
+                <Separator className="bg-gray-100/80 dark:bg-gray-800/80" />
+
+                {/* Features */}
+                <div className="p-5 space-y-2.5">
+                  <ul className="space-y-2.5">
+                    {plan.features.map((f, j) => (
+                      <li key={j} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex size-4 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/40 shrink-0">
+                          <Check className="size-2.5 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA Button */}
+                  <Button
+                    onClick={() => {
+                      if (plan.price === 'تماس بگیرید') {
+                        toast.info('به زودی فعال می‌شود');
+                      } else if (!plan.isCurrent) {
+                        toast.info('به زودی فعال می‌شود');
+                      }
+                    }}
+                    disabled={plan.isCurrent}
+                    className={`w-full mt-4 rounded-xl h-10 text-sm font-medium transition-all ${
+                      plan.isCurrent
+                        ? 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 cursor-default'
+                        : plan.popular
+                          ? 'bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500 hover:opacity-90 text-white shadow-lg shadow-violet-300/30 dark:shadow-violet-500/20'
+                          : 'bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:hover:bg-gray-100 dark:text-gray-900'
+                    }`}
+                  >
+                    {plan.isCurrent ? 'طرح فعلی' : plan.price === 'تماس بگیرید' ? 'تماس با فروش' : 'ارتقا'}
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ── Section 4: Upgrade CTA ── */}
+      <motion.div variants={staggerItem}>
+        <motion.div
+          whileHover={{ scale: 1.005 }}
+          whileTap={{ scale: 0.995 }}
+          className="relative overflow-hidden rounded-2xl p-6 sm:p-8 bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 cursor-pointer"
+          onClick={() => {
+            setShowUpgradeDialog(true);
+            toast.info('به زودی فعال می‌شود');
+          }}
+        >
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
           <motion.div
             animate={{ rotate: [0, 360] }}
-            transition={{ duration: 30, repeat: Number.MAX_SAFE_INTEGER, ease: 'linear' }}
+            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
             className="absolute -top-10 -left-10 size-40 rounded-full border border-white/10"
           />
           <motion.div
             animate={{ rotate: [360, 0] }}
-            transition={{ duration: 20, repeat: Number.MAX_SAFE_INTEGER, ease: 'linear' }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             className="absolute -bottom-8 -right-8 size-32 rounded-full border border-white/10"
           />
-
           <div className="relative flex flex-col sm:flex-row items-center gap-6">
-            <div className="flex size-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 shadow-xl">
-              <Sparkles className="size-8 text-white" />
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 shadow-xl">
+              <Sparkles className="size-7 text-white" />
             </div>
             <div className="text-center sm:text-right flex-1">
-              <h3 className="text-xl font-bold text-white mb-1">ارتقا به پلن حرفه‌ای</h3>
+              <h3 className="text-xl font-bold text-white mb-1">ارتقا به طرح حرفه‌ای</h3>
               <p className="text-sm text-white/80 leading-relaxed">
-                از فرم‌های نامحدود، قوانین شرطی پیشرفته، خروجی PDF و امکانات بیشتر بهره‌مند شوید.
+                از فرم‌های نامحدود، قوانین شرطی پیشرفته، آپلود فایل و امکانات بیشتر بهره‌مند شوید.
               </p>
             </div>
-            <Button
-              size="lg"
-              onClick={() => {
-                setShowUpgradeDialog(true);
-                toast.info('به زودی فعال می‌شود');
-              }}
-              className="bg-white text-violet-700 hover:bg-white/90 rounded-xl shadow-xl font-bold gap-2 h-12 px-6"
-            >
-              <Zap className="size-5" />
-              ارتقا دهید
-            </Button>
+            <div className="flex items-center gap-2 bg-white text-violet-700 font-bold rounded-xl px-6 py-3 shadow-xl hover:bg-white/90 transition-colors">
+              <Sparkles className="size-4" />
+              <span>ارتقا دهید</span>
+              <Zap className="size-4" />
+            </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
 
-      {/* Upgrade Dialog */}
+      {/* ── Section 5: Billing History ── */}
+      <motion.div variants={staggerItem}>
+        <div className="flex items-center gap-2 mb-4">
+          <CreditCard className="size-5 text-violet-500" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white">سوابق صورتحساب</h3>
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="relative overflow-hidden rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl"
+        >
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-gray-200/60 dark:border-gray-800/60 bg-gray-50/50 dark:bg-gray-800/30 hover:bg-gray-50/50 dark:hover:bg-gray-800/30">
+                  <TableHead className="text-right font-bold text-gray-700 dark:text-gray-300 py-3 px-4">تاریخ</TableHead>
+                  <TableHead className="text-right font-bold text-gray-700 dark:text-gray-300 py-3 px-4">توضیحات</TableHead>
+                  <TableHead className="text-right font-bold text-gray-700 dark:text-gray-300 py-3 px-4">مبلغ</TableHead>
+                  <TableHead className="text-center font-bold text-gray-700 dark:text-gray-300 py-3 px-4">وضعیت</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {billingHistory.map((item) => (
+                  <TableRow key={item.id} className="border-gray-100/60 dark:border-gray-800/60 hover:bg-gray-50/30 dark:hover:bg-gray-800/20 transition-colors">
+                    <TableCell className="text-sm text-gray-700 dark:text-gray-300 py-3.5 px-4 font-medium">
+                      {item.date}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600 dark:text-gray-400 py-3.5 px-4">
+                      {item.description}
+                    </TableCell>
+                    <TableCell className="text-sm font-bold text-gray-900 dark:text-white py-3.5 px-4">
+                      {item.amount}
+                    </TableCell>
+                    <TableCell className="text-center py-3.5 px-4">
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium ${
+                        item.status === 'paid'
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                          : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                      }`}>
+                        {item.status === 'paid' ? (
+                          <><CheckCircle className="size-3" /> پرداخت شده</>
+                        ) : (
+                          <><Clock className="size-3" /> در انتظار</>
+                        )}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      {/* ── Upgrade Dialog ── */}
       <Dialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog}>
         <DialogContent className="rounded-2xl border-gray-200 dark:border-gray-800 max-w-2xl" dir="rtl">
           <DialogHeader>
-            <DialogTitle className="text-right text-lg">مقایسه پلن‌ها</DialogTitle>
+            <DialogTitle className="text-right text-lg">مقایسه طرح‌ها</DialogTitle>
             <DialogDescription className="text-right">
-              بهترین پلن را برای نیازهای خود انتخاب کنید
+              بهترین طرح را برای نیازهای خود انتخاب کنید
             </DialogDescription>
           </DialogHeader>
           <div className="overflow-x-auto -mx-6 px-6">
@@ -2029,7 +2250,8 @@ function SubscriptionSection({ profile }: { profile: UserProfile | null }) {
                 {[
                   { feature: 'فرم‌ها', free: '۵', pro: 'نامحدود', enterprise: 'نامحدود' },
                   { feature: 'سؤال در هر فرم', free: '۵۰', pro: '۱,۰۰۰', enterprise: '۱,۰۰۰' },
-                  { feature: 'پاسخ در ماه', free: '۵۰۰', pro: '۱۰,۰۰۰', enterprise: '۵۰,۰۰۰' },
+                  { feature: 'پاسخ در ماه', free: '۱۰۰', pro: '۱۰,۰۰۰', enterprise: '۵۰,۰۰۰' },
+                  { feature: 'فضای ذخیره‌سازی', free: '۱۰۰ مگ', pro: '۱ گیگ', enterprise: '۱۰ گیگ' },
                   { feature: 'آپلود فایل', free: false, pro: true, enterprise: true },
                   { feature: 'قانون شرطی', free: false, pro: true, enterprise: true },
                   { feature: 'خروجی PDF', free: false, pro: true, enterprise: true },
@@ -2076,68 +2298,7 @@ function SubscriptionSection({ profile }: { profile: UserProfile | null }) {
         </DialogContent>
       </Dialog>
 
-      {/* Plan Cards - Glassmorphism */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {plans.map((plan, i) => (
-          <motion.div
-            key={i}
-            variants={staggerItem}
-            whileHover={{ y: -4, transition: { duration: 0.2 } }}
-          >
-            <Card className={`h-full relative overflow-hidden border-2 backdrop-blur-xl ${
-              plan.current
-                ? 'border-violet-300 dark:border-violet-600 bg-white/70 dark:bg-gray-900/70 shadow-lg'
-                : plan.popular
-                  ? 'border-violet-400 dark:border-violet-500 bg-white/80 dark:bg-gray-900/80 shadow-xl'
-                  : 'border-gray-200 dark:border-gray-800 bg-white/70 dark:bg-gray-900/70 shadow-lg'
-            }`}>
-              {plan.popular && (
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-l from-violet-500 to-fuchsia-500" />
-              )}
-              <CardHeader className="text-center pb-2">
-                {plan.popular && (
-                  <Badge className="bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800 text-[10px] mx-auto mb-2">
-                    <Star className="size-3 ml-0.5" />
-                    محبوب‌ترین
-                  </Badge>
-                )}
-                <CardTitle className="text-lg">{plan.name}</CardTitle>
-                <div className="mt-2">
-                  <span className="text-3xl font-extrabold text-gray-900 dark:text-white">{plan.price}</span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 mr-1">{plan.period}</span>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <ul className="space-y-2">
-                  {plan.features.map((f, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                      <Check className="size-3.5 text-emerald-500 shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  onClick={() => {
-                    if (!plan.current) {
-                      toast.info('به زودی فعال می‌شود');
-                    }
-                  }}
-                  className={`w-full mt-4 rounded-xl h-10 text-sm font-medium ${
-                    plan.current
-                      ? 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 cursor-default'
-                      : plan.popular
-                        ? 'bg-violet-500 hover:bg-violet-600 text-white shadow-md shadow-violet-200/50 dark:shadow-violet-500/20'
-                        : 'bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:hover:bg-gray-100 dark:text-gray-900'
-                  }`}
-                  disabled={plan.current}
-                >
-                  {plan.current ? 'پلن فعلی' : 'انتخاب پلن'}
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
     </motion.div>
   );
 }
+

@@ -1,6 +1,28 @@
 import { create } from 'zustand';
 import type { TemplateData } from './templates-data';
 
+// ─── localStorage helpers ────────────────────────────────────────────
+const STORAGE_KEY_FAVORITES = 'porsline_favorites';
+const STORAGE_KEY_TAGS = 'porsline_tags';
+const STORAGE_KEY_FORM_TAG_IDS = 'porsline_form_tag_ids';
+
+function loadFromStorage<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveToStorage(key: string, value: unknown): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch { /* quota exceeded, silent */ }
+}
+
 export type ViewType = 'landing' | 'builder' | 'dashboard' | 'fill' | 'results' | 'templates' | 'admin' | 'user-panel';
 
 export interface QuestionOption {
@@ -550,39 +572,60 @@ export const useAppStore = create<AppState>((set, get) => ({
   quickSearchOpen: false,
   setQuickSearchOpen: (open) => set({ quickSearchOpen: open }),
 
-  // Favorites
-  favoriteFormIds: [],
-  toggleFavoriteForm: (id) =>
-    set((state) => ({
-      favoriteFormIds: state.favoriteFormIds.includes(id)
-        ? state.favoriteFormIds.filter((fid) => fid !== id)
-        : [...state.favoriteFormIds, id],
-    })),
+  // Favorites (persisted to localStorage)
+  favoriteFormIds: typeof window !== 'undefined' ? loadFromStorage<string[]>(STORAGE_KEY_FAVORITES, []) : [],
+  toggleFavoriteForm: (id) => {
+    const state = get();
+    const updated = state.favoriteFormIds.includes(id)
+      ? state.favoriteFormIds.filter((fid) => fid !== id)
+      : [...state.favoriteFormIds, id];
+    saveToStorage(STORAGE_KEY_FAVORITES, updated);
+    set({ favoriteFormIds: updated });
+  },
 
-  // Form Tags
-  tags: [
-    { id: 'tag-1', name: 'مهم', color: 'rose' },
-    { id: 'tag-2', name: 'در حال بررسی', color: 'amber' },
-    { id: 'tag-3', name: 'تکمیل شده', color: 'emerald' },
-    { id: 'tag-4', name: 'پروژه', color: 'violet' },
-    { id: 'tag-5', name: 'شخصی', color: 'blue' },
-    { id: 'tag-6', name: 'کاری', color: 'cyan' },
-  ],
-  addTag: (name, color) => set((state) => ({
-    tags: [...state.tags, { id: crypto.randomUUID(), name, color }],
-  })),
-  removeTag: (id) => set((state) => ({
-    tags: state.tags.filter((t) => t.id !== id),
-    formTagIds: Object.fromEntries(
+  // Form Tags (persisted to localStorage)
+  tags: typeof window !== 'undefined'
+    ? loadFromStorage<FormTag[]>(STORAGE_KEY_TAGS, [
+        { id: 'tag-1', name: 'مهم', color: 'rose' },
+        { id: 'tag-2', name: 'در حال بررسی', color: 'amber' },
+        { id: 'tag-3', name: 'تکمیل شده', color: 'emerald' },
+        { id: 'tag-4', name: 'پروژه', color: 'violet' },
+        { id: 'tag-5', name: 'شخصی', color: 'blue' },
+        { id: 'tag-6', name: 'کاری', color: 'cyan' },
+      ])
+    : [
+        { id: 'tag-1', name: 'مهم', color: 'rose' },
+        { id: 'tag-2', name: 'در حال بررسی', color: 'amber' },
+        { id: 'tag-3', name: 'تکمیل شده', color: 'emerald' },
+        { id: 'tag-4', name: 'پروژه', color: 'violet' },
+        { id: 'tag-5', name: 'شخصی', color: 'blue' },
+        { id: 'tag-6', name: 'کاری', color: 'cyan' },
+      ],
+  addTag: (name, color) => {
+    const newTag: FormTag = { id: crypto.randomUUID(), name, color };
+    const updated = [...get().tags, newTag];
+    saveToStorage(STORAGE_KEY_TAGS, updated);
+    set({ tags: updated });
+  },
+  removeTag: (id) => {
+    const state = get();
+    const updatedTags = state.tags.filter((t) => t.id !== id);
+    const updatedFormTagIds = Object.fromEntries(
       Object.entries(state.formTagIds).map(([fid, tids]) => [fid, tids.filter((tid) => tid !== id)])
-    ),
-  })),
-  formTagIds: {},
-  toggleFormTag: (formId, tagId) => set((state) => {
+    );
+    saveToStorage(STORAGE_KEY_TAGS, updatedTags);
+    saveToStorage(STORAGE_KEY_FORM_TAG_IDS, updatedFormTagIds);
+    set({ tags: updatedTags, formTagIds: updatedFormTagIds });
+  },
+  formTagIds: typeof window !== 'undefined' ? loadFromStorage<Record<string, string[]>>(STORAGE_KEY_FORM_TAG_IDS, {}) : {},
+  toggleFormTag: (formId, tagId) => {
+    const state = get();
     const current = state.formTagIds[formId] || [];
     const updated = current.includes(tagId)
       ? current.filter((tid) => tid !== tagId)
       : [...current, tagId];
-    return { formTagIds: { ...state.formTagIds, [formId]: updated } };
-  }),
+    const newFormTagIds = { ...state.formTagIds, [formId]: updated };
+    saveToStorage(STORAGE_KEY_FORM_TAG_IDS, newFormTagIds);
+    set({ formTagIds: newFormTagIds });
+  },
 }));

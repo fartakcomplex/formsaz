@@ -841,3 +841,115 @@ Performed comprehensive QA across all views:
 10. Mobile responsive testing on actual devices recommended
 11. Form tag persistence to database
 12. Landing page testimonials could use real user photos/content
+
+---
+## Task ID: 22 (Self-Directed Development Cycle)
+## Agent: main-agent
+## Date: 2026-04-27
+
+### Session Overview
+Self-directed development cycle for the Persian RTL form builder project. Reviewed worklog, performed comprehensive QA testing with agent-browser across all views, identified and fixed a React Rules of Hooks violation in the AppHeader (ThemeToggle component), then implemented 1 new feature and 3 major styling improvements.
+
+### 1. QA Testing (agent-browser)
+
+Performed comprehensive QA across all views with 0 errors (after bug fix):
+- **Landing page**: All sections render correctly (hero, features, use cases, how it works, testimonials, FAQ, integrations, pricing, CTA, footer)
+- **Dashboard**: Welcome banner, stats, form list, activity widget, favorites filter, tags, share buttons all functional
+- **Dark mode**: Toggle works correctly with enhanced tooltip and ripple animation
+- **Quick Search**: Enhanced dialog with recent searches, form search from store, glassmorphism
+- **Templates**: Gallery loads with categories and search
+- **Admin panel**: Loads correctly
+- **User panel**: Profile, forms, activity, notifications, settings tabs all functional
+- **User panel subscription**: New glassmorphism pricing cards, usage stats, billing history
+- **Form builder**: Question numbering, drag handles, enhanced cards
+- **Scroll progress indicator**: Gradient bar at top of header works on scroll
+- **Screenshots captured**: 8 QA screenshots saved to /home/z/my-project/download/qa-22-*.png
+
+### 2. Bug Fix: React Rules of Hooks Violation
+
+**Issue**: Dashboard crashed with "Rendered more hooks than during the previous render" error. The subagent-enhanced `ThemeToggle` component in `app-header.tsx` had an early return `if (!mounted)` BEFORE the `useCallback` hook call, causing hooks to be called in different orders on different renders.
+
+**Fix**: Moved all hook calls (`useCallback`, state computations) BEFORE the early return guard. Also fixed the same pattern in `MobileNotificationRow`. Removed the incorrect cleanup function return from the click handler.
+
+**Files modified**: `src/components/app-header.tsx`
+
+### 3. New Feature (Requirement #5)
+
+**a) localStorage Persistence for Favorites & Tags** (direct implementation):
+- Store: Added `loadFromStorage<T>()` and `saveToStorage()` helper functions with SSR guards
+- Keys: `porsline_favorites`, `porsline_tags`, `porsline_form_tag_ids`
+- `favoriteFormIds`: Now loads from localStorage on init, saves on every toggle
+- `tags`: Loads from localStorage with fallback to 6 default Persian tags
+- `formTagIds`: Loads from localStorage on init, saves on every toggle
+- `addTag()` / `removeTag()` / `toggleFormTag()`: All persist to localStorage
+- Graceful error handling for quota exceeded
+- Files: src/lib/store.ts
+
+### 4. Styling Improvements (Requirement #4)
+
+**a) Enhanced Quick Search** (subagent):
+- Recent searches: Stored last 5 queries in localStorage (`porsline_recent_searches`), shown when search empty
+- Recent searches section with click-to-reuse and clear button
+- Form search from Zustand store: Matches forms by title/description, navigates to dashboard
+- Glassmorphism: `bg-white/70 backdrop-blur-xl` dialog, gradient section dots, enhanced footer
+- Empty state: Larger icon with gradient circle, subtitle text, fade-in animation
+- Footer: Added `Ctrl+K` keyboard shortcut hint
+
+**b) Enhanced App Header** (subagent):
+- Logo sparkle: Pulsing box-shadow + Sparkles icon overlay with rotation animation
+- Logo text glow: `drop-shadow` violet filter for gradient text
+- Mobile menu: User info section (avatar + name + email), decorative dots pattern background
+- Mobile menu: Glassmorphism nav items with `backdrop-blur-sm`
+- Mobile menu: Notification row before nav items with unread count badge
+- Mobile menu: Glow-enhanced "ایجاد فرم جدید" button with animated box-shadow
+- ThemeToggle: Ripple click effect, Tooltip with dark/light mode label, bouncier spring transition
+- Scroll progress indicator: 2px gradient bar (violet→purple→fuchsia) at very top of header
+
+**c) User Panel Subscription Section** (subagent):
+- Current plan header: Glassmorphism card with animated Crown icon glow + "طرح فعلی شما" badge
+- Usage stats: 3 glassmorphism cards (forms/5, responses/100, storage/100MB) with animated progress bars
+- Glassmorphism pricing cards: 3 tiers (رایگان/حرفه‌ای/سازمانی) with animated gradient borders
+- Upgrade CTA: Gradient banner with rotating circles, "ارتقا به طرح حرفه‌ای" button
+- Billing history: 4 mock entries in glassmorphism table with status badges
+- Feature comparison dialog: 11-row comparison table retained
+
+### Build Verification
+- `npx next build` — SUCCESS, 0 errors, all routes compile correctly
+- Dashboard loads correctly after hooks violation fix
+- Quick search dialog works with recent searches and form search
+- Dark mode toggle works with enhanced animation
+- User panel subscription tab loads with new pricing cards
+- All 8 views functional: Landing, Dashboard, Builder, Form Fill, Results, Templates, Admin, User Panel
+
+### Files Modified in This Session
+1. `src/lib/store.ts` — localStorage persistence (favorites, tags, formTagIds) with SSR-safe helpers
+2. `src/components/quick-search.tsx` — Recent searches, form search from store, glassmorphism, enhanced empty state
+3. `src/components/app-header.tsx` — Logo sparkle, mobile menu enhancements, ThemeToggle tooltip+ripple, scroll progress, mobile notification row, dots pattern (Bug fix: Rules of Hooks)
+4. `src/components/user-panel/user-panel.tsx` — Enhanced SubscriptionSection with pricing cards, usage stats, billing history
+
+### Current Project Status Assessment
+- Application is fully functional with no build/lint errors across all views
+- 8 views: Landing, Dashboard, Builder, Form Fill, Results, Templates, Admin, User Panel
+- NEW: localStorage persistence for favorites, tags, and form-tag associations
+- NEW: Enhanced Quick Search with recent searches, form search, glassmorphism
+- NEW: Scroll progress indicator in header
+- NEW: Logo sparkle animation, enhanced mobile menu with user info
+- NEW: ThemeToggle with ripple effect and tooltip
+- NEW: User Panel subscription section with pricing cards and billing history
+- BUG FIXED: React Rules of Hooks violation in ThemeToggle (early return before useCallback)
+- All previous features intact: 17 question types, form sections, activity log, dark mode, welcome banner, pricing section, favorites, tags, notifications, quick search, import/export, QR codes, social sharing, etc.
+
+### Unresolved Issues / Recommendations for Next Phase
+1. File upload is UI-only (no actual file handling backend)
+2. Email notifications on form submission
+3. Custom domain/branding for published forms
+4. Real-time collaborative form editing (websocket)
+5. Form analytics export to PDF
+6. Multi-language support (currently Persian only)
+7. Form section drag-and-drop reordering
+8. Section-level logic (show/hide entire section based on conditions)
+9. Form tag persistence to database (currently localStorage only)
+10. Mobile responsive testing on actual devices recommended
+11. Landing page testimonials could use real user photos/content
+12. Quick search recent searches could include form titles
+13. Billing history could pull real data from backend

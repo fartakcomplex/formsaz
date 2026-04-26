@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import {
@@ -15,6 +15,9 @@ import {
   Moon,
   Shield,
   Plus,
+  Bell,
+  Sparkles,
+  Mail,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +26,11 @@ import {
   SheetTrigger,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 import { useAppStore, type ViewType } from '@/lib/store';
 import NotificationBell from '@/components/notifications/notification-bell';
 import QuickSearch, { QuickSearchTrigger } from '@/components/quick-search';
@@ -66,11 +74,22 @@ const navItems: Record<string, { label: string; icon: React.ReactNode; view?: Vi
   ],
 };
 
+/* ─── ThemeToggle with ripple, tooltip & bounce ──────────────────────────── */
+
 function ThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [ripple, setRipple] = useState(false);
 
   React.useEffect(() => setMounted(true), []);
+
+  const isDark = resolvedTheme === 'dark';
+
+  const handleClick = useCallback(() => {
+    setTheme(isDark ? 'light' : 'dark');
+    setRipple(true);
+    setTimeout(() => setRipple(false), 600);
+  }, [isDark, setTheme]);
 
   if (!mounted) {
     return (
@@ -78,45 +97,167 @@ function ThemeToggle() {
     );
   }
 
-  const isDark = resolvedTheme === 'dark';
-
   return (
-    <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="flex size-9 items-center justify-center rounded-full bg-gray-100 hover:bg-violet-100 dark:bg-gray-800 dark:hover:bg-violet-900/40 transition-colors duration-200"
-      title={isDark ? 'حالت روشن' : 'حالت تاریک'}
-    >
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={isDark ? 'sun' : 'moon'}
-          initial={{ rotate: -180, scale: 0.5, opacity: 0 }}
-          animate={{ rotate: 0, scale: 1, opacity: 1 }}
-          exit={{ rotate: 180, scale: 0.5, opacity: 0 }}
-          transition={{ duration: 0.35, type: 'spring', stiffness: 200, damping: 20 }}
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={handleClick}
+          className="relative flex size-9 items-center justify-center rounded-full bg-gray-100 hover:bg-violet-100 dark:bg-gray-800 dark:hover:bg-violet-900/40 transition-colors duration-200 overflow-hidden"
         >
-          {isDark ? (
-            <Sun className="size-[18px] text-amber-500" />
-          ) : (
-            <Moon className="size-[18px] text-violet-500" />
-          )}
-        </motion.div>
-      </AnimatePresence>
-    </motion.button>
+          {/* Ripple ring on click */}
+          <AnimatePresence>
+            {ripple && (
+              <motion.span
+                initial={{ scale: 0, opacity: 0.5 }}
+                animate={{ scale: 3, opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                className="absolute inset-0 rounded-full bg-violet-400/30 dark:bg-violet-500/20"
+              />
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={isDark ? 'sun' : 'moon'}
+              initial={{ rotate: -180, scale: 0.5, opacity: 0 }}
+              animate={{ rotate: 0, scale: 1, opacity: 1 }}
+              exit={{ rotate: 180, scale: 0.5, opacity: 0 }}
+              transition={{ duration: 0.4, type: 'spring', stiffness: 300, damping: 15 }}
+            >
+              {isDark ? (
+                <Sun className="size-[18px] text-amber-500" />
+              ) : (
+                <Moon className="size-[18px] text-violet-500" />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </motion.button>
+      </TooltipTrigger>
+      <TooltipContent sideOffset={8} className="text-xs font-medium">
+        {isDark ? 'حالت روشن' : 'حالت تاریک'}
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
+/* ─── Mobile Notification Row ────────────────────────────────────────────── */
 
+function MobileNotificationRow() {
+  const [mounted, setMounted] = useState(false);
+  const { notifications } = useAppStore();
+
+  React.useEffect(() => setMounted(true), []);
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  if (!mounted) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.08 }}
+      className="flex items-center justify-between rounded-xl px-4 py-3 bg-violet-50/50 dark:bg-violet-900/15 backdrop-blur-sm border border-violet-100/60 dark:border-violet-800/30"
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex size-8 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-800/40">
+          <Bell className="size-4 text-violet-600 dark:text-violet-400" />
+        </div>
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          اعلان‌ها
+        </span>
+      </div>
+      {unreadCount > 0 && (
+        <motion.span
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+          className="flex min-size-5 size-5 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-[10px] font-bold text-white shadow-md shadow-violet-500/25"
+        >
+          {unreadCount > 99 ? '۹+' : unreadCount}
+        </motion.span>
+      )}
+    </motion.div>
+  );
+}
+
+/* ─── Logo Icon with Sparkle/Pulse Animation ─────────────────────────────── */
+
+function LogoIcon() {
+  return (
+    <div className="relative">
+      <motion.div
+        animate={{
+          boxShadow: [
+            '0 0 0 0 oklch(0.55 0.24 270 / 0%)',
+            '0 0 0 4px oklch(0.55 0.24 270 / 15%)',
+            '0 0 0 0 oklch(0.55 0.24 270 / 0%)',
+          ],
+        }}
+        transition={{
+          duration: 2.5,
+          ease: 'easeInOut',
+          repeat: Infinity,
+          repeatDelay: 3,
+        }}
+        className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 group-hover:shadow-lg group-hover:shadow-violet-300/50 transition-all duration-300 group-hover:scale-105"
+      >
+        <FileText className="size-5 text-white" />
+      </motion.div>
+      {/* Sparkle overlay */}
+      <motion.div
+        animate={{
+          scale: [0.8, 1.2, 0.8],
+          opacity: [0, 0.7, 0],
+          rotate: [0, 90, 180],
+        }}
+        transition={{
+          duration: 3,
+          ease: 'easeInOut',
+          repeat: Infinity,
+          repeatDelay: 4,
+        }}
+        className="absolute -top-1 -left-1 pointer-events-none"
+      >
+        <Sparkles className="size-3 text-amber-400" />
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─── Mobile Sheet Dots Pattern Background ───────────────────────────────── */
+
+function DotsPattern() {
+  return (
+    <div
+      className="absolute inset-0 pointer-events-none opacity-40 dark:opacity-20"
+      style={{
+        backgroundImage: 'radial-gradient(circle, oklch(0.55 0.24 270 / 12%) 1px, transparent 1px)',
+        backgroundSize: '16px 16px',
+      }}
+    />
+  );
+}
+
+/* ─── Main App Header ────────────────────────────────────────────────────── */
 
 export default function AppHeader() {
-  const { currentView, previousView, setCurrentView, currentForm } = useAppStore();
+  const { currentView, previousView, setCurrentView, currentForm, notifications } = useAppStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 8);
+      // Calculate scroll progress
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
+      setScrollProgress(progress);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -128,6 +269,8 @@ export default function AppHeader() {
 
   const currentNavKey = navItems[currentView] ? currentView : 'dashboard';
   const items = navItems[currentNavKey];
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const handleBack = () => {
     if (currentView === 'results' && currentForm) {
@@ -165,6 +308,19 @@ export default function AppHeader() {
           : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg'
       }`}
     >
+      {/* ─── Scroll Progress Indicator ──────────────────────────────────── */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] z-[60]">
+        <motion.div
+          className="h-full"
+          style={{
+            width: `${scrollProgress}%`,
+            background: 'linear-gradient(90deg, oklch(0.55 0.24 270), oklch(0.55 0.24 293), oklch(0.65 0.20 320))',
+            backgroundSize: '200% 100%',
+          }}
+          transition={{ duration: 0.1, ease: 'linear' }}
+        />
+      </div>
+
       {/* Gradient bottom border */}
       <div
         className={`absolute bottom-0 left-0 right-0 h-px transition-opacity duration-300 ${
@@ -200,10 +356,11 @@ export default function AppHeader() {
             }}
             className="flex items-center gap-2.5 group"
           >
-            <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 group-hover:shadow-lg group-hover:shadow-violet-300/50 transition-all duration-300 group-hover:scale-105">
-              <FileText className="size-5 text-white" />
-            </div>
-            <span className="text-lg font-extrabold hidden sm:block text-gradient-animated">
+            <LogoIcon />
+            <span
+              className="text-lg font-extrabold hidden sm:block text-gradient-animated"
+              style={{ filter: 'drop-shadow(0 0 8px oklch(0.55 0.24 270 / 30%))' }}
+            >
               فرم‌ساز
             </span>
           </button>
@@ -297,76 +454,117 @@ export default function AppHeader() {
               </SheetTrigger>
               <SheetContent side="left" className="w-72 p-0 overflow-hidden">
                 <SheetTitle className="sr-only">منوی ناوبری</SheetTitle>
+
                 {/* Gradient header */}
-                <div className="bg-gradient-to-bl from-violet-500 via-purple-500 to-fuchsia-600 px-5 pt-8 pb-6">
-                  <div className="flex items-center gap-2.5">
+                <div className="relative bg-gradient-to-bl from-violet-500 via-purple-500 to-fuchsia-600 px-5 pt-8 pb-6 overflow-hidden">
+                  {/* Decorative circles */}
+                  <div className="absolute top-0 left-0 w-20 h-20 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2" />
+                  <div className="absolute bottom-0 right-0 w-14 h-14 bg-white/5 rounded-full translate-x-1/3 translate-y-1/3" />
+
+                  <div className="relative flex items-center gap-2.5">
                     <div className="flex size-9 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
                       <FileText className="size-5 text-white" />
                     </div>
                     <span className="text-lg font-extrabold text-white">فرم‌ساز</span>
                   </div>
                 </div>
-                {/* Nav items */}
-                <div className="flex flex-col gap-0.5 p-3">
-                  {items.map((item, idx) => {
-                    const active = isActiveNav(item.view);
-                    return (
-                      <motion.button
-                        key={item.label}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        onClick={() => handleNavClick(item.view)}
-                        className={`relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
-                          active
-                            ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300'
-                            : 'text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300'
-                        }`}
-                      >
-                        {/* Icon container for better alignment */}
-                        <div className={`flex size-8 items-center justify-center rounded-lg shrink-0 ${
-                          active
-                            ? 'bg-violet-200/60 dark:bg-violet-800/40'
-                            : 'bg-gray-100 dark:bg-gray-800'
-                        }`}>
-                          {item.icon}
-                        </div>
-                        {item.label}
-                        {/* Active gradient bar */}
-                        {active && (
-                          <div
-                            className="absolute right-0 top-2 bottom-2 w-1 rounded-full"
-                            style={{
-                              background: 'linear-gradient(180deg, oklch(0.55 0.24 270), oklch(0.65 0.22 310))',
-                            }}
-                          />
-                        )}
-                      </motion.button>
-                    );
-                  })}
 
-                  {/* Create new form button in mobile menu */}
-                  {currentView !== 'landing' && (
+                {/* ─── User Info Section ──────────────────────────────────── */}
+                <div className="relative px-4 py-4 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50">
+                  <div className="flex items-center gap-3">
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: items.length * 0.05 + 0.1 }}
-                      className="mt-2 pt-2 border-t border-gray-200/60 dark:border-gray-800/60"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 20 }}
+                      className="flex size-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white text-sm font-bold shadow-md shadow-violet-300/30 dark:shadow-violet-500/20 shrink-0"
                     >
-                      <button
-                        onClick={() => {
-                          setCurrentView('builder');
-                          setMobileOpen(false);
-                        }}
-                        className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium bg-gradient-to-l from-violet-500 to-purple-600 text-white hover:from-violet-600 hover:to-purple-700 transition-all duration-200 shadow-sm shadow-violet-200/50 dark:shadow-violet-500/20"
-                      >
-                        <div className="flex size-8 items-center justify-center rounded-lg bg-white/20 shrink-0">
-                          <Plus className="size-4" />
-                        </div>
-                        فرم جدید
-                      </button>
+                      ک
                     </motion.div>
-                  )}
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                        کاربر گرامی
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate flex items-center gap-1">
+                        <Mail className="size-3 shrink-0" />
+                        user@example.com
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── Nav Items with Dots Pattern Background ────────────── */}
+                <div className="relative flex-1 overflow-y-auto">
+                  <DotsPattern />
+                  <div className="relative flex flex-col gap-1 p-3">
+                    {/* ─── Notification Row (before nav items) ──────────── */}
+                    {showUserAvatar && <MobileNotificationRow />}
+
+                    {/* ─── Navigation Items ─────────────────────────────── */}
+                    {items.map((item, idx) => {
+                      const active = isActiveNav(item.view);
+                      return (
+                        <motion.button
+                          key={item.label}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.05 + 0.1 }}
+                          onClick={() => handleNavClick(item.view)}
+                          className={`relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 backdrop-blur-sm ${
+                            active
+                              ? 'bg-white/70 dark:bg-gray-800/60 text-violet-700 dark:text-violet-300 shadow-sm border border-violet-200/50 dark:border-violet-700/40'
+                              : 'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-800/40 hover:text-violet-700 dark:hover:text-violet-300 border border-transparent'
+                          }`}
+                        >
+                          {/* Icon container with glassmorphism */}
+                          <div className={`flex size-8 items-center justify-center rounded-lg shrink-0 backdrop-blur-sm ${
+                            active
+                              ? 'bg-violet-200/60 dark:bg-violet-800/40 shadow-inner'
+                              : 'bg-gray-100/80 dark:bg-gray-800/60'
+                          }`}>
+                            {item.icon}
+                          </div>
+                          {item.label}
+                          {/* Active gradient bar */}
+                          {active && (
+                            <div
+                              className="absolute right-0 top-2 bottom-2 w-1 rounded-full"
+                              style={{
+                                background: 'linear-gradient(180deg, oklch(0.55 0.24 270), oklch(0.65 0.22 310))',
+                              }}
+                            />
+                          )}
+                        </motion.button>
+                      );
+                    })}
+
+                    {/* ─── Create new form button with glow ──────────────── */}
+                    {currentView !== 'landing' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: items.length * 0.05 + 0.2 }}
+                        className="mt-2 pt-2 border-t border-gray-200/60 dark:border-gray-800/60"
+                      >
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            setCurrentView('builder');
+                            setMobileOpen(false);
+                          }}
+                          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium bg-gradient-to-l from-violet-500 to-purple-600 text-white hover:from-violet-600 hover:to-purple-700 transition-all duration-200 shadow-md shadow-violet-300/40 dark:shadow-violet-500/25 hover:shadow-lg hover:shadow-violet-400/50"
+                          style={{
+                            boxShadow: '0 0 16px oklch(0.55 0.24 270 / 25%), 0 4px 12px oklch(0.55 0.24 270 / 15%)',
+                          }}
+                        >
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm shrink-0">
+                            <Plus className="size-4" />
+                          </div>
+                          ایجاد فرم جدید
+                        </motion.button>
+                      </motion.div>
+                    )}
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
