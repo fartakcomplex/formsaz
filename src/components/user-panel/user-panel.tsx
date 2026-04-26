@@ -294,7 +294,12 @@ function useAnimatedCounter(target: number, duration = 1200): number {
   useEffect(() => {
     const start = prevTarget.current;
     const diff = target - start;
-    if (diff === 0) { setCount(target); return; }
+    if (diff === 0) {
+      // Use rAF to avoid synchronous setState inside effect (lint rule)
+      requestAnimationFrame(() => setCount(target));
+      prevTarget.current = target;
+      return;
+    }
 
     const startTime = performance.now();
     const animate = (now: number) => {

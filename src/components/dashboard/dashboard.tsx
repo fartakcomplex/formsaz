@@ -1059,28 +1059,43 @@ function useAnimatedCounter(target: number, duration: number = 1200) {
 // ─── Stat Card ──────────────────────────────────────────────────────────────
 
 function MiniSparkline({ trend = 'up', color = '#8b5cf6' }: { trend?: 'up' | 'down'; color?: string }) {
-  const points = trend === 'up'
-    ? 'M0 20 L4 16 L8 18 L12 12 L16 8 L20 10 L24 4 L28 6 L32 2'
-    : 'M0 4 L4 8 L8 6 L12 12 L16 14 L20 10 L24 16 L28 14 L32 18';
+  const defaultData = trend === 'up'
+    ? [18, 15, 17, 12, 10, 8, 6, 3]
+    : [3, 6, 4, 10, 12, 14, 16, 18];
+  const points = defaultData;
+  const width = 120;
+  const height = 32;
+  const stepX = width / (points.length - 1);
+  const min = Math.min(...points);
+  const max = Math.max(...points);
+  const range = max - min || 1;
+
+  const polylinePoints = points
+    .map((v, i) => `${i * stepX},${height - ((v - min) / range) * (height - 4) - 2}`)
+    .join(' ');
+
+  const areaPath = `M0,${height} L${polylinePoints} L${width},${height} Z`;
+  const gradId = `spark-${color.replace('#','')}`;
+
   return (
-    <svg viewBox="0 0 32 22" className="w-full h-5" preserveAspectRatio="none">
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
       <defs>
-        <linearGradient id={`spark-${color.replace('#','')}`} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.3" />
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
       </defs>
       <path
-        d={points}
+        d={areaPath}
+        fill={`url(#${gradId})`}
+      />
+      <polyline
+        points={polylinePoints}
         fill="none"
         stroke={color}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />
-      <path
-        d={`${points} L32 22 L0 22 Z`}
-        fill={`url(#spark-${color.replace('#','')})`}
       />
     </svg>
   );
@@ -1090,20 +1105,26 @@ function StatCard({
   icon,
   label,
   value,
+  gradientIcon,
+  gradientClass,
   color,
   colorDark,
   sparkTrend,
   sparkColor,
   percentChange,
+  percentLabel,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number | string;
+  gradientIcon?: React.ReactNode;
+  gradientClass?: string;
   color: string;
   colorDark: string;
   sparkTrend?: 'up' | 'down';
   sparkColor?: string;
   percentChange?: number;
+  percentLabel?: string;
 }) {
   const numericValue = typeof value === 'number' ? value : parseInt(String(value), 10) || 0;
   const animatedValue = useAnimatedCounter(numericValue);
@@ -1113,55 +1134,65 @@ function StatCard({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.03 }}
-      className="relative flex items-center gap-3 rounded-2xl border bg-white/60 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-lg transition-all duration-300 border-gray-200/80 dark:border-gray-800/80 backdrop-blur-xl group cursor-default"
+      whileHover={{ y: -4 }}
+      className="relative flex flex-col gap-3 rounded-2xl border bg-white/60 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-xl transition-all duration-300 border-gray-200/80 dark:border-gray-800/80 backdrop-blur-xl group cursor-default"
     >
-      {/* Pulse ring on hover */}
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-l from-violet-500/5 to-purple-500/5 dark:from-violet-400/5 dark:to-purple-400/5" />
+      {/* Top row: icon + value + change badge */}
+      <div className="flex items-center gap-3">
+        {/* Gradient icon background */}
+        <div
+          className={`relative flex size-11 items-center justify-center rounded-xl shadow-sm shrink-0 ${gradientClass || ''} ${!gradientClass ? `${color} ${colorDark}` : ''}`}
+        >
+          {gradientIcon || icon}
+          {/* Pulse dot */}
+          <motion.div
+            className="absolute -top-0.5 -left-0.5 size-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-gray-900"
+            animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0.4, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </div>
+        <div className="relative flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-extrabold text-gray-900 dark:text-white tabular-nums count-animate">
+              {typeof value === 'number' ? animatedValue : value}
+            </p>
+            {percentChange !== undefined && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, type: 'spring', stiffness: 400, damping: 20 }}
+                className={`inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                  isUp
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
+                    : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+                }`}
+              >
+                {isUp ? (
+                  <TrendingUp className="size-3" />
+                ) : (
+                  <TrendingUp className="size-3 rotate-180" />
+                )}
+                {Math.abs(percentChange)}%
+              </motion.span>
+            )}
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{label}</p>
+        </div>
       </div>
 
-      <div
-        className={`relative flex size-11 items-center justify-center rounded-xl shadow-sm ${color} ${colorDark} shrink-0`}
-      >
-        {icon}
-        {/* Pulse dot */}
-        <motion.div
-          className="absolute -top-0.5 -left-0.5 size-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-gray-900"
-          animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0.4, 0.8] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-      <div className="relative flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="text-2xl font-extrabold text-gray-900 dark:text-white tabular-nums count-animate">
-            {typeof value === 'number' ? animatedValue : value}
-          </p>
-          {percentChange !== undefined && (
-            <motion.span
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6, type: 'spring', stiffness: 400, damping: 20 }}
-              className={`inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
-                isUp
-                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-                  : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
-              }`}
-            >
-              {isUp ? (
-                <TrendingUp className="size-3" />
-              ) : (
-                <TrendingUp className="size-3 rotate-180" />
-              )}
-              {Math.abs(percentChange)}%
-            </motion.span>
-          )}
-        </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{label}</p>
-      </div>
+      {/* Sparkline row */}
       {sparkTrend && sparkColor && (
-        <div className="w-14 h-5 opacity-70 shrink-0">
-          <MiniSparkline trend={sparkTrend} color={sparkColor} />
+        <div className="flex items-end gap-2">
+          <div className="flex-1 h-8 opacity-80">
+            <MiniSparkline trend={sparkTrend} color={sparkColor} />
+          </div>
+          {percentLabel && (
+            <span className={`text-[10px] font-medium shrink-0 ${
+              isUp ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'
+            }`}>
+              {percentLabel}
+            </span>
+          )}
         </div>
       )}
     </motion.div>
@@ -3066,6 +3097,7 @@ export default function Dashboard() {
   const [expirationDialogOpen, setExpirationDialogOpen] = useState(false);
   const [quickPreviewForm, setQuickPreviewForm] = useState<Form | null>(null);
   const [quickPreviewOpen, setQuickPreviewOpen] = useState(false);
+  const [duplicateConfirm, setDuplicateConfirm] = useState<Form | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [batchDeleteConfirmOpen, setBatchDeleteConfirmOpen] = useState(false);
@@ -3433,39 +3465,55 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <StatCard
             icon={<FileText className="size-5 text-violet-600 dark:text-violet-400" />}
+            gradientIcon={<FileText className="size-5 text-white" />}
+            gradientClass="bg-gradient-to-br from-violet-500 to-purple-600"
             label="کل فرم‌ها"
             value={forms.length}
             color="bg-violet-100"
             colorDark="dark:bg-violet-900/30"
             sparkTrend="up"
             sparkColor="#8b5cf6"
+            percentChange={12}
+            percentLabel="↑ ۱۲٪ از هفته قبل"
           />
           <StatCard
             icon={<Send className="size-5 text-emerald-600 dark:text-emerald-400" />}
+            gradientIcon={<MessageSquare className="size-5 text-white" />}
+            gradientClass="bg-gradient-to-br from-emerald-500 to-teal-600"
             label="کل پاسخ‌ها"
             value={totalSubmissions}
             color="bg-emerald-100"
             colorDark="dark:bg-emerald-900/30"
             sparkTrend="up"
             sparkColor="#10b981"
+            percentChange={8}
+            percentLabel="↑ ۸٪ از هفته قبل"
           />
           <StatCard
             icon={<Eye className="size-5 text-fuchsia-600 dark:text-fuchsia-400" />}
+            gradientIcon={<Eye className="size-5 text-white" />}
+            gradientClass="bg-gradient-to-br from-amber-500 to-orange-600"
             label="کل بازدیدها"
             value={totalViews}
             color="bg-fuchsia-100"
             colorDark="dark:bg-fuchsia-900/30"
             sparkTrend="up"
-            sparkColor="#d946ef"
+            sparkColor="#f59e0b"
+            percentChange={24}
+            percentLabel="↑ ۲۴٪ از هفته قبل"
           />
           <StatCard
             icon={<CircleDot className="size-5 text-purple-600 dark:text-purple-400" />}
+            gradientIcon={<Globe className="size-5 text-white" />}
+            gradientClass="bg-gradient-to-br from-blue-500 to-indigo-600"
             label="فرم‌های منتشر شده"
             value={publishedForms}
             color="bg-purple-100"
             colorDark="dark:bg-purple-900/30"
             sparkTrend="up"
-            sparkColor="#9333ea"
+            sparkColor="#6366f1"
+            percentChange={5}
+            percentLabel="↑ ۵٪ از هفته قبل"
           />
         </div>
 
@@ -3750,7 +3798,7 @@ export default function Dashboard() {
                         onPreview={handlePreview}
                         onResults={handleResults}
                         onDelete={handleDelete}
-                        onDuplicate={handleDuplicate}
+                        onDuplicate={(form) => setDuplicateConfirm(form)}
                         onShare={handleShare}
                         onSetExpiration={handleSetExpiration}
                         onExport={handleExport}
@@ -3794,7 +3842,7 @@ export default function Dashboard() {
                         onPreview={handlePreview}
                         onResults={handleResults}
                         onDelete={handleDelete}
-                        onDuplicate={handleDuplicate}
+                        onDuplicate={(form) => setDuplicateConfirm(form)}
                         onShare={handleShare}
                         onSetExpiration={handleSetExpiration}
                         onExport={handleExport}
@@ -3885,6 +3933,54 @@ export default function Dashboard() {
         onEdit={handleEdit}
         onFullView={handleFullView}
       />
+
+      {/* Duplicate Confirmation Dialog */}
+      <AlertDialog open={!!duplicateConfirm} onOpenChange={(open) => { if (!open) setDuplicateConfirm(null); }}>
+        <AlertDialogContent
+          dir="rtl"
+          className="sm:max-w-[420px] p-0 gap-0 overflow-hidden rounded-2xl border-gray-200 dark:border-gray-800"
+        >
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm -z-10" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          >
+            <AlertDialogHeader className="p-6 pb-4 bg-gradient-to-l from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/40 border-b border-gray-100 dark:border-gray-800">
+              <div className="flex items-center gap-3">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/50">
+                  <Copy className="size-5 text-violet-600 dark:text-violet-400" />
+                </div>
+                <div className="text-right">
+                  <AlertDialogTitle className="text-base font-bold text-gray-900 dark:text-white">
+                    تکرار فرم
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    آیا از ایجاد یک کپی از فرم «{duplicateConfirm?.title}» اطمینان دارید؟
+                  </AlertDialogDescription>
+                </div>
+              </div>
+            </AlertDialogHeader>
+          </motion.div>
+          <AlertDialogFooter className="p-6 pt-4 gap-2">
+            <AlertDialogCancel className="flex-1 rounded-xl border-gray-200 dark:border-gray-700 text-sm">
+              انصراف
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (duplicateConfirm) {
+                  handleDuplicate(duplicateConfirm);
+                  setDuplicateConfirm(null);
+                }
+              }}
+              className="flex-1 bg-violet-500 hover:bg-violet-600 text-white rounded-xl text-sm shadow-md shadow-violet-200/50 dark:shadow-violet-500/20"
+            >
+              <Copy className="size-3.5 ml-1.5" />
+              تکرار فرم
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

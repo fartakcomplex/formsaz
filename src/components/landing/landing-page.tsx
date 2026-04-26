@@ -34,6 +34,7 @@ import {
   Smartphone,
   ClipboardList,
   MessageSquareHeart,
+  MessageSquare,
   Users,
   GraduationCap,
   CalendarDays,
@@ -374,27 +375,35 @@ function Navbar() {
 
 /* ──────────────────────────── Hero Section ──────────────────────────── */
 
-/* ── Animated stat counter ── */
-function AnimatedStat({ value, suffix, label, delay = 0, isInView }: {
+/* ── Animated stat counter with glassmorphism card ── */
+function AnimatedStat({ value, suffix, label, delay = 0, isInView, icon: Icon }: {
   value: number;
   suffix: string;
   label: string;
   delay?: number;
   isInView: boolean;
+  icon: React.ElementType;
 }) {
   const count = useAnimatedCounter(value, 2.2, isInView);
 
   return (
     <motion.div
-      className="text-center"
-      animate={{ y: [0, -6, 0] }}
-      transition={{ duration: 3, delay: delay + 1.5, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.5, delay: delay * 0.15, ease: 'easeOut' }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md border border-white/40 dark:border-gray-700/40 rounded-2xl p-4 flex flex-col items-center gap-3 cursor-default transition-shadow duration-300 hover:shadow-xl hover:shadow-violet-500/10 dark:hover:shadow-violet-500/5"
     >
-      <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-l from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-        {isInView ? count.toLocaleString('fa-IR') : '۰'}{suffix}
+      <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl p-2.5 shadow-lg shadow-violet-500/20">
+        <Icon className="h-5 w-5 text-white" />
       </div>
-      <div className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
-        {label}
+      <div className="text-center">
+        <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-l from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+          {isInView ? count.toLocaleString('fa-IR') : '۰'}{suffix}
+        </div>
+        <div className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
+          {label}
+        </div>
       </div>
     </motion.div>
   );
@@ -407,6 +416,10 @@ function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+      {/* Gradient mesh background */}
+      <div className="absolute inset-0 hero-gradient-mesh" />
+      {/* Dot pattern overlay */}
+      <div className="absolute inset-0 hero-dot-pattern" />
       {/* Background decorations */}
       <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/80 via-violet-50/50 to-white dark:from-indigo-950/50 dark:via-violet-950/30 dark:to-gray-950" />
       {/* Animated gradient orbs with breathing animations */}
@@ -507,7 +520,8 @@ function HeroSection() {
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <div className="relative group">
-            {/* Glassmorphism border glow on hover */}
+            {/* Pulsing ring animation */}
+            <div className="absolute -inset-1 rounded-xl bg-gradient-to-l from-indigo-500 to-violet-500 opacity-40 blur-md group-hover:opacity-60 transition-opacity duration-300 animate-ping" style={{ animationDuration: '2s' }} />
             <div className="absolute -inset-[2px] rounded-xl bg-gradient-to-l from-indigo-500/0 via-violet-500/0 to-fuchsia-500/0 group-hover:from-indigo-500/60 group-hover:via-violet-500/60 group-hover:to-fuchsia-500/60 blur-sm transition-all duration-500 opacity-0 group-hover:opacity-100" />
             <Button
               size="lg"
@@ -519,8 +533,10 @@ function HeroSection() {
             </Button>
           </div>
           <div className="relative group">
-            {/* Glassmorphism border glow on hover */}
-            <div className="absolute -inset-[2px] rounded-xl bg-gradient-to-l from-indigo-400/0 via-violet-400/0 to-fuchsia-400/0 group-hover:from-indigo-400/50 group-hover:via-violet-400/50 group-hover:to-fuchsia-400/50 blur-sm transition-all duration-500 opacity-0 group-hover:opacity-100" />
+            {/* Animated border shimmer */}
+            <div className="absolute -inset-[2px] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
+              <div className="absolute inset-0 rounded-xl cta-border-animated" style={{ backgroundImage: 'linear-gradient(90deg, rgba(99,102,241,0), rgba(139,92,246,0.5), rgba(217,70,239,0.5), rgba(139,92,246,0.5), rgba(99,102,241,0))' }} />
+            </div>
             <Button
               size="lg"
               variant="outline"
@@ -542,9 +558,9 @@ function HeroSection() {
           className="mt-16 mx-auto max-w-3xl"
         >
           <div className="grid grid-cols-3 gap-4 sm:gap-8">
-            <AnimatedStat value={100000} suffix={"+"} label={"فرم ساخته شده"} delay={0} isInView={statsInView} />
-            <AnimatedStat value={50000} suffix={"+"} label={"کاربر فعال"} delay={0.15} isInView={statsInView} />
-            <AnimatedStat value={2000000} suffix={"+"} label={"پاسخ ثبت شده"} delay={0.3} isInView={statsInView} />
+            <AnimatedStat value={100000} suffix={"+"} label={"فرم ساخته شده"} delay={0} isInView={statsInView} icon={FileText} />
+            <AnimatedStat value={50000} suffix={"+"} label={"کاربر فعال"} delay={1} isInView={statsInView} icon={Users} />
+            <AnimatedStat value={2000000} suffix={"+"} label={"پاسخ ثبت شده"} delay={2} isInView={statsInView} icon={MessageSquare} />
           </div>
         </motion.div>
 

@@ -22,6 +22,7 @@ import {
   AlertCircle,
   Circle,
   CircleHelp,
+  Keyboard,
 } from 'lucide-react';
 import {
   ResizablePanelGroup,
@@ -516,7 +517,23 @@ export default function FormBuilder() {
             <TooltipContent>وارد کردن سؤال</TooltipContent>
           </Tooltip>
 
-          <KeyboardShortcutsDialog />
+          <KeyboardShortcutsDialog>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  asChild
+                >
+                  <span>
+                    <Keyboard className="h-4 w-4" />
+                  </span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>میانبرهای کلیدی (Ctrl+/)</TooltipContent>
+            </Tooltip>
+          </KeyboardShortcutsDialog>
 
           <Tooltip>
             <TooltipTrigger asChild>
