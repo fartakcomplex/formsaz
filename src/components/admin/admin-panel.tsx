@@ -265,6 +265,32 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
+// ─── Animated Counter Hook ─────────────────────────────────────────────
+
+function useAnimatedCounter(target: number, duration = 1200): number {
+  const [count, setCount] = useState(0);
+  const prevTarget = useRef(target);
+
+  useEffect(() => {
+    const start = prevTarget.current;
+    const diff = target - start;
+    if (diff === 0) { setCount(target); return; }
+
+    const startTime = performance.now();
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      setCount(Math.round(start + diff * eased));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+    prevTarget.current = target;
+  }, [target, duration]);
+
+  return count;
+}
+
 // ─── Sidebar Navigation ────────────────────────────────────────────────
 
 const NAV_ITEMS: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
@@ -620,14 +646,20 @@ function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
   const isAllZero = stats && stats.users === 0 && stats.forms === 0 && stats.submissions === 0 && stats.totalViews === 0;
   const isChartEmpty = !loading && chartData.length > 0 && chartData.every((d) => d.count === 0);
 
+  const animatedUsers = useAnimatedCounter(stats?.users ?? 0);
+  const animatedForms = useAnimatedCounter(stats?.forms ?? 0);
+  const animatedSubmissions = useAnimatedCounter(stats?.submissions ?? 0);
+  const animatedViews = useAnimatedCounter(stats?.totalViews ?? 0);
+  const animatedPublished = useAnimatedCounter(stats?.publishedForms ?? 0);
+
   const statCards = stats
     ? [
-        { label: 'کل کاربران', value: formatNumber(stats.users), icon: <Users className="size-6" />, gradient: 'from-violet-500 to-purple-600', shadowColor: 'shadow-violet-200/50 dark:shadow-violet-500/20' },
-        { label: 'کل فرم‌ها', value: formatNumber(stats.forms), icon: <FileText className="size-6" />, gradient: 'from-emerald-500 to-teal-600', shadowColor: 'shadow-emerald-200/50 dark:shadow-emerald-500/20' },
-        { label: 'کل پاسخ‌ها', value: formatNumber(stats.submissions), icon: <Send className="size-6" />, gradient: 'from-amber-500 to-orange-600', shadowColor: 'shadow-amber-200/50 dark:shadow-amber-500/20' },
-        { label: 'کل بازدیدها', value: formatNumber(stats.totalViews), icon: <Eye className="size-6" />, gradient: 'from-fuchsia-500 to-pink-600', shadowColor: 'shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20' },
-        { label: 'فرم‌های منتشر شده', value: formatNumber(stats.publishedForms), icon: <Activity className="size-6" />, gradient: 'from-cyan-500 to-blue-600', shadowColor: 'shadow-cyan-200/50 dark:shadow-cyan-500/20' },
-        { label: 'الگوهای آماده', value: '۱۰۰', icon: <LayoutTemplate className="size-6" />, gradient: 'from-rose-500 to-red-600', shadowColor: 'shadow-rose-200/50 dark:shadow-rose-500/20' },
+        { label: 'کل کاربران', value: stats.users, animatedValue: animatedUsers, formattedValue: formatNumber(animatedUsers), icon: <Users className="size-6" />, gradient: 'from-violet-500 to-purple-600', shadowColor: 'shadow-violet-200/50 dark:shadow-violet-500/20' },
+        { label: 'کل فرم‌ها', value: stats.forms, animatedValue: animatedForms, formattedValue: formatNumber(animatedForms), icon: <FileText className="size-6" />, gradient: 'from-emerald-500 to-teal-600', shadowColor: 'shadow-emerald-200/50 dark:shadow-emerald-500/20' },
+        { label: 'کل پاسخ‌ها', value: stats.submissions, animatedValue: animatedSubmissions, formattedValue: formatNumber(animatedSubmissions), icon: <Send className="size-6" />, gradient: 'from-amber-500 to-orange-600', shadowColor: 'shadow-amber-200/50 dark:shadow-amber-500/20' },
+        { label: 'کل بازدیدها', value: stats.totalViews, animatedValue: animatedViews, formattedValue: formatNumber(animatedViews), icon: <Eye className="size-6" />, gradient: 'from-fuchsia-500 to-pink-600', shadowColor: 'shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20' },
+        { label: 'فرم‌های منتشر شده', value: stats.publishedForms, animatedValue: animatedPublished, formattedValue: formatNumber(animatedPublished), icon: <Activity className="size-6" />, gradient: 'from-cyan-500 to-blue-600', shadowColor: 'shadow-cyan-200/50 dark:shadow-cyan-500/20' },
+        { label: 'الگوهای آماده', value: 100, animatedValue: 100, formattedValue: '۱۰۰', icon: <LayoutTemplate className="size-6" />, gradient: 'from-rose-500 to-red-600', shadowColor: 'shadow-rose-200/50 dark:shadow-rose-500/20' },
       ]
     : [];
 
@@ -654,19 +686,30 @@ function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
             <motion.div
               key={index}
               variants={itemVariants}
-              whileHover={{ y: -3, transition: { duration: 0.2 } }}
-              className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm hover:shadow-lg transition-all"
+              custom={index}
+              whileHover={{ y: -4, scale: 1.02, transition: { duration: 0.2 } }}
+              className="group relative overflow-hidden rounded-2xl border border-gray-200/80 dark:border-gray-800/80 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-5 shadow-sm hover:shadow-xl transition-all duration-300"
             >
-              {/* Gradient border effect */}
-              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-[1px] -z-10`} />
-              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-[0.03]`} />
-              <div className="flex items-center gap-4">
-                <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg ${stat.shadowColor} transition-transform duration-300 group-hover:scale-110`}>
+              {/* Glass highlight line at top */}
+              <div className={`absolute top-0 inset-x-0 h-px bg-gradient-to-l ${stat.gradient} opacity-60`} />
+              {/* Hover gradient background */}
+              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-300`} />
+
+              <div className="relative flex items-center gap-4">
+                <div className={`relative flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg ${stat.shadowColor} transition-transform duration-300 group-hover:scale-110`}>
                   <span className="text-white">{stat.icon}</span>
+                  {/* Pulse dot */}
+                  <motion.div
+                    className="absolute -top-0.5 -left-0.5 size-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-gray-900"
+                    animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0.4, 0.8] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: index * 0.3 }}
+                  />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
+                    {stat.formattedValue}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{stat.label}</p>
                 </div>
               </div>
             </motion.div>

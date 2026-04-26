@@ -50,6 +50,7 @@ import {
   FileJson,
   FileUp,
   Star,
+  Tag,
 } from 'lucide-react';
 import {
   BarChart,
@@ -110,8 +111,12 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useAppStore, type Form, type FormQuestion, type ActivityItem } from '@/lib/store';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { useAppStore, type Form, type FormQuestion, type ActivityItem, type FormTag } from '@/lib/store';
 import { useTheme } from 'next-themes';
+
+// Stable empty array to prevent infinite re-renders with useSyncExternalStore
+const EMPTY_TAG_ARRAY: string[] = [];
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   draft: {
@@ -2013,6 +2018,158 @@ function ActivityFeedWidget() {
 
 // ─── Form Card Skeleton ────────────────────────────────────────────────────
 
+// ─── Tag Manager Popover ─────────────────────────────────────────────────────
+
+function TagManagerPopover({
+  tags,
+  onAddTag,
+  onRemoveTag,
+  activeTagFilter,
+  onFilterByTag,
+  formTagIds,
+  allForms,
+}: {
+  tags: { id: string; name: string; color: string }[];
+  onAddTag: (name: string, color: string) => void;
+  onRemoveTag: (id: string) => void;
+  activeTagFilter: string | null;
+  onFilterByTag: (tagId: string) => void;
+  formTagIds: Record<string, string[]>;
+  allForms: Form[];
+}) {
+  const [newTagName, setNewTagName] = useState('');
+  const [newTagColor, setNewTagColor] = useState<string>('violet');
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  const handleAdd = () => {
+    const trimmed = newTagName.trim();
+    if (!trimmed) return;
+    onAddTag(trimmed, newTagColor);
+    setNewTagName('');
+    setShowAddForm(false);
+  };
+
+  const getFormCountForTag = (tagId: string) => {
+    return Object.values(formTagIds).filter((ids) => ids.includes(tagId)).length;
+  };
+
+  return (
+    <div className="p-4 space-y-3">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-bold text-gray-900 dark:text-white">مدیریت برچسب‌ها</h4>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 px-2 text-xs text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950/50 rounded-lg"
+          onClick={() => setShowAddForm(!showAddForm)}
+        >
+          <Plus className="size-3.5 ml-1" />
+          برچسب جدید
+        </Button>
+      </div>
+
+      {/* Add tag form */}
+      <AnimatePresence>
+        {showAddForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="space-y-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700">
+              <Input
+                placeholder="نام برچسب..."
+                value={newTagName}
+                onChange={(e) => setNewTagName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+                className="h-8 text-sm rounded-lg"
+                autoFocus
+              />
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {availableTagColors.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setNewTagColor(c)}
+                    className={`size-6 rounded-full ${tagColorMap[c].dot} transition-all duration-150 ${
+                      newTagColor === c ? 'ring-2 ring-offset-2 ring-gray-400 dark:ring-offset-gray-800 scale-110' : 'opacity-60 hover:opacity-100'
+                    }`}
+                  />
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" className="h-7 text-xs rounded-lg flex-1" onClick={handleAdd}>
+                  افزودن
+                </Button>
+                <Button size="sm" variant="outline" className="h-7 text-xs rounded-lg" onClick={() => setShowAddForm(false)}>
+                  انصراف
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Tag list */}
+      <div className="max-h-64 overflow-y-auto space-y-1">
+        {tags.length === 0 ? (
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-4">برچسبی وجود ندارد</p>
+        ) : (
+          tags.map((tag) => {
+            const colors = tagColorMap[tag.color] || tagColorMap.violet;
+            const count = getFormCountForTag(tag.id);
+            const isActive = activeTagFilter === tag.id;
+            return (
+              <motion.div
+                key={tag.id}
+                layout
+                className={`flex items-center gap-2 px-2.5 py-2 rounded-lg cursor-pointer transition-all duration-150 group ${
+                  isActive
+                    ? `${colors.bg} ring-1 ring-offset-1 dark:ring-offset-gray-900`
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                }`}
+                onClick={() => onFilterByTag(tag.id)}
+              >
+                <span className={`size-3 rounded-full ${colors.dot} shrink-0`} />
+                <span className={`text-sm font-medium flex-1 ${isActive ? colors.text : 'text-gray-700 dark:text-gray-300'}`}>
+                  {tag.name}
+                </span>
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 tabular-nums">{count} فرم</span>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onRemoveTag(tag.id); }}
+                  className="opacity-0 group-hover:opacity-100 p-0.5 rounded-md hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
+                  title="حذف برچسب"
+                >
+                  <X className="size-3 text-gray-400 hover:text-red-500" />
+                </button>
+              </motion.div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Active filter indicator */}
+      {activeTagFilter && (
+        <div className="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+          <Tag className="size-3.5 text-violet-500" />
+          <span className="text-xs text-gray-500 dark:text-gray-400">فیلتر فعال است</span>
+          <button
+            onClick={() => onFilterByTag(activeTagFilter)}
+            className="mr-auto text-xs text-violet-600 dark:text-violet-400 hover:underline"
+          >
+            لغو فیلتر
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Form Card Skeleton ──────────────────────────────────────────────────────
+
 function FormCardSkeleton() {
   return (
     <Card className="overflow-hidden bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
@@ -2075,6 +2232,8 @@ function FormCard({
   const expiration = getExpirationStatus(form.expiresAt);
   const isFavorited = useAppStore((s) => s.favoriteFormIds.includes(form.id));
   const toggleFavoriteForm = useAppStore((s) => s.toggleFavoriteForm);
+  const allTags = useAppStore((s) => s.tags);
+  const formTags = useAppStore((s) => s.formTagIds[form.id] || EMPTY_TAG_ARRAY);
 
   return (
     <motion.div
@@ -2213,6 +2372,30 @@ function FormCard({
           </div>
         </CardContent>
 
+        {/* Tags */}
+        {formTags.length > 0 && (
+          <div className="px-5 pb-2 pt-0 relative z-10">
+            <div className="flex flex-wrap gap-1">
+              {formTags.map((tagId) => {
+                const tag = allTags.find((t) => t.id === tagId);
+                if (!tag) return null;
+                const colors = tagColorMap[tag.color] || tagColorMap.violet;
+                return (
+                  <motion.span
+                    key={tag.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${colors.bg} ${colors.text}`}
+                  >
+                    <span className={`size-1.5 rounded-full ${colors.dot}`} />
+                    {tag.name}
+                  </motion.span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <CardFooter className="flex-col gap-3 pt-0 relative z-10">
           <div className="flex items-center justify-between w-full text-xs text-gray-400 dark:text-gray-500 px-1">
             <span>آخرین ویرایش</span>
@@ -2262,6 +2445,15 @@ function FormCard({
                 <Eye className="size-3.5 ml-1" />
                 پیش‌نمایش
               </Button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={(e) => { e.stopPropagation(); onShare(form); }}
+                className="flex items-center justify-center p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-violet-50 dark:hover:bg-violet-950/50 hover:border-violet-200 dark:hover:border-violet-800 text-gray-500 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                title="اشتراک‌گذاری"
+              >
+                <Share2 className="size-4" />
+              </motion.button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -2335,6 +2527,19 @@ const statusDotColor: Record<string, string> = {
   expired: 'bg-red-400 dark:bg-red-500',
 };
 
+const tagColorMap: Record<string, { bg: string; text: string; dot: string }> = {
+  violet: { bg: 'bg-violet-100 dark:bg-violet-900/30', text: 'text-violet-700 dark:text-violet-300', dot: 'bg-violet-500' },
+  emerald: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-500' },
+  amber: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', dot: 'bg-amber-500' },
+  rose: { bg: 'bg-rose-100 dark:bg-rose-900/30', text: 'text-rose-700 dark:text-rose-300', dot: 'bg-rose-500' },
+  cyan: { bg: 'bg-cyan-100 dark:bg-cyan-900/30', text: 'text-cyan-700 dark:text-cyan-300', dot: 'bg-cyan-500' },
+  blue: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-300', dot: 'bg-blue-500' },
+  fuchsia: { bg: 'bg-fuchsia-100 dark:bg-fuchsia-900/30', text: 'text-fuchsia-700 dark:text-fuchsia-300', dot: 'bg-fuchsia-500' },
+  teal: { bg: 'bg-teal-100 dark:bg-teal-900/30', text: 'text-teal-700 dark:text-teal-300', dot: 'bg-teal-500' },
+};
+
+const availableTagColors = ['violet', 'emerald', 'amber', 'rose', 'cyan', 'blue', 'fuchsia', 'teal'] as const;
+
 function FormListRow({
   form,
   index,
@@ -2372,6 +2577,8 @@ function FormListRow({
   const isEven = index % 2 === 0;
   const isFavorited = useAppStore((s) => s.favoriteFormIds.includes(form.id));
   const toggleFavoriteForm = useAppStore((s) => s.toggleFavoriteForm);
+  const allTags = useAppStore((s) => s.tags);
+  const formTags = useAppStore((s) => s.formTagIds[form.id] || EMPTY_TAG_ARRAY);
 
   return (
     <div
@@ -2447,6 +2654,25 @@ function FormListRow({
         </div>
         {form.description && (
           <p className="text-xs text-gray-400 dark:text-gray-500 truncate mt-0.5">{form.description}</p>
+        )}
+        {/* Tags in list view */}
+        {formTags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {formTags.map((tagId) => {
+              const tag = allTags.find((t) => t.id === tagId);
+              if (!tag) return null;
+              const colors = tagColorMap[tag.color] || tagColorMap.violet;
+              return (
+                <span
+                  key={tag.id}
+                  className={`inline-flex items-center gap-1 px-1.5 py-0 rounded-full text-[9px] font-medium ${colors.bg} ${colors.text}`}
+                >
+                  <span className={`size-1 rounded-full ${colors.dot}`} />
+                  {tag.name}
+                </span>
+              );
+            })}
+          </div>
         )}
       </div>
 
@@ -2814,12 +3040,18 @@ export default function Dashboard() {
     activityLog,
     addActivity,
     favoriteFormIds,
+    tags,
+    addTag,
+    removeTag,
+    formTagIds: storeFormTagIds,
+    toggleFormTag,
   } = useAppStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [showFavorites, setShowFavorites] = useState(false);
+  const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('dashboard-view-mode') as ViewMode) || 'grid';
@@ -2866,7 +3098,8 @@ export default function Dashboard() {
         (form.description && form.description.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesStatus = statusFilter === 'all' || form.status === statusFilter;
       const matchesFavorite = !showFavorites || favoriteFormIds.includes(form.id);
-      return matchesSearch && matchesStatus && matchesFavorite;
+      const matchesTag = !activeTagFilter || (storeFormTagIds[form.id] || []).includes(activeTagFilter);
+      return matchesSearch && matchesStatus && matchesFavorite && matchesTag;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -3390,6 +3623,36 @@ export default function Dashboard() {
                 <List className="size-4" />
               </motion.button>
             </div>
+            {/* Tag Filter Popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  className={`flex items-center gap-1.5 h-10 px-3 sm:px-4 rounded-xl border text-sm font-medium transition-all duration-200 ${
+                    activeTagFilter
+                      ? 'bg-violet-50 dark:bg-violet-950/40 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-400 shadow-sm'
+                      : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-violet-300 dark:hover:border-violet-700 hover:text-violet-600 dark:hover:text-violet-400'
+                  }`}
+                >
+                  <Tag className="size-4" />
+                  <span className="hidden sm:inline">برچسب‌ها</span>
+                  {activeTagFilter && (
+                    <X className="size-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setActiveTagFilter(null); }} />
+                  )}
+                </motion.button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-72 p-0" dir="rtl">
+                <TagManagerPopover
+                  tags={tags}
+                  onAddTag={addTag}
+                  onRemoveTag={removeTag}
+                  activeTagFilter={activeTagFilter}
+                  onFilterByTag={(tagId) => setActiveTagFilter(activeTagFilter === tagId ? null : tagId)}
+                  formTagIds={storeFormTagIds}
+                  allForms={forms}
+                />
+              </PopoverContent>
+            </Popover>
           </motion.div>
         )}
 

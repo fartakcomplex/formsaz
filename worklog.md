@@ -727,3 +727,117 @@ Performed comprehensive QA across all views with 0 errors:
 8. Section-level logic (show/hide entire section based on conditions)
 9. Persist favorites to localStorage
 10. Mobile responsive testing on actual devices recommended
+
+---
+## Task ID: 21 (Self-Directed Development Cycle)
+## Agent: main-agent
+## Date: 2026-04-26
+
+### Session Overview
+Self-directed development cycle for the Persian RTL form builder project. Reviewed worklog, performed comprehensive QA testing, found and fixed a critical runtime bug (infinite re-render from useSyncExternalStore), then implemented 4 new features and 3 major styling improvements.
+
+### 1. QA Testing (agent-browser)
+
+Performed comprehensive QA across all views:
+- **Landing page**: All sections render correctly (hero, features, use cases, how it works, testimonials, FAQ, integrations, pricing, CTA, footer)
+- **Dashboard**: Welcome banner, stats, form list, activity widget, favorites filter, **new tags feature** all functional
+- **Dark mode**: Toggle works correctly across all views
+- **Templates**: Gallery loads with categories and search
+- **Admin panel**: Loads with animated stat counters, charts, quick actions
+- **User panel**: Profile, forms, activity, notifications, settings tabs
+- **Form builder**: Question numbering badges, drag handles, enhanced cards
+- **Screenshots captured**: 7 QA screenshots saved to /home/z/my-project/download/qa-21-*.png
+
+### 2. Bug Fix: Critical Runtime Infinite Re-render
+
+**Issue**: Dashboard view crashed with "Application error: a client-side exception has occurred" and browser console showed "The result of getSnapshot should be cached to avoid an infinite loop". This was caused by the new Form Tags feature in FormCard and FormListRow components where `useAppStore((s) => s.formTagIds[form.id] || [])` created a new empty array reference on every render, causing `useSyncExternalStore` to infinitely loop.
+
+**Fix**: Added a stable `EMPTY_TAG_ARRAY` constant at module level and replaced both occurrences of `|| []` with `|| EMPTY_TAG_ARRAY` in the selector functions.
+
+**Files modified**: `src/components/dashboard/dashboard.tsx`
+
+### 3. New Features (Requirement #5)
+
+**a) Form Tags/Labels Feature** (Task ID: 21-b):
+- Store: Added `FormTag` interface, `tags` array with 6 default Persian tags, `addTag()`, `removeTag()`, `formTagIds` mapping, `toggleFormTag()`
+- Default tags: مهم (rose), در حال بررسی (amber), تکمیل شده (emerald), پروژه (violet), شخصی (blue), کاری (cyan)
+- TagManagerPopover: Full popover with tag list, color-coded dots, form counts, delete buttons, add new tag form with name + 8-color picker
+- Tag filtering: Click a tag to filter forms to show only matching ones
+- FormCard: Color-coded tag badges displayed on each form card
+- FormListRow: Compact tag badges shown in list view
+- Dashboard toolbar: "برچسب‌ها" (Tags) filter button with active state
+- Files: src/lib/store.ts, src/components/dashboard/dashboard.tsx
+
+**b) Share Button on Form Cards** (Task ID: 21-d):
+- Added standalone Share icon button to FormCard alongside Edit and Preview
+- Share dialog was already comprehensive (link copy, QR code, Telegram/WhatsApp/Email sharing, embed code)
+- Button uses motion.button with hover/tap animations
+- Files: src/components/dashboard/dashboard.tsx
+
+**c) Form Builder Question Numbering** (Task ID: 21-e):
+- Numbered badges on each question card (right-side positioned, gradient when selected)
+- Drag handle indicator (GripVertical icon) appears on hover
+- Question type pill label after question title
+- Enhanced selection state with violet border + ring + shadow
+- Improved empty state with 3 animated floating shapes and 3 quick-start tips
+- Files: src/components/form-builder/form-preview.tsx
+
+### 4. Styling Improvements (Requirement #4)
+
+**a) Admin Panel Stat Cards Glassmorphism** (Task ID: 21-a):
+- `useAnimatedCounter` hook for smooth number animations (requestAnimationFrame + easeOutCubic)
+- 5 animated counter instances for dynamic stats (users, forms, submissions, views, published forms)
+- Glassmorphism cards: `bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl`
+- Glass highlight gradient line at top of each card
+- Hover: gradient background reveal (opacity 0→0.04), y:-4 lift, scale:1.02, shadow upgrade
+- Pulsing emerald dot on icon containers with staggered delays
+- Files: src/components/admin/admin-panel.tsx
+
+**b) Landing Page Features Section** (Task ID: 21-c):
+- Glassmorphism feature cards: `bg-white/60 dark:bg-gray-900/50 backdrop-blur-xl`
+- Always-visible 2px gradient accent line at top of each card
+- Enhanced icon containers (14×14 rounded-2xl) with spring hover animation + blurred glow ring
+- 6 vibrant gradient pairs (violet→purple, emerald→teal, amber→orange, fuchsia→pink, cyan→blue, rose→red)
+- Staggered entrance animation (80ms intervals, custom featureCardVariants)
+- Hover: 6px lift, gradient border fade-in, background glow activation
+- Enhanced section background with decorative orbs and dot grid pattern
+- Files: src/components/landing/landing-page.tsx
+
+### Build Verification
+- `npx next build` — SUCCESS, 0 errors, all routes compile correctly
+- Dashboard loads correctly after infinite re-render bug fix
+- Admin panel loads with animated counters
+- Landing page renders with enhanced features section
+- All 8 views functional: Landing, Dashboard, Builder, Form Fill, Results, Templates, Admin, User Panel
+
+### Files Modified in This Session
+1. `src/lib/store.ts` — Added FormTag interface, tags management (addTag, removeTag, toggleFormTag, formTagIds)
+2. `src/components/dashboard/dashboard.tsx` — Tags UI (manager popover, card badges, list badges, toolbar filter), share button on cards, infinite re-render bug fix (EMPTY_TAG_ARRAY)
+3. `src/components/admin/admin-panel.tsx` — Animated stat counters (useAnimatedCounter), glassmorphism stat cards, pulse dots, enhanced hover
+4. `src/components/landing/landing-page.tsx` — Features section glassmorphism cards, enhanced icons, staggered animations, gradient accents
+5. `src/components/form-builder/form-preview.tsx` — Question numbering badges, drag handles, type pills, enhanced empty state, improved card styling
+
+### Current Project Status Assessment
+- Application is fully functional with no build/lint errors across all views
+- 8 views: Landing, Dashboard, Builder, Form Fill, Results, Templates, Admin, User Panel
+- NEW: Form Tags/Labels — colored labels for organizing forms with filter support
+- NEW: Share button directly on form cards (was only in dropdown before)
+- NEW: Form builder question numbering badges with drag handles
+- NEW: Admin panel animated stat counters with glassmorphism
+- NEW: Enhanced landing page features section with glassmorphism cards
+- BUG FIXED: Infinite re-render from useSyncExternalStore caused by unstable empty array reference in tag selectors
+- All previous features intact: 17 question types, form sections, activity log, dark mode, welcome banner, pricing section, favorites, notifications, quick search, import/export, QR codes, social sharing, etc.
+
+### Unresolved Issues / Recommendations for Next Phase
+1. File upload is UI-only (no actual file handling backend)
+2. Email notifications on form submission
+3. Custom domain/branding for published forms
+4. Real-time collaborative form editing (websocket)
+5. Form analytics export to PDF
+6. Multi-language support (currently Persian only)
+7. Form section drag-and-drop reordering
+8. Section-level logic (show/hide entire section based on conditions)
+9. Persist favorites and tags to localStorage
+10. Mobile responsive testing on actual devices recommended
+11. Form tag persistence to database
+12. Landing page testimonials could use real user photos/content

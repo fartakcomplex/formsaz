@@ -104,6 +104,12 @@ export interface ActivityItem {
   timestamp: Date;
 }
 
+export interface FormTag {
+  id: string;
+  name: string;
+  color: string; // Tailwind color classes like 'violet', 'emerald', 'amber', 'rose', 'cyan', 'blue'
+}
+
 export interface NotificationItem {
   id: string;
   title: string;
@@ -214,6 +220,13 @@ interface AppState {
   // Favorites
   favoriteFormIds: string[];
   toggleFavoriteForm: (id: string) => void;
+
+  // Form Tags
+  tags: FormTag[];
+  addTag: (name: string, color: string) => void;
+  removeTag: (id: string) => void;
+  formTagIds: Record<string, string[]>; // formId -> tagId[]
+  toggleFormTag: (formId: string, tagId: string) => void;
 }
 
 // Module-level debounce state for updateQuestion history
@@ -545,4 +558,31 @@ export const useAppStore = create<AppState>((set, get) => ({
         ? state.favoriteFormIds.filter((fid) => fid !== id)
         : [...state.favoriteFormIds, id],
     })),
+
+  // Form Tags
+  tags: [
+    { id: 'tag-1', name: 'مهم', color: 'rose' },
+    { id: 'tag-2', name: 'در حال بررسی', color: 'amber' },
+    { id: 'tag-3', name: 'تکمیل شده', color: 'emerald' },
+    { id: 'tag-4', name: 'پروژه', color: 'violet' },
+    { id: 'tag-5', name: 'شخصی', color: 'blue' },
+    { id: 'tag-6', name: 'کاری', color: 'cyan' },
+  ],
+  addTag: (name, color) => set((state) => ({
+    tags: [...state.tags, { id: crypto.randomUUID(), name, color }],
+  })),
+  removeTag: (id) => set((state) => ({
+    tags: state.tags.filter((t) => t.id !== id),
+    formTagIds: Object.fromEntries(
+      Object.entries(state.formTagIds).map(([fid, tids]) => [fid, tids.filter((tid) => tid !== id)])
+    ),
+  })),
+  formTagIds: {},
+  toggleFormTag: (formId, tagId) => set((state) => {
+    const current = state.formTagIds[formId] || [];
+    const updated = current.includes(tagId)
+      ? current.filter((tid) => tid !== tagId)
+      : [...current, tagId];
+    return { formTagIds: { ...state.formTagIds, [formId]: updated } };
+  }),
 }));

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
@@ -274,6 +274,42 @@ const slideIn = {
   exit: { opacity: 0, x: -30 },
 };
 
+const staggerContainerNew = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
+
+const staggerItemNew = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+};
+
+// ─── Animated Counter Hook ──────────────────────────────────────────────
+
+function useAnimatedCounter(target: number, duration = 1200): number {
+  const [count, setCount] = useState(0);
+  const prevTarget = useRef(target);
+
+  useEffect(() => {
+    const start = prevTarget.current;
+    const diff = target - start;
+    if (diff === 0) { setCount(target); return; }
+
+    const startTime = performance.now();
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(start + diff * eased));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+    prevTarget.current = target;
+  }, [target, duration]);
+
+  return count;
+}
+
 // ─── Helper ─────────────────────────────────────────────────────────────────
 
 function timeAgo(dateStr: string): string {
@@ -363,15 +399,24 @@ export default function UserPanel() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed right-0 top-0 z-50 h-full w-72 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:z-auto ${
+        className={`fixed right-0 top-0 z-50 h-full w-72 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-l border-gray-200/80 dark:border-gray-800/80 flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:z-auto ${
           sidebarOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
+        {/* Gradient accent at top */}
+        <div className="h-1 bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500" />
+
         {/* User Info */}
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="p-5 border-b border-gray-100/80 dark:border-gray-800/80">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white font-bold text-lg shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
+              {/* Animated ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                className="absolute -inset-1 rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-500 opacity-60 blur-[2px]"
+              />
+              <div className="relative flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white font-bold text-lg shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
                 {profile ? profile.name.charAt(0) : <Loader2 className="size-5 animate-spin" />}
               </div>
               <div className="absolute -bottom-0.5 -left-0.5 flex size-4 items-center justify-center rounded-full bg-emerald-500 border-2 border-white dark:border-gray-900">
@@ -400,14 +445,14 @@ export default function UserPanel() {
               }}
               className={`relative w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeTab === item.id
-                  ? 'bg-violet-50 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300 shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200'
+                  ? 'bg-violet-50/80 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300 shadow-sm backdrop-blur-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50/80 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200 hover:backdrop-blur-sm'
               }`}
             >
               {activeTab === item.id && (
                 <motion.div
                   layoutId="sidebar-active"
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full bg-violet-500"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full bg-gradient-to-b from-violet-500 to-fuchsia-500"
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
@@ -416,9 +461,13 @@ export default function UserPanel() {
               </span>
               <span>{item.label}</span>
               {item.id === 'notifications' && unreadCount > 0 && (
-                <span className="mr-auto flex size-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold">
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="mr-auto flex size-5 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-rose-500 text-white text-[10px] font-bold shadow-sm"
+                >
                   {unreadCount > 9 ? '۹+' : unreadCount}
-                </span>
+                </motion.span>
               )}
             </button>
           ))}
@@ -440,7 +489,7 @@ export default function UserPanel() {
       {/* Main Content */}
       <main className="flex-1 min-w-0">
         {/* Top Bar */}
-        <header className="sticky top-0 z-30 flex items-center gap-4 px-4 sm:px-8 py-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800">
+        <header className="sticky top-0 z-30 flex items-center gap-4 px-4 sm:px-8 py-4 bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl border-b border-gray-200/60 dark:border-gray-800/60 shadow-sm">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden flex size-9 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
@@ -499,6 +548,13 @@ function ProfileSection({ profile, onProfileUpdate }: { profile: UserProfile | n
   const [editEmail, setEditEmail] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editBio, setEditBio] = useState('');
+
+  // Animated counters
+  const animatedFormCount = useAnimatedCounter(profile?.formCount || 0);
+  const animatedNotifCount = useAnimatedCounter(profile?.notificationCount || 0);
+  // Calculate days since registration
+  const daysSinceJoin = profile ? Math.max(1, Math.floor((Date.now() - new Date(profile.createdAt).getTime()) / 86400000)) : 0;
+  const animatedDays = useAnimatedCounter(daysSinceJoin);
 
   const startEditing = () => {
     if (profile) {
@@ -583,11 +639,19 @@ function ProfileSection({ profile, onProfileUpdate }: { profile: UserProfile | n
 
   return (
     <motion.div variants={staggerContainer} initial="initial" animate="animate" className="max-w-4xl mx-auto space-y-6">
-      {/* Profile Header Card */}
+      {/* Profile Header Card - Glassmorphism */}
       <motion.div variants={staggerItem}>
-        <Card className="overflow-hidden border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-2xl border border-gray-200/80 dark:border-gray-800/80 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-lg"
+        >
+          {/* Gradient accent at top */}
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500" />
+
           {/* Completeness Progress Bar */}
-          <div className="h-1.5 bg-gray-100 dark:bg-gray-800">
+          <div className="h-1.5 bg-gray-100/50 dark:bg-gray-800/50">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${completeness}%` }}
@@ -631,12 +695,19 @@ function ProfileSection({ profile, onProfileUpdate }: { profile: UserProfile | n
           </div>
 
           <div className="relative px-6 pb-6">
-            {/* Avatar */}
+            {/* Avatar with animated ring */}
             <div className="relative -mt-16 mb-4 flex items-end gap-4">
               <div className="relative group">
-                <div className="flex size-28 sm:size-32 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 text-white font-extrabold text-3xl shadow-xl shadow-violet-300/30 dark:shadow-violet-500/20 border-4 border-white dark:border-gray-900">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                  className="absolute -inset-1.5 rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-purple-500 opacity-50 blur-[3px]"
+                />
+                <div className="relative flex size-28 sm:size-32 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 text-white font-extrabold text-3xl shadow-xl shadow-violet-300/30 dark:shadow-violet-500/20 border-4 border-white dark:border-gray-900">
                   {profile.name.charAt(0)}
                 </div>
+                {/* Online indicator */}
+                <div className="absolute bottom-1 left-1 size-4 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-900" />
                 <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border-4 border-transparent">
                   <Camera className="size-6 text-white" />
                 </div>
@@ -667,19 +738,47 @@ function ProfileSection({ profile, onProfileUpdate }: { profile: UserProfile | n
               <p className="text-sm text-gray-400 dark:text-gray-500 italic">بیوگرافی اضافه نشده است</p>
             )}
 
-            {/* Quick Stats */}
-            <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex-wrap">
-              <div className="flex items-center gap-2 text-sm">
-                <FileText className="size-4 text-violet-500" />
-                <span className="text-gray-600 dark:text-gray-300 font-medium">{profile.formCount} فرم</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm mr-auto">
-                <Clock className="size-4 text-gray-400" />
-                <span className="text-gray-500 dark:text-gray-400 text-xs">عضویت از {formatDate(profile.createdAt)}</span>
-              </div>
+            {/* Animated Stats Row */}
+            <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-gray-200/60 dark:border-gray-800/60">
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100/60 dark:border-gray-700/40 backdrop-blur-sm"
+              >
+                <div className="flex items-center gap-1.5">
+                  <FileText className="size-4 text-violet-500" />
+                  <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedFormCount}</span>
+                </div>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">فرم</span>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100/60 dark:border-gray-700/40 backdrop-blur-sm"
+              >
+                <div className="flex items-center gap-1.5">
+                  <Bell className="size-4 text-amber-500" />
+                  <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedNotifCount}</span>
+                </div>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">اعلان</span>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100/60 dark:border-gray-700/40 backdrop-blur-sm"
+              >
+                <div className="flex items-center gap-1.5">
+                  <CalendarDays className="size-4 text-emerald-500" />
+                  <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedDays}</span>
+                </div>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">روز فعالیت</span>
+              </motion.div>
+            </div>
+
+            {/* Member since */}
+            <div className="flex items-center justify-center gap-1.5 mt-3 text-xs text-gray-400 dark:text-gray-500">
+              <Clock className="size-3" />
+              <span>عضویت از {formatDate(profile.createdAt)}</span>
             </div>
           </div>
-        </Card>
+        </motion.div>
       </motion.div>
 
       {/* Quick Actions */}
@@ -691,7 +790,7 @@ function ProfileSection({ profile, onProfileUpdate }: { profile: UserProfile | n
               whileHover={{ y: -3, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={action.onClick}
-              className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 text-right transition-shadow hover:shadow-lg group"
+              className="relative overflow-hidden rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 text-right transition-all hover:shadow-lg hover:border-gray-300/60 dark:hover:border-gray-700/60 group"
             >
               <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${action.color} text-white shadow-md mb-3`}>
                 {action.icon}
@@ -709,7 +808,7 @@ function ProfileSection({ profile, onProfileUpdate }: { profile: UserProfile | n
 
       {/* Edit Profile Card */}
       <motion.div variants={staggerItem}>
-        <Card className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div>
@@ -839,6 +938,12 @@ function MyFormsSection() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [localSearch, setLocalSearch] = useState('');
 
+  // Animated counters for stats
+  const animTotalForms = useAnimatedCounter(stats.totalForms);
+  const animPublished = useAnimatedCounter(stats.publishedCount);
+  const animDraft = useAnimatedCounter(stats.draftCount);
+  const animSubmissions = useAnimatedCounter(stats.totalSubmissions);
+
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -894,22 +999,25 @@ function MyFormsSection() {
   };
 
   const statsCards = [
-    { label: 'کل فرم‌ها', value: stats.totalForms, icon: <FileText className="size-5" />, color: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400' },
-    { label: 'منتشر شده', value: stats.publishedCount, icon: <CircleDot className="size-5" />, color: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' },
-    { label: 'پیش‌نویس', value: stats.draftCount, icon: <ClipboardList className="size-5" />, color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400' },
-    { label: 'کل پاسخ‌ها', value: stats.totalSubmissions, icon: <Send className="size-5" />, color: 'bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-600 dark:text-fuchsia-400' },
+    { label: 'کل فرم‌ها', value: animTotalForms, icon: <FileText className="size-5" />, color: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400', gradient: 'from-violet-500 to-purple-500' },
+    { label: 'منتشر شده', value: animPublished, icon: <CircleDot className="size-5" />, color: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400', gradient: 'from-emerald-500 to-teal-500' },
+    { label: 'پیش‌نویس', value: animDraft, icon: <ClipboardList className="size-5" />, color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400', gradient: 'from-amber-500 to-orange-500' },
+    { label: 'کل پاسخ‌ها', value: animSubmissions, icon: <Send className="size-5" />, color: 'bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-600 dark:text-fuchsia-400', gradient: 'from-fuchsia-500 to-pink-500' },
   ];
 
   return (
     <motion.div variants={staggerContainer} initial="initial" animate="animate" className="max-w-5xl mx-auto space-y-6">
-      {/* Stats */}
+      {/* Stats - Glassmorphism cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         {statsCards.map((stat, i) => (
           <motion.div
             key={i}
             variants={staggerItem}
-            className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-sm"
+            whileHover={{ y: -2, transition: { duration: 0.2 } }}
+            className="relative overflow-hidden rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 shadow-sm transition-shadow hover:shadow-md"
           >
+            {/* Gradient accent */}
+            <div className={`absolute top-0 inset-x-0 h-0.5 bg-gradient-to-l ${stat.gradient}`} />
             <div className={`flex size-10 items-center justify-center rounded-lg ${stat.color} mb-3`}>
               {stat.icon}
             </div>
@@ -954,16 +1062,29 @@ function MyFormsSection() {
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Empty State - Enhanced */}
       {!loading && forms.length === 0 && (
-        <motion.div variants={staggerItem} className="text-center py-12">
-          <div className="flex size-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 mx-auto mb-4">
-            <FileText className="size-8 text-gray-400" />
+        <motion.div variants={staggerItem} className="text-center py-16">
+          <div className="relative inline-block mb-6">
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 mx-auto shadow-lg"
+            >
+              <FileText className="size-10 text-violet-500 dark:text-violet-400" />
+            </motion.div>
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -top-1 -right-1 size-6 rounded-full bg-fuchsia-400/20 flex items-center justify-center"
+            >
+              <Plus className="size-3 text-fuchsia-500" />
+            </motion.div>
           </div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
             {search || statusFilter !== 'all' ? 'نتیجه‌ای یافت نشد' : 'هنوز فرمی نساخته‌اید'}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
             {search || statusFilter !== 'all' ? 'فیلترها را تغییر دهید' : 'اولین فرم خود را بسازید یا از الگوها استفاده کنید'}
           </p>
         </motion.div>
@@ -984,7 +1105,7 @@ function MyFormsSection() {
                 transition={{ delay: i * 0.05, duration: 0.3 }}
                 whileHover={{ y: -3, transition: { duration: 0.2 } }}
               >
-                <Card className="h-full overflow-hidden border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:shadow-lg transition-shadow duration-200">
+                <Card className="h-full overflow-hidden border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl hover:shadow-lg transition-all duration-200 hover:border-gray-300/60 dark:hover:border-gray-700/60">
                   {/* Status stripe */}
                   <div className={`h-1 bg-gradient-to-l ${
                     form.status === 'published' ? 'from-emerald-400 to-emerald-500' :
@@ -1145,12 +1266,18 @@ function ActivitySection() {
       )}
 
       {!loading && filteredActivities.length === 0 && (
-        <motion.div variants={staggerItem} className="text-center py-12">
-          <div className="flex size-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 mx-auto mb-4">
-            <Activity className="size-8 text-gray-400" />
+        <motion.div variants={staggerItem} className="text-center py-16">
+          <div className="relative inline-block mb-6">
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 mx-auto shadow-lg"
+            >
+              <Activity className="size-10 text-emerald-500 dark:text-emerald-400" />
+            </motion.div>
           </div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">فعالیتی یافت نشد</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">هنوز فعالیتی ثبت نشده است</p>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">فعالیتی یافت نشد</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">هنوز فعالیتی ثبت نشده است</p>
         </motion.div>
       )}
 
@@ -1307,12 +1434,18 @@ function NotificationsSection({ onUnreadChange }: { onUnreadChange: (count: numb
       )}
 
       {!loading && notifications.length === 0 && (
-        <motion.div variants={staggerItem} className="text-center py-12">
-          <div className="flex size-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 mx-auto mb-4">
-            <Bell className="size-8 text-gray-400" />
+        <motion.div variants={staggerItem} className="text-center py-16">
+          <div className="relative inline-block mb-6">
+            <motion.div
+              animate={{ y: [0, -5, 0], rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 mx-auto shadow-lg"
+            >
+              <Bell className="size-10 text-amber-500 dark:text-amber-400" />
+            </motion.div>
           </div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">اعلانی وجود ندارد</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">اعلان‌های جدید اینجا نمایش داده می‌شوند</p>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">اعلانی وجود ندارد</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">اعلان‌های جدید اینجا نمایش داده می‌شوند</p>
         </motion.div>
       )}
 
@@ -1330,10 +1463,10 @@ function NotificationsSection({ onUnreadChange }: { onUnreadChange: (count: numb
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.04, duration: 0.3 }}
                   onClick={() => !notification.read && handleMarkRead(notification.id)}
-                  className={`relative overflow-hidden rounded-xl border bg-white dark:bg-gray-900 p-4 transition-all duration-200 cursor-pointer group hover:shadow-md border-r-4 ${
+                  className={`relative overflow-hidden rounded-xl border bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 transition-all duration-200 cursor-pointer group hover:shadow-md border-r-4 ${
                     !notification.read
-                      ? `${config.borderColor} border-gray-200 dark:border-gray-800 bg-gradient-to-l from-transparent to-gray-50/50 dark:to-gray-800/20`
-                      : 'border-gray-100 dark:border-gray-800 border-r-gray-100 dark:border-r-gray-800'
+                      ? `${config.borderColor} border-gray-200/60 dark:border-gray-800/60 bg-gradient-to-l from-transparent to-gray-50/30 dark:to-gray-800/10`
+                      : 'border-gray-100/60 dark:border-gray-800/60 border-r-gray-100 dark:border-r-gray-800'
                   }`}
                 >
                   <div className="flex gap-3">
@@ -1469,7 +1602,7 @@ function SettingsSection() {
     <motion.div variants={staggerContainer} initial="initial" animate="animate" className="max-w-4xl mx-auto space-y-6">
       {/* Account Settings */}
       <motion.div variants={staggerItem}>
-        <Card className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400">
@@ -1594,7 +1727,7 @@ function SettingsSection() {
 
       {/* Notification Settings */}
       <motion.div variants={staggerItem}>
-        <Card className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400">
@@ -1644,7 +1777,7 @@ function SettingsSection() {
 
       {/* Display Settings */}
       <motion.div variants={staggerItem}>
-        <Card className="border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-xl bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-600 dark:text-fuchsia-400">

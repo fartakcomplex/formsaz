@@ -758,35 +758,60 @@ function TrustedBySection() {
 
 /* ──────────────────────────── Features Section ──────────────────────────── */
 
+const featureCardVariants = {
+  hidden: { opacity: 0, y: 24, scale: 0.97 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0, scale: 1,
+    transition: { delay: i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+  }),
+};
+
 function FeatureCard({ feature, index }: { feature: typeof featuresData[0]; index: number }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <motion.div key={index} variants={staggerChild}>
-      <Card className="gradient-border-hover group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-default overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-        {/* Animated gradient top border (2px) */}
-        <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-l ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-        {/* Animated gradient border on hover */}
-        <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${feature.gradient} p-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500`}>
-          <div className="w-full h-full rounded-[10px] bg-white dark:bg-gray-900" />
+    <motion.div
+      whileHover={{ y: -6, transition: { duration: 0.25, ease: 'easeOut' } }}
+      className="group relative"
+    >
+      {/* Persistent glow behind card on hover */}
+      <div className={`absolute -inset-0.5 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.15] blur-2xl transition-opacity duration-500`} />
+
+      <Card className="group relative h-full overflow-hidden rounded-2xl border border-gray-200/60 dark:border-gray-700/50 bg-white/60 dark:bg-gray-900/50 backdrop-blur-xl cursor-default transition-shadow duration-300 group-hover:shadow-2xl">
+        {/* Gradient accent line at top — always visible */}
+        <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-l ${feature.gradient}`} />
+
+        {/* Gradient overlay on hover */}
+        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none`} />
+
+        {/* Gradient border reveal on hover */}
+        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} p-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500`}>
+          <div className="w-full h-full rounded-[14px] bg-white/60 dark:bg-gray-900/50 backdrop-blur-xl" />
         </div>
 
-        {/* Spotlight glow effect on hover */}
-        <div className={`absolute -inset-1 rounded-xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.08] blur-xl transition-opacity duration-500`} />
-
         <CardContent className="p-6 relative z-10">
-          {/* Icon with gradient background circle pattern */}
+          {/* Animated icon container */}
           <div className="relative mb-5">
-            {/* Background circle with gradient */}
-            <div className={`absolute inset-[-6px] rounded-full bg-gradient-to-br ${feature.gradient} opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-500`} />
-            <div
-              className={`relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
+            {/* Icon glow ring */}
+            <div className={`absolute inset-[-8px] rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-[0.1] group-hover:opacity-[0.2] blur-lg transition-all duration-500`} />
+            <motion.div
+              whileHover={{ scale: 1.12, rotate: -3 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className={`relative inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-lg ${feature.shadowColor} transition-transform duration-300 group-hover:shadow-xl`}
             >
-              <feature.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
-            </div>
+              <feature.icon className="h-6 w-6 text-white" strokeWidth={1.8} />
+            </motion.div>
           </div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{feature.title}</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{feature.description}</p>
+
+          {/* Title */}
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">
+            {feature.title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+            {feature.description}
+          </p>
 
           {/* Expandable section */}
           <AnimatePresence>
@@ -798,7 +823,7 @@ function FeatureCard({ feature, index }: { feature: typeof featuresData[0]; inde
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="overflow-hidden"
               >
-                <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-100 dark:border-gray-800 pt-3">
+                <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-200/50 dark:border-gray-700/50 pt-3">
                   {feature.extraDescription}
                 </p>
               </motion.div>
@@ -819,9 +844,6 @@ function FeatureCard({ feature, index }: { feature: typeof featuresData[0]; inde
             </motion.span>
           </button>
         </CardContent>
-
-        {/* Subtle gradient overlay on hover */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-500/[0.03] to-violet-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
       </Card>
     </motion.div>
   );
@@ -835,8 +857,8 @@ const featuresData = [
       'از متن ساده تا مقیاس امتیازدهی، ماتریسی، آپلود فایل و شبکه. هر نوع سوالی که نیاز داشته باشید.',
     extraDescription:
       'شامل انواع متن کوتاه و بلند، چند گزینه‌ای، چک‌باکس، دراپ‌داون، مقیاس NPS، ماتریسی، تاریخ، زمان، آپلود فایل، امضای دیجیتال و موارد دیگر.',
-    gradient: 'from-blue-500 to-indigo-500',
-    shadowColor: 'shadow-blue-500/20',
+    gradient: 'from-violet-500 to-purple-600',
+    shadowColor: 'shadow-violet-500/25',
   },
   {
     icon: Palette,
@@ -845,8 +867,8 @@ const featuresData = [
       'فرم خود را با رنگ‌ها، فونت‌ها و تم‌های متنوع سفارشی کنید و برند خود را منعکس نمایید.',
     extraDescription:
       'از تم‌های آماده استفاده کنید یا رنگ‌ها، لوگو، فونت و پس‌زمینه را به دلخواه تنظیم نمایید. پشتیبانی کامل از RTL و فونت‌های فارسی.',
-    gradient: 'from-pink-500 to-rose-500',
-    shadowColor: 'shadow-pink-500/20',
+    gradient: 'from-emerald-500 to-teal-600',
+    shadowColor: 'shadow-emerald-500/25',
   },
   {
     icon: GitBranch,
@@ -855,8 +877,8 @@ const featuresData = [
       'با منطق شرطی هوشمند، مسیر پاسخ‌دهی را شخصی‌سازی و با امتیازدهی نتایج را ارزیابی کنید.',
     extraDescription:
       'قابلیت نمایش/مخفی کردن سوالات بر اساس پاسخ، پرش به سوال خاص، پایان فرم شرطی و محاسبه امتیاز خودکار.',
-    gradient: 'from-amber-500 to-orange-500',
-    shadowColor: 'shadow-amber-500/20',
+    gradient: 'from-amber-500 to-orange-600',
+    shadowColor: 'shadow-amber-500/25',
   },
   {
     icon: BarChart3,
@@ -865,8 +887,8 @@ const featuresData = [
       'نتایج را با نمودارهای متنوع و گزارش‌های تحلیلی به صورت لحظه‌ای مشاهده و تحلیل کنید.',
     extraDescription:
       'نمودارهای دایره‌ای، میله‌ای، خطی و جدولی. فیلتر بر اساس تاریخ، دستگاه و پاسخ‌دهنده. گزارش PDF قابل دانلود.',
-    gradient: 'from-emerald-500 to-teal-500',
-    shadowColor: 'shadow-emerald-500/20',
+    gradient: 'from-fuchsia-500 to-pink-600',
+    shadowColor: 'shadow-fuchsia-500/25',
   },
   {
     icon: Download,
@@ -875,8 +897,8 @@ const featuresData = [
       'تمامی پاسخ‌ها را به صورت فایل اکسل یا CSV دانلود کنید و در ابزارهای دیگر استفاده نمایید.',
     extraDescription:
       'خروجی با فرمت‌های XLSX و CSV، قابلیت فیلتر قبل از دانلود، پشتیبانی از کاراکترهای فارسی و سازگاری با اکسل و گوگل شیت.',
-    gradient: 'from-violet-500 to-purple-500',
-    shadowColor: 'shadow-violet-500/20',
+    gradient: 'from-cyan-500 to-blue-600',
+    shadowColor: 'shadow-cyan-500/25',
   },
   {
     icon: Smartphone,
@@ -885,44 +907,63 @@ const featuresData = [
       'فرم‌ها در تمام دستگاه‌ها از موبایل تا دسکتاپ به بهترین شکل نمایش داده می‌شوند.',
     extraDescription:
       'طراحی واکنش‌گرا با تست روی بیش از ۵۰ دستگاه، پشتیبانی از حالت آفلاین و بهینه‌سازی سرعت بارگذاری.',
-    gradient: 'from-cyan-500 to-sky-500',
-    shadowColor: 'shadow-cyan-500/20',
+    gradient: 'from-rose-500 to-red-600',
+    shadowColor: 'shadow-rose-500/25',
   },
 ];
 
 function FeaturesSection() {
   const features = featuresData;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: '-60px' });
 
   return (
-    <section id="features" className="relative py-24 sm:py-32 bg-white dark:bg-gray-950">
+    <section id="features" className="relative py-24 sm:py-32">
+      {/* Soft gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-50/80 via-white to-gray-50/80 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950" />
       {/* Dot grid background pattern */}
-      <div className="absolute inset-0 opacity-[0.025]" style={{
+      <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: 'radial-gradient(circle, #8b5cf6 1px, transparent 1px)',
-        backgroundSize: '28px 28px',
+        backgroundSize: '32px 32px',
       }} />
+      {/* Decorative gradient orbs */}
+      <div className="absolute top-20 right-1/4 w-72 h-72 bg-violet-200/20 dark:bg-violet-900/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 left-1/4 w-72 h-72 bg-emerald-200/20 dark:bg-emerald-900/10 rounded-full blur-3xl" />
+
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <FadeInSection className="text-center mb-16 sm:mb-20">
           <Badge
             variant="secondary"
-            className="mb-4 px-3 py-1 text-xs font-medium bg-indigo-100/80 text-indigo-700 border-indigo-200/50"
+            className="mb-4 px-4 py-1.5 text-xs font-medium bg-violet-100/80 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-violet-200/50 dark:border-violet-700/30"
           >
             ویژگی‌ها
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             همه‌چیز برای ساخت فرم‌های حرفه‌ای
           </h2>
-          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 leading-relaxed">
+          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
             با ابزارهای قدرتمند و رابط کاربری ساده، فرم‌هایی بسازید که نرخ مشارکت بالایی دارند.
           </p>
         </FadeInSection>
 
         {/* Feature Grid */}
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div
+          ref={containerRef}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7"
+        >
           {features.map((feature, i) => (
-            <FeatureCard key={i} feature={feature} index={i} />
+            <motion.div
+              key={i}
+              custom={i}
+              variants={featureCardVariants}
+            >
+              <FeatureCard feature={feature} index={i} />
+            </motion.div>
           ))}
-        </StaggerContainer>
+        </motion.div>
       </div>
     </section>
   );

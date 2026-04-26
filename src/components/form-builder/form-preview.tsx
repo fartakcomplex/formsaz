@@ -475,12 +475,12 @@ function SortableQuestionCard({
     <div
       ref={setNodeRef}
       style={style}
-      className="group/card relative flex gap-2"
+      className="group/card relative"
     >
-      {/* Drag handle area */}
+      {/* Drag handle - positioned on left side, visible on hover */}
       <div
         className={cn(
-          'flex flex-col items-center pt-3 transition-opacity cursor-grab active:cursor-grabbing',
+          'absolute left-2 top-1/2 -translate-y-1/2 z-20 transition-opacity duration-200 cursor-grab active:cursor-grabbing',
           isDragging ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'
         )}
         {...attributes}
@@ -488,13 +488,13 @@ function SortableQuestionCard({
       >
         <div
           className={cn(
-            'rounded-md p-1 transition-colors',
+            'rounded-lg p-1 transition-colors',
             isDragging
-              ? 'bg-primary/10 text-primary'
-              : 'hover:bg-muted text-muted-foreground/50 hover:text-muted-foreground'
+              ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400'
+              : 'text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400'
           )}
         >
-          <GripVertical className="h-5 w-5" />
+          <GripVertical className="size-5" />
         </div>
       </div>
 
@@ -502,62 +502,43 @@ function SortableQuestionCard({
       <div
         onClick={onSelect}
         className={cn(
-          'relative flex-1 cursor-pointer border-2 pl-7 pr-5 transition-all duration-300 ease-out',
-          isDragging && 'shadow-lg ring-2 ring-primary/20',
+          'relative flex-1 cursor-pointer rounded-xl border p-4 pl-10 transition-all duration-200',
+          isDragging && 'shadow-lg ring-2 ring-violet-400/30',
           isSelected
-            ? 'shadow-lg'
-            : 'border-transparent bg-white dark:bg-zinc-900/50 hover:border-muted hover:shadow-md hover:scale-[1.005] hover:bg-violet-50/40 dark:hover:bg-violet-950/10'
+            ? 'border-violet-400 dark:border-violet-500 bg-violet-50/50 dark:bg-violet-950/20 shadow-md shadow-violet-100 dark:shadow-violet-900/20 ring-1 ring-violet-400/30'
+            : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-md hover:-translate-y-px'
         )}
-        style={
-          isSelected
-            ? {
-                borderColor: primaryColor,
-                backgroundColor: `${primaryColor}08`,
-                boxShadow: `0 10px 15px -3px ${primaryColor}15, 0 4px 6px -4px ${primaryColor}10`,
-              }
-            : undefined
-        }
       >
         {/* Question number badge */}
         {!isStatement && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.05 }}
-            className="absolute -left-3 top-4 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-md z-10 bg-violet-500"
-          >
-            {toPersianDigits(String(index + 1))}
-          </motion.div>
+          <div className="absolute -top-2.5 right-4 z-10">
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.05 }}
+              className={cn(
+                'flex items-center justify-center size-7 rounded-lg text-xs font-bold shadow-sm',
+                isSelected
+                  ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-violet-200 dark:shadow-violet-900/30'
+                  : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 group-hover/card:border-violet-200 dark:group-hover/card:border-violet-800'
+              )}
+            >
+              {toPersianDigits(String(index + 1))}
+            </motion.div>
+          </div>
         )}
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-2 flex-1 min-w-0">
-            {!isStatement && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}
-                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded text-[10px] font-bold bg-violet-500/15 text-violet-600 dark:bg-violet-400/15 dark:text-violet-400"
-              >
-                {toPersianDigits(String(index + 1))}
-              </motion.span>
-            )}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-medium" style={{ color: primaryColor }}>
-                  {getQuestionTypeLabel(question.type)}
-                </span>
-                {question.required && (
-                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400">
-                    الزامی
-                  </span>
-                )}
-              </div>
-              <h4 className="text-[15px] font-semibold leading-relaxed text-foreground break-words">
+              <h4 className="text-[15px] font-semibold leading-relaxed text-foreground break-words flex items-center gap-2 flex-wrap">
                 {question.title}
                 {question.required && (
-                  <span className="mr-1.5 text-[11px] font-medium text-red-500 dark:text-red-400">(الزامی)</span>
+                  <span className="text-[11px] font-medium text-red-500 dark:text-red-400">(الزامی)</span>
                 )}
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-[10px] text-gray-500 dark:text-gray-400 mr-2">
+                  {getQuestionTypeLabel(question.type)}
+                </span>
               </h4>
             </div>
           </div>
@@ -635,7 +616,6 @@ function SortableQuestionCard({
         {isSelected && (
           <div
             className="absolute top-0 left-0 h-full w-[3px] rounded-r bg-gradient-to-b from-violet-400 via-purple-500 to-fuchsia-500"
-            style={{ backgroundColor: primaryColor }}
           />
         )}
       </div>
@@ -654,27 +634,21 @@ function DragOverlayCard({ question, primaryColor }: { question: FormQuestion; p
         </div>
       </div>
       <div
-        className="relative flex-1 border-2 pl-7 pr-5 shadow-xl ring-2 ring-primary/20"
-        style={{
-          borderColor: primaryColor,
-          backgroundColor: `${primaryColor}08`,
-        }}
+        className="relative flex-1 rounded-xl border p-4 pl-10 shadow-xl ring-2 ring-violet-400/30 border-violet-400 bg-violet-50/50"
       >
         {/* Question number badge */}
-        <div
-          className="absolute -left-3 top-4 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-md z-10 bg-violet-500"
-        >
-          {toPersianDigits(String(question.order + 1))}
+        <div className="absolute -top-2.5 right-4 z-10">
+          <div className="flex items-center justify-center size-7 rounded-lg text-xs font-bold shadow-sm bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-violet-200">
+            {toPersianDigits(String(question.order + 1))}
+          </div>
         </div>
         <div className="flex items-start gap-2">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-medium" style={{ color: primaryColor }}>
-                {getQuestionTypeLabel(question.type)}
-              </span>
-            </div>
             <h4 className="text-[15px] font-semibold leading-relaxed text-foreground break-words">
               {question.title}
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-[10px] text-gray-500 dark:text-gray-400 mr-2">
+                {getQuestionTypeLabel(question.type)}
+              </span>
             </h4>
           </div>
         </div>
@@ -947,14 +921,19 @@ function EmptyState({ onAdd, primaryColor }: { onAdd: () => void; primaryColor: 
       >
         {/* Floating decoration circles */}
         <motion.div
-          animate={{ y: [-4, 4, -4] }}
+          animate={{ y: [-4, 4, -4], rotate: [0, 5, -5, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute -top-3 -right-3 h-6 w-6 rounded-full bg-violet-200/60 dark:bg-violet-700/40"
         />
         <motion.div
-          animate={{ y: [3, -3, 3] }}
+          animate={{ y: [3, -3, 3], rotate: [0, -3, 3, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
           className="absolute -bottom-2 -left-2 h-4 w-4 rounded-full bg-fuchsia-200/60 dark:bg-fuchsia-700/40"
+        />
+        <motion.div
+          animate={{ y: [2, -5, 2], scale: [1, 1.1, 1] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          className="absolute top-1/2 -left-5 h-3 w-3 rounded-full bg-emerald-200/50 dark:bg-emerald-700/30"
         />
         {/* Main document SVG */}
         <svg
@@ -1003,22 +982,47 @@ function EmptyState({ onAdd, primaryColor }: { onAdd: () => void; primaryColor: 
       >
         سؤالات را با کشیدن جابجا کنید
       </motion.p>
+
+      {/* Tips section */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.4 }}
+        transition={{ delay: 0.65, duration: 0.4 }}
+        className="mb-6 w-full max-w-sm"
+      >
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 p-4 space-y-2.5">
+          <p className="text-xs font-semibold text-foreground mb-2">💡 راهنمای سریع</p>
+          <div className="flex items-start gap-2 text-xs text-muted-foreground">
+            <span className="shrink-0 mt-px">📋</span>
+            <span>از بین ۱۶ نوع سؤال، مناسب‌ترین را انتخاب کنید</span>
+          </div>
+          <div className="flex items-start gap-2 text-xs text-muted-foreground">
+            <span className="shrink-0 mt-px">🔀</span>
+            <span>با کشیدن و رها کردن، ترتیب سؤالات را تغییر دهید</span>
+          </div>
+          <div className="flex items-start gap-2 text-xs text-muted-foreground">
+            <span className="shrink-0 mt-px">🎨</span>
+            <span>رنگ و ظاهر فرم را از تنظیمات شخصی‌سازی کنید</span>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.75, duration: 0.4 }}
       >
         <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
           <Button
             onClick={onAdd}
-            className="text-white gap-2 shadow-md hover:shadow-lg transition-shadow duration-300"
+            className="text-white gap-2 shadow-md hover:shadow-lg transition-shadow duration-300 px-6"
             style={{
               backgroundColor: primaryColor,
               borderRadius: '10px',
             }}
           >
             <Plus className="h-4 w-4" />
-            افزودن اولین سؤال
+            شروع ساخت فرم
           </Button>
         </motion.div>
       </motion.div>
