@@ -2514,31 +2514,13 @@ function FormCard({
                     خروجی JSON
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50" onSelect={(e) => e.preventDefault()}>
-                        <Trash2 className="size-4 ml-2" />
-                        حذف
-                      </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent dir="rtl">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>حذف فرم</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          آیا از حذف فرم «{form.title}» مطمئن هستید؟ این عمل قابل بازگشت نیست و تمام پاسخ‌ها نیز حذف خواهند شد.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel className="rounded-lg">انصراف</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => onDelete(form)}
-                          className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                        >
-                          حذف فرم
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <DropdownMenuItem
+                    className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50"
+                    onClick={() => onDelete(form)}
+                  >
+                    <Trash2 className="size-4 ml-2" />
+                    حذف
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -2774,31 +2756,13 @@ function FormListRow({
                 خروجی JSON
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50" onSelect={(e) => e.preventDefault()}>
-                    <Trash2 className="size-4 ml-2" />
-                    حذف
-                  </DropdownMenuItem>
-                </AlertDialogTrigger>
-                <AlertDialogContent dir="rtl">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>حذف فرم</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      آیا از حذف فرم «{form.title}» مطمئن هستید؟
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-lg">انصراف</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => onDelete(form)}
-                      className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                    >
-                      حذف فرم
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <DropdownMenuItem
+                className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50"
+                onClick={() => onDelete(form)}
+              >
+                <Trash2 className="size-4 ml-2" />
+                حذف
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -3098,6 +3062,7 @@ export default function Dashboard() {
   const [quickPreviewForm, setQuickPreviewForm] = useState<Form | null>(null);
   const [quickPreviewOpen, setQuickPreviewOpen] = useState(false);
   const [duplicateConfirm, setDuplicateConfirm] = useState<Form | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<Form | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [batchDeleteConfirmOpen, setBatchDeleteConfirmOpen] = useState(false);
@@ -3797,7 +3762,7 @@ export default function Dashboard() {
                         onEdit={handleEdit}
                         onPreview={handlePreview}
                         onResults={handleResults}
-                        onDelete={handleDelete}
+                        onDelete={(form) => setDeleteConfirm(form)}
                         onDuplicate={(form) => setDuplicateConfirm(form)}
                         onShare={handleShare}
                         onSetExpiration={handleSetExpiration}
@@ -3841,7 +3806,7 @@ export default function Dashboard() {
                         onEdit={handleEdit}
                         onPreview={handlePreview}
                         onResults={handleResults}
-                        onDelete={handleDelete}
+                        onDelete={(form) => setDeleteConfirm(form)}
                         onDuplicate={(form) => setDuplicateConfirm(form)}
                         onShare={handleShare}
                         onSetExpiration={handleSetExpiration}
@@ -3977,6 +3942,54 @@ export default function Dashboard() {
             >
               <Copy className="size-3.5 ml-1.5" />
               تکرار فرم
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => { if (!open) setDeleteConfirm(null); }}>
+        <AlertDialogContent
+          dir="rtl"
+          className="sm:max-w-[420px] p-0 gap-0 overflow-hidden rounded-2xl border-red-200/60 dark:border-red-800/40"
+        >
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm -z-10" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          >
+            <AlertDialogHeader className="p-6 pb-4 bg-gradient-to-l from-red-50 to-rose-50 dark:from-red-950/40 dark:to-rose-950/40 border-b border-red-100 dark:border-red-800/60">
+              <div className="flex items-center gap-3">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-amber-500 shadow-lg shadow-red-200/50 dark:shadow-red-500/20">
+                  <AlertTriangle className="size-5 text-white" />
+                </div>
+                <div className="text-right">
+                  <AlertDialogTitle className="text-base font-bold text-gray-900 dark:text-white">
+                    حذف فرم
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                    آیا از حذف فرم «{deleteConfirm?.title}» اطمینان دارید؟ این عمل قابل بازگشت نیست.
+                  </AlertDialogDescription>
+                </div>
+              </div>
+            </AlertDialogHeader>
+          </motion.div>
+          <AlertDialogFooter className="p-6 pt-4 gap-2">
+            <AlertDialogCancel className="flex-1 rounded-xl border-gray-200 dark:border-gray-700 text-sm">
+              انصراف
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleteConfirm) {
+                  handleDelete(deleteConfirm);
+                  setDeleteConfirm(null);
+                }
+              }}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm shadow-md shadow-red-200/50 dark:shadow-red-500/20"
+            >
+              <Trash2 className="size-3.5 ml-1.5" />
+              حذف فرم
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

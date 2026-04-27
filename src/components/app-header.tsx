@@ -6,7 +6,6 @@ import { useTheme } from 'next-themes';
 import {
   FileText,
   ArrowRight,
-  Menu,
   User,
   LayoutDashboard,
   ListChecks,
@@ -242,6 +241,30 @@ function DotsPattern() {
   );
 }
 
+/* ─── Animated Hamburger Icon ────────────────────────────────────────────── */
+
+function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
+  return (
+    <div className="relative flex items-center justify-center w-5 h-5">
+      <motion.span
+        animate={isOpen ? { rotate: 45 } : { rotate: 0 }}
+        transition={{ duration: 0.2 }}
+        className="absolute block w-5 h-[1.5px] bg-current rounded-full origin-center"
+      />
+      <motion.span
+        animate={isOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+        transition={{ duration: 0.15 }}
+        className="absolute block w-5 h-[1.5px] bg-current rounded-full"
+      />
+      <motion.span
+        animate={isOpen ? { rotate: -45 } : { rotate: 0 }}
+        transition={{ duration: 0.2 }}
+        className="absolute block w-5 h-[1.5px] bg-current rounded-full origin-center"
+      />
+    </div>
+  );
+}
+
 /* ─── Main App Header ────────────────────────────────────────────────────── */
 
 export default function AppHeader() {
@@ -249,6 +272,7 @@ export default function AppHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -302,11 +326,7 @@ export default function AppHeader() {
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-[0_1px_3px_-1px_oklch(0.55_0.24_270/6%)]'
-          : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg'
-      }`}
+      className="sticky top-0 z-50 w-full transition-all duration-300 bg-white/70 dark:bg-gray-950/70 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-800/40 shadow-sm"
     >
       {/* ─── Scroll Progress Indicator ──────────────────────────────────── */}
       <div className="absolute top-0 left-0 right-0 h-[2px] z-[60]">
@@ -320,20 +340,6 @@ export default function AppHeader() {
           transition={{ duration: 0.1, ease: 'linear' }}
         />
       </div>
-
-      {/* Gradient bottom border */}
-      <div
-        className={`absolute bottom-0 left-0 right-0 h-px transition-opacity duration-300 ${
-          scrolled ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          background: 'linear-gradient(90deg, transparent, oklch(0.55 0.24 270 / 30%), oklch(0.55 0.24 270 / 50%), oklch(0.55 0.24 270 / 30%), transparent)',
-        }}
-      />
-      {/* Static subtle border for non-scrolled state */}
-      {!scrolled && (
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200/60 dark:bg-gray-800/60" />
-      )}
 
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Right side: Back button + Logo */}
@@ -358,7 +364,7 @@ export default function AppHeader() {
           >
             <LogoIcon />
             <span
-              className="text-lg font-extrabold hidden sm:block text-gradient-animated"
+              className="text-lg font-extrabold hidden sm:block text-gradient-animated hover:bg-gradient-to-r hover:from-violet-600 hover:to-purple-600 hover:bg-clip-text hover:text-transparent transition-all duration-300"
               style={{ filter: 'drop-shadow(0 0 8px oklch(0.55 0.24 270 / 30%))' }}
             >
               فرم‌ساز
@@ -368,38 +374,34 @@ export default function AppHeader() {
 
         {/* Center: Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          <AnimatePresence mode="wait">
-            {items.map((item) => {
-              const active = isActiveNav(item.view);
-              return (
-                <motion.button
-                  key={item.label}
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.15 }}
-                  onClick={() => handleNavClick(item.view)}
-                  className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors duration-200"
-                >
-                  {item.icon}
-                  {item.label}
-                  {/* Active indicator gradient line */}
-                  {active && (
-                    <motion.div
-                      layoutId="active-nav-indicator"
-                      className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full"
-                      style={{
-                        background: 'linear-gradient(90deg, oklch(0.55 0.24 270), oklch(0.65 0.22 310), oklch(0.55 0.24 270))',
-                        backgroundSize: '200% 100%',
-                        animation: 'text-gradient-flow 3s ease infinite',
-                      }}
-                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                </motion.button>
-              );
-            })}
-          </AnimatePresence>
+          {items.map((item) => {
+            const active = isActiveNav(item.view);
+            const hovered = hoveredNav === item.label;
+            const showIndicator = active || hovered;
+            return (
+              <motion.button
+                key={item.label}
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.15 }}
+                onClick={() => handleNavClick(item.view)}
+                onMouseEnter={() => setHoveredNav(item.label)}
+                onMouseLeave={() => setHoveredNav(null)}
+                className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors duration-200"
+              >
+                {item.icon}
+                {item.label}
+                {/* Animated underline indicator */}
+                {showIndicator && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-gradient-to-r from-violet-500 to-purple-500"
+                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
         </nav>
 
         {/* Left side: Quick Search + Theme toggle + Notifications + Auth/User + Mobile menu */}
@@ -407,7 +409,18 @@ export default function AppHeader() {
           <QuickSearchTrigger />
           <ThemeToggle />
 
-          {showUserAvatar && <NotificationBell />}
+          {showUserAvatar && (
+            <div className="relative">
+              {unreadCount > 0 && (
+                <motion.div
+                  animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.15, 1] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute inset-0 rounded-full bg-violet-500/25 pointer-events-none"
+                />
+              )}
+              <NotificationBell />
+            </div>
+          )}
 
           {showAuthButton && (
             <motion.div
@@ -430,10 +443,10 @@ export default function AppHeader() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.15 }}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setCurrentView('user-panel')}
-              className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md cursor-pointer hover:shadow-lg transition-all duration-300"
+              className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md cursor-pointer hover:shadow-lg hover:ring-2 hover:ring-violet-500/30 transition-all duration-300"
               title="پنل کاربری"
             >
               <User className="size-4" />
@@ -449,7 +462,7 @@ export default function AppHeader() {
                   size="icon"
                   className="text-gray-600 dark:text-gray-400 rounded-xl hover:bg-violet-50 dark:hover:bg-violet-900/30"
                 >
-                  <Menu className="size-5" />
+                  <HamburgerIcon isOpen={mobileOpen} />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-72 p-0 overflow-hidden">

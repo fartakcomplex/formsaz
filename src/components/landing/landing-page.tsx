@@ -66,6 +66,10 @@ import {
   Play,
   FileText,
   Globe,
+  BadgeCheck,
+  Heart,
+  Headphones,
+  MessageCircle,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -1254,6 +1258,11 @@ function HowItWorksSection() {
 /* ──────────────────────────── Testimonials Section ──────────────────────────── */
 
 function TestimonialsSection() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionInView = useInView(sectionRef, { once: true, margin: '-60px' });
+
   const testimonials = [
     {
       name: 'سارا محمدی',
@@ -1311,15 +1320,35 @@ function TestimonialsSection() {
     },
   ];
 
+  const statsData = [
+    { label: 'رضایت', value: '۹۸٪', icon: Heart, gradient: 'from-rose-500 to-pink-600' },
+    { label: 'پشتیبانی', value: '۲۴/۷', icon: Headphones, gradient: 'from-violet-500 to-purple-600' },
+    { label: 'کاربر', value: '۵۰K+', icon: Users, gradient: 'from-emerald-500 to-teal-600' },
+    { label: 'پاسخ', value: '۱M+', icon: MessageCircle, gradient: 'from-amber-500 to-orange-600' },
+  ];
+
+  const itemsPerView = typeof window !== 'undefined' && window.innerWidth >= 1024 ? 3 : 1;
+  const maxIndex = Math.max(0, testimonials.length - itemsPerView);
+
+  // Auto-advance carousel
+  useEffect(() => {
+    if (isPaused || !sectionInView) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [isPaused, maxIndex, sectionInView]);
+
   return (
-    <section className="relative py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 to-white overflow-hidden">
+    <section className="relative py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 via-white to-white overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-10 right-[5%] w-64 h-64 bg-indigo-100/40 rounded-full blur-3xl" />
       <div className="absolute bottom-10 left-[5%] w-80 h-80 bg-violet-100/40 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br from-violet-100/20 to-fuchsia-100/20 rounded-full blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" ref={sectionRef}>
         {/* Section Header */}
-        <FadeInSection className="text-center mb-16 sm:mb-20">
+        <FadeInSection className="text-center mb-12 sm:mb-16">
           <Badge
             variant="secondary"
             className="mb-4 px-3 py-1 text-xs font-medium bg-rose-100/80 text-rose-700 border-rose-200/50"
@@ -1327,94 +1356,159 @@ function TestimonialsSection() {
             <Quote className="h-3 w-3 ml-1" />
             نظرات کاربران
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-            کاربران ما چه می‌گویند؟
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <span className="bg-gradient-to-l from-indigo-600 via-violet-600 to-purple-600 dark:from-indigo-400 dark:via-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+              نظر کاربران درباره فرمساز
+            </span>
           </h2>
-          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 leading-relaxed">
-            بیش از ۵۰,۰۰۰ کاربر حرفه‌ای به ما اعتماد کرده‌اند. نظرات واقعی آن‌ها را بخوانید.
+          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
+            بیش از ۵۰ هزار سازمان از فرمساز استفاده می‌کنند
           </p>
         </FadeInSection>
 
-        {/* Testimonials Grid — horizontal scroll on mobile, grid on desktop */}
-        <StaggerContainer
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory md:snap-none"
-          staggerDelay={0.08}
-        >
-          {testimonials.map((testimonial, i) => (
-            <motion.div
-              key={i}
-              variants={staggerChild}
-              className="snap-start min-w-[300px] md:min-w-0"
-            >
-              <Card className="group relative h-full border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:shadow-xl hover:shadow-indigo-500/[0.06] transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-                {/* Gradient border on hover */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-200 via-violet-200 to-purple-200 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="w-full h-full rounded-[11px] bg-white dark:bg-gray-900" />
+        {/* Stats Counter Row */}
+        <FadeInSection delay={0.15} className="mb-14 sm:mb-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
+            {statsData.map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: 'easeOut' }}
+                whileHover={{ y: -4, scale: 1.03 }}
+                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md border border-gray-200/60 dark:border-gray-700/40 rounded-2xl p-4 flex flex-col items-center gap-2.5 cursor-default transition-shadow duration-300 hover:shadow-xl hover:shadow-violet-500/10 dark:hover:shadow-violet-500/5"
+              >
+                <div className={`bg-gradient-to-br ${stat.gradient} rounded-xl p-2 shadow-lg`}>
+                  <stat.icon className="h-4 w-4 text-white" />
                 </div>
-                <CardContent className="p-6 relative z-10">
-                  {/* Quote icon */}
-                  <div className="mb-4">
-                    <Quote className="h-8 w-8 text-indigo-200 dark:text-indigo-800" />
+                <div className="text-center">
+                  <div className="text-xl sm:text-2xl font-extrabold bg-gradient-to-l from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                    {stat.value}
                   </div>
-
-                  {/* Star rating with amber gradient */}
-                  <div className="flex gap-0.5 mb-4" dir="ltr">
-                    {Array.from({ length: 5 }).map((_, starIdx) => (
-                      <Star
-                        key={starIdx}
-                        className={`h-4 w-4 transition-all duration-200 ${
-                          starIdx < testimonial.rating
-                            ? 'text-amber-400 fill-amber-400'
-                            : 'text-gray-200 dark:text-gray-700'
-                        }`}
-                        style={starIdx < testimonial.rating ? {
-                          filter: 'drop-shadow(0 0 2px rgba(251, 191, 36, 0.4))'
-                        } : undefined}
-                      />
-                    ))}
+                  <div className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">
+                    {stat.label}
                   </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </FadeInSection>
 
-                  {/* Quote text */}
-                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                    &ldquo;{testimonial.quote}&rdquo;
-                  </p>
-
-                  {/* Author info */}
-                  <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-                    {/* Avatar */}
-                    <div
-                      className={`flex h-11 w-11 items-center justify-center rounded-full text-white text-sm font-bold shrink-0 shadow-lg ${testimonial.color}`}
-                    >
-                      {testimonial.initials}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                        {testimonial.name}
-                      </div>
-                      <div className="text-xs text-gray-500 truncate">
-                        {testimonial.role} · {testimonial.company}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-
-                {/* Gradient overlay on hover */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-500/[0.02] to-violet-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              </Card>
-            </motion.div>
-          ))}
-        </StaggerContainer>
-
-        {/* Subtle scroll indicator for mobile */}
-        <FadeInSection delay={0.5} className="md:hidden flex justify-center mt-6">
-          <motion.div
-            animate={{ x: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="flex items-center gap-2 text-gray-400 text-xs"
+        {/* Testimonials Carousel */}
+        <FadeInSection delay={0.25}>
+          <div
+            className="relative"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
           >
-            <span>اسکرول کنید</span>
-            <ChevronDown className="size-4" />
-          </motion.div>
+            {/* Carousel Container */}
+            <div className="overflow-hidden rounded-2xl">
+              <motion.div
+                className="flex"
+                animate={{ x: `-${currentIndex * (100 / itemsPerView)}%` }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              >
+                {testimonials.map((testimonial, i) => (
+                  <motion.div
+                    key={i}
+                    className="w-full lg:w-1/3 flex-shrink-0 px-2"
+                    whileHover={{ y: -6, transition: { duration: 0.25, ease: 'easeOut' } }}
+                  >
+                    <div className="group relative h-full bg-white/70 dark:bg-gray-800/70 backdrop-blur-md border border-gray-200/60 dark:border-gray-700/40 rounded-2xl hover:shadow-2xl hover:shadow-violet-500/[0.08] transition-all duration-300 overflow-hidden">
+                      {/* Gradient border on hover */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-200 via-purple-200 to-pink-200 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        <div className="w-full h-full rounded-[14px] bg-white/70 dark:bg-gray-800/70 backdrop-blur-md" />
+                      </div>
+
+                      <div className="p-6 relative z-10">
+                        {/* Gradient quote mark */}
+                        <div className="flex justify-end mb-3">
+                          <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl p-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <Quote className="h-4 w-4 text-white" />
+                          </div>
+                        </div>
+
+                        {/* Star rating */}
+                        <div className="flex gap-0.5 mb-4" dir="ltr">
+                          {Array.from({ length: 5 }).map((_, starIdx) => (
+                            <Star
+                              key={starIdx}
+                              className={`h-4 w-4 transition-all duration-200 ${
+                                starIdx < testimonial.rating
+                                  ? 'text-amber-400 fill-amber-400'
+                                  : 'text-gray-200 dark:text-gray-700'
+                              }`}
+                              style={starIdx < testimonial.rating ? {
+                                filter: 'drop-shadow(0 0 2px rgba(251, 191, 36, 0.4))'
+                              } : undefined}
+                            />
+                          ))}
+                        </div>
+
+                        {/* Quote text */}
+                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                          &ldquo;{testimonial.quote}&rdquo;
+                        </p>
+
+                        {/* Author info */}
+                        <div className="flex items-center gap-3 pt-4 border-t border-gray-200/60 dark:border-gray-700/40">
+                          {/* Avatar with ring */}
+                          <div className="relative">
+                            <div
+                              className={`flex h-11 w-11 items-center justify-center rounded-full text-white text-sm font-bold shrink-0 shadow-lg ${testimonial.color} ring-2 ring-violet-200 dark:ring-violet-800`}
+                            >
+                              {testimonial.initials}
+                            </div>
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                {testimonial.name}
+                              </span>
+                              <BadgeCheck className="h-4 w-4 text-emerald-500 shrink-0" />
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                              {testimonial.role} · {testimonial.company}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Gradient overlay on hover */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/[0.02] to-purple-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Navigation Dots */}
+            <div className="flex justify-center items-center gap-2 mt-8">
+              {Array.from({ length: maxIndex + 1 }).map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  onClick={() => setCurrentIndex(dotIdx)}
+                  className={`relative rounded-full transition-all duration-300 ${
+                    dotIdx === currentIndex
+                      ? 'w-8 h-2.5'
+                      : 'w-2.5 h-2.5 hover:w-4'
+                  }`}
+                  aria-label={`اسلاید ${dotIdx + 1}`}
+                >
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    animate={{
+                      backgroundColor: dotIdx === currentIndex
+                        ? '#8b5cf6'
+                        : 'rgba(156, 163, 175, 0.4)',
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
         </FadeInSection>
       </div>
     </section>

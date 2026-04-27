@@ -71,6 +71,23 @@ const sectionDotColors: Record<string, string> = {
   'تنظیمات': 'bg-gray-400',
 };
 
+// ─── Section icon gradient backgrounds ───────────────────────────────
+const sectionIconGradients: Record<string, string> = {
+  'صفحات': 'bg-gradient-to-br from-violet-500 to-purple-600',
+  'الگوها': 'bg-gradient-to-br from-emerald-500 to-teal-600',
+  'فرم‌ها': 'bg-gradient-to-br from-amber-500 to-orange-600',
+  'تنظیمات': 'bg-gradient-to-br from-gray-400 to-gray-600',
+};
+
+// ─── Category chips ──────────────────────────────────────────────────
+const categoryChips = [
+  { label: 'همه', section: null },
+  { label: 'فرمها', section: 'فرم‌ها' },
+  { label: 'الگوها', section: 'الگوها' },
+  { label: 'تنظیمات', section: 'تنظیمات' },
+  { label: 'صفحات', section: 'صفحات' },
+];
+
 // ─── Types ───────────────────────────────────────────────────────────
 interface SearchResult {
   id: string;
@@ -79,6 +96,31 @@ interface SearchResult {
   section: string;
   action: () => void;
 }
+
+// ─── Stagger animation variants ──────────────────────────────────────
+const listVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.04,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const listItemVariants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 400,
+      damping: 30,
+    },
+  },
+};
 
 const pageItems: { label: string; icon: React.ReactNode; view: ViewType }[] = [
   { label: 'داشبورد', icon: <LayoutDashboard className="size-4" />, view: 'dashboard' },
@@ -114,6 +156,7 @@ export default function QuickSearch() {
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -123,6 +166,7 @@ export default function QuickSearch() {
   useEffect(() => {
     if (quickSearchOpen) {
       setRecentSearches(loadRecentSearches());
+      setActiveCategory(null);
     }
   }, [quickSearchOpen]);
 
@@ -217,23 +261,28 @@ export default function QuickSearch() {
     return results;
   }, [query, isDark, setCurrentView, setQuickSearchOpen, setTheme, setCurrentForm, forms]);
 
-  const results = buildResults();
+  const allResults = buildResults();
 
-  // Group results by section
+  // Group results by section and apply category filter
   const groupedResults: Record<string, SearchResult[]> = {};
-  results.forEach((r) => {
+  allResults.forEach((r) => {
+    if (activeCategory && r.section !== activeCategory) return;
     if (!groupedResults[r.section]) groupedResults[r.section] = [];
     groupedResults[r.section].push(r);
   });
 
+  // Flat filtered results for keyboard navigation
+  const filteredResults = allResults.filter(
+    (r) => !activeCategory || r.section === activeCategory
+  );
+
   // Calculate total flat items count for keyboard navigation
-  // When query is empty and recent searches exist, recent searches + results count as flat items
   const showRecentSearches = !query.trim() && recentSearches.length > 0;
 
-  // Reset active index when results change
+  // Reset active index when results or category change
   useEffect(() => {
     setActiveIndex(0);
-  }, [query]);
+  }, [query, activeCategory]);
 
   // Keyboard shortcut to open
   useEffect(() => {
@@ -256,7 +305,7 @@ export default function QuickSearch() {
   }, [quickSearchOpen]);
 
   // Handle keyboard navigation
-  const totalItems = showRecentSearches ? recentSearches.length + results.length : results.length;
+  const totalItems = showRecentSearches ? recentSearches.length + filteredResults.length : filteredResults.length;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
@@ -290,12 +339,12 @@ export default function QuickSearch() {
       }
       // Adjust index to results
       const resultIndex = index - recentSearches.length;
-      if (results[resultIndex]) {
-        results[resultIndex].action();
+      if (filteredResults[resultIndex]) {
+        filteredResults[resultIndex].action();
       }
     } else {
-      if (results[index]) {
-        results[index].action();
+      if (filteredResults[index]) {
+        filteredResults[index].action();
       }
     }
   };
@@ -324,32 +373,75 @@ export default function QuickSearch() {
   // When showing recent searches, offset for flat index
   const recentSearchOffset = showRecentSearches ? recentSearches.length : 0;
 
+  // Rebuild grouped results for display
+  const displayGroupedResults: Record<string, SearchResult[]> = {};
+  filteredResults.forEach((r) => {
+    if (!displayGroupedResults[r.section]) displayGroupedResults[r.section] = [];
+    displayGroupedResults[r.section].push(r);
+  });
+
   return (
     <Dialog open={quickSearchOpen} onOpenChange={setQuickSearchOpen}>
       <DialogContent
-        className="sm:max-w-lg p-0 overflow-hidden rounded-2xl top-[20%] translate-y-0 gap-0 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-violet-200/30 dark:border-violet-500/20"
+        className="sm:max-w-lg p-0 overflow-hidden rounded-2xl top-[20%] translate-y-0 gap-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-gray-200/60 dark:border-gray-700/40 shadow-2xl"
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">جستجوی سریع</DialogTitle>
 
-        {/* Search input with gradient bottom border */}
-        <div className="relative flex items-center gap-3 px-4 py-3">
-          {/* Gradient bottom border */}
-          <div className="absolute bottom-0 left-3 right-3 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent dark:via-violet-500/40" />
-          <Search className="size-5 text-muted-foreground shrink-0" />
+        {/* Search input with gradient focus ring */}
+        <div className="relative flex items-center gap-3 px-5 py-4 focus-within:ring-2 focus-within:ring-violet-500/50 rounded-t-2xl transition-all duration-200">
+          {/* Animated search icon */}
+          <motion.div
+            animate={{ scale: [1, 1.12, 1] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <Search className="size-5 text-muted-foreground shrink-0" />
+          </motion.div>
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="جستجو..."
-            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+            placeholder="برای جستجو تایپ کنید..."
+            className="flex-1 bg-transparent text-lg text-foreground placeholder:text-muted-foreground outline-none"
             dir="rtl"
           />
           <kbd className="hidden sm:flex items-center gap-1 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-100/80 dark:bg-gray-800/80 px-2 py-0.5 text-[10px] text-muted-foreground backdrop-blur-sm">
             ESC
           </kbd>
+        </div>
+
+        {/* Category chips - horizontal scrollable */}
+        <div className="flex items-center gap-2 px-4 py-2 overflow-x-auto scrollbar-thin">
+          {categoryChips.map((chip) => {
+            const isActive = activeCategory === chip.section;
+            return (
+              <motion.button
+                key={chip.label}
+                onClick={() => setActiveCategory(chip.section)}
+                className={`relative px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors duration-200 ${
+                  isActive
+                    ? 'text-white'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="category-indicator"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-purple-500"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{chip.label}</span>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Gradient divider below search + chips */}
+        <div className="px-4">
+          <div className="h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent dark:via-violet-500/30" />
         </div>
 
         {/* Results */}
@@ -384,23 +476,26 @@ export default function QuickSearch() {
                     <motion.button
                       key={`recent-${idx}`}
                       data-active={isActive}
+                      initial="hidden"
+                      animate="visible"
+                      variants={listItemVariants}
                       whileHover={{ x: 2 }}
                       onClick={() => handleRecentSearchClick(search)}
                       onMouseEnter={() => setActiveIndex(idx)}
                       className={`flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-right transition-all duration-200 ${
                         isActive
                           ? 'bg-violet-100/80 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 shadow-sm'
-                          : 'text-foreground hover:bg-gray-100/80 dark:hover:bg-gray-800/50'
+                          : 'text-foreground hover:bg-violet-50 dark:hover:bg-violet-950/30'
                       }`}
                     >
                       <div
-                        className={`flex size-8 items-center justify-center rounded-lg shrink-0 ${
+                        className={`flex size-8 items-center justify-center rounded-lg shrink-0 text-white ${
                           isActive
-                            ? 'bg-violet-200/60 dark:bg-violet-800/40'
-                            : 'bg-gray-100/80 dark:bg-gray-800/80'
+                            ? 'bg-gradient-to-br from-violet-400 to-purple-500'
+                            : 'bg-gray-100 dark:bg-gray-800 text-muted-foreground'
                         }`}
                       >
-                        <Clock className="size-4 text-muted-foreground" />
+                        <Clock className="size-4" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <span className="truncate block">{search}</span>
@@ -418,7 +513,7 @@ export default function QuickSearch() {
           </AnimatePresence>
 
           {/* Search results or empty state */}
-          {results.length === 0 && query.trim() ? (
+          {filteredResults.length === 0 && query.trim() ? (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -438,72 +533,83 @@ export default function QuickSearch() {
                 عبارت دیگری را امتحان کنید
               </p>
             </motion.div>
-          ) : results.length > 0 ? (
-            Object.entries(groupedResults).map(([section, items]) => (
-              <div key={section} className="mb-1">
-                <div className="flex items-center gap-2 px-3 py-1.5">
-                  <span className={`size-1.5 rounded-full ${sectionDotColors[section] || 'bg-gray-400'}`} />
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-                    {section}
-                  </span>
-                  <div className="flex-1 h-px bg-gray-200/60 dark:bg-gray-700/40" />
-                </div>
-                {items.map((item) => {
-                  flatIndex++;
-                  const currentIndex = recentSearchOffset + flatIndex;
-                  const isActive = currentIndex === activeIndex;
-                  return (
-                    <motion.button
-                      key={item.id}
-                      data-active={isActive}
-                      whileHover={{ x: 2 }}
-                      onClick={item.action}
-                      onMouseEnter={() => setActiveIndex(currentIndex)}
-                      className={`flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-right transition-all duration-200 ${
-                        isActive
-                          ? 'bg-violet-100/80 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 shadow-sm'
-                          : 'text-foreground hover:bg-gray-100/80 dark:hover:bg-gray-800/50'
-                      }`}
-                    >
-                      <div
-                        className={`flex size-8 items-center justify-center rounded-lg shrink-0 ${
+          ) : (
+            <motion.div
+              key={`${activeCategory}-${query}`}
+              initial="hidden"
+              animate="visible"
+              variants={listVariants}
+            >
+              {Object.entries(displayGroupedResults).map(([section, items]) => (
+                <div key={section} className="mb-1">
+                  <div className="flex items-center gap-2 px-3 py-1.5">
+                    <span className={`size-1.5 rounded-full ${sectionDotColors[section] || 'bg-gray-400'}`} />
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                      {section}
+                    </span>
+                    <div className="flex-1 h-px bg-gray-200/60 dark:bg-gray-700/40" />
+                  </div>
+                  {items.map((item) => {
+                    flatIndex++;
+                    const currentIndex = recentSearchOffset + flatIndex;
+                    const isActive = currentIndex === activeIndex;
+                    const gradientBg = sectionIconGradients[section] || 'bg-gradient-to-br from-gray-400 to-gray-600';
+                    return (
+                      <motion.button
+                        key={item.id}
+                        data-active={isActive}
+                        variants={listItemVariants}
+                        whileHover={{ x: 2 }}
+                        onClick={item.action}
+                        onMouseEnter={() => setActiveIndex(currentIndex)}
+                        className={`flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-right transition-all duration-200 ${
                           isActive
-                            ? 'bg-violet-200/60 dark:bg-violet-800/40'
-                            : 'bg-gray-100/80 dark:bg-gray-800/80'
+                            ? 'bg-violet-100/80 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 shadow-sm'
+                            : 'text-foreground hover:bg-violet-50 dark:hover:bg-violet-950/30'
                         }`}
                       >
-                        {item.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <SearchHighlight text={item.label} query={query} />
-                      </div>
-                      {isActive && (
-                        <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-gray-200 dark:border-gray-700 bg-gray-100/80 dark:bg-gray-800/80 px-1.5 py-0.5 text-[10px] text-muted-foreground backdrop-blur-sm">
-                          Enter ↵
-                        </kbd>
-                      )}
-                    </motion.button>
-                  );
-                })}
-              </div>
-            ))
-          ) : null}
+                        {/* Gradient icon container */}
+                        <div
+                          className={`flex size-8 items-center justify-center rounded-lg shrink-0 text-white transition-all duration-200 ${
+                            isActive
+                              ? gradientBg
+                              : 'bg-gray-100 dark:bg-gray-800 text-muted-foreground'
+                          }`}
+                        >
+                          {item.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <SearchHighlight text={item.label} query={query} />
+                        </div>
+                        {/* Keyboard navigation hint (right side for RTL) */}
+                        {isActive && (
+                          <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-gray-200 dark:border-gray-700 bg-gray-100/80 dark:bg-gray-800/80 px-1.5 py-0.5 text-[10px] text-muted-foreground backdrop-blur-sm">
+                            Enter ↵
+                          </kbd>
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              ))}
+            </motion.div>
+          )}
         </div>
 
-        {/* Footer with glassmorphism */}
+        {/* Footer with keyboard hints */}
         <div className="flex items-center justify-between border-t border-gray-200/40 dark:border-gray-700/30 px-4 py-2.5 bg-gray-50/40 dark:bg-gray-900/40 backdrop-blur-sm">
           <div className="flex items-center gap-3 text-[10px] text-muted-foreground/60">
             <span className="flex items-center gap-1">
               <kbd className="rounded border border-gray-200 dark:border-gray-700 bg-gray-100/80 dark:bg-gray-800/80 px-1 py-0.5 font-mono backdrop-blur-sm">↑↓</kbd>
-              انتخاب
+              برای ناوبری
             </span>
             <span className="flex items-center gap-1">
               <kbd className="rounded border border-gray-200 dark:border-gray-700 bg-gray-100/80 dark:bg-gray-800/80 px-1 py-0.5 font-mono backdrop-blur-sm">↵</kbd>
-              باز کردن
+              برای انتخاب
             </span>
             <span className="flex items-center gap-1">
               <kbd className="rounded border border-gray-200 dark:border-gray-700 bg-gray-100/80 dark:bg-gray-800/80 px-1 py-0.5 font-mono backdrop-blur-sm">esc</kbd>
-              بستن
+              برای بستن
             </span>
           </div>
           <div className="flex items-center gap-2 text-[10px] text-muted-foreground/40">
@@ -511,10 +617,10 @@ export default function QuickSearch() {
               <kbd className="rounded border border-gray-200 dark:border-gray-700 bg-gray-100/80 dark:bg-gray-800/80 px-1 py-0.5 font-mono backdrop-blur-sm">
                 <Command className="size-2.5" />K
               </kbd>
-              باز کردن
+              جستجو
             </span>
-            {results.length > 0 && (
-              <span>{results.length} نتیجه</span>
+            {filteredResults.length > 0 && (
+              <span>{filteredResults.length} نتیجه</span>
             )}
           </div>
         </div>
