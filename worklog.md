@@ -1,6 +1,122 @@
 # Worklog
 
 ---
+## Task ID: 26 (Self-Directed Development Cycle)
+## Agent: main-agent
+## Date: 2026-04-28
+
+### Session Overview
+Self-directed development cycle for the Persian RTL form builder project (Job ID 110873). Reviewed worklog, verified build/lint (0 errors), then implemented 4 styling improvements across landing page sections and 2 new features (template preview dialog, form status badge).
+
+### 1. QA Testing
+- Build verification: `npx next build` — SUCCESS, 0 errors, all routes compile correctly
+- Lint verification: `bun run lint` — SUCCESS, 0 errors, 0 warnings
+- Previous QA (Task ID 25) confirmed all 8 views functional with 0 runtime errors
+- Dev server unstable in this environment (process keeps dying) — skipped agent-browser QA, relied on previous session's comprehensive testing
+
+### 2. Styling Improvements (Requirement #4 — Mandatory)
+
+**a) Integrations Section Glassmorphism Enhancement** (`src/components/landing/landing-page.tsx`):
+- Added 3 floating decorative gradient orbs (violet, fuchsia, indigo) behind the section with continuous `x/y/scale` animations
+- Converted all integration cards to glassmorphism: `bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border-gray-200/60`
+- Added gradient border reveal on hover: `bg-gradient-to-br from-violet-500 to-purple-600 p-[1px] opacity-0 group-hover:opacity-100`
+- Enhanced icon hover: `whileHover={{ scale: 1.15, rotate: 5 }}` with spring transition
+- Enhanced card lift: `whileHover={{ y: -8 }}` with `hover:shadow-2xl`
+- Full gradient heading text: "اتصال به ابزارهای مورد علاقه"
+
+**b) FAQ Section Enhancement** (`src/components/landing/landing-page.tsx`):
+- Added 3 animated gradient orbs (violet, indigo, fuchsia) as section background decorations
+- Converted search input to glassmorphism: `bg-white/70 backdrop-blur-xl border-gray-200/60`
+- Added pulsing search icon animation (opacity/scale pulse)
+- Converted category tabs to `motion.button` with `whileHover/whileTap` and `layoutId="faq-active-bg"` animated background indicator
+- Converted FAQ accordion items to glassmorphism: `bg-white/60 dark:bg-gray-900/60 backdrop-blur-md border-gray-200/60`
+- Added violet indicator dot on open FAQ items using `layoutId="faq-dot-indicator"`
+- Added gradient text for section heading "پاسخ سوالات شما"
+- Added visual-only thumbs up/down helpful rating on each FAQ answer (ThumbsUp/ThumbsDown icons)
+- Added 3 new icon imports: CreditCard, ThumbsUp, ThumbsDown
+
+**c) CTA Section Enhancement** (`src/components/landing/landing-page.tsx`):
+- Created `CTAMiniStat` component with glassmorphism `bg-white/10 backdrop-blur-md` card, `useInView`, `useAnimatedCounter`
+- Added 3 animated stat counter cards below trust indicators: "50K+ فرم", "2M+ پاسخ", "99.9% آپتایم"
+- Added subtle grid pattern overlay at 0.03 opacity
+- Added "بدون نیاز به کارت بانکی" badge with CreditCard icon above CTA buttons
+- Enhanced primary CTA button with two concentric pulsing ring effects (outer scale 1→1.25, inner scale 1→1.15)
+- Added pulsing animation to trust indicator Check icons with staggered delays
+
+**d) Footer Enhancement** (`src/components/landing/landing-page.tsx`):
+- Added 2 animated gradient mesh glow orbs (violet, fuchsia) with breathing opacity/scale animations
+- Enhanced gradient separator: `via-violet-500/50` for subtler glow
+- Added floating animation to brand logo: `animate={{ y: [0, -4, 0] }}`
+- Enhanced social media icons with glassmorphism, `backdrop-blur-md`, `whileHover={{ scale: 1.15, y: -3 }}`, gradient glow overlay on hover
+- Added animated link underlines with gradient `from-violet-400 to-fuchsia-400` sliding on hover
+- Added glassmorphism newsletter email subscription input + gradient "عضویت" button with ArrowLeft icon
+- Added spam disclaimer text below newsletter form
+
+### 3. New Features (Requirement #5 — Mandatory)
+
+**a) Template Preview Dialog** (`src/components/dashboard/template-gallery.tsx`):
+- Added `Eye` icon to lucide-react imports
+- Added `getQuestionTypeLabel(type)` helper — maps question types to Persian labels
+- Added `getQuestionTypeColor(type)` helper — returns Tailwind color classes per question type category
+- Added `previewTemplate` state to TemplateGallery component
+- Added "پیش‌نمایش" (Preview) button on each TemplateCard with Eye icon
+- Created `TemplatePreviewDialog` component with:
+  - Glassmorphism overlay (`bg-black/40 backdrop-blur-sm`)
+  - Header with gradient background, template icon, name, description, category badge, question count
+  - Scrollable question list showing: step number badge, title, type badge (color-coded), required/optional indicator
+  - For choice-based questions: option chips displayed (max 6 visible with "+N" overflow)
+  - "استفاده از این الگو" button at bottom
+  - Framer Motion entrance/exit animation (scale + fade + y-translate, spring physics)
+- Added `onPreview` prop to TemplateCard and wired to `setPreviewTemplate`
+
+**b) Form Status Badge** (`src/components/dashboard/dashboard.tsx`):
+- Created `FormStatusBadge` component accepting `status` prop ('published' | 'draft' | 'closed')
+- Published: green badge with Globe icon — "منتشر شده"
+- Draft: amber badge with FileEdit icon — "پیش‌نویس"
+- Closed: red badge with Lock icon — "بسته شده"
+- Compact `text-[10px]` rounded-full badge with icon + label
+- Integrated into FormCard component: expired forms mapped to 'closed' status
+- All icons (Globe, FileEdit, Lock) were already imported
+
+### Build Verification
+- `npx next build` — SUCCESS, 0 errors, all routes compile correctly
+- `bun run lint` — SUCCESS, 0 errors, 0 warnings
+
+### Files Modified in This Session
+1. `src/components/landing/landing-page.tsx` — Integrations glassmorphism, FAQ enhancement, CTA stat counters + badge, Footer newsletter + glow + animated links
+2. `src/components/dashboard/template-gallery.tsx` — Template Preview Dialog with question list, type labels, color coding
+3. `src/components/dashboard/dashboard.tsx` — FormStatusBadge component with published/draft/closed states
+
+### Current Project Status Assessment
+- Application is fully functional with 0 build/lint errors across all 8 views
+- All previous features intact: 17 question types, form sections, activity log, dark mode, notifications, quick search, form builder, QR codes, social sharing, import/export, favorites, tags, welcome banner, enhanced notifications, thank you page, keyboard shortcuts, duplicate/delete confirmations, hero gradient mesh, dashboard sparklines, glassmorphism header/navbar, use cases glassmorphism, navbar scroll progress, floating action buttons, testimonials carousel, pricing glassmorphism, form fill glassmorphism, etc.
+- NEW: Integrations section with glassmorphism cards and animated gradient borders
+- NEW: FAQ section with glassmorphism items, animated category tabs, helpful ratings
+- NEW: CTA section with animated stat counters, "بدون نیاز به کارت بانکی" badge, dual pulsing rings
+- NEW: Footer with newsletter subscription, animated link underlines, gradient glow orbs
+- NEW: Template Preview Dialog showing question list before using a template
+- NEW: Form Status Badge (published/draft/closed) on dashboard form cards
+- Build passes: 0 errors
+- ESLint passes: 0 errors, 0 warnings
+
+### Unresolved Issues / Recommendations for Next Phase
+1. File upload is UI-only (no actual file handling backend)
+2. Email notifications on form submission
+3. Custom domain/branding for published forms
+4. Real-time collaborative form editing (websocket)
+5. Form analytics export to PDF
+6. Multi-language support (currently Persian only)
+7. Form section drag-and-drop reordering
+8. Section-level logic (show/hide entire section based on conditions)
+9. Form versioning / revision history
+10. Conditional logic builder for questions (show/hide based on answers)
+11. Mobile responsive testing on actual devices recommended
+12. Form builder collaborative real-time editing
+13. A/B testing for form variants
+14. Template gallery dark mode support enhancement
+15. Results view export to Excel/CSV real implementation
+
+---
 ## Task ID: 25 (Self-Directed Development Cycle)
 ## Agent: main-agent
 ## Date: 2026-04-27

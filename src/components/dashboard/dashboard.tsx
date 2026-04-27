@@ -2201,6 +2201,24 @@ function TagManagerPopover({
 
 // ─── Form Card Skeleton ──────────────────────────────────────────────────────
 
+// ─── Form Status Badge ────────────────────────────────────────────────────
+
+function FormStatusBadge({ status }: { status: string }) {
+  const config: Record<string, { label: string; color: string; icon: React.ElementType }> = {
+    published: { label: 'منتشر شده', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-emerald-200/60', icon: Globe },
+    draft: { label: 'پیش‌نویس', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border-amber-200/60', icon: FileEdit },
+    closed: { label: 'بسته شده', color: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 border-red-200/60', icon: Lock },
+  };
+  const c = config[status] || config.draft;
+  const Icon = c.icon;
+  return (
+    <Badge variant="outline" className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${c.color} flex items-center gap-1`}>
+      <Icon className="size-3" />
+      {c.label}
+    </Badge>
+  );
+}
+
 function FormCardSkeleton() {
   return (
     <Card className="overflow-hidden bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
@@ -2384,10 +2402,7 @@ function FormCard({
                   {form._count?.submissions}
                 </span>
               )}
-              <Badge variant="outline" className={`text-xs flex items-center gap-1.5 ${status.color}`}>
-                <span className={`size-2 rounded-full ${effectiveStatus === 'published' ? 'bg-emerald-500' : effectiveStatus === 'expired' ? 'bg-red-500' : effectiveStatus === 'closed' ? 'bg-zinc-400' : 'bg-amber-400'}`} />
-                {status.label}
-              </Badge>
+              <FormStatusBadge status={effectiveStatus === 'expired' ? 'closed' : effectiveStatus} />
             </div>
           </div>
         </CardHeader>

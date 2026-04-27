@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Star,
   Sparkles,
+  Eye,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import {
@@ -57,6 +58,32 @@ const categoryColorMap: Record<TemplateCategory, string> = {
 
 const ITEMS_PER_PAGE = 12;
 
+// ── Question type helpers ─────────────────────────────────────────────────────
+
+function getQuestionTypeLabel(type: string): string {
+  const map: Record<string, string> = {
+    short_text: 'متن کوتاه', long_text: 'متن بلند', multiple_choice: 'چند گزینه‌ای',
+    multiple_select: 'چک‌باکس', dropdown: 'دراپ‌داون', rating: 'امتیازدهی',
+    scale: 'مقیاس', yes_no: 'بله/خیر', date: 'تاریخ', time: 'زمان',
+    file_upload: 'آپلود فایل', phone: 'شماره تلفن', email: 'ایمیل',
+    number: 'عدد', statement: 'بیان', section_divider: 'بخش',
+    matrix: 'ماتریسی', slider: 'اسلایدر',
+  };
+  return map[type] || type;
+}
+
+function getQuestionTypeColor(type: string): string {
+  const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown'];
+  const textTypes = ['short_text', 'long_text', 'email', 'phone', 'number'];
+  const ratingTypes = ['rating', 'scale', 'yes_no'];
+  if (choiceTypes.includes(type)) return 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300';
+  if (textTypes.includes(type)) return 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300';
+  if (ratingTypes.includes(type)) return 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300';
+  if (type === 'file_upload') return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300';
+  if (type === 'date' || type === 'time') return 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300';
+  return 'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-300';
+}
+
 // ── Animation variants ────────────────────────────────────────────────────────
 
 const containerVariants = {
@@ -88,10 +115,12 @@ function TemplateCard({
   template,
   onUse,
   isUsing,
+  onPreview,
 }: {
   template: TemplateData;
   onUse: () => void;
   isUsing: boolean;
+  onPreview: () => void;
 }) {
   return (
     <motion.div
@@ -145,19 +174,30 @@ function TemplateCard({
               <span>{template.questionCount} سؤال</span>
             </div>
 
-            <Button
-              onClick={onUse}
-              disabled={isUsing}
-              size="sm"
-              className="rounded-lg bg-gradient-to-l from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white shadow-sm text-[11px] font-medium h-8 px-3 transition-all"
-            >
-              {isUsing ? (
-                <Loader2 className="size-3 ml-1 animate-spin" />
-              ) : (
-                <Sparkles className="size-3 ml-1" />
-              )}
-              استفاده
-            </Button>
+            <div className="flex items-center gap-1.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onPreview}
+                className="rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 shadow-none text-[11px] font-medium h-8 px-2 transition-all"
+              >
+                <Eye className="size-3 ml-1" />
+                پیش‌نمایش
+              </Button>
+              <Button
+                onClick={onUse}
+                disabled={isUsing}
+                size="sm"
+                className="rounded-lg bg-gradient-to-l from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white shadow-sm text-[11px] font-medium h-8 px-3 transition-all"
+              >
+                {isUsing ? (
+                  <Loader2 className="size-3 ml-1 animate-spin" />
+                ) : (
+                  <Sparkles className="size-3 ml-1" />
+                )}
+                استفاده
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -177,6 +217,7 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [usingTemplateId, setUsingTemplateId] = useState<string | null>(null);
+  const [previewTemplate, setPreviewTemplate] = useState<TemplateData | null>(null);
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
 
   const filteredTemplates = useMemo(() => {
@@ -349,6 +390,7 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
                     template={template}
                     onUse={() => handleUseTemplate(template)}
                     isUsing={usingTemplateId === template.id}
+                    onPreview={() => setPreviewTemplate(template)}
                   />
                 ))}
               </motion.div>
@@ -414,6 +456,180 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
           )}
         </div>
       </DialogContent>
+
+      {/* Template Preview Dialog */}
+      <AnimatePresence>
+        {previewTemplate && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          >
+            {/* Glassmorphism overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setPreviewTemplate(null)}
+            />
+
+            {/* Dialog content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              dir="rtl"
+              className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl w-full max-w-lg max-h-[85vh] overflow-hidden flex flex-col"
+            >
+              {/* Header */}
+              <div className="relative p-5 pb-4 border-b border-gray-100 dark:border-gray-800 overflow-hidden shrink-0">
+                <div className="absolute inset-0 bg-gradient-to-bl from-violet-50 via-purple-50 to-fuchsia-50 dark:from-violet-950/40 dark:via-purple-950/30 dark:to-fuchsia-950/30" />
+                <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/20 backdrop-blur-sm" />
+                <div className="absolute -top-6 -left-6 size-24 rounded-full bg-violet-200/40 dark:bg-violet-800/20 blur-2xl" />
+                <div className="absolute -bottom-4 -right-4 size-20 rounded-full bg-fuchsia-200/40 dark:bg-fuchsia-800/20 blur-2xl" />
+
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        className={`flex size-11 items-center justify-center rounded-xl bg-gradient-to-br ${previewTemplate.gradient} shadow-lg shrink-0`}
+                      >
+                        <TemplateIcon name={previewTemplate.icon} className="size-5 text-white" />
+                      </motion.div>
+                      <div className="text-right min-w-0">
+                        <h3 className="text-base font-extrabold text-gray-900 dark:text-white truncate">
+                          {previewTemplate.name}
+                        </h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                          {previewTemplate.description}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setPreviewTemplate(null)}
+                      className="shrink-0 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <X className="size-4 text-gray-500" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant="secondary"
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full border-0 font-medium ${categoryColorMap[previewTemplate.category]}`}
+                    >
+                      {previewTemplate.categoryLabel}
+                    </Badge>
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] px-1.5 py-0.5 rounded-full border-0 font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                    >
+                      <Layers className="size-3 ml-1" />
+                      {previewTemplate.questions.length} سؤال
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Questions list */}
+              <div className="flex-1 overflow-y-auto p-5">
+                <div className="space-y-2.5">
+                  {previewTemplate.questions.map((question, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.03 * index, duration: 0.25 }}
+                      className="p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/50 hover:bg-violet-50/80 dark:hover:bg-violet-950/30 border border-transparent hover:border-violet-100 dark:hover:border-violet-900/50 transition-all duration-200"
+                    >
+                      <div className="flex items-start gap-3">
+                        {/* Step number badge */}
+                        <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-gray-700 shadow-sm text-xs font-bold text-gray-500 dark:text-gray-400 mt-0.5">
+                          {index + 1}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
+                              {question.title}
+                            </span>
+                            {/* Required indicator */}
+                            {question.required ? (
+                              <span className="shrink-0 text-[10px] font-bold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-1.5 py-0.5 rounded">
+                                الزامی
+                              </span>
+                            ) : (
+                              <span className="shrink-0 text-[10px] font-medium text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">
+                                اختیاری
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Type badge */}
+                          <Badge
+                            variant="secondary"
+                            className={`mt-1.5 text-[10px] font-medium px-2 py-0.5 h-5 border-0 ${getQuestionTypeColor(question.type)}`}
+                          >
+                            {getQuestionTypeLabel(question.type)}
+                          </Badge>
+
+                          {/* Options for choice-based questions */}
+                          {(question.type === 'multiple_choice' || question.type === 'multiple_select' || question.type === 'dropdown') &&
+                            question.config?.options &&
+                            Array.isArray(question.config.options) &&
+                            (question.config.options as { text: string }[]).length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 mt-2">
+                                {(question.config.options as { text: string }[]).slice(0, 6).map((opt, i) => (
+                                  <span
+                                    key={i}
+                                    className="text-[10px] px-2 py-0.5 rounded-full bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600"
+                                  >
+                                    {opt.text}
+                                  </span>
+                                ))}
+                                {(question.config.options as { text: string }[]).length > 6 && (
+                                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500">
+                                    +{(question.config.options as { text: string }[]).length - 6}
+                                  </span>
+                                )}
+                              </div>
+                            )
+                          }
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Footer action */}
+              <div className="p-5 pt-3 border-t border-gray-100 dark:border-gray-800 shrink-0">
+                <Button
+                  onClick={() => {
+                    handleUseTemplate(previewTemplate);
+                    setPreviewTemplate(null);
+                  }}
+                  disabled={usingTemplateId === previewTemplate.id}
+                  className="w-full rounded-xl bg-gradient-to-l from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-md text-sm font-medium h-10 transition-all"
+                >
+                  {usingTemplateId === previewTemplate.id ? (
+                    <Loader2 className="size-4 ml-2 animate-spin" />
+                  ) : (
+                    <Sparkles className="size-4 ml-2" />
+                  )}
+                  استفاده از این الگو
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Dialog>
   );
 }

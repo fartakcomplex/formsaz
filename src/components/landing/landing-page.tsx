@@ -73,6 +73,9 @@ import {
   MessageCircle,
   Moon,
   Sun,
+  CreditCard,
+  ThumbsUp,
+  ThumbsDown,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -1624,6 +1627,22 @@ function FAQSection() {
       {/* Subtle decorative elements */}
       <div className="absolute top-0 right-[10%] w-64 h-64 bg-violet-100/30 dark:bg-violet-900/10 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-[10%] w-80 h-80 bg-indigo-100/30 dark:bg-indigo-900/10 rounded-full blur-3xl" />
+      {/* Animated floating gradient orbs */}
+      <motion.div
+        className="absolute top-[15%] right-[5%] w-72 h-72 bg-violet-300/20 dark:bg-violet-600/10 rounded-full blur-3xl"
+        animate={{ x: [0, 25, -15, 0], y: [0, -18, 12, 0], scale: [1, 1.15, 0.95, 1] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute bottom-[10%] left-[8%] w-80 h-80 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl"
+        animate={{ x: [0, -20, 18, 0], y: [0, 15, -20, 0], scale: [1, 0.9, 1.12, 1] }}
+        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+      />
+      <motion.div
+        className="absolute top-[50%] left-[50%] w-56 h-56 bg-fuchsia-200/15 dark:bg-fuchsia-600/8 rounded-full blur-3xl"
+        animate={{ x: [0, 15, -25, 0], y: [0, -25, 18, 0], scale: [1, 1.2, 0.85, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 5 }}
+      />
 
       <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -1634,8 +1653,10 @@ function FAQSection() {
           >
             سوالات متداول
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-            پاسخ سوالات شما
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <span className="bg-gradient-to-l from-indigo-600 via-violet-600 to-purple-600 dark:from-indigo-400 dark:via-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+              پاسخ سوالات شما
+            </span>
           </h2>
           <p className="mt-4 text-lg text-gray-500 leading-relaxed">
             اگر سوالی دارید، احتمالاً پاسخ آن را اینجا پیدا خواهید کرد.
@@ -1645,32 +1666,55 @@ function FAQSection() {
         {/* Search Input */}
         <FadeInSection delay={0.1}>
           <div className="relative mb-6">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <motion.div
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10"
+              animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.1, 1] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <Search className="h-4 w-4 text-gray-400" />
+            </motion.div>
             <Input
               type="text"
               placeholder="جستجو در سوالات..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-11 pr-10 pl-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 text-sm focus-visible:ring-indigo-500/20"
+              className="w-full h-11 pr-10 pl-4 rounded-xl border-gray-200/60 dark:border-gray-800/60 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl text-sm focus-visible:ring-indigo-500/20 shadow-sm"
             />
           </div>
         </FadeInSection>
 
         {/* Category Tabs */}
         <FadeInSection delay={0.15}>
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-2 mb-8 relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                layoutId="faq-tab-indicator"
+                className="absolute top-0 h-[30px] rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 shadow-sm"
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                style={{ display: 'none' }}
+              />
+            </AnimatePresence>
             {categories.map((cat) => (
-              <button
+              <motion.button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 text-xs font-medium rounded-full transition-all duration-200 ${
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative px-4 py-1.5 text-xs font-medium rounded-full transition-all duration-200 ${
                   activeCategory === cat
                     ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 shadow-sm'
                     : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
                 }`}
               >
-                {cat}
-              </button>
+                {activeCategory === cat && (
+                  <motion.div
+                    layoutId="faq-active-bg"
+                    className="absolute inset-0 rounded-full bg-indigo-100 dark:bg-indigo-900/40 shadow-sm"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{cat}</span>
+              </motion.button>
             ))}
           </div>
         </FadeInSection>
@@ -1687,16 +1731,33 @@ function FAQSection() {
                 <AccordionItem
                   key={i}
                   value={`faq-${i}`}
-                  className="border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900 shadow-sm hover:shadow-md hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 transition-all data-[state=open]:shadow-lg data-[state=open]:shadow-indigo-500/[0.05] data-[state=open]:border-indigo-100 dark:data-[state=open]:border-indigo-800 overflow-hidden"
+                  className="group border border-gray-200/60 dark:border-gray-800/60 rounded-xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-sm hover:shadow-lg data-[state=open]:shadow-lg data-[state=open]:shadow-indigo-500/[0.08] data-[state=open]:border-violet-200/60 dark:data-[state=open]:border-violet-800/60 overflow-hidden transition-all duration-300"
                 >
                   <AccordionTrigger className="px-6 py-4 text-right text-base font-semibold text-gray-900 dark:text-gray-100 hover:no-underline hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors [&[data-state=open]>svg]:text-indigo-600 [&[data-state=open]>svg]:rotate-180 [&>svg]:transition-transform [&>svg]:duration-300">
                     <span className="flex items-center gap-2">
+                      <motion.span
+                        className="hidden w-2 h-2 rounded-full bg-violet-500 group-data-[state=open]:block"
+                        layoutId="faq-dot-indicator"
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      />
                       {faq.question}
                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 font-normal">{faq.category}</span>
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="px-6 pb-5 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                     {faq.answer}
+                    {/* Helpful rating — visual only */}
+                    <div className="mt-4 pt-3 border-t border-gray-100/60 dark:border-gray-800/40 flex items-center gap-4">
+                      <span className="text-xs text-gray-400">آیا این پاسخ مفید بود؟</span>
+                      <button className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors">
+                        <ThumbsUp className="h-3.5 w-3.5" />
+                        <span>بله</span>
+                      </button>
+                      <button className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+                        <ThumbsDown className="h-3.5 w-3.5" />
+                        <span>خیر</span>
+                      </button>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
               ))
@@ -1788,6 +1849,22 @@ function IntegrationsSection() {
       <div className="absolute inset-0 opacity-30 dark:opacity-10">
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '40px 40px' }} />
       </div>
+      {/* Animated floating gradient orbs */}
+      <motion.div
+        className="absolute top-[10%] right-[8%] w-72 h-72 bg-violet-300/25 dark:bg-violet-600/12 rounded-full blur-3xl"
+        animate={{ x: [0, 30, -20, 0], y: [0, -20, 15, 0], scale: [1, 1.15, 0.95, 1] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute bottom-[15%] left-[5%] w-80 h-80 bg-fuchsia-200/20 dark:bg-fuchsia-600/10 rounded-full blur-3xl"
+        animate={{ x: [0, -25, 20, 0], y: [0, 15, -25, 0], scale: [1, 0.9, 1.15, 1] }}
+        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+      />
+      <motion.div
+        className="absolute top-[55%] left-[40%] w-64 h-64 bg-indigo-200/20 dark:bg-indigo-600/10 rounded-full blur-3xl"
+        animate={{ x: [0, 15, -30, 0], y: [0, -30, 20, 0], scale: [1, 1.2, 0.85, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 5 }}
+      />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeInSection>
@@ -1796,10 +1873,9 @@ function IntegrationsSection() {
               <Sparkles className="size-3 ml-1.5" />
               یکپارچه‌سازی
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
-              اتصال به{' '}
-              <span className="bg-gradient-to-l from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
-                ابزارهای مورد علاقه
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">
+              <span className="bg-gradient-to-l from-indigo-600 via-violet-600 to-purple-600 dark:from-indigo-400 dark:via-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                اتصال به ابزارهای مورد علاقه
               </span>
             </h2>
             <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
@@ -1810,7 +1886,7 @@ function IntegrationsSection() {
 
         {/* Connecting line pattern between integration icons (desktop) */}
         <div className="hidden lg:block absolute top-[45%] right-[8%] left-[8%] h-[1px] pointer-events-none">
-          <div className="gradient-divider" />
+          <div className="gradient-divider opacity-60" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
@@ -1821,23 +1897,34 @@ function IntegrationsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ delay: index * 0.06, duration: 0.4 }}
-              whileHover={{ y: -6, scale: 1.04 }}
-              className="group relative p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-xl hover:shadow-violet-100/60 dark:hover:shadow-violet-900/30 transition-all duration-300 cursor-pointer"
+              whileHover={{ y: -8 }}
+              className="group relative cursor-pointer"
             >
-              {/* Hover glow effect */}
-              <div className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${integration.color} opacity-0 group-hover:opacity-[0.15] blur-xl transition-opacity duration-500`} />
-              {/* Colored icon circle */}
-              <div className={`relative flex items-center justify-center size-12 rounded-xl bg-gradient-to-br ${integration.color} shadow-lg mb-4 group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
-                {integration.icon}
+              {/* Gradient border reveal on hover */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="w-full h-full rounded-[14px] bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl" />
               </div>
-              {/* Name */}
-              <h3 className="relative text-base font-bold text-gray-900 dark:text-white mb-1.5">
-                {integration.name}
-              </h3>
-              {/* Description */}
-              <p className="relative text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                {integration.description}
-              </p>
+              {/* Glassmorphism card */}
+              <div className="relative p-5 rounded-2xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-gray-200/60 dark:border-gray-800/60 hover:shadow-2xl hover:shadow-violet-100/60 dark:hover:shadow-violet-900/30 transition-all duration-300">
+                {/* Hover glow effect */}
+                <div className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${integration.color} opacity-0 group-hover:opacity-[0.15] blur-xl transition-opacity duration-500 pointer-events-none`} />
+                {/* Colored icon circle */}
+                <motion.div
+                  whileHover={{ scale: 1.15, rotate: 5 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  className={`relative flex items-center justify-center size-12 rounded-xl bg-gradient-to-br ${integration.color} shadow-lg mb-4 group-hover:shadow-xl transition-all duration-300`}
+                >
+                  {integration.icon}
+                </motion.div>
+                {/* Name */}
+                <h3 className="relative text-base font-bold text-gray-900 dark:text-white mb-1.5">
+                  {integration.name}
+                </h3>
+                {/* Description */}
+                <p className="relative text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                  {integration.description}
+                </p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -2252,6 +2339,39 @@ function PricingCardInner({
   );
 }
 
+/* ── CTA Mini Stat Card ── */
+function CTAMiniStat({ stat, delay }: {
+  stat: { value: number; suffix: string; label: string; icon: React.ElementType };
+  delay: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-30px' });
+  const count = useAnimatedCounter(stat.value >= 100 ? Math.floor(stat.value) : 0, 2, isInView);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay }}
+      whileHover={{ y: -4 }}
+      className="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-white/90"
+    >
+      <stat.icon className="h-5 w-5 text-white/60" />
+      <div className="text-left">
+        <div className="text-lg font-bold text-white">
+          {stat.value < 100
+            ? stat.value.toFixed(1)
+            : isInView
+              ? count.toLocaleString('fa-IR')
+              : '۰'}{stat.suffix}
+        </div>
+        <div className="text-[11px] text-white/50 font-medium">{stat.label}</div>
+      </div>
+    </motion.div>
+  );
+}
+
 /* ──────────────────────────── CTA Section ──────────────────────────── */
 
 function CTASection() {
@@ -2280,6 +2400,14 @@ function CTASection() {
         style={{
           backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)',
           backgroundSize: '28px 28px',
+        }}
+      />
+      {/* Subtle grid pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
         }}
       />
 
@@ -2390,6 +2518,18 @@ function CTASection() {
             هزاران سازمان از فرمساز برای جمع‌آوری داده‌ها استفاده می‌کنند. رایگان شروع کنید و تفاوت را احساس کنید.
           </motion.p>
 
+          {/* No credit card badge */}
+          <motion.div
+            initial={{ y: 24, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.22 }}
+            className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm text-white/90"
+          >
+            <CreditCard className="h-4 w-4 text-white/70" />
+            بدون نیاز به کارت بانکی
+          </motion.div>
+
           {/* CTA Buttons */}
           <motion.div
             initial={{ y: 24, opacity: 0 }}
@@ -2398,16 +2538,21 @@ function CTASection() {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            {/* Primary CTA — pulse animation */}
+            {/* Primary CTA — larger pulsing ring animation */}
             <motion.div
               className="relative"
-              animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             >
               <motion.div
-                className="absolute inset-0 rounded-2xl bg-white/20"
-                animate={{ scale: [1, 1.18], opacity: [0.35, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' }}
+                className="absolute -inset-3 rounded-2xl bg-white/15"
+                animate={{ scale: [1, 1.25], opacity: [0.4, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' }}
+              />
+              <motion.div
+                className="absolute -inset-1.5 rounded-2xl bg-white/20"
+                animate={{ scale: [1, 1.15], opacity: [0.3, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut', delay: 0.3 }}
               />
               <Button
                 size="lg"
@@ -2439,19 +2584,42 @@ function CTASection() {
             className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-white/70"
           >
             <span className="inline-flex items-center gap-1.5">
-              <Check className="h-4 w-4 text-emerald-300" />
+              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
+                <Check className="h-4 w-4 text-emerald-300" />
+              </motion.div>
               بیش از ۵۰,۰۰۰ فرم ساخته شده
             </span>
             <span className="hidden sm:inline-block w-px h-4 bg-white/25" />
             <span className="inline-flex items-center gap-1.5">
-              <Check className="h-4 w-4 text-emerald-300" />
+              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}>
+                <Check className="h-4 w-4 text-emerald-300" />
+              </motion.div>
               ۹۹.۹٪ آپتایم
             </span>
             <span className="hidden sm:inline-block w-px h-4 bg-white/25" />
             <span className="inline-flex items-center gap-1.5">
-              <Check className="h-4 w-4 text-emerald-300" />
+              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}>
+                <Check className="h-4 w-4 text-emerald-300" />
+              </motion.div>
               پشتیبانی ۲۴/۷
             </span>
+          </motion.div>
+
+          {/* Animated stat counters */}
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
+          >
+            {[
+              { value: 50000, suffix: '+', label: 'فرم', icon: FileText },
+              { value: 2000000, suffix: '+', label: 'پاسخ', icon: MessageSquare },
+              { value: 99.9, suffix: '%', label: 'آپتایم', icon: Shield },
+            ].map((stat, idx) => (
+              <CTAMiniStat key={idx} stat={stat} delay={idx * 0.1} />
+            ))}
           </motion.div>
         </FadeInSection>
       </div>
@@ -2526,8 +2694,8 @@ function Footer() {
 
   return (
     <footer className="relative mt-auto">
-      {/* Gradient divider — violet to transparent at top */}
-      <div className="h-px bg-gradient-to-l from-transparent via-violet-500 to-transparent" />
+      {/* Gradient border top separator */}
+      <div className="h-px bg-gradient-to-l from-transparent via-violet-500/50 to-transparent" />
 
       {/* Dark background with subtle gradient + glassmorphism */}
       <div className="relative bg-gray-950 overflow-hidden">
@@ -2541,6 +2709,17 @@ function Footer() {
         />
         {/* Glassmorphism layer */}
         <div className="absolute inset-0 backdrop-blur-[1px]" />
+        {/* Gradient mesh glow orbs */}
+        <motion.div
+          className="absolute -top-20 right-[10%] w-[400px] h-[300px] bg-violet-600/10 rounded-full blur-3xl"
+          animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.05, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute -bottom-16 left-[15%] w-[350px] h-[250px] bg-fuchsia-600/8 rounded-full blur-3xl"
+          animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.08, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+        />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 lg:py-16">
           <motion.div
@@ -2552,17 +2731,21 @@ function Footer() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
               {/* Column 1 — Brand + description */}
               <div className="sm:col-span-2 lg:col-span-1">
-                <div className="flex items-center gap-2.5 mb-4">
+                <motion.div
+                  className="flex items-center gap-2.5 mb-4"
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                >
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-500/20">
                     <FileText className="h-4.5 w-4.5 text-white" />
                   </div>
                   <span className="text-lg font-bold text-white tracking-tight">فرم‌ساز</span>
-                </div>
+                </motion.div>
                 <p className="text-sm leading-relaxed text-gray-400 max-w-[260px]">
                   فرمساز آنلاین، ابزار حرفه‌ای ساخت فرم، پرسشنامه و نظرسنجی
                 </p>
 
-                {/* Social Media Icons — glassmorphism circular containers */}
+                {/* Social Media Icons — glassmorphism circular containers with gradient hover glow */}
                 <div className="flex items-center gap-2.5 mt-6">
                   {socialLinks.map((social, i) => (
                     <motion.a
@@ -2572,11 +2755,13 @@ function Footer() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.1 * i, duration: 0.4 }}
-                      whileHover={{ scale: 1.12, y: -2 }}
+                      whileHover={{ scale: 1.15, y: -3 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`flex h-10 w-10 items-center justify-center rounded-full text-gray-500 border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm transition-all duration-200 ${social.hoverColor}`}
+                      className={`group relative flex h-10 w-10 items-center justify-center rounded-full text-gray-500 border border-white/[0.08] bg-white/[0.04] backdrop-blur-md transition-all duration-300 ${social.hoverColor}`}
                       title={social.name}
                     >
+                      {/* Gradient glow on hover */}
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
                       {social.icon}
                     </motion.a>
                   ))}
@@ -2595,30 +2780,14 @@ function Footer() {
                   محصول
                 </h4>
                 <ul className="space-y-3 text-sm">
-                  <li>
-                    <a href="#features" className="text-gray-400 hover:text-violet-300 hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1.5 group">
-                      <span className="w-0 h-px bg-violet-400 group-hover:w-3 transition-all duration-200" />
-                      ساخت فرم
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#pricing" className="text-gray-400 hover:text-violet-300 hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1.5 group">
-                      <span className="w-0 h-px bg-violet-400 group-hover:w-3 transition-all duration-200" />
-                      الگوهای آماده
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#use-cases" className="text-gray-400 hover:text-violet-300 hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1.5 group">
-                      <span className="w-0 h-px bg-violet-400 group-hover:w-3 transition-all duration-200" />
-                      نظرسنجی
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#pricing" className="text-gray-400 hover:text-violet-300 hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1.5 group">
-                      <span className="w-0 h-px bg-violet-400 group-hover:w-3 transition-all duration-200" />
-                      فرم استخدام
-                    </a>
-                  </li>
+                  {[{ label: 'ساخت فرم', href: '#features' }, { label: 'الگوهای آماده', href: '#pricing' }, { label: 'نظرسنجی', href: '#use-cases' }, { label: 'فرم استخدام', href: '#pricing' }].map((link) => (
+                    <li key={link.label}>
+                      <a href={link.href} className="relative text-gray-400 hover:text-violet-300 transition-colors duration-200 inline-block group">
+                        {link.label}
+                        <span className="absolute bottom-0 right-0 w-0 h-px bg-gradient-to-l from-violet-400 to-fuchsia-400 group-hover:w-full transition-all duration-300" />
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </motion.div>
 
@@ -2702,8 +2871,33 @@ function Footer() {
             </div>
           </motion.div>
 
+          {/* Newsletter / Email subscription input */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.35, duration: 0.5 }}
+            className="my-8"
+          >
+            <div className="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
+              <div className="relative flex-1 w-full">
+                <Send className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                <Input
+                  type="email"
+                  placeholder="ایمیل خود را وارد کنید..."
+                  className="w-full h-11 pr-10 pl-4 rounded-xl border-white/[0.08] bg-white/[0.04] backdrop-blur-xl text-sm text-white placeholder:text-gray-500 focus-visible:ring-violet-500/30 focus-visible:border-violet-500/30"
+                />
+              </div>
+              <Button className="w-full sm:w-auto h-11 px-6 bg-gradient-to-l from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 transition-all">
+                عضویت
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </div>
+            <p className="text-center text-[11px] text-gray-600 mt-2">بدون اسپم. هرگز ایمیل‌های شما را به اشتراک نمی‌گذاریم.</p>
+          </motion.div>
+
           {/* Separator */}
-          <div className="gradient-divider my-8" />
+          <div className="gradient-divider my-6" />
 
           {/* Bottom bar */}
           <motion.div
