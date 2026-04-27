@@ -2341,6 +2341,13 @@ function FormCard({
                   {form.description}
                 </CardDescription>
               )}
+              {/* Last submission time */}
+              {(form._count?.submissions || 0) > 0 && (
+                <div className="flex items-center gap-1 mt-1.5 text-[11px] text-gray-400 dark:text-gray-500">
+                  <Clock className="size-3" />
+                  <span>آخرین پاسخ: {formatRelativeTime(form.updatedAt)}</span>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <motion.button
@@ -2370,6 +2377,13 @@ function FormCard({
                   />
                 </motion.span>
               </motion.button>
+              {/* Response count badge */}
+              {(form._count?.submissions || 0) > 0 && (
+                <span className="inline-flex items-center gap-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  <MessageSquare className="size-3" />
+                  {form._count?.submissions}
+                </span>
+              )}
               <Badge variant="outline" className={`text-xs flex items-center gap-1.5 ${status.color}`}>
                 <span className={`size-2 rounded-full ${effectiveStatus === 'published' ? 'bg-emerald-500' : effectiveStatus === 'expired' ? 'bg-red-500' : effectiveStatus === 'closed' ? 'bg-zinc-400' : 'bg-amber-400'}`} />
                 {status.label}

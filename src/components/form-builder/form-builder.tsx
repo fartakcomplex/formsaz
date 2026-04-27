@@ -415,9 +415,8 @@ export default function FormBuilder() {
             />
             <Badge
               variant="secondary"
-              className="shrink-0 bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300 border-0 text-[11px] px-2 py-0 gap-1 font-semibold"
+              className="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-0 text-xs font-bold px-2.5 py-1 rounded-full"
             >
-              <CircleHelp className="h-3 w-3" />
               {toPersianDigits(String(questions.length))} سؤال
             </Badge>
           </div>

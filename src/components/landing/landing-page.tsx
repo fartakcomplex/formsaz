@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { useTheme } from 'next-themes';
 import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -70,6 +71,8 @@ import {
   Heart,
   Headphones,
   MessageCircle,
+  Moon,
+  Sun,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -215,10 +218,17 @@ function FloatingParticles({ count = 20, className = '' }: { count?: number; cla
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const setCurrentView = useAppStore((s) => s.setCurrentView);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      setScrollProgress(Math.min(progress, 100));
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -243,7 +253,7 @@ function Navbar() {
       initial={{ y: -80 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 right-0 left-0 z-50 relative transition-all duration-300 ${
         scrolled
           ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-gray-100 dark:border-gray-800'
           : 'bg-transparent'
@@ -372,6 +382,13 @@ function Navbar() {
             </SheetContent>
           </Sheet>
         </div>
+      </div>
+      {/* Scroll progress indicator */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gray-100 dark:bg-gray-800">
+        <motion.div
+          className="h-full bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500"
+          style={{ width: `${scrollProgress}%` }}
+        />
       </div>
     </motion.header>
   );
@@ -997,54 +1014,65 @@ function UseCasesSection() {
       icon: BarChart3,
       title: 'تحقیقات بازار',
       description: 'شناخت بهتر مشتریان و بازار هدف با پرسشنامه‌های تخصصی',
-      color: 'from-blue-50 to-indigo-50',
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-600',
+      gradient: 'from-blue-500 to-indigo-600',
+      shadowColor: 'shadow-blue-500/25',
     },
     {
       icon: MessageSquareHeart,
       title: 'رضایت مشتری',
       description: 'سنجش رضایت و بهبود تجربه مشتریان با فرم‌های NPS و CSAT',
-      color: 'from-pink-50 to-rose-50',
-      iconBg: 'bg-pink-100',
-      iconColor: 'text-pink-600',
+      gradient: 'from-pink-500 to-rose-600',
+      shadowColor: 'shadow-pink-500/25',
     },
     {
       icon: Users,
       title: 'منابع انسانی',
       description: 'ارزیابی عملکرد، نظرسنجی کارکنان و فرم‌های استخدام',
-      color: 'from-amber-50 to-orange-50',
-      iconBg: 'bg-amber-100',
-      iconColor: 'text-amber-600',
+      gradient: 'from-amber-500 to-orange-600',
+      shadowColor: 'shadow-amber-500/25',
     },
     {
       icon: GraduationCap,
       title: 'آموزش و دانشگاه',
       description: 'آزمون‌های آنلاین، فرم‌های ثبت‌نام و ارزیابی دانشجویان',
-      color: 'from-emerald-50 to-teal-50',
-      iconBg: 'bg-emerald-100',
-      iconColor: 'text-emerald-600',
+      gradient: 'from-emerald-500 to-teal-600',
+      shadowColor: 'shadow-emerald-500/25',
     },
     {
       icon: CalendarDays,
       title: 'رویدادها',
       description: 'فرم ثبت‌نام رویداد، نظرسنجی حضار و مدیریت شرکت‌کنندگان',
-      color: 'from-violet-50 to-purple-50',
-      iconBg: 'bg-violet-100',
-      iconColor: 'text-violet-600',
+      gradient: 'from-violet-500 to-purple-600',
+      shadowColor: 'shadow-violet-500/25',
     },
     {
       icon: HeartPulse,
       title: 'سلامت و درمان',
       description: 'فرم‌های ویزیت آنلاین، پرسشنامه‌های پزشکی و پیگیری بیماران',
-      color: 'from-cyan-50 to-sky-50',
-      iconBg: 'bg-cyan-100',
-      iconColor: 'text-cyan-600',
+      gradient: 'from-cyan-500 to-sky-600',
+      shadowColor: 'shadow-cyan-500/25',
     },
   ];
 
   return (
     <section id="use-cases" className="relative py-24 sm:py-32 overflow-hidden">
+      {/* Floating decorative gradient orbs */}
+      <motion.div
+        className="absolute top-[10%] right-[5%] w-64 h-64 bg-blue-300/20 dark:bg-blue-600/10 rounded-full blur-3xl pointer-events-none"
+        animate={{ x: [0, 20, -15, 0], y: [0, -15, 10, 0], scale: [1, 1.1, 0.95, 1] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute bottom-[15%] left-[8%] w-72 h-72 bg-violet-300/20 dark:bg-violet-600/10 rounded-full blur-3xl pointer-events-none"
+        animate={{ x: [0, -20, 15, 0], y: [0, 10, -20, 0], scale: [1, 0.9, 1.1, 1] }}
+        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+      />
+      <motion.div
+        className="absolute top-[50%] left-[50%] w-56 h-56 bg-fuchsia-200/15 dark:bg-fuchsia-600/8 rounded-full blur-3xl pointer-events-none"
+        animate={{ x: [0, 15, -10, 0], y: [0, -10, 20, 0], scale: [1, 1.15, 0.9, 1] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 5 }}
+      />
+
       {/* Background grid pattern */}
       <div className="absolute inset-0 bg-grid-pattern-sm" />
       {/* Gradient overlay at top for smooth blending */}
@@ -1056,14 +1084,14 @@ function UseCasesSection() {
         <FadeInSection className="text-center mb-16 sm:mb-20">
           <Badge
             variant="secondary"
-            className="mb-4 px-3 py-1 text-xs font-medium bg-violet-100/80 text-violet-700 border-violet-200/50"
+            className="mb-4 px-3 py-1 text-xs font-medium bg-violet-100/80 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300 border-violet-200/50 dark:border-violet-700/30"
           >
             محیط‌های کاربردی
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             مناسب برای هر صنعت و نیازی
           </h2>
-          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 leading-relaxed">
+          <p className="mt-4 mx-auto max-w-2xl text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
             از استارتاپ تا سازمان بزرگ، فرم‌ساز ابزار مناسبی برای همه کاربردهاست.
           </p>
         </FadeInSection>
@@ -1071,20 +1099,41 @@ function UseCasesSection() {
         {/* Use Case Grid */}
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {useCases.map((useCase, i) => (
-            <motion.div key={i} variants={staggerChild} whileHover={{ scale: 1.03 }} transition={{ duration: 0.2 }}>
-              <Card className="group relative h-full border-gray-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-500/[0.08] transition-all duration-300 hover:-translate-y-1 cursor-default overflow-hidden">
-                {/* Colored top stripe */}
-                <div className={`h-1.5 w-full bg-gradient-to-l ${useCase.color}`} />
-                <CardContent className="p-6">
-                  <div
-                    className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${useCase.iconBg} mb-4 group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <useCase.icon className={`h-5 w-5 ${useCase.iconColor}`} />
+            <motion.div
+              key={i}
+              variants={staggerChild}
+              whileHover={{ y: -6 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="group relative"
+            >
+              {/* Glow behind card on hover */}
+              <div className={`absolute -inset-0.5 rounded-2xl bg-gradient-to-br ${useCase.gradient} opacity-0 group-hover:opacity-[0.15] blur-2xl transition-opacity duration-500`} />
+
+              {/* Glassmorphism card */}
+              <div className="relative h-full rounded-2xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-gray-200/60 dark:border-gray-800/60 overflow-hidden transition-shadow duration-300 group-hover:shadow-2xl cursor-default p-6">
+                {/* Gradient border reveal on hover */}
+                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${useCase.gradient} p-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500`}>
+                  <div className="w-full h-full rounded-[14px] bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl" />
+                </div>
+
+                {/* Card content */}
+                <div className="relative z-10">
+                  {/* Animated icon container */}
+                  <div className="relative mb-5">
+                    {/* Icon glow ring */}
+                    <div className={`absolute inset-[-6px] rounded-2xl bg-gradient-to-br ${useCase.gradient} opacity-[0.1] group-hover:opacity-[0.2] blur-lg transition-all duration-500`} />
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: -3 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      className={`relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${useCase.gradient} shadow-lg ${useCase.shadowColor} transition-transform duration-300`}
+                    >
+                      <useCase.icon className="h-6 w-6 text-white" strokeWidth={1.8} />
+                    </motion.div>
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 mb-1.5">{useCase.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{useCase.description}</p>
-                </CardContent>
-              </Card>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1.5">{useCase.title}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{useCase.description}</p>
+                </div>
+              </div>
             </motion.div>
           ))}
         </StaggerContainer>
@@ -2414,12 +2463,17 @@ function CTASection() {
 
 function Footer() {
   const [showBackTop, setShowBackTop] = React.useState(false);
-  const [showPulseDot, setShowPulseDot] = React.useState(false);
+  const [scrollProgress, setScrollProgress] = React.useState(0);
+
+  const { setTheme, resolvedTheme } = useTheme();
 
   React.useEffect(() => {
     const onScroll = () => {
-      setShowBackTop(window.scrollY > 400);
-      setShowPulseDot(window.scrollY > window.innerHeight);
+      const scrollY = window.scrollY;
+      setShowBackTop(scrollY > 400);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollY / docHeight) * 100 : 0;
+      setScrollProgress(Math.min(progress, 100));
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -2682,38 +2736,89 @@ function Footer() {
         </div>
       </div>
 
-      {/* Floating pulse dot — back to top indicator */}
-      <AnimatePresence>
-        {showPulseDot && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-6 left-6 z-40 flex items-center justify-center group"
-            title="بازگشت به بالا"
-          >
-            <span className="absolute size-6 rounded-full bg-violet-500/30 pulse-dot" />
-            <span className="relative size-3 rounded-full bg-violet-500 shadow-lg shadow-violet-500/50 group-hover:bg-violet-400 transition-colors" />
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      {/* Back to top button (appears later) */}
+      {/* Floating action buttons */}
       <AnimatePresence>
         {showBackTop && (
-          <motion.button
+          <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 10 }}
             transition={{ duration: 0.2 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-16 left-6 z-40 flex items-center justify-center size-11 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:-translate-y-1 transition-all"
-            title="بازگشت به بالا"
+            className="fixed bottom-6 left-6 z-40 flex flex-col gap-3"
           >
-            <ArrowUp className="size-5" />
-          </motion.button>
+            {/* Theme toggle button */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+              className="flex items-center justify-center size-11 rounded-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200/60 dark:border-gray-800/60 shadow-xl text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+              title={resolvedTheme === 'dark' ? 'حالت روشن' : 'حالت تاریک'}
+            >
+              <AnimatePresence mode="wait">
+                {resolvedTheme === 'dark' ? (
+                  <motion.div
+                    key="sun"
+                    initial={{ rotate: -90, scale: 0 }}
+                    animate={{ rotate: 0, scale: 1 }}
+                    exit={{ rotate: 90, scale: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Sun className="size-5" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="moon"
+                    initial={{ rotate: 90, scale: 0 }}
+                    animate={{ rotate: 0, scale: 1 }}
+                    exit={{ rotate: -90, scale: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Moon className="size-5" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+
+            {/* Scroll-to-top button with progress ring */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="relative flex items-center justify-center size-11 rounded-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200/60 dark:border-gray-800/60 shadow-xl hover:border-violet-300/60 dark:hover:border-violet-500/30 transition-colors"
+              title="بازگشت به بالا"
+            >
+              {/* SVG progress ring */}
+              <svg className="absolute inset-0 size-11 -rotate-90" viewBox="0 0 44 44">
+                {/* Background ring */}
+                <circle
+                  cx="22" cy="22" r="18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  className="text-gray-200/60 dark:text-gray-700/60"
+                />
+                {/* Progress ring */}
+                <circle
+                  cx="22" cy="22" r="18"
+                  fill="none"
+                  stroke="url(#progressGradient)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeDasharray={`${2 * Math.PI * 18}`}
+                  strokeDashoffset={`${2 * Math.PI * 18 * (1 - scrollProgress / 100)}`}
+                  className="transition-[stroke-dashoffset] duration-150 ease-out"
+                />
+                <defs>
+                  <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#8b5cf6" />
+                    <stop offset="50%" stopColor="#a855f7" />
+                    <stop offset="100%" stopColor="#d946ef" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <ArrowUp className="size-4 text-violet-600 dark:text-violet-400 relative z-10" />
+            </motion.button>
+          </motion.div>
         )}
       </AnimatePresence>
     </footer>

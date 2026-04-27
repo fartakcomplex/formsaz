@@ -1375,9 +1375,19 @@ function SuccessScreen({ customMessage, formId, formTitle, onReturn, onResubmit 
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         className="relative z-10 w-full max-w-md"
       >
-        <div className="relative rounded-3xl border border-white/30 dark:border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl shadow-2xl shadow-violet-200/50 dark:shadow-violet-900/30 p-8 sm:p-10">
-          {/* Top gradient accent line */}
-          <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl" style={{ background: 'linear-gradient(90deg, #7c3aed, #8b5cf6, #a78bfa, #6d28d9)' }} />
+        <div className="relative rounded-3xl border border-white/30 dark:border-gray-700/30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl shadow-violet-200/50 dark:shadow-violet-900/30 p-8 sm:p-10">
+          {/* Animated top gradient accent line */}
+          <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl overflow-hidden">
+            <motion.div
+              className="h-full w-full"
+              style={{
+                background: 'linear-gradient(90deg, #7c3aed, #8b5cf6, #a78bfa, #d946ef, #a78bfa, #6d28d9)',
+                backgroundSize: '200% 100%',
+              }}
+              animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+            />
+          </div>
 
           {/* Pulsing glow behind checkmark */}
           <motion.div
@@ -1944,76 +1954,151 @@ export default function FormFill() {
           </Button>
         </motion.div>
 
-        {/* Form Header */}
+        {/* Form Header / Welcome Screen */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          {/* Custom Welcome Message */}
-          {customWelcomeMessage && (
+          {/* Animated gradient background area */}
+          <div className="relative overflow-hidden rounded-3xl">
+            {/* Gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 opacity-95" />
+
+            {/* Dot grid pattern overlay */}
+            <div
+              className="absolute inset-0 opacity-[0.05]"
+              style={{
+                backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
+                backgroundSize: '20px 20px',
+              }}
+            />
+
+            {/* Floating decorative gradient orbs */}
             <motion.div
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-4 rounded-xl border border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-950/30 p-4"
-            >
-              <p className="text-sm leading-relaxed text-violet-700 dark:text-violet-300 whitespace-pre-wrap">{customWelcomeMessage}</p>
-            </motion.div>
-          )}
-          <div className="rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm">
-            <div className="flex items-start gap-4">
-              <div className="flex-1 min-w-0">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{fillForm.title}</h1>
-                {fillForm.description && (
-                  <p className="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed">{fillForm.description}</p>
+              animate={{ y: [0, -12, 0], x: [0, 6, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -top-4 -right-4 size-24 rounded-full bg-fuchsia-400/30 blur-2xl pointer-events-none"
+            />
+            <motion.div
+              animate={{ y: [0, 10, 0], x: [0, -8, 0] }}
+              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              className="absolute bottom-2 -left-6 size-20 rounded-full bg-violet-300/25 blur-2xl pointer-events-none"
+            />
+            <motion.div
+              animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+              className="absolute top-1/3 right-1/4 size-16 rounded-full bg-purple-400/20 blur-xl pointer-events-none"
+            />
+
+            {/* Glassmorphism welcome card */}
+            <div className="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 rounded-3xl p-6 sm:p-8 shadow-lg">
+              {/* Animated gradient line at top of card */}
+              <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl overflow-hidden">
+                <motion.div
+                  className="h-full w-full"
+                  style={{
+                    background: 'linear-gradient(90deg, #7c3aed, #a78bfa, #d946ef, #a78bfa, #7c3aed)',
+                    backgroundSize: '200% 100%',
+                  }}
+                  animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                />
+              </div>
+
+              {/* Custom Welcome Message */}
+              {customWelcomeMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-4 rounded-xl border border-white/40 dark:border-white/10 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm p-4"
+                >
+                  <p className="text-sm leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{customWelcomeMessage}</p>
+                </motion.div>
+              )}
+
+              <div className="flex items-start gap-4">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{fillForm.title}</h1>
+                  {fillForm.description && (
+                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{fillForm.description}</p>
+                  )}
+                </div>
+                {/* Progress Ring */}
+                {visibleInputQuestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 20 }}
+                    className="relative shrink-0"
+                  >
+                    <svg width="56" height="56" viewBox="0 0 56 56" className="-rotate-90">
+                      {/* Background circle */}
+                      <circle
+                        cx="28" cy="28" r="24"
+                        fill="none"
+                        className="stroke-white/30 dark:stroke-gray-600/30"
+                        strokeWidth="4"
+                      />
+                      {/* Progress circle */}
+                      <motion.circle
+                        cx="28" cy="28" r="24"
+                        fill="none"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeDasharray={2 * Math.PI * 24}
+                        initial={{ strokeDashoffset: 2 * Math.PI * 24 }}
+                        animate={{ strokeDashoffset: 2 * Math.PI * 24 * (1 - progressPercent / 100) }}
+                        transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+                        style={{ stroke: '#ffffff' }}
+                      />
+                    </svg>
+                    {/* Percentage text */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <motion.span
+                        key={progressPercent}
+                        initial={{ scale: 1.3, opacity: 0.5 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                        className="text-xs font-bold text-white"
+                      >
+                        {toPersianDigit(progressPercent)}٪
+                      </motion.span>
+                    </div>
+                  </motion.div>
                 )}
               </div>
-              {/* Progress Ring */}
+
+              {/* Enhanced Start / شروع button */}
               {visibleInputQuestions.length > 0 && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 20 }}
-                  className="relative shrink-0"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="mt-6 flex justify-center"
                 >
-                  <svg width="56" height="56" viewBox="0 0 56 56" className="-rotate-90">
-                    {/* Background circle */}
-                    <circle
-                      cx="28" cy="28" r="24"
-                      fill="none"
-                      className="stroke-gray-100 dark:stroke-zinc-800"
-                      strokeWidth="4"
-                    />
-                    {/* Progress circle */}
-                    <motion.circle
-                      cx="28" cy="28" r="24"
-                      fill="none"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      strokeDasharray={2 * Math.PI * 24}
-                      initial={{ strokeDashoffset: 2 * Math.PI * 24 }}
-                      animate={{ strokeDashoffset: 2 * Math.PI * 24 * (1 - progressPercent / 100) }}
-                      transition={{ type: 'spring', stiffness: 80, damping: 20 }}
-                      style={{
-                        stroke: progressPercent < 25 ? '#ef4444' : progressPercent < 50 ? '#f59e0b' : progressPercent < 75 ? '#8b5cf6' : '#10b981',
-                      }}
-                    />
-                  </svg>
-                  {/* Percentage text */}
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => {
+                      if (currentPage === 0) {
+                        document.getElementById(`question-card-${visibleInputQuestions[0]?.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-3.5 text-sm font-bold text-white shadow-xl transition-all"
+                    style={{
+                      background: 'linear-gradient(135deg, #7c3aed, #6d28d9, #a855f7)',
+                      boxShadow: '0 8px 30px -4px rgba(124, 58, 237, 0.5)',
+                    }}
+                  >
                     <motion.span
-                      key={progressPercent}
-                      initial={{ scale: 1.3, opacity: 0.5 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                      className="text-xs font-bold"
-                      style={{
-                        color: progressPercent < 25 ? '#ef4444' : progressPercent < 50 ? '#f59e0b' : progressPercent < 75 ? '#8b5cf6' : '#10b981',
-                      }}
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                     >
-                      {toPersianDigit(progressPercent)}٪
+                      <ArrowLeft className="size-4" />
                     </motion.span>
-                  </div>
+                    شروع
+                  </motion.button>
                 </motion.div>
               )}
             </div>
@@ -2090,45 +2175,89 @@ export default function FormFill() {
             transition={{ delay: 0.15 }}
             className="mb-6"
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-gray-500 dark:text-zinc-400">
-                {isMultiPageMode
-                  ? `بخش ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalSections)}`
-                  : currentQuestionSection && currentQuestionSection.title
-                    ? `بخش «${currentQuestionSection.title}» — سؤال ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalPages)}`
-                    : `سؤال ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalPages)}`}
-              </span>
-              <div className="flex items-center gap-2">
-                <span className="flex items-center gap-1 text-[10px] text-gray-400 dark:text-zinc-500">
-                  <Clock className="size-3" />
-                  زمان تقریبی تکمیل: {toPersianDigit(Math.max(1, Math.ceil(visibleInputQuestions.length / 5)))} دقیقه
+            {/* Glassmorphism progress container */}
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-gray-200/60 dark:border-gray-800/60 rounded-2xl p-4">
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-xs font-medium text-gray-500 dark:text-zinc-400">
+                  {isMultiPageMode
+                    ? `بخش ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalSections)}`
+                    : currentQuestionSection && currentQuestionSection.title
+                      ? `بخش «${currentQuestionSection.title}» — سؤال ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalPages)}`
+                      : `سؤال ${toPersianDigit(currentPage + 1)} از ${toPersianDigit(totalPages)}`}
                 </span>
-                <span className="text-xs font-bold" style={{ color: themeColor }}>
-                  {toPersianDigit(progressPercent)}٪ تکمیل شده
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1 text-[10px] text-gray-400 dark:text-zinc-500">
+                    <Clock className="size-3" />
+                    زمان تقریبی تکمیل: {toPersianDigit(Math.max(1, Math.ceil(visibleInputQuestions.length / 5)))} دقیقه
+                  </span>
+                  {/* Gradient percentage text */}
+                  <span className="text-xs font-bold bg-gradient-to-l from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">
+                    {toPersianDigit(progressPercent)}٪ تکمیل شده
+                  </span>
+                </div>
               </div>
-            </div>
-            {progressStyle === 'bar' ? (
-              <div className="relative overflow-hidden rounded-full h-2.5 bg-gray-100 dark:bg-zinc-800">
-                <motion.div
-                  className="absolute inset-y-0 right-0 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPercent}%` }}
-                  transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-                  style={{ backgroundColor: themeColor }}
-                >
-                  {/* Shimmer effect */}
+              {progressStyle === 'bar' ? (
+                <div className="relative overflow-hidden rounded-full h-2.5 bg-gray-100 dark:bg-zinc-800">
+                  {/* Step indicator dots along the progress bar */}
+                  {!isMultiPageMode && visibleInputQuestions.length > 1 && visibleInputQuestions.length <= 20 && (
+                    <div className="absolute inset-0 flex items-center">
+                      {visibleInputQuestions.map((q, idx) => {
+                        const position = (idx / (visibleInputQuestions.length - 1)) * 100;
+                        const isAnswered = answers[q.id] && answers[q.id].trim() !== '';
+                        const isCurrent = idx === currentPage;
+                        return (
+                          <motion.div
+                            key={q.id}
+                            className="absolute top-1/2 -translate-y-1/2 z-10"
+                            style={{ left: `${position}%` }}
+                            animate={isCurrent ? { scale: [1, 1.3, 1] } : {}}
+                            transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                          >
+                            <div
+                              className="size-2.5 rounded-full border-2 transition-all duration-300"
+                              style={{
+                                backgroundColor: isCurrent ? themeColor : isAnswered ? themeColor : '#f3f4f6',
+                                borderColor: isCurrent ? themeColor : isAnswered ? themeColor : '#e5e7eb',
+                                boxShadow: isCurrent ? `0 0 0 3px ${themeColor}30` : undefined,
+                              }}
+                            >
+                              {/* Pulse ring for current step */}
+                              {isCurrent && (
+                                <motion.div
+                                  className="absolute inset-0 rounded-full"
+                                  style={{ backgroundColor: themeColor }}
+                                  animate={{ scale: [1, 2.5], opacity: [0.4, 0] }}
+                                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+                                />
+                              )}
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  )}
                   <motion.div
-                    className="absolute inset-0 rounded-full"
+                    className="absolute inset-y-0 right-0 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ type: 'spring', stiffness: 100, damping: 20 }}
                     style={{
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                      background: `linear-gradient(to left, ${themeColor}, ${themeColor}aa)`,
                     }}
-                    animate={{ x: ['100%', '-100%'] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 2 }}
-                  />
-                </motion.div>
-              </div>
-            ) : null}
+                  >
+                    {/* Shimmer effect */}
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)',
+                      }}
+                      animate={{ x: ['100%', '-100%'] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 2 }}
+                    />
+                  </motion.div>
+                </div>
+              ) : null}
+            </div>
           </motion.div>
         )}
 
