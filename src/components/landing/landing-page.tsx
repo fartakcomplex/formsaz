@@ -26,6 +26,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import {
   FileQuestion,
   Palette,
@@ -76,6 +77,9 @@ import {
   CreditCard,
   ThumbsUp,
   ThumbsDown,
+  Layers,
+  ShoppingCart,
+  HelpCircle,
 } from 'lucide-react';
 
 /* ──────────────────────────── animation helpers ──────────────────────────── */
@@ -565,7 +569,7 @@ function HeroSection() {
               size="lg"
               variant="outline"
               className="relative w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold rounded-xl px-8 border-gray-200 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-600 transition-all backdrop-blur-sm"
-              onClick={() => setCurrentView('dashboard')}
+              onClick={() => setCurrentView('templates')}
             >
               مشاهده نمونه‌ها
               <ChevronDown className="h-4 w-4" />
@@ -581,10 +585,11 @@ function HeroSection() {
           ref={statsRef}
           className="mt-16 mx-auto max-w-3xl"
         >
-          <div className="grid grid-cols-3 gap-4 sm:gap-8">
-            <AnimatedStat value={100000} suffix={"+"} label={"فرم ساخته شده"} delay={0} isInView={statsInView} icon={FileText} />
-            <AnimatedStat value={50000} suffix={"+"} label={"کاربر فعال"} delay={1} isInView={statsInView} icon={Users} />
-            <AnimatedStat value={2000000} suffix={"+"} label={"پاسخ ثبت شده"} delay={2} isInView={statsInView} icon={MessageSquare} />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+            <AnimatedStat value={400} suffix={"+"} label={"الگوی آماده"} delay={0} isInView={statsInView} icon={Layers} />
+            <AnimatedStat value={100000} suffix={"+"} label={"فرم ساخته شده"} delay={1} isInView={statsInView} icon={FileText} />
+            <AnimatedStat value={50000} suffix={"+"} label={"کاربر فعال"} delay={2} isInView={statsInView} icon={Users} />
+            <AnimatedStat value={2000000} suffix={"+"} label={"پاسخ ثبت شده"} delay={3} isInView={statsInView} icon={MessageSquare} />
           </div>
         </motion.div>
 
@@ -1140,6 +1145,92 @@ function UseCasesSection() {
             </motion.div>
           ))}
         </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────── Featured Templates Section ──────────────────────────── */
+
+function FeaturedTemplatesSection() {
+  const { setCurrentView } = useAppStore();
+  const ref = React.useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+
+  const featuredCategories = [
+    { name: 'نظرسنجی', icon: ClipboardList, count: 45, gradient: 'from-rose-500 to-orange-500', bg: 'bg-rose-50 dark:bg-rose-950/20' },
+    { name: 'ثبت‌نام', icon: FileText, count: 44, gradient: 'from-violet-500 to-purple-500', bg: 'bg-violet-50 dark:bg-violet-950/20' },
+    { name: 'بازخورد', icon: MessageSquareHeart, count: 45, gradient: 'from-emerald-500 to-green-500', bg: 'bg-emerald-50 dark:bg-emerald-950/20' },
+    { name: 'ارزیابی', icon: BarChart3, count: 41, gradient: 'from-amber-500 to-yellow-500', bg: 'bg-amber-50 dark:bg-amber-950/20' },
+    { name: 'سفارش', icon: ShoppingCart, count: 39, gradient: 'from-sky-500 to-blue-500', bg: 'bg-sky-50 dark:bg-sky-950/20' },
+    { name: 'آموزش', icon: GraduationCap, count: 43, gradient: 'from-indigo-500 to-blue-500', bg: 'bg-indigo-50 dark:bg-indigo-950/20' },
+    { name: 'سلامت', icon: HeartPulse, count: 43, gradient: 'from-teal-500 to-emerald-500', bg: 'bg-teal-50 dark:bg-teal-950/20' },
+    { name: 'رویداد', icon: CalendarDays, count: 43, gradient: 'from-orange-500 to-red-500', bg: 'bg-orange-50 dark:bg-orange-950/20' },
+    { name: 'منابع انسانی', icon: Users, count: 43, gradient: 'from-pink-500 to-fuchsia-500', bg: 'bg-pink-50 dark:bg-pink-950/20' },
+    { name: 'سایر', icon: HelpCircle, count: 33, gradient: 'from-gray-500 to-slate-500', bg: 'bg-gray-50 dark:bg-gray-800/30' },
+  ];
+
+  return (
+    <section ref={ref} className="relative py-20 sm:py-28 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-purple-50/20 to-white dark:from-gray-950 dark:via-purple-950/5 dark:to-gray-950" />
+      <div className="absolute inset-0 opacity-[0.02]" style={{
+        backgroundImage: `radial-gradient(circle, #a855f7 1px, transparent 1px)`,
+        backgroundSize: '32px 32px',
+      }} />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <FadeInSection className="text-center mb-12 sm:mb-16">
+          <Badge variant="secondary" className="mb-4 px-3 py-1 text-xs font-medium bg-violet-100/80 text-violet-700 border-violet-200/50 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800/50">
+            <Sparkles className="size-3 ml-1 text-violet-500" />
+            الگوهای آماده
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+            بیش از{' '}
+            <span className="bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent">
+              ۴۰۰
+            </span>{' '}
+            الگوی حرفه‌ای
+          </h2>
+          <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            در هر دسته‌بندی، الگوهای متنوعی برای شروع سریع فرم‌هایتان وجود دارد
+          </p>
+        </FadeInSection>
+
+        <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          {featuredCategories.map((cat) => (
+            <motion.div
+              key={cat.name}
+              variants={staggerChild}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className={cn(
+                'group relative flex flex-col items-center p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all',
+                'bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-gray-200/60 dark:border-gray-800/60',
+                'hover:shadow-xl hover:border-violet-200/60 dark:hover:border-violet-800/40'
+              )}
+              onClick={() => setCurrentView('templates')}
+            >
+              <div className={cn(
+                'flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl mb-3 shadow-lg transition-transform group-hover:scale-110 bg-gradient-to-br text-white',
+                cat.gradient
+              )}>
+                <cat.icon className="w-6 h-6 sm:w-7 sm:h-7" />
+              </div>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">{cat.name}</h3>
+              <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">{cat.count} الگو</span>
+            </motion.div>
+          ))}
+        </StaggerContainer>
+
+        <FadeInSection className="text-center mt-10 sm:mt-12">
+          <Button
+            size="lg"
+            onClick={() => setCurrentView('templates')}
+            className="h-12 px-8 rounded-2xl bg-gradient-to-l from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg shadow-violet-500/25 gap-2 font-medium"
+          >
+            مشاهده همه الگوها
+            <ArrowLeft className="size-4" />
+          </Button>
+        </FadeInSection>
       </div>
     </section>
   );
@@ -2569,6 +2660,7 @@ function CTASection() {
               size="lg"
               variant="outline"
               className="w-full sm:w-auto min-w-[200px] h-14 text-base font-bold bg-transparent text-white border-white/30 hover:bg-white/10 hover:border-white/50 transition-all rounded-2xl px-8 gap-2 group"
+              onClick={() => setCurrentView('templates')}
             >
               <Play className="h-5 w-5" />
               مشاهده نمونه‌ها
@@ -3048,6 +3140,7 @@ export default function LandingPage() {
         <TrustedBySection />
         <FeaturesSection />
         <UseCasesSection />
+        <FeaturedTemplatesSection />
         <HowItWorksSection />
         <TestimonialsSection />
         <FAQSection />

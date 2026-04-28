@@ -8379,4 +8379,25325 @@ export const templatesData: TemplateData[] = [
           }
     ],
   },
-];
+
+  {
+    id: 'tpl-1000',
+    name: 'نظرسنجی کیفیت خدمات اینترنتی',
+    description: 'ارزیابی سرعت و کیفیت اینترنت ارائه‌شده',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Copy',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 686
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 675
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1001',
+    name: 'نظرسنجی سلیقه موسیقی',
+    description: 'شناخت سلیقه و ترجیحات موسیقایی کاربران',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Minus',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 550
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1002',
+    name: 'نظرسنجی عادات مطالعه',
+    description: 'بررسی الگوهای مطالعه و کتاب‌خوانی',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'UserCheck',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 668
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 398
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1003',
+    name: 'نظرسنجی سبک زندگی',
+    description: 'شناخت عادات و سبک زندگی مخاطبان',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Image',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 210
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 137
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 459
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1004',
+    name: 'نظرسنجی رضایت از حمل‌ونقل عمومی',
+    description: 'سنجش کیفیت خدمات حمل‌ونقل شهری',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Briefcase',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 150
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 385
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1005',
+    name: 'نظرسنجی مصرف انرژی',
+    description: 'بررسی الگوهای مصرف انرژی خانگی',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Upload',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 333
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 540
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 933
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1006',
+    name: 'نظرسنجی ترافیک شهری',
+    description: 'ارزیابی مشکلات ترافیکی شهر',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Filter',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 193
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 272
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1007',
+    name: 'نظرسنجی فضای شهری',
+    description: 'نظر سنجی درباره پارک‌ها و فضای سبز',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Tag',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 466
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 5,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 355
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1008',
+    name: 'نظرسنجی کیفیت هوا',
+    description: 'بررسی آگاهی و نگرانی از آلودگی هوا',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Stethoscope',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 395
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 154
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1009',
+    name: 'نظرسنجی امنیت محله',
+    description: 'سنجش احساس امنیت ساکنان',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Database',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 267
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 409
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1010',
+    name: 'نظرسنجی خدمات شهری',
+    description: 'ارزیابی خدمات پاکسازی و نگهداری شهری',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Archive',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 383
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 764
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1011',
+    name: 'نظرسنجی فرهنگی اجتماعی',
+    description: 'بررسی ارزش‌ها و باورهای فرهنگی',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Percent',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 285
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 238
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 376
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1012',
+    name: 'نظرسنجی استفاده از فناوری',
+    description: 'شناخت میزان استفاده از ابزارهای دیجیتال',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'EyeOff',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 414
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 158
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1013',
+    name: 'نظرسنجی رضایت بانکی',
+    description: 'سنجش رضایت از خدمات بانکی',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Hash',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 112
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1014',
+    name: 'نظرسنجی مهاجرت تحصیلی',
+    description: 'بررسی تمایل به تحصیل در خارج',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'EyeOff',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 924
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1015',
+    name: 'نظرسنجی اشتغال فارغ‌التحصیلان',
+    description: 'شناخت وضعیت اشتغال دانش‌آموختگان',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'GraduationCap',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 322
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1016',
+    name: 'نظرسنجی بازار مسکن',
+    description: 'بررسی وضعیت بازار مسکن و اجاره',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Flag',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 287
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1017',
+    name: 'نظرسنجی نظافت محیط کار',
+    description: 'سنجش رضایت از شرایط بهداشتی محیط کار',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Minus',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 846
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 687
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 468
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1018',
+    name: 'نظرسنجی نرخ تورم',
+    description: 'بررسی تأثیر تورم بر زندگی خانوار',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Truck',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 239
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 459
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1019',
+    name: 'نظرسنجی خدمات داروخانه',
+    description: 'ارزیابی کیفیت خدمات داروخانه‌ها',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Plane',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "درجه اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 185
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1020',
+    name: 'نظرسنجی سواد مالی',
+    description: 'سنجش سطح آگاهی مالی افراد',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'X',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 120
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 340
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 198
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1021',
+    name: 'نظرسنجی اوقات فراغت',
+    description: 'بررسی نحوه گذراندن اوقات فراغت',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Link',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 360
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1022',
+    name: 'نظرسنجی رضایت از بیمارستان',
+    description: 'سنجش رضایت بیماران از خدمات بیمارستانی',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Shield',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 406
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 309
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 320
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1023',
+    name: 'نظرسنجی ترجیحات غذایی',
+    description: 'شناخت سلیقه غذایی و رژیم تغذیه',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'FileText',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 174
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 443
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1024',
+    name: 'نظرسنجی محیط زیست شهری',
+    description: 'بررسی وضعیت محیط زیست شهر',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Upload',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 300
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 968
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 796
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1025',
+    name: 'نظرسنجی ارتباطات خانوادگی',
+    description: 'سنجش کیفیت روابط درون خانواده',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Eye',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 795
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 485
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "درجه اهمیت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 269
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1026',
+    name: 'نظرسنجی استفاده از دوچرخه',
+    description: 'بررسی میزان استقبال از دوچرخه‌سواری شهری',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'BarChart2',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 233
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1027',
+    name: 'نظرسنجی حمایت از کالای ایرانی',
+    description: 'بررسی تمایل به خرید محصولات داخلی',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'HelpCircle',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 428
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 946
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1028',
+    name: 'نظرسنجی کیفیت آب آشامیدنی',
+    description: 'سنجش رضایت از کیفیت آب شرب',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Phone',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 736
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 755
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 198
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1029',
+    name: 'نظرسنجی وضعیت جوانان',
+    description: 'بررسی دغدغه‌ها و چالش‌های جوانان',
+    category: 'survey',
+    categoryLabel: 'نظرسنجی',
+    icon: 'Layers',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 786
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 299
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1030',
+    name: 'فرم ثبت‌نام کلاس زبان',
+    description: 'ثبت‌نام در دوره‌های آموزش زبان',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Share2',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 464
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 919
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1031',
+    name: 'فرم ثبت‌نام مسابقات ورزشی',
+    description: 'ثبت‌نام شرکت‌کنندگان در مسابقات',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Grid',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 643
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1032',
+    name: 'فرم ثبت‌نام کارگاه هنری',
+    description: 'ثبت‌نام در کارگاه‌های هنری',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Calendar',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 493
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 715
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 492
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1033',
+    name: 'فرم عضویت انجمن علمی',
+    description: 'درخواست عضویت در انجمن‌های علمی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'UserCheck',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 192
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 818
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 426
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1034',
+    name: 'فرم ثبت‌نام دوره رایگان',
+    description: 'ثبت‌نام در دوره‌های آموزشی رایگان',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Award',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 990
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 722
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1035',
+    name: 'فرم ثبت‌نام اردو دانشجویی',
+    description: 'ثبت‌نام شرکت در اردوهای تفریحی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'MapPin',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 341
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 439
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 152
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1036',
+    name: 'فرم درخواست کارآموزی',
+    description: 'ثبت‌نام برای دوره کارآموزی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'MapPin',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 907
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1037',
+    name: 'فرم ثبت‌نام سمینار',
+    description: 'ثبت‌نام شرکت در سمینار تخصصی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'BarChart2',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 147
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 839
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1038',
+    name: 'فرم ثبت‌نام مسابقه برنامه‌نویسی',
+    description: 'ثبت‌نام در مسابقات کدنویسی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'ExternalLink',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 187
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 691
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1039',
+    name: 'فرم ثبت‌نام نرم‌افزار',
+    description: 'ثبت‌نام و ایجاد حساب کاربری',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Image',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 208
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1040',
+    name: 'فرم درخواست وام',
+    description: 'ثبت درخواست وام بانکی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'BookOpen',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 471
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 320
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1041',
+    name: 'فرم ثبت‌نام باشگاه خبرنگاران',
+    description: 'درخواست عضویت در باشگاه خبرنگاران جوان',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Users',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 219
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "درجه اهمیت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 490
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 352
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1042',
+    name: 'فرم ثبت‌نام نمایشگاه کتاب',
+    description: 'ثبت‌نام غرفه‌داران نمایشگاه',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Layers',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 781
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 180
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1043',
+    name: 'فرم ثبت‌نام قرارداد پروژه',
+    description: 'ثبت‌نام پیمانکاران برای پروژه‌ها',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Video',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 408
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 320
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 383
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1044',
+    name: 'فرم ثبت‌نام هتل',
+    description: 'رزرو و ثبت‌نام هتل',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Bookmark',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 914
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1045',
+    name: 'فرم ثبت‌نام پرواز',
+    description: 'ثبت‌نام و رزرو بلیت هواپیما',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'List',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 360
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 950
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 388
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1046',
+    name: 'فرم ثبت‌نام بیمه',
+    description: 'درخواست ثبت‌نام بیمه',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'MapPin',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 311
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 822
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1047',
+    name: 'فرم ثبت‌نام مهدکودک',
+    description: 'ثبت‌نام کودک در مهدکودک',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'ThumbsDown',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 447
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 546
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1048',
+    name: 'فرم ثبت‌نام دوره مدیریت',
+    description: 'ثبت‌نام در دوره‌های مدیریتی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Stethoscope',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 364
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 916
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 341
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1049',
+    name: 'فرم ثبت‌نام آموزش آشپزی',
+    description: 'ثبت‌نام در کلاس‌های آشپزی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Shield',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 894
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 510
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 109
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1050',
+    name: 'فرم ثبت‌نام گالری هنری',
+    description: 'ثبت‌نام هنرمندان برای نمایشگاه',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Camera',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 619
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 418
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1051',
+    name: 'فرم ثبت‌نام صندوق سرمایه‌گذاری',
+    description: 'درخواست عضویت در صندوق',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Hash',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 284
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 842
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 530
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 5,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 422
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1052',
+    name: 'فرم ثبت‌نام همایش پزشکی',
+    description: 'ثبت‌نام شرکت در کنگره پزشکی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Award',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 717
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1053',
+    name: 'فرم ثبت‌نام مسابقه علمی',
+    description: 'ثبت‌نام در المپیادها و مسابقات علمی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Lock',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 110
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 912
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1054',
+    name: 'فرم ثبت‌نام انتشارات',
+    description: 'ثبت‌نام کتاب برای چاپ و نشر',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Globe',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 139
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 739
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1055',
+    name: 'فرم ثبت‌نام فست‌فود',
+    description: 'ثبت‌نام مشتریان وفادار',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Trash2',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 383
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 452
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1056',
+    name: 'فرم ثبت‌نام سازمان صنفی',
+    description: 'درخواست عضویت در اتاق اصناف',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Lock',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 349
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 821
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1057',
+    name: 'فرم ثبت‌نام دانشگاه آزاد',
+    description: 'ثبت‌نام در دانشگاه آزاد اسلامی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'UtensilsCrossed',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 452
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 366
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1058',
+    name: 'فرم ثبت‌نام خدمت سربازی',
+    description: 'ثبت‌نام مشمولان خدمت',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'UtensilsCrossed',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 999
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 824
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1059',
+    name: 'فرم ثبت‌نام پست الکترونیک',
+    description: 'ایجاد حساب ایمیل سازمانی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'X',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 351
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 514
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1060',
+    name: 'فرم ثبت‌نام آزمون ورودی',
+    description: 'ثبت‌نام در آزمون سراسری یا اختصاصی',
+    category: 'registration',
+    categoryLabel: 'ثبت‌نام',
+    icon: 'Star',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 116
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 321
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 257
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 395
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1061',
+    name: 'بازخورد تاکسی آنلاین',
+    description: 'نظر سنجی درباره سرویس تاکسی اینترنتی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'BookOpen',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 286
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1062',
+    name: 'بازخورد سوپرمارکت',
+    description: 'نظر مشتریان درباره فروشگاه زنجیره‌ای',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Recycle',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 320
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 1000
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 395
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1063',
+    name: 'بازخورد بیمارستان خصوصی',
+    description: 'نظر بیماران درباره خدمات درمانی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Smartphone',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 788
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1064',
+    name: 'بازخورد لاستیک و تعمیرگاه',
+    description: 'نظر مشتریان خدمات خودرویی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Plane',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 160
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 436
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 755
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1065',
+    name: 'بازخورد آرایشگاه',
+    description: 'نظر مشتریان سالن زیبایی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Target',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 990
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1066',
+    name: 'بازخورد هتل',
+    description: 'نظر مهمانان هتل درباره اقامت',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Activity',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 228
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 131
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1067',
+    name: 'بازخورد کافه',
+    description: 'نظر مشتریان کافه و رستوران',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Shield',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 476
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 928
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1068',
+    name: 'بازخورد شرکت حمل بار',
+    description: 'نظر مشتریان خدمات باربری',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Grid',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 383
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 482
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1069',
+    name: 'بازخورد خدمات نظافت',
+    description: 'نظر مشتریان شرکت نظافت',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Hash',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 358
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 380
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1070',
+    name: 'بازخورد تعمیرات لوازم خانگی',
+    description: 'نظر درباره کیفیت تعمیرات',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'X',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 473
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 437
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1071',
+    name: 'بازخورد خدمات بسته‌بندی',
+    description: 'نظر مشتریان خدمات بسته‌بندی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'BarChart2',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 428
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 409
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1072',
+    name: 'بازخورد دفتر اسناد رسمی',
+    description: 'نظر مراجعان خدمات ثبتی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Star',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 389
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 918
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 332
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1073',
+    name: 'بازخورد دامپزشکی',
+    description: 'نظر صاحبان حیوانات خانگی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Shield',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 332
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 477
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1074',
+    name: 'بازخورد خدمات منزل',
+    description: 'نظر مشتریان خدمات در منزل',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Sliders',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 155
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1075',
+    name: 'بازخورد پیک و ارسال',
+    description: 'نظر مشتریان خدمات پیک',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Activity',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 378
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 245
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1076',
+    name: 'بازخورد خدمات مشاوره',
+    description: 'نظر مراجعان خدمات مشاوره‌ای',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'TrendingUp',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 219
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 251
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 232
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1077',
+    name: 'بازخورد موزه',
+    description: 'نظر بازدیدکنندگان موزه',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Box',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 374
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1078',
+    name: 'بازخورد سینما',
+    description: 'نظر تماشاگران فیلم',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'ThumbsUp',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 862
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1079',
+    name: 'بازخورد استخر و باشگاه',
+    description: 'نظر کاربران مجموعه ورزشی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Layers',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 231
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 431
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1080',
+    name: 'بازخورد شهربازی',
+    description: 'نظر بازدیدکنندگان شهربازی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Percent',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 112
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 697
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 236
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1081',
+    name: 'بازخورد کتابخانه',
+    description: 'نظر اعضا درباره خدمات کتابخانه',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Building',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 291
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 121
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1082',
+    name: 'بازخورد مرکز خرید',
+    description: 'نظر مشتریان مجتمع تجاری',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Scale',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 195
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1083',
+    name: 'بازخورد خدمات مالی',
+    description: 'نظر مشتریان مؤسسات مالی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Search',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 260
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 660
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 177
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1084',
+    name: 'بازخورد خدمات عروسی',
+    description: 'نظر مشتریان خدمات تشریفاتی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Building',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 488
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1085',
+    name: 'بازخورد خدمات طراحی سایت',
+    description: 'نظر مشتریان طراحی وب',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'UserCheck',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 799
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1086',
+    name: 'بازخورد اپلیکیشن موبایل',
+    description: 'نظر کاربران اپلیکیشن',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Minus',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "درجه اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 447
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 267
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1087',
+    name: 'بازخورد خدمات پرینت',
+    description: 'نظر مشتریان چاپخانه',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'ClipboardList',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 437
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 446
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 714
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1088',
+    name: 'بازخورد خدمات امنیتی',
+    description: 'نظر مشتریان شرکت‌های امنیتی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Send',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 402
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 448
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1089',
+    name: 'بازخورد سرویس خشکشویی',
+    description: 'نظر مشتریان خشکشویی',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Smartphone',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 457
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1090',
+    name: 'بازخورد فروشگاه آنلاین',
+    description: 'نظر خریداران درباره تجربه خرید',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Star',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 865
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1091',
+    name: 'بازخورد خدمات بازسازی',
+    description: 'نظر مشتریان بازسازی منزل',
+    category: 'feedback',
+    categoryLabel: 'بازخورد',
+    icon: 'Check',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 374
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1092',
+    name: 'ارزیابی عملکرد تیم فروش',
+    description: 'سنجش عملکرد و دستاوردهای تیم فروش',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'UserCheck',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 353
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1093',
+    name: 'ارزیابی اثربخشی تبلیغات',
+    description: 'بررسی نرخ بازگشت تبلیغات',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Briefcase',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 594
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1094',
+    name: 'ارزیابی رضایت شاگردان',
+    description: 'سنجش رضایت دانش‌آموزان از آموزش',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'X',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 470
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 632
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1095',
+    name: 'ارزیابی پروژه عمرانی',
+    description: 'بررسی کیفیت و پیشرفت پروژه‌های عمرانی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Archive',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 761
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 966
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1096',
+    name: 'ارزیابی کیفیت نرم‌افزار',
+    description: 'تست و ارزیابی عملکرد نرم‌افزار',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Dumbbell',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 238
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 848
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 411
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1097',
+    name: 'ارزیابی خدمات حقوقی',
+    description: 'سنجش کیفیت خدمات وکلا و مشاوران حقوقی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Award',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 301
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1098',
+    name: 'ارزیابی فرهنگ سازمانی',
+    description: 'بررسی محیط و فرهنگ کاری سازمان',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'List',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 221
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1099',
+    name: 'ارزیابی رهبری مدیران',
+    description: 'سنجش مهارت‌های رهبری و مدیریت',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'TrendingUp',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 472
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1100',
+    name: 'ارزیابی طرح کسب‌وکار',
+    description: 'برنامه‌ریزی و ارزیابی ایده‌های کسب‌وکار',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'AtSign',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 365
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1101',
+    name: 'ارزیابی ریسک پروژه',
+    description: 'شناسایی و ارزیابی ریسک‌های پروژه',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Upload',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 135
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 387
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 432
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1102',
+    name: 'ارزیابی خدمات فنی',
+    description: 'بررسی کیفیت خدمات فنی و مهندسی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Star',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 306
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1103',
+    name: 'ارزیابی عملکرد تحویل',
+    description: 'سنجش سرعت و دقت تحویل کالا',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'BarChart2',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 196
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 489
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1104',
+    name: 'ارزیابی جو سازمانی',
+    description: 'بررسی رضایت کارکنان از محیط کار',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Briefcase',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 994
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1105',
+    name: 'ارزیابی بازاریابی دیجیتال',
+    description: 'بررسی عملکرد کمپین‌های دیجیتال',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Link',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 486
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 582
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 255
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1106',
+    name: 'ارزیابی ایمنی کارگاه',
+    description: 'بررسی استانداردهای ایمنی محیط کار',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'CreditCard',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 401
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 264
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 675
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1107',
+    name: 'ارزیابی ارائه محصول جدید',
+    description: 'سنجش استقبال بازار از محصول جدید',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Heart',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 969
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 823
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1108',
+    name: 'ارزیابی خدمات مشاوران',
+    description: 'بررسی کیفیت خدمات مشاوره‌ای',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'MessageSquare',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 253
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 291
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1109',
+    name: 'ارزیابی سیستم اطلاعاتی',
+    description: 'بررسی کارایی سیستم‌های اطلاعاتی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'File',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 247
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 552
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1110',
+    name: 'ارزیابی رضایت اساتید',
+    description: 'سنجش رضایت اعضای هیئت علمی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Users',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 779
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 574
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 869
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1111',
+    name: 'ارزیابی عملکرد بازاریابی',
+    description: 'بررسی اثربخشی فعالیت‌های بازاریابی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'UserCheck',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 170
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1112',
+    name: 'ارزیابی خدمات پشتیبانی',
+    description: 'سنجش کیفیت پاسخگویی پشتیبانی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Trash2',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 205
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 827
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1113',
+    name: 'ارزیابی پروژه تحقیقاتی',
+    description: 'برنامه‌ریزی و ارزیابی پروژه‌های پژوهشی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Music',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 200
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 360
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 355
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1114',
+    name: 'ارزیابی فرآیند استخدام',
+    description: 'بررسی کیفیت فرآیند جذب نیرو',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'File',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 403
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 410
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1115',
+    name: 'ارزیابی خدمات استاندارد',
+    description: 'بررسی انطباق با استانداردهای کیفی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'ExternalLink',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 412
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 949
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1116',
+    name: 'ارزیابی ارتباطات داخلی',
+    description: 'سنجش کیفیت ارتباطات درون سازمانی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Volume2',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 157
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1117',
+    name: 'ارزیابی فرصت‌های شغلی',
+    description: 'بررسی رضایت از فرصت‌های پیشرفت شغلی',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Eye',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 990
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1118',
+    name: 'ارزیابی پروژه خیریه',
+    description: 'سنجش اثربخشی پروژه‌های نیکوکاری',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Phone',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 422
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 228
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 498
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1119',
+    name: 'ارزیابی عملکرد فروشگاه',
+    description: 'بررسی عملکرد شعبه یا فروشگاه',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'File',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 415
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 205
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1120',
+    name: 'ارزیابی ابزار مدیریت',
+    description: 'بررسی کارایی ابزارهای مدیریت پروژه',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Truck',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 173
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 133
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1121',
+    name: 'ارزیابی سیستم انبار',
+    description: 'بررسی عملکرد و دقت سیستم انبارداری',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Car',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 666
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 215
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1122',
+    name: 'ارزیابی خدمات بیمه',
+    description: 'سنجش کیفیت خدمات بیمه‌ای',
+    category: 'evaluation',
+    categoryLabel: 'ارزیابی',
+    icon: 'Users',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 180
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 398
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 978
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 502
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1123',
+    name: 'فرم سفارش گل',
+    description: 'سفارش گل و arranment گل',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Recycle',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 757
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1124',
+    name: 'فرم سفارش کیک',
+    description: 'سفارش کیک و شیرینی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Award',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 635
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 155
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1125',
+    name: 'فرم رزرو میز رستوران',
+    description: 'رزرو میز در رستوران',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Truck',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 971
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 766
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 718
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1126',
+    name: 'فرم سفارش کتاب',
+    description: 'سفارش و خرید کتاب',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Copy',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 914
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 437
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 950
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1127',
+    name: 'فرم سفارش لباس',
+    description: 'سفارش لباس و پوشاک',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Package',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 880
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 386
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1128',
+    name: 'فرم رزرو بلیت تئاتر',
+    description: 'رزرو و خرید بلیت تئاتر',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Check',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 737
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 442
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1129',
+    name: 'فرم سفارش شیرینی',
+    description: 'سفارش شیرینی و دسر',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Mic',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 145
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 267
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1130',
+    name: 'فرم رزرو زمین ورزشی',
+    description: 'رزرو زمین چمن و سالن ورزشی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Building',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 256
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 361
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 933
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 918
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 325
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1131',
+    name: 'فرم سفارش عسل',
+    description: 'سفارش عسل طبیعی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Zap',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 566
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1132',
+    name: 'فرم رزرو قایق',
+    description: 'رزرو قایق و خدمات دریایی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Folder',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "درجه اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 595
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1133',
+    name: 'فرم سفارش سی‌دی و دی‌وی‌دی',
+    description: 'سفارش محصولات دیجیتال فیزیکی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Hammer',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 949
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 429
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 340
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1134',
+    name: 'فرم رزرو اتاق جلسه',
+    description: 'رزرو اتاق جلسه و کنفرانس',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'MapPin',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 612
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 362
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1135',
+    name: 'فرم سفارش ادویه',
+    description: 'سفارش ادویه و چاشنی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Flag',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 115
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 428
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 825
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1136',
+    name: 'فرم رزرو بلیط کنسرت',
+    description: 'رزرو بلیت کنسرت موسیقی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Zap',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 857
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 129
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1137',
+    name: 'فرم سفارش میوه',
+    description: 'سفارش میوه فصلی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'BarChart2',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 244
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 584
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 266
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1138',
+    name: 'فرم رزرو ویلای اجاره‌ای',
+    description: 'رزرو ویلا برای تعطیلات',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Dumbbell',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 395
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 175
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1139',
+    name: 'فرم سفارش آهن‌آلات',
+    description: 'سفارش مصالح ساختمانی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Shield',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 106
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 535
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1140',
+    name: 'فرم رزرو استخر',
+    description: 'رزرو استخر و سونا',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'List',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 363
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 877
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 812
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1141',
+    name: 'فرم سفارش قهوه تخصصی',
+    description: 'سفارش قهوه بوته‌ای',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Music',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 133
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 988
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1142',
+    name: 'فرم رزرو گیم‌نت',
+    description: 'رزرو سیستم گیمینگ',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'HelpCircle',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 491
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1143',
+    name: 'فرم سفارش ظروف یکبار مصرف',
+    description: 'سفارش ظروف و لوازم پذیرایی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Camera',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 483
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 475
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1144',
+    name: 'فرم رزرو سرویس باربری',
+    description: 'رزرو خدمات اسباب‌کشی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'CheckCircle',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 359
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 411
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 968
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 278
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1145',
+    name: 'فرم سفارش خشکبار',
+    description: 'سفارش آجیل و خشکبار',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Copy',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 347
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 789
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1146',
+    name: 'فرم رزرو گاو صندوق',
+    description: 'رزرو خدمات گاوصندوق',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'ThumbsDown',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 207
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 327
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1147',
+    name: 'فرم سفارش گیاه آپارتمانی',
+    description: 'سفارش گل و گیاه داخلی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Grid',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 902
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 310
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1148',
+    name: 'فرم رزرو سانسور فیلم',
+    description: 'رزرو سانس خصوصی سینما',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'ShoppingCart',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 347
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1149',
+    name: 'فرم سفارش چای و دمنوش',
+    description: 'سفارش چای و دمنوش طبیعی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Box',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 115
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 691
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 623
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1150',
+    name: 'فرم رزرو سالن ضیافت',
+    description: 'رزرو سالن برای مراسم',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'AlertTriangle',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 400
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 673
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1151',
+    name: 'فرم سفارش لوازم تحریر',
+    description: 'سفارش لوازم‌التحریر',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Image',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 926
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1152',
+    name: 'فرم رزرو تاکسی فرودگاه',
+    description: 'رزرو سرویس فرودگاهی',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'Flag',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 490
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1153',
+    name: 'فرم سفارش روغن موتور',
+    description: 'سفارش لوازم مصرفی خودرو',
+    category: 'order',
+    categoryLabel: 'سفارش',
+    icon: 'ThumbsDown',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 816
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1154',
+    name: 'فرم ارزیابی استاد',
+    description: 'نظرسنجی دانشجویان درباره اساتید',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Target',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 956
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1155',
+    name: 'فرم ثبت‌نام کلاس کنکور',
+    description: 'ثبت‌نام در دوره‌های آمادگی کنکور',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Building',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 442
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1156',
+    name: 'فرم ارزیابی کلاس آنلاین',
+    description: 'بررسی کیفیت آموزش آنلاین',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Settings',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 918
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1157',
+    name: 'فرم درخواست مدرک',
+    description: 'درخواست صدور گواهینامه یا مدرک',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Link',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 625
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 168
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 588
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1158',
+    name: 'فرم ثبت‌نام آموزشگاه رانندگی',
+    description: 'ثبت‌نام در آموزشگاه سراسری',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Share2',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 499
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1159',
+    name: 'فرم نظرسنجی سردفتر',
+    description: 'بازخورد درباره خدمات دفاتر اسناد',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'X',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 442
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1160',
+    name: 'فرم ارزیابی سیستم آموزشی',
+    description: 'بررسی کارایی پلتفرم آموزشی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Image',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 305
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 458
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1161',
+    name: 'فرم درخواست انتقال',
+    description: 'درخواست انتقال بین مراکز آموزشی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Recycle',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 378
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 980
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1162',
+    name: 'فرم ثبت‌نام مهدکودک',
+    description: 'ثبت‌نام کودک در مهدکودک',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Folder',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 429
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 341
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1163',
+    name: 'فرم ارزیابی کتاب درسی',
+    description: 'نظر دانشجویان درباره کتاب‌های درسی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Send',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 317
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1164',
+    name: 'فرم درخواست مرخصی تحصیلی',
+    description: 'ثبت درخواست ترم تحصیلی مرخصی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Users',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 213
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1165',
+    name: 'فرم ثبت‌نام دوره کامپیوتر',
+    description: 'ثبت‌نام در دوره‌های کامپیوتر و ICDL',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'List',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 306
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 653
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 240
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 865
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1166',
+    name: 'فرم ارزیابی آزمون',
+    description: 'نظر شرکت‌کنندگان درباره آزمون',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Camera',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 875
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 833
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 267
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1167',
+    name: 'فرم درخواست ویرایش نمره',
+    description: 'درخواست اصلاح نمرات درسی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Send',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 446
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 458
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1168',
+    name: 'فرم ثبت‌نام کلاس قرآن',
+    description: 'ثبت‌نام در دوره‌های حفظ و تلاوت',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'FileText',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 771
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1169',
+    name: 'فرم ارزیابی مشاور تحصیلی',
+    description: 'نظر دانشجویان درباره خدمات مشاوره',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Settings',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 353
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 772
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 644
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1170',
+    name: 'فرم درخواست توصیه‌نامه',
+    description: 'درخواست توصیه‌نامه تحصیلی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Target',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 951
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1171',
+    name: 'فرم ثبت‌نام آموزش تعمیرات',
+    description: 'ثبت‌نام دوره‌های فنی و حرفه‌ای',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Leaf',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 364
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 390
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1172',
+    name: 'فرم ارزیابی فضای آموزشی',
+    description: 'بررسی کیفیت کلاس‌ها و امکانات',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Calendar',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 357
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 156
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1173',
+    name: 'فرم درخواست فارغ‌التحصیلی',
+    description: 'ثبت درخواست تسویه‌حساب و فارغ‌التحصیلی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Percent',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 256
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 447
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1174',
+    name: 'فرم ثبت‌نام زبان انگلیسی',
+    description: 'ثبت‌نام در دوره‌های زبان انگلیسی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Lock',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "درجه اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 372
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1175',
+    name: 'فرم ارزیابی امتحانات آنلاین',
+    description: 'نظر دانشجویان درباره آزمون آنلاین',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Recycle',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 464
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 498
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1176',
+    name: 'فرم درخواست اضافه‌نمره',
+    description: 'ثبت درخواست پروژه اضافه‌نمره',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'UserPlus',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 583
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 394
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 626
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1177',
+    name: 'فرم ثبت‌نام آموزش حسابداری',
+    description: 'ثبت‌نام دوره‌های حسابداری',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'MapPin',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 400
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 314
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1178',
+    name: 'فرم ارزیابی فعالیت‌های فوق‌برنامه',
+    description: 'بررسی رضایت از برنامه‌های جانبی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Clock',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 190
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 458
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 814
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1179',
+    name: 'فرم درخواست معافیت تحصیلی',
+    description: 'ثبت درخواست معافیت از دروس',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'UserCheck',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 295
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 160
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 460
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 169
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1180',
+    name: 'فرم ثبت‌نام آموزش نجاری',
+    description: 'ثبت‌نام دوره‌های صنایع چوب',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Building',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 305
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1181',
+    name: 'فرم ارزیابی خوابگاه دانشجویی',
+    description: 'بررسی کیفیت خوابگاه',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Briefcase',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 268
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 469
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 5,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 567
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1182',
+    name: 'فرم درخواست تغییر رشته',
+    description: 'ثبت درخواست تغییر رشته تحصیلی',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'CreditCard',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 348
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 355
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 334
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1183',
+    name: 'فرم ثبت‌نام آموزش خیاطی',
+    description: 'ثبت‌نام دوره‌های خیاطی و طراحی لباس',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'BookOpen',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 366
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 869
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1184',
+    name: 'فرم ارزیابی تغذیه مدرسه',
+    description: 'بررسی کیفیت غذای مدرسه',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Target',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 126
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 294
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 357
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1185',
+    name: 'فرم درخواست اعتراض نمره',
+    description: 'ثبت اعتراض به نتایج امتحانات',
+    category: 'education',
+    categoryLabel: 'آموزش',
+    icon: 'Edit',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 423
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1186',
+    name: 'فرم غربالگری دیابت',
+    description: 'پرسشنامه غربالگری قند خون',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'List',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 758
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 873
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1187',
+    name: 'فرم ارزیابی فیتنس',
+    description: 'بررسی سطح آمادگی جسمانی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Flag',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 933
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 184
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1188',
+    name: 'فرم پیگیری بیمار',
+    description: 'فرم پیگیری وضعیت بیمار بعد از درمان',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Wrench',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 217
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 540
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 829
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1189',
+    name: 'فرم درخواست نوبت پزشک',
+    description: 'رزرو نوبت ویزیت پزشکی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Check',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 255
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 578
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 462
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1190',
+    name: 'فرم ارزیابی رژیم غذایی',
+    description: 'بررسی عادات غذایی و رژیم',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Plus',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 930
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 275
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 300
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1191',
+    name: 'فرم غربالگری افسردگی',
+    description: 'پرسشنامه سنجش سلامت روان',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Mail',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 495
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 377
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1192',
+    name: 'فرم ثبت تاریخچه پزشکی',
+    description: 'ثبت سوابق بیماری‌ها و داروها',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Bookmark',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 446
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1193',
+    name: 'فرم ارزیابی بینایی',
+    description: 'بررسی وضعیت چشم و بینایی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Car',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 731
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1194',
+    name: 'فرم نظرسنجی مطب دندانپزشکی',
+    description: 'بازخورد بیماران دندانپزشکی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Link',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 350
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 486
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1195',
+    name: 'فرم ارزیابی شنوایی',
+    description: 'بررسی وضعیت شنوایی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Activity',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 156
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 642
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1196',
+    name: 'فرم درخواست داروی خاص',
+    description: 'ثبت سفارش داروهای خاص',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Database',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 364
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 703
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1197',
+    name: 'فرم غربالگری فشار خون',
+    description: 'پرسشنامه چکاپ فشار خون',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Eye',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 227
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 222
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1198',
+    name: 'فرم ارزیابی خواب',
+    description: 'بررسی کیفیت و الگوی خواب',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Stethoscope',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 401
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1199',
+    name: 'فرم پیگیری توانبخشی',
+    description: 'فرم پیگیری روند توانبخشی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Settings',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 345
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1200',
+    name: 'فرم نظرسنجی داروخانه شبانه‌روزی',
+    description: 'بازخورد مشتریان داروخانه',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'ThumbsDown',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 209
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 802
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1201',
+    name: 'فرم غربالگری چاقی',
+    description: 'پرسشنامه سنجش شاخص توده بدنی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Star',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 258
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1202',
+    name: 'فرم ارزیابی استرس کاری',
+    description: 'بررسی سطح استرس محیط کار',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'FileText',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 449
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 871
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1203',
+    name: 'فرم درخواست آزمایش خون',
+    description: 'ثبت درخواست آزمایشگاهی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Share2',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 144
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1204',
+    name: 'فرم غربالگری آسم',
+    description: 'پرسشنامه غربالگری تنفسی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Hash',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 358
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1205',
+    name: 'فرم ارزیابی کیفیت زندگی',
+    description: 'سنجش کیفیت عمومی زندگی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Zap',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 141
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1206',
+    name: 'فرم پیگیری واکسیناسیون',
+    description: 'ثبت سوابق واکسیناسیون',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'EyeOff',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 476
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 672
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 453
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1207',
+    name: 'فرم ارزیابی پوست و مو',
+    description: 'بررسی وضعیت پوست و موی سر',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'BarChart2',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 147
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 174
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 855
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1208',
+    name: 'فرم درخواست مشاوره روانشناس',
+    description: 'ثبت درخواست ویزیت روانشناسی',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Leaf',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 149
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 302
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1209',
+    name: 'فرم غربالگری اعتیاد',
+    description: 'پرسشنامه سنجش رفتارهای پرخطر',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Edit',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 5,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 286
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1210',
+    name: 'فرم ارزیابی تغذیه کودک',
+    description: 'بررسی وضعیت غذایی کودکان',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Scale',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 287
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 372
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1211',
+    name: 'فرم پیگیری بارداری',
+    description: 'فرم چکاپ دوره بارداری',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Edit',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 211
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 353
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1212',
+    name: 'فرم نظرسنجی بیمارستان روزانه',
+    description: 'بازخورد روزانه بیماران بستری',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Archive',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 264
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 200
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1213',
+    name: 'فرم غربالگری سرطان',
+    description: 'پرسشنامه غربالگری اولیه سرطان',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Clock',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 721
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 742
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1214',
+    name: 'فرم ارزیابی فعالیت بدنی',
+    description: 'بررسی میزان تحرک و ورزش',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Eye',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 307
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 339
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1215',
+    name: 'فرم درخواست پزشک خانواده',
+    description: 'ثبت‌نام پزشک خانواده',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Shield',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 737
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 624
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 899
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1216',
+    name: 'فرم غربالگیری اضطراب',
+    description: 'پرسشنامه سنجش اضطراب',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Laptop',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 352
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 186
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1217',
+    name: 'فرم ارزیابی سلامت سالمندان',
+    description: 'بررسی وضعیت عمومی سالمندان',
+    category: 'health',
+    categoryLabel: 'سلامت',
+    icon: 'Box',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 454
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 304
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1218',
+    name: 'فرم ثبت‌نام همایش فناوری',
+    description: 'ثبت‌نام شرکت در کنفرانس فناوری',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'MessageSquare',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 138
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1219',
+    name: 'فرم بازخورد جشنواره',
+    description: 'نظر شرکت‌کنندگان جشنواره',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Minus',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 148
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 452
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1220',
+    name: 'فرم رزرو سالن همایش',
+    description: 'رزرو سالن برای برگزاری رویداد',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Home',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 938
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 578
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 511
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 352
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1221',
+    name: 'فرم ثبت‌نام نمایشگاه صنعت',
+    description: 'ثبت‌نام غرفه‌دار نمایشگاه صنعتی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Shield',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 314
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1222',
+    name: 'فرم بازخورد کارگاه آموزشی',
+    description: 'نظر شرکت‌کنندگان کارگاه',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'BarChart2',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 359
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 520
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1223',
+    name: 'فرم رزرو فضای باز',
+    description: 'رزرو پارک یا فضای سبز برای رویداد',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Lock',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 464
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 354
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1224',
+    name: 'فرم ثبت‌نام مسابقه هوش مصنوعی',
+    description: 'ثبت‌نام در رقابت‌های AI',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Laptop',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 146
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1225',
+    name: 'فرم بازخورد رویداد خیریه',
+    description: 'نظر شرکت‌کنندگان مراسم نیکوکاری',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'CreditCard',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 270
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 397
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1226',
+    name: 'فرم رزرو مهمانسرا',
+    description: 'رزرو اقامتگاه برای رویداد',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'CheckCircle',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 135
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 442
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1227',
+    name: 'فرم ثبت‌نام ایونت استارتاپی',
+    description: 'ثبت‌نام در رویدادهای استارتاپی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Key',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 239
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 640
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 407
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1228',
+    name: 'فرم بازخورد اکسپو',
+    description: 'نظر بازدیدکنندگان نمایشگاه بین‌المللی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Upload',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 225
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 759
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1229',
+    name: 'فرم رزرو سینمای روباز',
+    description: 'رزرو سینمای فضای باز',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Hash',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 312
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "وضعیت فعلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 277
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1230',
+    name: 'فرم ثبت‌نام تور شهری',
+    description: 'ثبت‌نام در تورهای شهری',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Box',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 249
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 208
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 304
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1231',
+    name: 'فرم بازخورد رویداد ورزشی',
+    description: 'نظر تماشاگران مسابقات',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Mail',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 318
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 307
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 268
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 495
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1232',
+    name: 'فرم رزرو باغ تالار',
+    description: 'رزرو باغ و تالار برای مراسم',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Link',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 261
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 265
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1233',
+    name: 'فرم ثبت‌نام جشنواره فیلم',
+    description: 'ثبت‌نام شرکت در فستیوال فیلم',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Stethoscope',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 322
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 232
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1234',
+    name: 'فرم بازخورد نمایشگاه هنری',
+    description: 'نظر بازدیدکنندگان گالری',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Scale',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 426
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 496
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1235',
+    name: 'فرم رزرو حیاط مدرسه',
+    description: 'رزرو فضای مدرسه برای رویداد',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'AtSign',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 395
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1236',
+    name: 'فرم ثبت‌نام مسابقه شطرنج',
+    description: 'ثبت‌نام در تورنمنت شطرنج',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'List',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 905
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1237',
+    name: 'فرم بازخورد ایونت شبکه‌سازی',
+    description: 'نظر شرکت‌کنندگان رویداد ارتباطی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Scale',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 384
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 414
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 937
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1238',
+    name: 'فرم رزرو آمفی‌تئاتر',
+    description: 'رزرو سالن همایش مجهز',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Download',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 862
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1239',
+    name: 'فرم ثبت‌نام جشن نوروزی',
+    description: 'ثبت‌نام شرکت در برنامه‌های نوروزی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Mail',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 746
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1240',
+    name: 'فرم بازخورد رویداد مذهبی',
+    description: 'نظر شرکت‌کنندگان مراسم مذهبی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Users',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 453
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 510
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1241',
+    name: 'فرم رزرو کلوپ ورزشی',
+    description: 'رزرو باشگاه برای رویداد اختصاصی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'MessageSquare',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 103
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 560
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 119
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 905
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1242',
+    name: 'فرم ثبت‌نام اردوی علمی',
+    description: 'ثبت‌نام اردوی پژوهشی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Video',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 422
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 436
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1243',
+    name: 'فرم بازخورد نمایشگاه کتاب',
+    description: 'نظر بازدیدکنندگان نمایشگاه کتاب',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Check',
+    gradient: 'from-violet-400 to-purple-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 453
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 485
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا اطلاعات تکمیلی دارید؟",
+                    "required": false,
+                    "order": 5,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 132
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1244',
+    name: 'فرم رزرو سرویس رفت‌وبرگشت',
+    description: 'رزرو اتوبوس برای رویداد',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Minus',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 468
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1245',
+    name: 'فرم ثبت‌نام مسابقه موسیقی',
+    description: 'ثبت‌نام در رقابت‌های موسیقی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'List',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 320
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 795
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 212
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1246',
+    name: 'فرم بازخورد رویداد خیریه غذایی',
+    description: 'نظر شرکت‌کنندگان پویش غذایی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Heart',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 473
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 497
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1247',
+    name: 'فرم رزرو فضای coworking',
+    description: 'رزرو فضای کار اشتراکی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Image',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 324
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": false,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 520
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1248',
+    name: 'فرم ثبت‌نام لیگ ورزشی',
+    description: 'ثبت‌نام تیم در لیگ ورزشی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Sliders',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 111
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1249',
+    name: 'فرم بازخورد رویداد بین‌المللی',
+    description: 'نظر شرکت‌کنندگان رویداد خارجی',
+    category: 'event',
+    categoryLabel: 'رویداد',
+    icon: 'Sliders',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 531
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 954
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 491
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "میزان رضایت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 348
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1250',
+    name: 'فرم درخواست مرخصی',
+    description: 'ثبت درخواست مرخصی سالانه یا استعلاجی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'AlertTriangle',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 449
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 207
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1251',
+    name: 'فرم ارزیابی مصاحبه',
+    description: 'فرم ارزیابی متقاضی استخدام',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Target',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 195
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1252',
+    name: 'فرم درخواست تسهیلات',
+    description: 'درخواست وام یا تسهیلات کارمندی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Plus',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 941
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 178
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1253',
+    name: 'فرم نظرسنجی رضایت شغلی',
+    description: 'سنجش رضایت کارکنان از شغل',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Dumbbell',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 933
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1254',
+    name: 'فرم درخواست انتقال شعبه',
+    description: 'ثبت درخواست انتقال به شعبه دیگر',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Camera',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 496
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 628
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1255',
+    name: 'فرم ارزیابی ۳۶۰ درجه',
+    description: 'ارزیابی چندجانبه عملکرد کارکن',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Edit',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "درجه اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 234
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1256',
+    name: 'فرم درخواست اضافه‌کاری',
+    description: 'ثبت درخواست ساعت اضافه‌کاری',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Bookmark',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 428
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 205
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1257',
+    name: 'فرم نظرسنجی محیط کار',
+    description: 'سنجش کیفیت محیط کاری',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'MapPin',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 412
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1258',
+    name: 'فرم درخواست پاداش',
+    description: 'ثبت درخواست پاداش یا افزایش حقوق',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'EyeOff',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 211
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1259',
+    name: 'فرم ارزیابی دوره آموزشی',
+    description: 'نظر کارکنان درباره دوره آموزش سازمانی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Info',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 391
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1260',
+    name: 'فرم درخواست کارت شناسایی',
+    description: 'درخواست صدور یا تمدید کارت پرسنلی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Volume2',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 354
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 292
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 540
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 371
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 562
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1261',
+    name: 'فرم نظرسنجی مدیریت',
+    description: 'بازخورد کارکنان درباره مدیریت',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Box',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شماره شناسنامه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 450
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 330
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 468
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1262',
+    name: 'فرم درخواست تجهیزات',
+    description: 'درخواست لپ‌تاپ و تجهیزات اداری',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Zap',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 129
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 447
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1263',
+    name: 'فرم ارزیابی کارآموز',
+    description: 'برنامه‌ریزی ارزیابی دوره کارآموزی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Archive',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 450
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 270
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 582
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1264',
+    name: 'فرم درخواست دسترسی سیستم',
+    description: 'درخواست دسترسی به نرم‌افزارهای سازمانی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Send',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 432
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 453
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 412
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1265',
+    name: 'فرم نظرسنجی حقوق و مزایا',
+    description: 'بررسی رضایت از ساختار پرداخت',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Briefcase',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 177
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1266',
+    name: 'فرم درخواست تغییر سمت',
+    description: 'ثبت درخواست ارتقا یا تغییر نقش',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'TrendingDown',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 256
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1267',
+    name: 'فرم ارزیابی تیم',
+    description: 'سنجش عملکرد و هماهنگی تیمی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Music',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 256
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 606
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1268',
+    name: 'فرم درخواست ماموریت',
+    description: 'ثبت درخواست سفر کاری',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Home',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 449
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1269',
+    name: 'فرم نظرسنجی فواید سازمانی',
+    description: 'بررسی رضایت از خدمات رفاهی سازمان',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Smartphone',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 322
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1270',
+    name: 'فرم درخواست کارتابل',
+    description: 'درخواست دسترسی به سامانه مکاتبات',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Car',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 452
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "سطح تجربه",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 483
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 421
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1271',
+    name: 'فرم ارزیابی مهارت‌ها',
+    description: 'سنجش مهارت‌های فنی و نرم کارکنان',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Lock',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 319
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 453
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1272',
+    name: 'فرم درخواست خروج',
+    description: 'ثبت درخواست استعفا و تسویه',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Smartphone',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 340
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1273',
+    name: 'فرم نظرسنجی یکپارچگی سازمان',
+    description: 'بررسی همسویی اهداف سازمانی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'HelpCircle',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان رضایت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 129
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1274',
+    name: 'فرم درخواست ویزیتور',
+    description: 'درخواست ایجاد حساب کاربر مهمان',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Globe',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 415
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 846
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 266
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1275',
+    name: 'فرم ارزیابی فرآیند استخدام',
+    description: 'بررسی رضایت از روند جذب نیرو',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'TrendingDown',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 399
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 328
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "نوع درخواست",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 450
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 994
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1276',
+    name: 'فرم درخواست پارکینگ',
+    description: 'ثبت درخواست جای پارک سازمانی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'TrendingUp',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 201
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1277',
+    name: 'فرم نظرسنجی سالانه کارکنان',
+    description: 'نظرسنجی جامع سالانه',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'UtensilsCrossed',
+    gradient: 'from-teal-400 to-emerald-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 385
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 674
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1278',
+    name: 'فرم درخواست آموزش',
+    description: 'ثبت درخواست شرکت در دوره آموزشی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Key',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 580
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1279',
+    name: 'فرم ارزیابی رهبری',
+    description: 'سنجش شایستگی‌های رهبری مدیران',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Flag',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 833
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1280',
+    name: 'فرم درخواست بیمه تکمیلی',
+    description: 'ثبت درخواست عضویت بیمه تکمیلی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Percent',
+    gradient: 'from-cyan-400 to-blue-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 4,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "جزئیات درخواست",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 308
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1281',
+    name: 'فرم نظرسنجی تعادل کار و زندگی',
+    description: 'سنجش تعادل بین کار و زندگی شخصی',
+    category: 'hr',
+    categoryLabel: 'منابع انسانی',
+    icon: 'Edit',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 165
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1282',
+    name: 'لیست خرید هفتگی',
+    description: 'لیست خرید خواربار و مایحتاج',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Bookmark',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 157
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 451
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 285
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1283',
+    name: 'فرم درخواست اینترنت',
+    description: 'ثبت درخواست اینترنت خانگی یا سازمانی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Smartphone',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا شرایط را می‌پذیرید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 167
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1284',
+    name: 'فرم ثبت سفارش نان',
+    description: 'سفارش نان روزانه نانوایی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'MessageSquare',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 158
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 121
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "منابع آشنایی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شبکه اجتماعی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 391
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1285',
+    name: 'فرم درخواست گاز',
+    description: 'ثبت درخواست اشتراک گاز',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Smartphone',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 465
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 462
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1286',
+    name: 'فرم نظرسنجی خدمات اپراتور',
+    description: 'بازخورد مشترکین خدمات ارتباطی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'EyeOff',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 439
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 715
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 496
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 394
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 311
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1287',
+    name: 'فرم ثبت سفارش آب معدنی',
+    description: 'سفارش آب معدنی خانگی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'BarChart2',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 219
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "کیفیت کلی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مزایای مورد انتظار",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 430
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1288',
+    name: 'فرم درخواست برق',
+    description: 'ثبت درخواست انشعاب برق',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Plane',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 377
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1289',
+    name: 'فرم نظرسنجی فضای مجازی',
+    description: 'بررسی تأثیر شبکه‌های اجتماعی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Star',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 322
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "فرکانس استفاده",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 948
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1290',
+    name: 'فرم ثبت آدرس',
+    description: 'ثبت و به‌روزرسانی آدرس پستی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Minus',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "محدوده بودجه",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 772
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 923
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1291',
+    name: 'فرم درخواست آب',
+    description: 'ثبت درخواست انشعاب آب',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'BarChart2',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 264
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 180
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1292',
+    name: 'فرم نظرسنجی بازی‌های ویدیویی',
+    description: 'بررسی سلیقه گیمرها',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'AlertTriangle',
+    gradient: 'from-purple-400 to-violet-600',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 465
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1293',
+    name: 'فرم ثبت سفارش روزنامه',
+    description: 'اشتراک روزنامه و مجلات',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'MapPin',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ابزارهای مورد استفاده",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 377
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1294',
+    name: 'فرم درخواست فیش حقوقی',
+    description: 'درخواست ارسال فیش حقوقی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'EyeOff',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 553
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 113
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "استان",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 777
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1295',
+    name: 'فرم نظرسنجی ترجیحات سینمایی',
+    description: 'بررسی ژانرهای محبوب فیلم',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'ExternalLink',
+    gradient: 'from-indigo-400 to-blue-600',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 406
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 900
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "درجه مؤثر بودن",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 163
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 578
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1296',
+    name: 'فرم ثبت دارایی',
+    description: 'ثبت اطلاعات دارایی‌ها',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Video',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 331
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 407
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "سایر توضیحات",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 309
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 670
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1297',
+    name: 'فرم درخواست جواز کسب',
+    description: 'درخواست پروانه کسب',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'HelpCircle',
+    gradient: 'from-green-400 to-teal-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 115
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "دسته‌بندی",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": false,
+                    "order": 5,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 523
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1298',
+    name: 'فرم نظرسنجی اپلیکیشن بانکی',
+    description: 'بازخورد کاربران اپلیکیشن بانک',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Layers',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 211
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 699
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "چالش‌های اصلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام شرکت",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 414
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1299',
+    name: 'فرم ثبت‌نام باشگاه مشتریان',
+    description: 'عضویت در برنامه وفاداری مشتریان',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'CheckCircle',
+    gradient: 'from-amber-400 to-yellow-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "پیشنهادات شما",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 989
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد ملی",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 454
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1300',
+    name: 'فرم درخواست تمدید مجوز',
+    description: 'تمدید پروانه و مجوزهای قانونی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Upload',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 407
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 427
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 455
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1301',
+    name: 'فرم نظرسنجی محبوبیت ورزش',
+    description: 'بررسی ورزش‌های محبوب در ایران',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'UserCheck',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "روش‌های ارتباطی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیح مشکل",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 527
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 3,
+                    "config": {}
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "اولویت شما",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 965
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1302',
+    name: 'فرم ثبت شکایت',
+    description: 'ثبت شکایت از خدمات یا محصول',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'MessageSquare',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا مایل به مشارکت هستید؟",
+                    "required": true,
+                    "order": 1,
+                    "config": {}
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 890
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 391
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام و نام خانوادگی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 484
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1303',
+    name: 'فرم درخواست کد پستی',
+    description: 'درخواست استعلام کد پستی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'UtensilsCrossed',
+    gradient: 'from-pink-400 to-fuchsia-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "dropdown",
+                    "title": "شهر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 918
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح تجربه",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 552
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1304',
+    name: 'فرم نظرسنجی برنامه‌های تلویزیونی',
+    description: 'بررسی محبوبیت برنامه‌های صداوسیما',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Plane',
+    gradient: 'from-emerald-400 to-green-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "ویژگی‌های مورد نظر",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 947
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1305',
+    name: 'فرم ثبت سفارش سوخت',
+    description: 'سفارش کارت سوخت یا بنزین',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Hash',
+    gradient: 'from-fuchsia-400 to-pink-500',
+    questionCount: 3,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "توضیحات تکمیلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 392
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 345
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1306',
+    name: 'فرم درخواست استعلام سابقه',
+    description: 'استعلام سوابق بیمه یا مالیاتی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'PieChart',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "میزان آشنایی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "نوع خدمات",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        }
+                              ],
+                              "allowOther": true
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "کد پستی",
+                    "required": false,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 211
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "آدرس وب‌سایت",
+                    "required": false,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 358
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1307',
+    name: 'فرم نظرسنجی درباره هوش مصنوعی',
+    description: 'بررسی دیدگاه مردم درباره AI',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Plane',
+    gradient: 'from-orange-400 to-red-500',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "ارزیابی عملکرد",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان آمادگی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 150
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1308',
+    name: 'فرم ثبت بلیط قطار',
+    description: 'رزرو و خرید بلیط قطار',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Edit',
+    gradient: 'from-lime-400 to-green-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": "امتیاز کلی",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا سابقه قبلی دارید؟",
+                    "required": true,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "علت انتخاب",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 521
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1309',
+    name: 'فرم درخواست صدور گواهی',
+    description: 'درخواست گواهی‌های مختلف اداری',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'UtensilsCrossed',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 7,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شهر محل سکونت",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 188
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام پروژه",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 117
+                    }
+          },
+          {
+                    "type": "yes_no",
+                    "title": "آیا توصیه می‌کنید؟",
+                    "required": false,
+                    "order": 2,
+                    "config": {}
+          },
+          {
+                    "type": "dropdown",
+                    "title": "سطح تحصیلات",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "انتخاب اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "انتخاب دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "انتخاب سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "انتخاب چهارم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": " سطح رضایت",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 381
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "نام مدرسه/دانشگاه",
+                    "required": true,
+                    "order": 6,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 462
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1310',
+    name: 'فرم نظرسنجی خدمات پستی',
+    description: 'بازخورد مشتریان شرکت پست',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Plane',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "موضوع",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 166
+                    }
+          },
+          {
+                    "type": "multiple_choice",
+                    "title": "روش ترجیحی",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        }
+                              ],
+                              "allowOther": false
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 422
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1311',
+    name: 'فرم ثبت‌نام خدمات نظافت منزل',
+    description: 'درخواست خدمات نظافت خانگی',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Home',
+    gradient: 'from-sky-400 to-indigo-500',
+    questionCount: 5,
+    questions: [
+          {
+                    "type": "short_text",
+                    "title": "شرح مختصر",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 106
+                    }
+          },
+          {
+                    "type": "rating",
+                    "title": " سطح اهمیت",
+                    "required": false,
+                    "order": 1,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 5,
+                              "scaleMinLabel": "کم",
+                              "scaleMaxLabel": "زیاد"
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "میزان توافق",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "خدمات مورد نیاز",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "عنوان",
+                    "required": false,
+                    "order": 4,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 131
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1312',
+    name: 'فرم درخواست خدمات فوری',
+    description: 'ثبت درخواست خدمات اضطراری',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Filter',
+    gradient: 'from-rose-400 to-orange-400',
+    questionCount: 4,
+    questions: [
+          {
+                    "type": "phone",
+                    "title": "شماره تماس",
+                    "required": true,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "۰۹۱۲XXXXXXX"
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 311
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "رشته تحصیلی",
+                    "required": true,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 145
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "شرح وضعیت",
+                    "required": true,
+                    "order": 3,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 320
+                    }
+          }
+],
+  },
+  {
+    id: 'tpl-1313',
+    name: 'فرم نظرسنجی مصرف‌گرایی',
+    description: 'بررسی الگوهای خرید و مصرف',
+    category: 'other',
+    categoryLabel: 'سایر',
+    icon: 'Building',
+    gradient: 'from-red-400 to-rose-500',
+    questionCount: 6,
+    questions: [
+          {
+                    "type": "email",
+                    "title": "ایمیل",
+                    "required": false,
+                    "order": 0,
+                    "config": {
+                              "placeholder": "example@email.com"
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "چالش‌های پیش‌رو",
+                    "required": true,
+                    "order": 1,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 858
+                    }
+          },
+          {
+                    "type": "short_text",
+                    "title": "زمینه فعالیت",
+                    "required": false,
+                    "order": 2,
+                    "config": {
+                              "placeholder": "پاسخ خود را وارد کنید...",
+                              "maxLength": 253
+                    }
+          },
+          {
+                    "type": "scale",
+                    "title": "سطح دقت",
+                    "required": false,
+                    "order": 3,
+                    "config": {
+                              "scaleMin": 1,
+                              "scaleMax": 10,
+                              "scaleMinLabel": "کاملاً مخالفم",
+                              "scaleMaxLabel": "کاملاً موافقم"
+                    }
+          },
+          {
+                    "type": "multiple_select",
+                    "title": "مهارت‌های لازم",
+                    "required": true,
+                    "order": 4,
+                    "config": {
+                              "options": [
+                                        {
+                                                  "id": "opt-0",
+                                                  "text": "گزینه اول"
+                                        },
+                                        {
+                                                  "id": "opt-1",
+                                                  "text": "گزینه دوم"
+                                        },
+                                        {
+                                                  "id": "opt-2",
+                                                  "text": "گزینه سوم"
+                                        },
+                                        {
+                                                  "id": "opt-3",
+                                                  "text": "گزینه چهارم"
+                                        },
+                                        {
+                                                  "id": "opt-4",
+                                                  "text": "گزینه پنجم"
+                                        },
+                                        {
+                                                  "id": "opt-5",
+                                                  "text": "گزینه ششم"
+                                        }
+                              ]
+                    }
+          },
+          {
+                    "type": "long_text",
+                    "title": "نظر خود را بنویسید",
+                    "required": true,
+                    "order": 5,
+                    "config": {
+                              "placeholder": "توضیحات خود را بنویسید...",
+                              "maxLength": 341
+                    }
+          }
+],
+  }];
