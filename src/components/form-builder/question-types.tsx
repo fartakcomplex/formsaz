@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Type,
   AlignRight,
@@ -244,6 +244,15 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
   const { questions, addQuestion } = useAppStore();
   const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
 
+  // Count questions per type for usage badges
+  const typeCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    questions.forEach((q) => {
+      counts[q.type] = (counts[q.type] || 0) + 1;
+    });
+    return counts;
+  }, [questions]);
+
   const handleAddQuestion = (type: string) => {
     const newQuestion: FormQuestion = {
       id: crypto.randomUUID(),
@@ -286,9 +295,16 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
   const categories = ['متن', 'انتخاب', 'ورودی', 'ارزیابی', 'متفرقه'];
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col relative overflow-hidden">
+      {/* Animated gradient orbs background */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-violet-400/10 dark:bg-violet-600/10 blur-3xl animate-[float-slow_8s_ease-in-out_infinite]" />
+        <div className="absolute top-1/3 -left-16 w-40 h-40 rounded-full bg-fuchsia-400/8 dark:bg-fuchsia-600/8 blur-3xl animate-[float-slow_10s_ease-in-out_infinite_2s]" />
+        <div className="absolute bottom-20 right-10 w-36 h-36 rounded-full bg-purple-400/8 dark:bg-purple-600/8 blur-3xl animate-[float-slow_12s_ease-in-out_infinite_4s]" />
+      </div>
+
       {/* ===== Enhanced Sidebar Header ===== */}
-      <div className="px-4 py-4 border-b border-gray-200/60 dark:border-gray-800/60">
+      <div className="relative z-10 px-4 py-4 border-b border-gray-200/60 dark:border-gray-800/60 bg-white/50 dark:bg-gray-950/50 backdrop-blur-xl">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
             نوع سؤال
@@ -306,10 +322,12 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
         </p>
       </div>
 
-      {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-l from-transparent via-violet-300/40 dark:via-violet-700/30 to-transparent" />
+      {/* Gradient divider with glow */}
+      <div className="relative z-10 h-px bg-gradient-to-l from-transparent via-violet-300/40 dark:via-violet-700/30 to-transparent">
+        <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-l from-transparent via-violet-400/20 dark:via-violet-500/15 to-transparent blur-sm" />
+      </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 relative z-10">
         <div className="sidebar-scroll-fade py-3">
           {categories.map((category, catIdx) => {
             const items = questionTypes.filter((qt) => qt.category === category);
@@ -383,17 +401,18 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
                                   onClick={() => handleAddQuestion(qt.type)}
                                   className={cn(
                                     'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-right transition-all duration-200 ease-out',
-                                    'border border-transparent',
-                                    'bg-white/80 dark:bg-zinc-900/50',
+                                    'border border-gray-200/40 dark:border-gray-800/40',
+                                    'bg-white/60 dark:bg-zinc-900/40 backdrop-blur-sm',
                                     colors.hoverBg,
-                                    'hover:shadow-md hover:shadow-black/[0.03] dark:hover:shadow-black/20',
+                                    'hover:shadow-lg hover:shadow-black/[0.04] dark:hover:shadow-black/20 hover:-translate-y-px',
                                     'active:scale-[0.98]',
                                     // Colored right border on hover
                                     colors.border, 'dark:' + colors.darkBorder,
                                     'border-r-[3px] border-r-transparent',
                                     'hover:border-r-current',
-                                    'hover:border-muted/30 dark:hover:border-muted/30'
+                                    'hover:border-gray-200/60 dark:hover:border-gray-700/60'
                                   )}
+                                  style={{ '--hover-gradient': category === 'متن' ? 'from-violet-500 to-purple-600' : category === 'انتخاب' ? 'from-emerald-500 to-teal-600' : category === 'ورودی' ? 'from-amber-500 to-orange-600' : category === 'ارزیابی' ? 'from-fuchsia-500 to-pink-600' : 'from-slate-400 to-gray-500' } as React.CSSProperties}
                                 >
                                   {/* Icon container */}
                                   <div className={cn(
@@ -415,9 +434,26 @@ export default function QuestionTypes({ collapsed = false }: QuestionTypesProps)
                                     </span>
                                   </div>
 
-                                  {/* Plus indicator */}
+                                  {/* Type count badge (shows how many of this type exist) */}
+                                  {typeCounts[qt.type] ? (
+                                    <motion.span
+                                      key={typeCounts[qt.type]}
+                                      initial={{ scale: 0.8, opacity: 0 }}
+                                      animate={{ scale: 1, opacity: 1 }}
+                                      className="flex size-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br [var(--hover-gradient)] from-violet-500 to-purple-600 text-white text-[9px] font-bold shadow-sm"
+                                    >
+                                      {toPersianDigits(String(typeCounts[qt.type]))}
+                                    </motion.span>
+                                  ) : null}
+
+                                  {/* Animated gradient border reveal on hover */}
+                                  <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-l [var(--hover-gradient)] from-violet-500 to-purple-600 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <div className="w-full h-full rounded-xl bg-white/60 dark:bg-zinc-900/40" />
+                                  </div>
+
+                                  {/* Plus indicator with gradient */}
                                   <motion.div
-                                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted/40 text-muted-foreground/30 opacity-0 group-hover:opacity-100 transition-all duration-200"
+                                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br [var(--hover-gradient)] from-violet-500 to-purple-600 text-white opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-sm"
                                     whileHover={{ scale: 1.15 }}
                                   >
                                     <PlusIcon className="h-3 w-3" />

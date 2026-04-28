@@ -677,7 +677,12 @@ function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
   });
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
+    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6 relative">
+      {/* Animated gradient orbs behind stats */}
+      <div className="pointer-events-none absolute -top-20 -right-20 w-56 h-56 rounded-full bg-violet-400/8 dark:bg-violet-600/8 blur-3xl animate-[float-slow_9s_ease-in-out_infinite]" />
+      <div className="pointer-events-none absolute top-32 -left-16 w-48 h-48 rounded-full bg-emerald-400/6 dark:bg-emerald-600/6 blur-3xl animate-[float-slow_11s_ease-in-out_infinite_2s]" />
+      <div className="pointer-events-none absolute bottom-40 right-1/4 w-40 h-40 rounded-full bg-fuchsia-400/5 dark:bg-fuchsia-600/5 blur-3xl animate-[float-slow_13s_ease-in-out_infinite_4s]" />
+
       {/* Welcome Empty State when all stats are 0 */}
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -729,6 +734,12 @@ function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
           <ActivityFeedWidget />
         </div>
       )}
+
+      {/* Animated gradient separator */}
+      <div className="relative h-px">
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-violet-300/40 dark:via-violet-700/30 to-transparent" />
+        <div className="absolute inset-0 -top-px bg-gradient-to-l from-transparent via-violet-400/15 dark:via-violet-500/10 to-transparent blur-sm" />
+      </div>
 
       {/* Chart Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

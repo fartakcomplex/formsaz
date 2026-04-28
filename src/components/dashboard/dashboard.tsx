@@ -51,6 +51,7 @@ import {
   FileUp,
   Star,
   Tag,
+  ListChecks,
 } from 'lucide-react';
 import {
   BarChart,
@@ -1514,74 +1515,91 @@ function EmptyState({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col items-center justify-center py-8 sm:py-12 px-4"
+      className="relative flex flex-col items-center justify-center py-8 sm:py-12 px-4 overflow-hidden"
     >
-      {/* Illustration */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0, y: [0, -8, 0] }}
-        transition={{ duration: 0.6, ease: 'easeOut', y: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.8 } }}
-        className="mb-8"
-      >
-        <WelcomeIllustration />
-      </motion.div>
+      {/* Animated gradient orbs behind empty state */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute top-10 right-1/4 w-64 h-64 rounded-full bg-violet-400/8 dark:bg-violet-600/8 blur-3xl animate-[float-slow_8s_ease-in-out_infinite]" />
+        <div className="absolute bottom-20 left-1/4 w-56 h-56 rounded-full bg-fuchsia-400/6 dark:bg-fuchsia-600/6 blur-3xl animate-[float-slow_10s_ease-in-out_infinite_2s]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-purple-400/5 dark:bg-purple-600/5 blur-3xl animate-[float-slow_12s_ease-in-out_infinite_4s]" />
+      </div>
 
-      {/* Welcome text with gradient */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className="text-center mb-8"
-      >
-        <motion.h2
-          initial={{ opacity: 0, y: 10 }}
+      {/* Glassmorphism container card */}
+      <div className="relative z-10 w-full max-w-2xl rounded-3xl bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl border border-gray-200/50 dark:border-gray-800/50 p-8 sm:p-10 shadow-xl shadow-black/[0.03] dark:shadow-black/20">
+        {/* Animated gradient line at top */}
+        <div className="absolute top-0 inset-x-8 h-px bg-gradient-to-l from-transparent via-violet-400/60 dark:via-violet-500/40 to-transparent" />
+        <div className="absolute top-0 inset-x-16 -top-px h-px bg-gradient-to-l from-transparent via-fuchsia-400/30 dark:via-fuchsia-500/20 to-transparent blur-sm" />
+
+        {/* Illustration */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0, y: [0, -8, 0] }}
+          transition={{ duration: 0.6, ease: 'easeOut', y: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.8 } }}
+          className="mb-6"
+        >
+          <WelcomeIllustration />
+        </motion.div>
+
+        {/* Welcome text with gradient */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-3"
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="text-center mb-8"
         >
-          به فرمساز{' '}
-          <span className="bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
-            خوش آمدید!
-          </span>
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.45 }}
-          className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md"
-        >
-          اولین فرم خود را بسازید یا از الگوهای آماده استفاده کنید
-        </motion.p>
-      </motion.div>
-
-      {/* Quick-start cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl">
-        {quickStartItems.map((item, index) => (
-          <motion.button
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 + index * 0.12, duration: 0.5, ease: 'easeOut' }}
-            whileHover={{ y: -6, scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={item.onClick}
-            className="group relative flex flex-col items-center gap-3 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:shadow-xl transition-all duration-200 cursor-pointer overflow-hidden"
+            transition={{ delay: 0.3 }}
+            className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-3"
           >
-            {/* Shimmer overlay on hover */}
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.03] via-purple-500/[0.06] to-fuchsia-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-2xl">
-              <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-            </div>
-            <motion.div
-              whileHover={{ rotate: [0, -5, 5, 0] }}
-              transition={{ duration: 0.4 }}
-              className={`relative flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} shadow-lg ${item.shadowColor} group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}
+            به فرمساز{' '}
+            <span className="bg-gradient-to-l from-violet-600 via-purple-600 to-fuchsia-600 dark:from-violet-400 dark:via-purple-400 dark:to-fuchsia-400 bg-clip-text text-transparent">
+              خوش آمدید!
+            </span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45 }}
+            className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto"
+          >
+            اولین فرم خود را بسازید یا از الگوهای آماده استفاده کنید
+          </motion.p>
+        </motion.div>
+
+        {/* Quick-start cards with glassmorphism */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {quickStartItems.map((item, index) => (
+            <motion.button
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 + index * 0.12, duration: 0.5, ease: 'easeOut' }}
+              whileHover={{ y: -6, scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={item.onClick}
+              className="group relative flex flex-col items-center gap-3 p-5 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md hover:shadow-xl transition-all duration-200 cursor-pointer overflow-hidden"
             >
-              {item.icon}
-            </motion.div>
-            <div className="text-center relative">
-              <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">
-                {item.title}
+              {/* Gradient border reveal on hover */}
+              <div className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br ${item.gradient} p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>
+                <div className="w-full h-full rounded-2xl bg-white/60 dark:bg-gray-900/60" />
+              </div>
+              {/* Shimmer overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.03] via-purple-500/[0.06] to-fuchsia-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-2xl">
+                <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+              </div>
+              <motion.div
+                whileHover={{ rotate: [0, -5, 5, 0] }}
+                transition={{ duration: 0.4 }}
+                className={`relative flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} shadow-lg ${item.shadowColor} group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}
+              >
+                {item.icon}
+              </motion.div>
+              <div className="text-center relative">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">
+                  {item.title}
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {item.description}
@@ -1589,6 +1607,7 @@ function EmptyState({
             </div>
           </motion.button>
         ))}
+        </div>
       </div>
 
       <HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />
@@ -1908,6 +1927,120 @@ function generateActivities(forms: Form[]): ActivityItem[] {
   return activities
     .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
     .slice(0, 8);
+}
+
+// ─── Form Insights Summary Widget ─────────────────────────────────────────
+
+function FormInsightsWidget() {
+  const { forms } = useAppStore();
+
+  // Aggregate question types across all forms
+  const typeBreakdown = useMemo(() => {
+    const counts: Record<string, number> = {};
+    let totalQuestions = 0;
+    let totalRequired = 0;
+    let avgQuestions = 0;
+
+    forms.forEach((form) => {
+      const qs = form.questions || [];
+      totalQuestions += qs.length;
+      totalRequired += qs.filter((q) => q.required).length;
+      qs.forEach((q) => {
+        counts[q.type] = (counts[q.type] || 0) + 1;
+      });
+    });
+
+    avgQuestions = forms.length > 0 ? Math.round(totalQuestions / forms.length) : 0;
+
+    return { counts, totalQuestions, totalRequired, avgQuestions };
+  }, [forms]);
+
+  // Sort by count descending, take top 5
+  const topTypes = useMemo(() => {
+    return Object.entries(typeBreakdown.counts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5);
+  }, [typeBreakdown.counts]);
+
+  if (forms.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, duration: 0.5, ease: 'easeOut' }}
+      className="relative mb-6 rounded-2xl overflow-hidden glass-card-strong p-5 sm:p-6"
+    >
+      {/* Decorative gradient orbs */}
+      <div className="absolute -top-6 -left-6 size-28 rounded-full bg-emerald-300/15 dark:bg-emerald-600/8 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-6 -right-6 size-24 rounded-full bg-amber-300/15 dark:bg-amber-600/8 blur-3xl pointer-events-none" />
+
+      {/* Header */}
+      <div className="relative flex items-center justify-between mb-5">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-200/50 dark:shadow-emerald-500/20">
+            <ListChecks className="size-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">نمای کلی فرم‌ها</h3>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">ترکیب سؤالات فرم‌های شما</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Summary stats row */}
+      <div className="relative grid grid-cols-3 gap-3 mb-5">
+        <div className="flex flex-col items-center gap-1 rounded-xl bg-violet-50/60 dark:bg-violet-950/20 border border-violet-100/60 dark:border-violet-900/40 px-3 py-2.5">
+          <span className="text-lg font-bold text-violet-600 dark:text-violet-400">{toPersianDigits(String(typeBreakdown.totalQuestions))}</span>
+          <span className="text-[10px] text-gray-500 dark:text-gray-400">کل سؤالات</span>
+        </div>
+        <div className="flex flex-col items-center gap-1 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-100/60 dark:border-amber-900/40 px-3 py-2.5">
+          <span className="text-lg font-bold text-amber-600 dark:text-amber-400">{toPersianDigits(String(typeBreakdown.totalRequired))}</span>
+          <span className="text-[10px] text-gray-500 dark:text-gray-400">الزامی</span>
+        </div>
+        <div className="flex flex-col items-center gap-1 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-100/60 dark:border-emerald-900/40 px-3 py-2.5">
+          <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{toPersianDigits(String(typeBreakdown.avgQuestions))}</span>
+          <span className="text-[10px] text-gray-500 dark:text-gray-400">میانگین هر فرم</span>
+        </div>
+      </div>
+
+      {/* Top question types */}
+      <div className="relative">
+        <p className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 mb-3">پرکاربردترین انواع سؤالات</p>
+        <div className="space-y-2">
+          {topTypes.map(([type, count], index) => {
+            const percent = Math.round((count / typeBreakdown.totalQuestions) * 100);
+            const label = questionTypeLabels[type] || type;
+            const colorClass = questionTypeBadgeColors[type] || 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300';
+            return (
+              <motion.div
+                key={type}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05, duration: 0.3 }}
+                className="flex items-center gap-3"
+              >
+                <span className={`inline-flex items-center justify-center rounded-lg px-2 py-1 text-[10px] font-bold ${colorClass} min-w-[70px]`}>
+                  {label}
+                </span>
+                <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${percent}%` }}
+                    transition={{ duration: 0.6, delay: index * 0.08 }}
+                    className="h-full rounded-full bg-gradient-to-l from-violet-500 to-purple-500"
+                  />
+                </div>
+                <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 tabular-nums w-12 text-left">
+                  {toPersianDigits(String(count))} <span className="text-gray-400 dark:text-gray-500">({toPersianDigits(String(percent))}٪)</span>
+                </span>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </motion.div>
+  );
 }
 
 function ActivityFeedWidget() {
@@ -2491,7 +2624,7 @@ function FormCard({
         )}
 
         <CardFooter className="flex-col gap-3 pt-0 relative z-10">
-          {/* Mini Sparkline - Response Trend */
+          {/* Mini Sparkline - Response Trend */}
           {(form._count?.submissions || 0) > 0 && (
             <div className="flex items-center justify-between w-full px-1">
               <span className="text-[10px] text-gray-400 dark:text-gray-500">روند پاسخ‌ها</span>
@@ -3829,6 +3962,9 @@ export default function Dashboard() {
 
             {/* Weekly Activity Chart */}
             <WeeklyActivityChart />
+
+            {/* Form Insights Summary */}
+            <FormInsightsWidget />
 
             {/* Activity Feed Widget */}
             <ActivityFeedWidget />

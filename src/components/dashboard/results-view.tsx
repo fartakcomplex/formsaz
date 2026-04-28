@@ -69,6 +69,13 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import { toast } from 'sonner';
 import { useAppStore, type FormQuestion, type Submission } from '@/lib/store';
@@ -2045,7 +2052,7 @@ export default function ResultsView() {
                   </motion.div>
                 </motion.div>
 
-                {/* Search & Filter Bar */
+                {/* Search & Filter Bar */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
                   <div className="relative flex-1">
                     <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
