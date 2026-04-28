@@ -2241,6 +2241,40 @@ function FormCardSkeleton() {
   );
 }
 
+// ─── Mini Sparkline for Form Card ────────────────────────────────────────────
+
+function MiniResponseSparkline({ formId, count }: { formId: string; count: number }) {
+  const points = useMemo(() => {
+    const pts: string[] = [];
+    const base = count || 5;
+    for (let i = 0; i < 7; i++) {
+      const seed = (formId.charCodeAt(i % formId.length) * (i + 1) * 7) % 100;
+      const val = Math.max(2, Math.round(base * (0.3 + (seed / 100) * 0.7)));
+      pts.push(`${i * 13},${24 - Math.min(val, 20)}`);
+    }
+    return pts.join(' ');
+  }, [formId, count]);
+
+  return (
+    <svg width="80" height="24" className="opacity-50 group-hover:opacity-100 transition-opacity duration-300">
+      <defs>
+        <linearGradient id={`spark-${formId}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#8b5cf6" stopOpacity={1} />
+          <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.4} />
+        </linearGradient>
+      </defs>
+      <polyline
+        fill="none"
+        stroke={`url(#spark-${formId})`}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        points={points}
+      />
+    </svg>
+  );
+}
+
 // ─── Form Card ──────────────────────────────────────────────────────────────
 
 function FormCard({
@@ -2457,6 +2491,37 @@ function FormCard({
         )}
 
         <CardFooter className="flex-col gap-3 pt-0 relative z-10">
+          {/* Mini Sparkline - Response Trend */
+          {(form._count?.submissions || 0) > 0 && (
+            <div className="flex items-center justify-between w-full px-1">
+              <span className="text-[10px] text-gray-400 dark:text-gray-500">روند پاسخ‌ها</span>
+              <svg width="80" height="24" className="opacity-50 group-hover:opacity-100 transition-opacity duration-300">
+                <defs>
+                  <linearGradient id={`spark-${form.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={1} />
+                    <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.4} />
+                  </linearGradient>
+                </defs>
+                <polyline
+                  fill="none"
+                  stroke={`url(#spark-${form.id})`}
+                  strokeWidth={1.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  points={(() => {
+                    const base = form._count?.submissions || 5;
+                    const points: string[] = [];
+                    for (let i = 0; i < 7; i++) {
+                      const seed = (form.id.charCodeAt(i % form.id.length) * (i + 1) * 7) % 100;
+                      const val = Math.max(2, Math.round(base * (0.3 + (seed / 100) * 0.7)));
+                      points.push(`${i * 13},${24 - Math.min(val, 20)}`);
+                    }
+                    return points.join(' ');
+                  })()}
+                />
+              </svg>
+            </div>
+          )}
           <div className="flex items-center justify-between w-full text-xs text-gray-400 dark:text-gray-500 px-1">
             <span>آخرین ویرایش</span>
             <span>{formatRelativeTime(form.updatedAt)}</span>

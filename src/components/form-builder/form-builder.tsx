@@ -62,7 +62,7 @@ function toPersianDigits(str: string): string {
 }
 
 export default function FormBuilder() {
-  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView, canUndo, canRedo, undo, redo, addQuestion, removeQuestion, setSelectedQuestionId } = useAppStore();
+  const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView, canUndo, canRedo, undo, redo, addQuestion, removeQuestion, setSelectedQuestionId, moveQuestionUp, moveQuestionDown } = useAppStore();
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [mobileLeftOpen, setMobileLeftOpen] = useState(false);

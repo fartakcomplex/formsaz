@@ -1795,10 +1795,34 @@ function ReportsSection() {
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
+      {/* Stats Summary Cards */}
+      <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: 'کل عملیات', value: MOCK_REPORTS.length, gradient: 'from-violet-500 to-purple-600', shadowColor: 'shadow-violet-200/50 dark:shadow-violet-500/20' },
+          { label: 'عملیات امنیتی', value: MOCK_REPORTS.filter(r => r.type === 'security').length, gradient: 'from-red-500 to-rose-600', shadowColor: 'shadow-red-200/50 dark:shadow-red-500/20' },
+          { label: 'ایجاد فرم', value: MOCK_REPORTS.filter(r => r.type === 'create').length, gradient: 'from-emerald-500 to-teal-600', shadowColor: 'shadow-emerald-200/50 dark:shadow-emerald-500/20' },
+          { label: 'پاسخ دریافتی', value: MOCK_REPORTS.filter(r => r.type === 'submit').length, gradient: 'from-amber-500 to-orange-600', shadowColor: 'shadow-amber-200/50 dark:shadow-amber-500/20' },
+        ].map((stat, i) => (
+          <motion.div key={i} variants={itemVariants} whileHover={{ y: -2, transition: { duration: 0.2 } }}
+            className="group relative overflow-hidden rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-3.5">
+            <div className={`absolute top-0 inset-x-0 h-px bg-gradient-to-l ${stat.gradient} opacity-60`} />
+            <div className="flex items-center gap-2.5">
+              <div className={`flex size-8 items-center justify-center rounded-lg bg-gradient-to-br ${stat.gradient} shadow-md ${stat.shadowColor} transition-transform group-hover:scale-110`}>
+                <BarChart3 className="size-3.5 text-white" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">{stat.value}</p>
+                <p className="text-[10px] text-gray-500 dark:text-gray-400">{stat.label}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
       {/* Filters */}
       <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3">
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-full sm:w-48 h-10 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+          <SelectTrigger className="w-full sm:w-48 h-10 rounded-xl border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl">
             <SelectValue placeholder="نوع عملیات" />
           </SelectTrigger>
           <SelectContent>
@@ -1814,7 +1838,7 @@ function ReportsSection() {
           </SelectContent>
         </Select>
         <div className="flex-1" />
-        <Button variant="outline" className="rounded-xl text-sm h-10 border-gray-200 dark:border-gray-700" onClick={() => toast.success('گزارش در حال دانلود...')}>
+        <Button variant="outline" className="rounded-xl text-sm h-10 border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl hover:bg-violet-50 hover:border-violet-200 dark:hover:bg-violet-950/50 hover:text-violet-600 dark:hover:text-violet-400 transition-colors" onClick={() => toast.success('گزارش در حال دانلود...')}>
           <Download className="size-4 ml-1.5" />
           خروجی CSV
         </Button>
@@ -1822,7 +1846,7 @@ function ReportsSection() {
 
       {/* Reports Table */}
       <motion.div variants={itemVariants}>
-        <Card className="border-gray-200 dark:border-gray-800 overflow-hidden">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl overflow-hidden">
           <CardContent className="p-0">
             <Table>
               <TableHeader>
@@ -1913,7 +1937,7 @@ export default function AdminPanel() {
     <div className="flex h-[100vh] overflow-hidden bg-gray-50 dark:bg-gray-950" dir="rtl">
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden lg:flex flex-col border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-all duration-300 ease-in-out shrink-0 ${
+        className={`hidden lg:flex flex-col border-l border-gray-200/80 dark:border-gray-800/80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl transition-all duration-300 ease-in-out shrink-0 ${
           sidebarOpen ? 'w-64' : 'w-20'
         }`}
       >
@@ -1949,6 +1973,7 @@ export default function AdminPanel() {
                 key={item.id}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab(item.id)}
+                whileHover={{ x: -4 }}
                 className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                   activeTab === item.id
                     ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 shadow-sm'
@@ -1973,8 +1998,8 @@ export default function AdminPanel() {
                 </AnimatePresence>
                 {activeTab === item.id && sidebarOpen && (
                   <motion.div
-                    layoutId="adminActiveIndicator"
-                    className="mr-auto size-1.5 rounded-full bg-violet-500"
+                    layoutId="admin-nav-indicator"
+                    className="mr-auto w-1 h-6 rounded-full bg-gradient-to-b from-violet-500 to-fuchsia-500"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}

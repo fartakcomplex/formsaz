@@ -221,10 +221,19 @@ function StatCard({
   return (
     <motion.div
       variants={staggerItem}
-      className="relative flex items-center gap-4 rounded-2xl border bg-gradient-to-bl from-white via-violet-50/20 to-purple-50/10 dark:from-gray-900 dark:via-violet-950/20 dark:to-purple-950/10 p-4 sm:p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 dark:border-gray-800 overflow-hidden"
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      className="group relative flex items-center gap-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 sm:p-5 shadow-sm hover:shadow-xl overflow-hidden"
     >
-      <div className={`relative flex size-12 items-center justify-center rounded-xl ${color} dark:opacity-80`}>
-        {icon}
+      <div className={`absolute top-0 inset-x-0 h-px bg-gradient-to-l ${color} opacity-60`} />
+      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${color} opacity-0 group-hover:opacity-[0.04] transition-opacity`} />
+      <div className={`relative flex size-12 items-center justify-center rounded-xl bg-gradient-to-br ${color} shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+        <span className="text-white">{icon}</span>
+        <motion.div
+          className="absolute -top-0.5 -left-0.5 size-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-gray-900"
+          animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0.4, 0.8] }}
+          transition={{ duration: 2, repeat: Infinity, delay: delay * 0.3 }}
+        />
       </div>
       <div className="relative flex-1 min-w-0">
         <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{value}</p>
@@ -921,12 +930,17 @@ function MiniPieCard({
     const total = yesCount + noCount;
     if (total === 0) {
       return (
-        <Card className="border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
-          <CardContent className="p-4">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{question.title}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-6">بدون پاسخ</p>
-          </CardContent>
-        </Card>
+        <div className="group relative overflow-hidden rounded-2xl">
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"><div className="w-full h-full rounded-2xl bg-white dark:bg-gray-900" /></div>
+          <motion.div whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
+            <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-300">
+              <CardContent className="p-4">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{question.title}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-6">بدون پاسخ</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       );
     }
     const data = [
@@ -938,46 +952,51 @@ function MiniPieCard({
       no: { label: 'خیر', color: '#ef4444' },
     };
     return (
-      <Card className="border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
-        <CardContent className="p-4 space-y-3">
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 line-clamp-2">{question.title}</p>
-          <div className="relative">
-            <ChartContainer config={config} className="h-28 w-28 mx-auto">
-              <PieChart>
-                <Pie
-                  data={data}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={50}
-                  innerRadius={28}
-                  startAngle={90}
-                  endAngle={-270}
-                  strokeWidth={2}
-                  stroke="white"
-                  className="dark:stroke-gray-900"
-                >
-                  {data.map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ChartContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
-                {Math.round((yesCount / total) * 100)}%
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>بله: {yesCount}</span>
-            <span>خیر: {noCount}</span>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+        <div className="group relative overflow-hidden rounded-2xl">
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"><div className="w-full h-full rounded-2xl bg-white dark:bg-gray-900" /></div>
+          <motion.div whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
+            <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-300">
+              <CardContent className="p-4 space-y-3">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 line-clamp-2">{question.title}</p>
+                <div className="relative">
+                  <ChartContainer config={config} className="h-28 w-28 mx-auto">
+                    <PieChart>
+                      <Pie
+                        data={data}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={50}
+                        innerRadius={28}
+                        startAngle={90}
+                        endAngle={-270}
+                        strokeWidth={2}
+                        stroke="white"
+                        className="dark:stroke-gray-900"
+                      >
+                        {data.map((entry, i) => (
+                          <Cell key={i} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ChartContainer>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
+                      {Math.round((yesCount / total) * 100)}%
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <span>بله: {yesCount}</span>
+                  <span>خیر: {noCount}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      );
+    }
 
   // Choice question pie
   const options = question.config.options || [];
@@ -999,13 +1018,18 @@ function MiniPieCard({
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
   if (total === 0) {
     return (
-      <Card className="border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
-        <CardContent className="p-4">
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{question.title}</p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-6">بدون پاسخ</p>
-        </CardContent>
-      </Card>
-    );
+        <div className="group relative overflow-hidden rounded-2xl">
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"><div className="w-full h-full rounded-2xl bg-white dark:bg-gray-900" /></div>
+          <motion.div whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
+            <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-300">
+              <CardContent className="p-4">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{question.title}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-6">بدون پاسخ</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      );
   }
 
   const pieData = options.map((opt, idx) => ({
@@ -1019,54 +1043,59 @@ function MiniPieCard({
   });
 
   return (
-    <Card className="border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
-      <CardContent className="p-4 space-y-3">
-        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 line-clamp-2">{question.title}</p>
-        <div className="relative">
-          <ChartContainer config={config} className="h-28 w-28 mx-auto">
-            <PieChart>
-              <Pie
-                data={pieData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={50}
-                innerRadius={28}
-                startAngle={90}
-                endAngle={-270}
-                paddingAngle={2}
-                strokeWidth={2}
-                stroke="white"
-                className="dark:stroke-gray-900"
-              >
-                {pieData.map((entry, i) => (
-                  <Cell key={i} fill={entry.fill} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ChartContainer>
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-base font-bold text-gray-900 dark:text-gray-100">{total}</span>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {options.slice(0, 3).map((opt, idx) => {
-            const pct = total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0;
-            return (
-              <div key={opt.id} className="flex items-center gap-1 text-[10px]">
-                <div className="size-2 rounded-sm" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
-                <span className="text-gray-500 dark:text-gray-400">{opt.text.length > 12 ? opt.text.slice(0, 12) + '…' : opt.text}</span>
-                <span className="font-medium text-gray-700 dark:text-gray-300">{pct}%</span>
+    <div className="group relative overflow-hidden rounded-2xl">
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 p-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"><div className="w-full h-full rounded-2xl bg-white dark:bg-gray-900" /></div>
+      <motion.div whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-4 space-y-3">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 line-clamp-2">{question.title}</p>
+            <div className="relative">
+              <ChartContainer config={config} className="h-28 w-28 mx-auto">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={50}
+                    innerRadius={28}
+                    startAngle={90}
+                    endAngle={-270}
+                    paddingAngle={2}
+                    strokeWidth={2}
+                    stroke="white"
+                    className="dark:stroke-gray-900"
+                  >
+                    {pieData.map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ChartContainer>
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="text-base font-bold text-gray-900 dark:text-gray-100">{total}</span>
               </div>
-            );
-          })}
-          {options.length > 3 && (
-            <span className="text-[10px] text-gray-400 dark:text-gray-500">+{options.length - 3} مورد</span>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {options.slice(0, 3).map((opt, idx) => {
+                const pct = total > 0 ? Math.round(((counts[opt.id] || 0) / total) * 100) : 0;
+                return (
+                  <div key={opt.id} className="flex items-center gap-1 text-[10px]">
+                    <div className="size-2 rounded-sm" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
+                    <span className="text-gray-500 dark:text-gray-400">{opt.text.length > 12 ? opt.text.slice(0, 12) + '…' : opt.text}</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">{pct}%</span>
+                  </div>
+                );
+              })}
+              {options.length > 3 && (
+                <span className="text-[10px] text-gray-400 dark:text-gray-500">+{options.length - 3} مورد</span>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </div>
   );
 }
 
@@ -1325,7 +1354,7 @@ function ResponsesDataTable({
   };
 
   return (
-    <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+    <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
@@ -1344,7 +1373,7 @@ function ResponsesDataTable({
                 placeholder="جستجو در پاسخ‌ها..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 pr-9 pl-3 text-sm rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                className="h-9 pr-9 pl-3 text-sm rounded-lg border-gray-200/60 dark:border-gray-700/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl focus:border-violet-300 focus:ring-violet-100 text-gray-900 dark:text-gray-100"
                 dir="rtl"
               />
             </div>
@@ -1469,6 +1498,8 @@ export default function ResultsView() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('summary');
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateFilter, setDateFilter] = useState<string>('all');
 
   const questions = useMemo(() => {
     if (!currentForm?.questions) return [];
@@ -1750,39 +1781,39 @@ export default function ResultsView() {
               className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-4 sm:mb-6"
             >
               <StatCard
-                icon={<Users className="size-5 text-white" />}
+                icon={<Users className="size-5" />}
                 label="کل پاسخ‌ها"
                 value={analytics?.submissionCount ?? submissions.length}
-                color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
+                color="from-violet-500 to-purple-600"
                 delay={0}
               />
               <StatCard
-                icon={<Eye className="size-5 text-white" />}
+                icon={<Eye className="size-5" />}
                 label="کل بازدیدها"
                 value={analytics?.totalViews ?? 0}
-                color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
+                color="from-emerald-500 to-teal-600"
                 delay={0.05}
               />
               <StatCard
-                icon={<TrendingUp className="size-5 text-white" />}
+                icon={<TrendingUp className="size-5" />}
                 label="نرخ تکمیل"
                 value={`${analytics?.completionRate ?? completionRate}%`}
-                color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
+                color="from-blue-500 to-indigo-600"
                 delay={0.1}
               />
               <StatCard
-                icon={<Activity className="size-5 text-white" />}
+                icon={<Activity className="size-5" />}
                 label="میانگین روزانه"
                 value={analytics?.avgPerDay ?? 0}
-                color="bg-gradient-to-br from-violet-500 to-purple-600 dark:from-violet-600 dark:to-purple-700"
+                color="from-fuchsia-500 to-pink-600"
                 delay={0.15}
               />
               <StatCard
-                icon={<Clock className="size-5 text-white" />}
+                icon={<Clock className="size-5" />}
                 label="میانگین زمان پاسخ‌دهی"
                 value={analytics?.avgResponseTime ? formatResponseTime(analytics.avgResponseTime) : 'بدون داده'}
                 subtitle={analytics?.avgResponseTime ? undefined : 'هنوز پاسخی ثبت نشده'}
-                color="bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700"
+                color="from-amber-500 to-orange-600"
                 delay={0.2}
               />
             </motion.div>
@@ -2014,7 +2045,39 @@ export default function ResultsView() {
                   </motion.div>
                 </motion.div>
 
-                {/* Export options row */}
+                {/* Search & Filter Bar */
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
+                    <Input
+                      placeholder="جستجو در پاسخ‌ها..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="rounded-xl border-gray-200/60 dark:border-gray-700/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl pr-10 h-10 text-sm focus:border-violet-300 focus:ring-violet-100"
+                      dir="rtl"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Select value={dateFilter} onValueChange={setDateFilter} dir="rtl">
+                      <SelectTrigger className="h-10 rounded-xl border-gray-200/60 dark:border-gray-700/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl text-sm w-auto min-w-[140px]">
+                        <SelectValue placeholder="دوره زمانی" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">همه</SelectItem>
+                        <SelectItem value="today">امروز</SelectItem>
+                        <SelectItem value="week">این هفته</SelectItem>
+                        <SelectItem value="month">این ماه</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center justify-center gap-1.5 px-3 rounded-xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-gray-200/60 dark:border-gray-700/60 h-10">
+                    <Filter className="size-3.5 text-gray-400" />
+                    <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                      تعداد نتایج: <span className="font-bold text-gray-700 dark:text-gray-300">{filteredSubmissions.length}</span>
+                    </span>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-2 mb-4">
                   <Button
                     variant="outline"
