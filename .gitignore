@@ -1,28 +1,24 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+node_modules/
+.pnp
+.pnp.js
 
 # testing
-/coverage
+coverage/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # production
-/build
+build/
+dist/
 
 # misc
 .DS_Store
 *.pem
+.env
+.env*.local
 
 # debug
 npm-debug.log*
@@ -30,25 +26,45 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# bun
+bun.lockb
 
-# vercel
-.vercel
+# prisma
+db/*.db
+db/*.db-journal
 
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-local-*
-.claude
-.z-ai-config
-*.log
+# OS
+Thumbs.db
+
+# logs
 dev.log
-dev.out.log
-test
-prompt
-
 server.log
-# Skills directory
-/skills/
+*.log
+
+# uploads
+upload/
+
+# screenshots/download
+download/
+
+# keepalive scripts
+keepalive.sh
+keepalive-prod.sh
+start-server.sh
+server-wrapper.js
+
+# skills (internal)
+skills/
+
+# next env
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# mini-services node_modules
+mini-services/*/node_modules/
