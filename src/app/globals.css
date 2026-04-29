@@ -2285,3 +2285,19 @@
   background-size: 200% 100%;
   animation: border-shimmer 3s linear infinite;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   DASHBOARD STYLING ENHANCEMENT: Gradient Shimmer Skeleton
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Gradient shimmer skeleton loading animation ────────────────────────── */
+.shimmer-skeleton {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.05) 25%, rgba(139, 92, 246, 0.15) 50%, rgba(139, 92, 246, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer-loading 1.5s ease-in-out infinite;
+}
+
+.dark .shimmer-skeleton {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.05) 25%, rgba(139, 92, 246, 0.12) 50%, rgba(139, 92, 246, 0.05) 75%);
+  background-size: 200% 100%;
+}

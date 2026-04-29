@@ -11,6 +11,7 @@ import TemplateLibraryPage from '@/components/dashboard/template-library-page';
 import dynamic from 'next/dynamic';
 import AppHeader from '@/components/app-header';
 import { ScrollToTop } from '@/components/ui/scroll-to-top';
+import { useEffect } from 'react';
 
 const AdminPanel = dynamic(() => import('@/components/admin/admin-panel'), { ssr: false });
 const UserPanel = dynamic(() => import('@/components/user-panel/user-panel'), { ssr: false });
@@ -27,11 +28,20 @@ const pageTransition = {
   duration: 0.3,
 };
 
+// Full-height panel views that should fill exactly the viewport
+const fullHeightViews = ['admin', 'user-panel'];
+
 export default function Home() {
-  const { currentView } = useAppStore();
+  const { currentView, setCurrentView } = useAppStore();
+
+  const isFullHeight = fullHeightViews.includes(currentView);
+
+  useEffect(() => {
+    (window as unknown as Record<string, unknown>).__nav = setCurrentView;
+  }, [setCurrentView]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={isFullHeight ? 'h-screen overflow-hidden' : 'min-h-screen flex flex-col'}>
       <AnimatePresence mode="sync">
         <motion.div
           key={currentView}
@@ -40,11 +50,11 @@ export default function Home() {
           exit="out"
           variants={pageVariants}
           transition={pageTransition}
-          className="flex-1 flex flex-col"
+          className={isFullHeight ? 'h-full' : 'flex-1 flex flex-col'}
         >
-          <div>
+          <div className={isFullHeight ? 'h-full' : ''}>
             {currentView === 'landing' && <LandingPage />}
-            {currentView !== 'landing' && currentView !== 'admin' && currentView !== 'user-panel' && <AppHeader />}
+            {currentView !== 'landing' && !isFullHeight && <AppHeader />}
             {currentView === 'builder' && <FormBuilder />}
             {currentView === 'dashboard' && <Dashboard />}
             {currentView === 'fill' && <FormFill />}
@@ -55,7 +65,7 @@ export default function Home() {
           </div>
         </motion.div>
       </AnimatePresence>
-      <ScrollToTop />
+      {!isFullHeight && <ScrollToTop />}
     </div>
   );
 }

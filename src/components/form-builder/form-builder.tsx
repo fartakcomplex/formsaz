@@ -326,7 +326,9 @@ export default function FormBuilder() {
   return (
     <div className="flex h-screen flex-col bg-muted/30 overflow-hidden" dir="rtl">
       {/* ============ TOOLBAR ============ */}
-      <header className="flex h-14 items-center justify-between border-b bg-white px-3 sm:px-4 shrink-0 z-20 dark:bg-zinc-950">
+      <header className="relative flex h-14 items-center justify-between border-b border-gray-200/60 dark:border-gray-800/60 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-sm px-3 sm:px-4 shrink-0 z-20">
+        {/* Gradient accent line at top of toolbar */}
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-l from-violet-500 via-purple-500 to-fuchsia-500" />
         {/* Right section (RTL - logo/nav) */}
         <div className="flex items-center gap-2">
           {/* Mobile menu buttons */}
@@ -608,7 +610,7 @@ export default function FormBuilder() {
       </header>
 
       {/* Gradient divider between toolbar and content */}
-      <div className="h-px bg-gradient-to-l from-transparent via-violet-300/50 dark:via-violet-700/30 to-transparent shrink-0" />
+      <div className="h-px bg-gradient-to-l from-transparent via-violet-300/30 dark:via-violet-700/20 to-transparent shrink-0" />
 
       {/* ============ MAIN CONTENT ============ */}
       <div className="flex-1 overflow-hidden relative">

@@ -389,7 +389,7 @@ export default function UserPanel() {
   }, [fetchProfile]);
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50 dark:bg-gray-950 flex">
+    <div dir="rtl" className="h-full bg-gray-50 dark:bg-gray-950 flex">
       {/* Mobile Overlay */}
       <AnimatePresence>
         {sidebarOpen && (

@@ -1934,7 +1934,7 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="flex h-[100vh] overflow-hidden bg-gray-50 dark:bg-gray-950" dir="rtl">
+    <div className="flex h-full overflow-hidden bg-gray-50 dark:bg-gray-950" dir="rtl">
       {/* Desktop Sidebar */}
       <aside
         className={`hidden lg:flex flex-col border-l border-gray-200/80 dark:border-gray-800/80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl transition-all duration-300 ease-in-out shrink-0 ${

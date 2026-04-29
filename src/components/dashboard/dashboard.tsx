@@ -206,6 +206,17 @@ function formatDate(dateStr: string): string {
   }
 }
 
+function getQuestionTypeIcon(type: string) {
+  const map: Record<string, string> = {
+    short_text: 'T', long_text: '¶', multiple_choice: '◎',
+    multiple_select: '☑', dropdown: '▾', rating: '★', scale: '⊖',
+    yes_no: '✓/✗', date: '📅', email: '✉', phone: '📞',
+    number: '#', file_upload: '📎', statement: 'ℹ',
+    section_divider: '—', time: '⏰', website: '🌐', image_choice: '🖼',
+  };
+  return map[type] || '?';
+}
+
 function getExpirationStatus(expiresAt: string | null): { text: string; color: string; isExpired: boolean } {
   if (!expiresAt) return { text: '', color: '', isExpired: false };
   try {
@@ -665,15 +676,18 @@ function FormQuickPreview({
   onOpenChange,
   onEdit,
   onFullView,
+  onResults,
 }: {
   form: Form | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onEdit: (form: Form) => void;
   onFullView: (form: Form) => void;
+  onResults: (form: Form) => void;
 }) {
   const questions = form?.questions || [];
   const questionCount = questions.length;
+  const responseCount = form?._count?.submissions || 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -709,16 +723,28 @@ function FormQuickPreview({
                   {form?.title}
                 </DialogTitle>
               </div>
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 20 }}
-              >
-                <Badge className="bg-gradient-to-l from-violet-500 to-purple-600 text-white border-0 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 text-xs">
-                  <FileText className="size-3 ml-1" />
-                  {questionCount} سؤال
-                </Badge>
-              </motion.div>
+              <div className="flex items-center gap-2">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 20 }}
+                >
+                  <Badge className="bg-gradient-to-l from-violet-500 to-purple-600 text-white border-0 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 text-xs">
+                    <FileText className="size-3 ml-1" />
+                    {questionCount} سؤال
+                  </Badge>
+                </motion.div>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring', stiffness: 400, damping: 20 }}
+                >
+                  <Badge className="bg-gradient-to-l from-emerald-500 to-teal-600 text-white border-0 shadow-md shadow-emerald-200/50 dark:shadow-emerald-500/20 text-xs">
+                    <MessageSquare className="size-3 ml-1" />
+                    {responseCount} پاسخ
+                  </Badge>
+                </motion.div>
+              </div>
             </div>
             {form?.description && (
               <motion.p
@@ -779,6 +805,10 @@ function FormQuickPreview({
                       </span>
                     )}
 
+                    {/* Type icon */}
+                    <span className="shrink-0 size-6 flex items-center justify-center rounded-md bg-white dark:bg-gray-700 shadow-sm text-xs" title={questionTypeLabels[question.type] || question.type}>
+                      {getQuestionTypeIcon(question.type)}
+                    </span>
                     {/* Type badge */}
                     <Badge
                       variant="secondary"
@@ -796,18 +826,32 @@ function FormQuickPreview({
         </div>
 
         {/* Footer actions */}
-        <DialogFooter className="gap-2 px-6 pb-6 pt-0">
-          <Button
-            type="button"
-            onClick={() => {
-              if (form) onEdit(form);
-              onOpenChange(false);
-            }}
-            className="flex-1 bg-gradient-to-l from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white rounded-xl text-sm shadow-md shadow-violet-200/50 dark:shadow-violet-500/20"
-          >
-            <Edit3 className="size-3.5 ml-1.5" />
-            ویرایش
-          </Button>
+        <DialogFooter className="flex-col gap-2 px-6 pb-6 pt-0">
+          <div className="flex gap-2 w-full">
+            <Button
+              type="button"
+              onClick={() => {
+                if (form) onEdit(form);
+                onOpenChange(false);
+              }}
+              className="flex-1 bg-gradient-to-l from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white rounded-xl text-sm shadow-md shadow-violet-200/50 dark:shadow-violet-500/20"
+            >
+              <Edit3 className="size-3.5 ml-1.5" />
+              ویرایش فرم
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (form) onResults(form);
+                onOpenChange(false);
+              }}
+              className="flex-1 rounded-xl border-gray-200 dark:border-gray-700 text-sm hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 dark:hover:bg-emerald-950/50 dark:hover:text-emerald-400 dark:hover:border-emerald-800 transition-colors"
+            >
+              <BarChart3 className="size-3.5 ml-1.5" />
+              مشاهده پاسخ‌ها
+            </Button>
+          </div>
           <Button
             type="button"
             variant="outline"
@@ -815,10 +859,10 @@ function FormQuickPreview({
               if (form) onFullView(form);
               onOpenChange(false);
             }}
-            className="flex-1 rounded-xl border-gray-200 dark:border-gray-700 text-sm hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
+            className="w-full rounded-xl border-gray-200 dark:border-gray-700 text-sm hover:bg-violet-50 hover:text-violet-600 hover:border-violet-200 dark:hover:bg-violet-950/50 dark:hover:text-violet-400 dark:hover:border-violet-800 transition-colors"
           >
             <Eye className="size-3.5 ml-1.5" />
-            مشاهده کامل
+            مشاهده کامل فرم
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -2219,6 +2263,150 @@ function FormStatusBadge({ status }: { status: string }) {
   );
 }
 
+// ─── Dashboard Analytics Summary ────────────────────────────────────────────
+
+function DashboardAnalyticsSummary({ forms }: { forms: Form[] }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const totalQuestions = forms.reduce((sum, f) => sum + (f.questions?.length || 0), 0);
+  const totalSubmissions = forms.reduce((sum, f) => sum + (f._count?.submissions || 0), 0);
+  const averageResponses = forms.length > 0 ? Math.round(totalSubmissions / forms.length * 10) / 10 : 0;
+
+  const publishedCount = forms.filter((f) => f.status === 'published').length;
+  const draftCount = forms.filter((f) => f.status === 'draft').length;
+  const closedCount = forms.filter((f) => f.status === 'closed').length;
+
+  const mostPopularForm = forms.length > 0
+    ? forms.reduce((best, f) => ((f._count?.submissions || 0) > (best._count?.submissions || 0) ? f : best), forms[0])
+    : null;
+
+  const statusSegments = [
+    { label: 'منتشر شده', count: publishedCount, color: 'bg-emerald-500', textColor: 'text-emerald-600 dark:text-emerald-400' },
+    { label: 'پیش‌نویس', count: draftCount, color: 'bg-amber-500', textColor: 'text-amber-600 dark:text-amber-400' },
+    { label: 'بسته شده', count: closedCount, color: 'bg-gray-400', textColor: 'text-gray-500 dark:text-gray-400' },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+    >
+      <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/60 dark:bg-gray-900/60 backdrop-blur-md shadow-sm">
+        {/* Decorative gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-bl from-violet-50/50 via-transparent to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10 pointer-events-none" />
+        <div className="absolute -top-8 -right-8 size-32 rounded-full bg-violet-200/30 dark:bg-violet-800/10 blur-3xl pointer-events-none" />
+
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="relative w-full flex items-center gap-3 p-4 sm:p-5 text-right hover:bg-violet-50/40 dark:hover:bg-violet-950/20 transition-colors duration-200"
+        >
+          <motion.div
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20 shrink-0"
+          >
+            <BarChart3 className="size-5 text-white" />
+          </motion.div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">خلاصه تحلیلی فرم‌ها</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              {forms.length} فرم · {totalQuestions} سؤال · {totalSubmissions} پاسخ
+            </p>
+          </div>
+          <motion.div
+            animate={{ rotate: expanded ? 180 : 0 }}
+            transition={{ duration: 0.25 }}
+            className="shrink-0"
+          >
+            <ChevronDown className="size-5 text-gray-400 dark:text-gray-500" />
+          </motion.div>
+        </button>
+
+        <AnimatePresence initial={false}>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="px-5 pb-5 space-y-4 border-t border-gray-100 dark:border-gray-800 pt-4">
+                {/* Stats grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="rounded-xl bg-gray-50/80 dark:bg-gray-800/50 p-3 text-center">
+                    <span className="text-lg font-extrabold text-violet-600 dark:text-violet-400">{totalQuestions}</span>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">کل سؤالات</p>
+                  </div>
+                  <div className="rounded-xl bg-gray-50/80 dark:bg-gray-800/50 p-3 text-center">
+                    <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">{averageResponses}</span>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">میانگین پاسخ</p>
+                  </div>
+                  <div className="rounded-xl bg-gray-50/80 dark:bg-gray-800/50 p-3 text-center">
+                    <span className="text-lg font-extrabold text-purple-600 dark:text-purple-400">{publishedCount}</span>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">فرم فعال</p>
+                  </div>
+                  <div className="rounded-xl bg-gray-50/80 dark:bg-gray-800/50 p-3 text-center">
+                    <span className="text-lg font-extrabold text-amber-600 dark:text-amber-400">{draftCount}</span>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">پیش‌نویس</p>
+                  </div>
+                </div>
+
+                {/* Status distribution bar */}
+                {forms.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">توزیع وضعیت فرم‌ها</p>
+                    <div className="flex items-center gap-1 h-3 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+                      {statusSegments.map((seg) => (
+                        <motion.div
+                          key={seg.label}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${forms.length > 0 ? (seg.count / forms.length) * 100 : 0}%` }}
+                          transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+                          className={`h-full ${seg.color} ${seg.count === 0 ? 'hidden' : ''}`}
+                        />
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-center gap-4">
+                      {statusSegments.map((seg) => (
+                        <div key={seg.label} className="flex items-center gap-1.5">
+                          <div className={`size-2.5 rounded-full ${seg.color}`} />
+                          <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400">
+                            {seg.label}: {seg.count}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Most popular form */}
+                {mostPopularForm && (mostPopularForm._count?.submissions || 0) > 0 && (
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-l from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/20 border border-emerald-100 dark:border-emerald-900/50">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50 shrink-0">
+                      <TrendingUp className="size-4 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">محبوب‌ترین فرم</p>
+                      <p className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">{mostPopularForm.title}</p>
+                    </div>
+                    <Badge className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-0 text-[10px] shrink-0">
+                      <MessageSquare className="size-3 ml-0.5" />
+                      {mostPopularForm._count?.submissions} پاسخ
+                    </Badge>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
 function FormCardSkeleton() {
   return (
     <Card className="overflow-hidden bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
@@ -2491,7 +2679,7 @@ function FormCard({
         )}
 
         <CardFooter className="flex-col gap-3 pt-0 relative z-10">
-          {/* Mini Sparkline - Response Trend */
+          {/* Mini Sparkline - Response Trend */}
           {(form._count?.submissions || 0) > 0 && (
             <div className="flex items-center justify-between w-full px-1">
               <span className="text-[10px] text-gray-400 dark:text-gray-500">روند پاسخ‌ها</span>
@@ -3007,41 +3195,49 @@ function WelcomeBanner({
       initial={{ opacity: 0, y: -20, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden rounded-2xl mb-6 sm:mb-8 welcome-banner-gradient shadow-xl"
+      className="relative overflow-hidden rounded-2xl mb-6 sm:mb-8 bg-gradient-to-br from-violet-600/90 via-purple-600/90 to-fuchsia-600/90 backdrop-blur-sm shadow-xl"
     >
-      {/* Floating decorative shapes */}
+      {/* Floating gradient orbs with breathing animations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Top-right circle */}
+        {/* Orb 1 - Top-right violet glow */}
         <motion.div
-          animate={{ y: [0, -8, 0], x: [0, 4, 0] }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-12 -left-12 size-40 sm:size-56 rounded-full bg-violet-400/40 blur-3xl"
+        />
+        {/* Orb 2 - Bottom-left fuchsia glow */}
+        <motion.div
+          animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.45, 0.25] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+          className="absolute -bottom-16 -right-16 size-44 sm:size-60 rounded-full bg-fuchsia-400/35 blur-3xl"
+        />
+        {/* Orb 3 - Center-purple accent */}
+        <motion.div
+          animate={{ scale: [1, 1.25, 1], opacity: [0.2, 0.4, 0.2], y: [0, -10, 0] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+          className="absolute top-1/3 left-1/3 size-24 sm:size-32 rounded-full bg-purple-300/30 blur-2xl"
+        />
+        {/* Small floating accent */}
+        <motion.div
+          animate={{ y: [0, -6, 0], x: [0, 4, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -top-8 -left-8 size-32 sm:size-40 rounded-full bg-white/10 blur-xl"
-        />
-        {/* Bottom-left circle */}
-        <motion.div
-          animate={{ y: [0, 6, 0], x: [0, -5, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-          className="absolute -bottom-10 -right-10 size-28 sm:size-36 rounded-full bg-white/8 blur-2xl"
-        />
-        {/* Small accent circle top-left */}
-        <motion.div
-          animate={{ y: [0, -5, 0], scale: [1, 1.05, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
           className="absolute top-4 left-4 sm:top-6 sm:left-6 size-12 sm:size-16 rounded-full bg-white/10 blur-lg"
         />
-        {/* Small accent circle bottom-right */}
         <motion.div
           animate={{ y: [0, 4, 0], scale: [1, 0.95, 1] }}
           transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
           className="absolute bottom-4 right-6 sm:bottom-6 sm:right-10 size-10 sm:size-14 rounded-full bg-white/15 blur-md"
         />
-        {/* Diamond shape */}
-        <motion.div
-          animate={{ rotate: [0, 90, 180, 270, 360] }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 size-6 sm:size-8 rounded-sm bg-white/10 blur-sm rotate-45 hidden sm:block"
-        />
       </div>
+
+      {/* Dot grid pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
+          backgroundSize: '20px 20px',
+        }}
+      />
 
       {/* Glassmorphism overlay */}
       <div className="absolute inset-0 bg-white/5 dark:bg-black/10 backdrop-blur-[2px]" />
@@ -3579,6 +3775,13 @@ export default function Dashboard() {
         {/* Activity Log Widget */}
         <ActivityWidget activityLog={activityLog} />
 
+        {/* Analytics Summary */}
+        {forms.length > 0 && (
+          <div className="mb-6 sm:mb-8">
+            <DashboardAnalyticsSummary forms={forms} />
+          </div>
+        )}
+
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
@@ -3587,57 +3790,65 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
             {forms.length > 0 && (
-              <Button
-                variant={selectMode ? 'default' : 'outline'}
-                onClick={() => {
-                  if (selectMode) {
-                    exitSelectMode();
-                  } else {
-                    setSelectMode(true);
-                  }
-                }}
-                className={`rounded-xl px-4 font-medium h-10 transition-all ${
-                  selectMode
-                    ? 'bg-violet-500 hover:bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20'
-                    : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
-                }`}
-              >
-                {selectMode ? (
-                  <>
-                    <X className="size-4 ml-1.5" />
-                    خروج
-                  </>
-                ) : (
-                  <>
-                    <CheckSquare className="size-4 ml-1.5 text-violet-500" />
-                    انتخاب
-                  </>
-                )}
-              </Button>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Button
+                  variant={selectMode ? 'default' : 'outline'}
+                  onClick={() => {
+                    if (selectMode) {
+                      exitSelectMode();
+                    } else {
+                      setSelectMode(true);
+                    }
+                  }}
+                  className={`rounded-xl px-4 font-medium h-10 transition-all ${
+                    selectMode
+                      ? 'bg-violet-500 hover:bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-200/50 dark:shadow-violet-500/20'
+                      : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  }`}
+                >
+                  {selectMode ? (
+                    <>
+                      <X className="size-4 ml-1.5" />
+                      خروج
+                    </>
+                  ) : (
+                    <>
+                      <CheckSquare className="size-4 ml-1.5 text-violet-500" />
+                      انتخاب
+                    </>
+                  )}
+                </Button>
+              </motion.div>
             )}
-            <Button
-              variant="outline"
-              onClick={() => setCurrentView('templates')}
-              className="border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 rounded-xl px-5 font-medium w-full sm:w-auto h-10 transition-colors text-gray-700 dark:text-gray-300"
-            >
-              <LayoutTemplate className="size-4 ml-2 text-purple-500" />
-              الگوهای آماده
-            </Button>
-            <Button
-              onClick={handleCreateNew}
-              className="bg-gradient-to-l from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-300/50 rounded-xl px-5 font-medium w-full sm:w-auto h-10"
-            >
-              <Plus className="size-4 ml-2" />
-              ایجاد فرم جدید
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setImportDialogOpen(true)}
-              className="border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 rounded-xl px-5 font-medium w-full sm:w-auto h-10 transition-colors text-gray-700 dark:text-gray-300"
-            >
-              <Upload className="size-4 ml-2 text-emerald-500" />
-              ورود از JSON
-            </Button>
+            <motion.div whileHover={{ scale: 1.03, y: -1 }} whileTap={{ scale: 0.97 }}>
+              <Button
+                variant="outline"
+                onClick={() => setCurrentView('templates')}
+                className="border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 rounded-xl px-5 font-medium w-full sm:w-auto h-10 transition-colors text-gray-700 dark:text-gray-300"
+              >
+                <LayoutTemplate className="size-4 ml-2 text-purple-500" />
+                الگوهای آماده
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.04, y: -1 }} whileTap={{ scale: 0.96 }}>
+              <Button
+                onClick={handleCreateNew}
+                className="bg-gradient-to-l from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-md shadow-violet-200/50 dark:shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-300/50 rounded-xl px-5 font-medium w-full sm:w-auto h-10"
+              >
+                <Plus className="size-4 ml-2" />
+                ایجاد فرم جدید
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.03, y: -1 }} whileTap={{ scale: 0.97 }}>
+              <Button
+                variant="outline"
+                onClick={() => setImportDialogOpen(true)}
+                className="border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 rounded-xl px-5 font-medium w-full sm:w-auto h-10 transition-colors text-gray-700 dark:text-gray-300"
+              >
+                <Upload className="size-4 ml-2 text-emerald-500" />
+                ورود از JSON
+              </Button>
+            </motion.div>
           </div>
         </div>
 
@@ -3991,6 +4202,7 @@ export default function Dashboard() {
         onOpenChange={setQuickPreviewOpen}
         onEdit={handleEdit}
         onFullView={handleFullView}
+        onResults={handleResults}
       />
 
       {/* Duplicate Confirmation Dialog */}
