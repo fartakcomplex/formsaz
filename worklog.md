@@ -1,6 +1,78 @@
 # Worklog
 
 ---
+## Task ID: 33 (Map Type, Template Quality Fix, Gallery Enhancements, v1.2.1 Release)
+## Agent: main-agent
+## Date: 2026-04-30
+
+### Session Overview
+Continued development for the Persian RTL form builder "formsaz". Added map question type (38 total types), fixed specialized forms metadata quality (1099 forms), added template gallery enhancements (favorites, category stats, new badges), dashboard templates quick access, and enhanced stat cards glassmorphism. Pushed GitHub release v1.2.1.
+
+### 1. New Features
+
+**a) Map Question Type** (`question-types.tsx`, `form-fill.tsx`, `form-preview.tsx`, `properties-panel.tsx`):
+- Added `map` type to question types panel (category: Input)
+- Interactive map component with Tehran area coverage (lat: 35.5-35.9, lng: 51.0-51.8)
+- Grid-line simulated map background with click-to-select coordinates
+- Animated marker positioning with Framer Motion spring physics
+- Displays selected lat/lng coordinates below map
+- Default config: Tehran coordinates (35.6892, 51.3890)
+
+**b) Template Gallery Category Stats Bar** (`template-gallery.tsx`):
+- Scrollable pill badges below search showing template count per category
+- Clicking filters by that category
+- Animated with motion.div whileHover scale
+
+**c) Template Favorite Button** (`template-gallery.tsx`):
+- Heart button on each template card for favoriting
+- Red fill when favorited, gray outline when not
+- Local state management with Set<string>
+
+**d) Template "Recently Added" Badge** (`template-gallery.tsx`):
+- Animated "جدید" (New) badge for recent templates
+- Emerald gradient pill with spring entrance animation
+
+**e) Dashboard Templates Quick Access** (`dashboard.tsx`):
+- Collapsible "الگوهای پرطرفدار" section between AI Insights and Toolbar
+- 8 category cards in responsive grid with gradient icons
+- Staggered entrance animations, hover effects
+
+**f) Enhanced Stat Cards Glassmorphism** (`dashboard.tsx`):
+- Gradient border glow overlay (violet→pink) on hover with 500ms transition
+- Applied to dashboard stat cards
+
+### 2. Quality Fixes
+
+**a) Specialized Forms Metadata Quality** (`specialized-forms-meta.ts`):
+- Fixed ALL 1099 entries: unique meaningful Persian descriptions (was generic)
+- Fixed icons: 46 unique icons across categories (was 1 "Heart" for all)
+- Fixed gradients: 30 unique gradients per category (was 1 "from-red-400 to-pink-500")
+- Fixed categoryLabels: proper labels per category (health, hr, education, order, event, other)
+
+### 3. Build & Release
+- Build: 0 errors, 23 routes (Next.js 16.1.3 Turbopack)
+- Git push to `main` successful
+- GitHub release v1.2.1 created: https://github.com/fartakcomplex/formsaz/releases/tag/v1.2.1
+
+### Files Modified
+1. `src/components/form-builder/question-types.tsx` — Added map type
+2. `src/components/dashboard/form-fill.tsx` — MapQuestion component, map icon
+3. `src/components/form-builder/form-preview.tsx` — Map type preview
+4. `src/components/form-builder/properties-panel.tsx` — Map type properties
+5. `src/lib/specialized-forms-meta.ts` — Quality fix (descriptions, icons, gradients, labels)
+6. `src/components/dashboard/template-gallery.tsx` — Category stats, favorites, new badge, map type label
+7. `src/components/dashboard/dashboard.tsx` — Templates quick access, enhanced stat cards
+
+### Current Project Status
+- 38 input element types (exceeds 20 requested)
+- 1099 specialized multi-step forms with full question data
+- 100 base templates with full question data
+- Template gallery: ~1199 total templates
+- All 38 types render in form-fill with proper UI components
+- Build: 0 errors, 23 routes
+- GitHub: v1.2.1 released
+
+---
 ## Task ID: 32 (Generate ~1000 Specialized Multi-Step Form Templates)
 ## Agent: specialized-forms-generator
 ## Date: 2026-04-29
