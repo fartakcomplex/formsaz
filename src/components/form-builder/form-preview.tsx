@@ -44,6 +44,30 @@ import {
   GitBranch,
   Eye,
   EyeOff,
+  Clock,
+  Link2,
+  Lock,
+  Palette,
+  SlidersHorizontal,
+  MapPin,
+  CreditCard,
+  Landmark,
+  Globe,
+  Flag,
+  Building2,
+  GraduationCap,
+  User,
+  Heart,
+  Briefcase,
+  Building,
+  SmilePlus,
+  TrendingUp,
+  ArrowUpDown,
+  ThumbsUp,
+  ShieldCheck,
+  PenTool,
+  ShieldQuestion,
+  CalendarClock,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppStore, FormQuestion, FormTheme, FormSection } from '@/lib/store';
@@ -89,6 +113,31 @@ function getQuestionTypeLabel(type: string): string {
     image_choice: 'انتخاب تصویری',
     matrix: 'ماتریس',
     section_divider: 'جداکننده بخش',
+    time: 'ساعت',
+    url: 'آدرس وب',
+    password: 'رمز عبور',
+    color: 'انتخاب رنگ',
+    range: 'نوار لغزان',
+    address: 'آدرس',
+    postal_code: 'کد پستی',
+    national_id: 'کد ملی',
+    iban: 'شماره شبا',
+    website: 'وب‌سایت',
+    country: 'استان',
+    city: 'شهر/استان',
+    education: 'تحصیلات',
+    gender: 'جنسیت',
+    marital_status: 'وضعیت تاهل',
+    job_title: 'عنوان شغلی',
+    company: 'نام شرکت',
+    emoji_rating: 'امتیاز ایموجی',
+    nps: 'شاخص NPS',
+    ranking: 'رتبه‌بندی',
+    thumbs_up_down: 'انگشت بالا/پایین',
+    consent: 'تاییدیه',
+    signature: 'امضا',
+    captcha: 'کد امنیتی',
+    datetime: 'تاریخ و ساعت',
   };
   return labels[type] || type;
 }
@@ -292,6 +341,194 @@ function QuestionAnswerPreview({ question }: { question: FormQuestion }) {
           {config.description && (
             <p className="text-xs text-muted-foreground/60 mt-2 italic">{config.description}</p>
           )}
+        </div>
+      );
+    case 'time':
+      return (
+        <div className="mt-3 flex h-10 w-full items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-3">
+          <Clock className="h-4 w-4 text-muted-foreground/50" />
+          <span className="text-sm text-muted-foreground/60">انتخاب ساعت</span>
+        </div>
+      );
+    case 'url':
+      return (
+        <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+          <span className="text-sm text-muted-foreground/60">{config.placeholder || 'https://'}</span>
+        </div>
+      );
+    case 'password':
+      return (
+        <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+          <span className="text-sm text-muted-foreground/60">••••••••</span>
+        </div>
+      );
+    case 'color':
+      return (
+        <div className="mt-3 flex h-10 items-center gap-3">
+          <div className="h-8 w-8 rounded-lg border-2 border-muted-foreground/30 bg-gradient-to-br from-red-400 to-blue-400" />
+          <span className="text-sm text-muted-foreground/60">انتخاب رنگ</span>
+        </div>
+      );
+    case 'range':
+      return (
+        <div className="mt-3">
+          <div className="h-2 rounded-full bg-muted-foreground/20">
+            <div className="h-2 w-1/3 rounded-full bg-muted-foreground/40" />
+          </div>
+          <div className="flex justify-between mt-1">
+            <span className="text-xs text-muted-foreground/50">{config.min ?? 0}</span>
+            <span className="text-xs text-muted-foreground/50">{config.max ?? 100}</span>
+          </div>
+        </div>
+      );
+    case 'address':
+      return (
+        <div className="mt-3 min-h-[72px] rounded-lg border-2 border-dashed border-muted-foreground/30 p-3">
+          <span className="text-sm text-muted-foreground/60">آدرس کامل...</span>
+        </div>
+      );
+    case 'postal_code':
+      return (
+        <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+          <span className="text-sm text-muted-foreground/60">کد پستی ۱۰ رقمی</span>
+        </div>
+      );
+    case 'national_id':
+      return (
+        <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+          <span className="text-sm text-muted-foreground/60">کد ملی ۱۰ رقمی</span>
+        </div>
+      );
+    case 'iban':
+      return (
+        <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+          <span className="text-sm text-muted-foreground/60">IR...</span>
+        </div>
+      );
+    case 'website':
+      return (
+        <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+          <span className="text-sm text-muted-foreground/60">{config.placeholder || 'https://example.com'}</span>
+        </div>
+      );
+    case 'country':
+      return (
+        <div className="mt-3 flex h-10 w-full items-center justify-between rounded-lg border-2 border-muted-foreground/30 px-3">
+          <span className="text-sm text-muted-foreground/60">انتخاب استان...</span>
+          <ChevronDown className="h-4 w-4 text-muted-foreground/50" />
+        </div>
+      );
+    case 'city':
+      return (
+        <div className="mt-3 flex h-10 w-full items-center justify-between rounded-lg border-2 border-muted-foreground/30 px-3">
+          <span className="text-sm text-muted-foreground/60">انتخاب شهر...</span>
+          <ChevronDown className="h-4 w-4 text-muted-foreground/50" />
+        </div>
+      );
+    case 'education':
+      return (
+        <div className="mt-3 flex h-10 w-full items-center justify-between rounded-lg border-2 border-muted-foreground/30 px-3">
+          <span className="text-sm text-muted-foreground/60">انتخاب سطح تحصیلات...</span>
+          <ChevronDown className="h-4 w-4 text-muted-foreground/50" />
+        </div>
+      );
+    case 'gender':
+      return (
+        <div className="mt-3 flex gap-3">
+          <div className="flex h-10 items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-4">
+            <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
+            <span className="text-sm text-foreground/80">مرد</span>
+          </div>
+          <div className="flex h-10 items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-4">
+            <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
+            <span className="text-sm text-foreground/80">زن</span>
+          </div>
+        </div>
+      );
+    case 'marital_status':
+      return (
+        <div className="mt-3 flex h-10 w-full items-center justify-between rounded-lg border-2 border-muted-foreground/30 px-3">
+          <span className="text-sm text-muted-foreground/60">انتخاب وضعیت...</span>
+          <ChevronDown className="h-4 w-4 text-muted-foreground/50" />
+        </div>
+      );
+    case 'job_title':
+      return (
+        <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+          <span className="text-sm text-muted-foreground/60">عنوان شغلی...</span>
+        </div>
+      );
+    case 'company':
+      return (
+        <div className="mt-3 border-b-2 border-dashed border-muted-foreground/30 pb-1">
+          <span className="text-sm text-muted-foreground/60">نام شرکت/سازمان...</span>
+        </div>
+      );
+    case 'emoji_rating':
+      return (
+        <div className="mt-3 flex gap-2">
+          {['😢', '😐', '😊', '😄', '🤩'].map((emoji, i) => (
+            <span key={i} className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-muted-foreground/30 text-lg opacity-50">{emoji}</span>
+          ))}
+        </div>
+      );
+    case 'nps':
+      return (
+        <div className="mt-3 flex gap-1 justify-center">
+          {Array.from({ length: 11 }, (_, i) => (
+            <div key={i} className="flex h-8 w-8 items-center justify-center rounded-md border-2 border-muted-foreground/30 text-xs text-muted-foreground">{i}</div>
+          ))}
+        </div>
+      );
+    case 'ranking':
+      return (
+        <div className="mt-3 space-y-1.5">
+          {(config.rankItems || ['آیتم ۱', 'آیتم ۲', 'آیتم ۳']).map((item, i) => (
+            <div key={i} className="flex items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-3 py-1.5">
+              <span className="text-xs text-muted-foreground/60">{toPersianDigits(String(i + 1))}</span>
+              <span className="text-sm text-foreground/80">{item}</span>
+            </div>
+          ))}
+        </div>
+      );
+    case 'thumbs_up_down':
+      return (
+        <div className="mt-3 flex gap-3">
+          <div className="flex h-10 items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-4">
+            <span className="text-lg">👍</span>
+            </div>
+          <div className="flex h-10 items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-4">
+            <span className="text-lg">👎</span>
+          </div>
+        </div>
+      );
+    case 'consent':
+      return (
+        <div className="mt-3 flex items-center gap-2">
+          <div className="h-4 w-4 rounded border-2 border-muted-foreground/40" />
+          <span className="text-sm text-muted-foreground/60">{config.consentText || 'تاییدیه...'}</span>
+        </div>
+      );
+    case 'signature':
+      return (
+        <div className="mt-3 min-h-[100px] rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+          <span className="text-sm text-muted-foreground/40">محیط امضا</span>
+        </div>
+      );
+    case 'captcha':
+      return (
+        <div className="mt-3 flex items-center gap-3">
+          <div className="rounded-lg border-2 border-muted-foreground/30 px-3 py-1.5">
+            <span className="text-sm text-muted-foreground/60">۳ + ۵ = ؟</span>
+          </div>
+          <div className="border-b-2 border-dashed border-muted-foreground/30 w-16" />
+        </div>
+      );
+    case 'datetime':
+      return (
+        <div className="mt-3 flex h-10 w-full items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-3">
+          <CalendarClock className="h-4 w-4 text-muted-foreground/50" />
+          <span className="text-sm text-muted-foreground/60">تاریخ و ساعت</span>
         </div>
       );
     default:

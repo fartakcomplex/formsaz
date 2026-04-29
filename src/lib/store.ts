@@ -54,6 +54,21 @@ export interface QuestionConfig {
   pattern?: string;
   imageOptions?: ImageOption[];
   description?: string;
+  // New config properties
+  minLength?: number;
+  unit?: string;
+  minDate?: string;
+  maxDate?: string;
+  accept?: string;
+  patternMessage?: string;
+  captchaAnswer?: number;
+  captchaQuestion?: string;
+  consentText?: string;
+  provinces?: string[];
+  educations?: string[];
+  genders?: string[];
+  maritalStatuses?: string[];
+  rankItems?: string[];
 }
 
 export interface ConditionRule {

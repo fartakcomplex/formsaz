@@ -21,6 +21,30 @@ import {
   Heading,
   CircleHelp,
   ChevronLeft,
+  Clock,
+  Link2,
+  Lock,
+  Palette,
+  SlidersHorizontal,
+  MapPin,
+  CreditCard,
+  Landmark,
+  Globe,
+  Flag,
+  Building2,
+  GraduationCap,
+  User,
+  Heart,
+  Briefcase,
+  Building,
+  SmilePlus,
+  TrendingUp,
+  ArrowUpDown,
+  ThumbsUp,
+  ShieldCheck,
+  PenTool,
+  ShieldQuestion,
+  CalendarClock,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -136,6 +160,35 @@ const questionTypes: QuestionTypeItem[] = [
   { type: 'file_upload', label: 'آپلود فایل', description: 'بارگذاری فایل', icon: <Upload className="h-4 w-4" />, category: 'متفرقه' },
   { type: 'statement', label: 'عبارت توضیحی', description: 'متن توضیحی', icon: <FileText className="h-4 w-4" />, category: 'متفرقه' },
   { type: 'section_divider', label: 'جداکننده بخش', description: 'تفکیک بخش‌ها', icon: <Heading className="h-4 w-4" />, category: 'متفرقه' },
+  // New Input types
+  { type: 'time', label: 'ساعت', description: 'انتخاب ساعت', icon: <Clock className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'url', label: 'آدرس وب', description: 'ورودی URL', icon: <Link2 className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'password', label: 'رمز عبور', description: 'فیلد رمز عبور', icon: <Lock className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'color', label: 'انتخاب رنگ', description: 'انتخابگر رنگ', icon: <Palette className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'range', label: 'نوار لغزان', description: 'اسلایدر عددی', icon: <SlidersHorizontal className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'address', label: 'آدرس', description: 'فیلد آدرس', icon: <MapPin className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'postal_code', label: 'کد پستی', description: 'کد پستی ۱۰ رقمی', icon: <MapPin className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'national_id', label: 'کد ملی', description: 'کد ملی ۱۰ رقمی', icon: <CreditCard className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'iban', label: 'شماره شبا', description: 'شماره شبا (IR)', icon: <Landmark className="h-4 w-4" />, category: 'ورودی' },
+  { type: 'website', label: 'وب‌سایت', description: 'آدرس وب‌سایت', icon: <Globe className="h-4 w-4" />, category: 'ورودی' },
+  // New Selection types
+  { type: 'country', label: 'کشور', description: 'انتخاب استان', icon: <Flag className="h-4 w-4" />, category: 'انتخاب' },
+  { type: 'city', label: 'شهر/استان', description: 'انتخاب شهر', icon: <Building2 className="h-4 w-4" />, category: 'انتخاب' },
+  { type: 'education', label: 'تحصیلات', description: 'سطح تحصیلات', icon: <GraduationCap className="h-4 w-4" />, category: 'انتخاب' },
+  { type: 'gender', label: 'جنسیت', description: 'انتخاب جنسیت', icon: <User className="h-4 w-4" />, category: 'انتخاب' },
+  { type: 'marital_status', label: 'وضعیت تاهل', description: 'وضعیت تأهل', icon: <Heart className="h-4 w-4" />, category: 'انتخاب' },
+  { type: 'job_title', label: 'عنوان شغلی', description: 'شغل کاربر', icon: <Briefcase className="h-4 w-4" />, category: 'انتخاب' },
+  { type: 'company', label: 'نام شرکت', description: 'نام سازمان', icon: <Building className="h-4 w-4" />, category: 'انتخاب' },
+  // New Rating types
+  { type: 'emoji_rating', label: 'امتیاز ایموجی', description: 'امتیاز با ایموجی', icon: <SmilePlus className="h-4 w-4" />, category: 'ارزیابی' },
+  { type: 'nps', label: 'شاخص NPS', description: 'امتیاز ۰ تا ۱۰', icon: <TrendingUp className="h-4 w-4" />, category: 'ارزیابی' },
+  { type: 'ranking', label: 'رتبه‌بندی', description: 'رتبه‌بندی آیتم‌ها', icon: <ArrowUpDown className="h-4 w-4" />, category: 'ارزیابی' },
+  { type: 'thumbs_up_down', label: 'انگشت بالا/پایین', description: 'موافق/مخالف', icon: <ThumbsUp className="h-4 w-4" />, category: 'ارزیابی' },
+  // New Misc types
+  { type: 'consent', label: 'تاییدیه', description: 'تایید و موافقت', icon: <ShieldCheck className="h-4 w-4" />, category: 'متفرقه' },
+  { type: 'signature', label: 'امضا', description: 'پد امضا', icon: <PenTool className="h-4 w-4" />, category: 'متفرقه' },
+  { type: 'captcha', label: 'کد امنیتی', description: 'کپچای ریاضی', icon: <ShieldQuestion className="h-4 w-4" />, category: 'متفرقه' },
+  { type: 'datetime', label: 'تاریخ و ساعت', description: 'تاریخ و ساعت با هم', icon: <CalendarClock className="h-4 w-4" />, category: 'متفرقه' },
 ];
 
 function getDefaultConfig(type: string): FormQuestion['config'] {
@@ -203,6 +256,68 @@ function getDefaultConfig(type: string): FormQuestion['config'] {
       return {};
     case 'section_divider':
       return { description: '' };
+    case 'time':
+      return { placeholder: '' };
+    case 'url':
+      return { placeholder: 'https://' };
+    case 'password':
+      return { placeholder: '', minLength: 6 };
+    case 'color':
+      return {};
+    case 'range':
+      return { min: 0, max: 100, step: 1, unit: '' };
+    case 'address':
+      return { placeholder: '' };
+    case 'postal_code':
+      return { placeholder: '', pattern: '^\\d{10}$', patternMessage: 'کد پستی باید ۱۰ رقم باشد' };
+    case 'national_id':
+      return { placeholder: '', pattern: '^\\d{10}$', patternMessage: 'کد ملی باید ۱۰ رقم باشد' };
+    case 'iban':
+      return { placeholder: 'IR' };
+    case 'website':
+      return { placeholder: 'https://example.com' };
+    case 'country':
+      return {
+        provinces: ['تهران', 'اصفهان', 'فارس', 'خراسان رضوی', 'آذربایجان شرقی', 'مازندران', 'گیلان', 'کرمان', 'خوزستان', 'سیستان و بلوچستان', 'البرز', 'آذربایجان غربی', 'Markazi', 'هرمزگان', 'گلستان', 'لرستان', 'کردستان', 'همدان', 'چهارمحال و بختیاری', 'بوشهر', 'زنجان', 'سمنان', 'یزد', 'قزوین', 'اردبیل', 'قوم', 'کهگیلویه و بویراحمد', 'خراسان شمالی', 'خراسان جنوبی', 'مرکزی', 'ایلام', 'کرمانشاه', 'سند'],
+      };
+    case 'city':
+      return {};
+    case 'education':
+      return {
+        educations: ['دیپلم', 'کاردانی', 'کارشناسی', 'کارشناسی ارشد', 'دکتری', 'فوق دکتری'],
+      };
+    case 'gender':
+      return {
+        genders: ['مرد', 'زن', 'سایر'],
+      };
+    case 'marital_status':
+      return {
+        maritalStatuses: ['مجرد', 'متأهل', 'مطلقه', 'همسر فوت‌شده'],
+      };
+    case 'job_title':
+      return { placeholder: '' };
+    case 'company':
+      return { placeholder: '' };
+    case 'emoji_rating':
+      return {};
+    case 'nps':
+      return {};
+    case 'ranking':
+      return {
+        rankItems: ['آیتم ۱', 'آیتم ۲', 'آیتم ۳', 'آیتم ۴'],
+      };
+    case 'thumbs_up_down':
+      return {};
+    case 'consent':
+      return {
+        consentText: 'من شرایط و ضوابط را می‌پذیرم.',
+      };
+    case 'signature':
+      return {};
+    case 'captcha':
+      return {};
+    case 'datetime':
+      return {};
     default:
       return {};
   }
@@ -227,6 +342,31 @@ function getDefaultTitle(type: string): string {
     section_divider: 'بخش جدید',
     image_choice: 'سؤال انتخاب تصویری',
     matrix: 'سؤال ماتریسی',
+    time: 'انتخاب ساعت',
+    url: 'آدرس وب',
+    password: 'رمز عبور',
+    color: 'انتخاب رنگ',
+    range: 'نوار لغزان',
+    address: 'آدرس',
+    postal_code: 'کد پستی',
+    national_id: 'کد ملی',
+    iban: 'شماره شبا',
+    website: 'وب‌سایت',
+    country: 'استان',
+    city: 'شهر/استان',
+    education: 'تحصیلات',
+    gender: 'جنسیت',
+    marital_status: 'وضعیت تاهل',
+    job_title: 'عنوان شغلی',
+    company: 'نام شرکت',
+    emoji_rating: 'امتیاز ایموجی',
+    nps: 'شاخص NPS',
+    ranking: 'رتبه‌بندی',
+    thumbs_up_down: 'انگشت بالا/پایین',
+    consent: 'تاییدیه',
+    signature: 'امضا',
+    captcha: 'کد امنیتی',
+    datetime: 'تاریخ و ساعت',
   };
   return titles[type] || 'سؤال جدید';
 }

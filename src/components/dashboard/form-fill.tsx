@@ -40,6 +40,31 @@ import {
   EyeOff,
   GitBranch,
   type LucideIcon,
+  Clock,
+  Link2,
+  Lock,
+  Palette,
+  SlidersHorizontal,
+  MapPin,
+  CreditCard,
+  Landmark,
+  Globe,
+  Flag,
+  Building2,
+  GraduationCap,
+  User,
+  Heart,
+  Briefcase,
+  Building,
+  SmilePlus,
+  TrendingUp,
+  ArrowUpDown,
+  ThumbsUp,
+  ShieldCheck,
+  PenTool,
+  ShieldQuestion,
+  CalendarClock,
+  ThumbsDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -87,6 +112,31 @@ function getQuestionTypeIcon(type: string) {
     matrix: Grid3X3,
     statement: MessageSquare,
     section_divider: Minus,
+    time: Clock,
+    url: Link2,
+    password: Lock,
+    color: Palette,
+    range: SlidersHorizontal,
+    address: MapPin,
+    postal_code: MapPin,
+    national_id: CreditCard,
+    iban: Landmark,
+    website: Globe,
+    country: Flag,
+    city: Building2,
+    education: GraduationCap,
+    gender: User,
+    marital_status: Heart,
+    job_title: Briefcase,
+    company: Building,
+    emoji_rating: SmilePlus,
+    nps: TrendingUp,
+    ranking: ArrowUpDown,
+    thumbs_up_down: ThumbsUp,
+    consent: ShieldCheck,
+    signature: PenTool,
+    captcha: ShieldQuestion,
+    datetime: CalendarClock,
   };
   return icons[type] || MessageSquare;
 }
@@ -131,6 +181,31 @@ function QuestionTypeIconDisplay({ type, color }: { type: string; color: string 
     case 'matrix': return <Grid3X3 {...iconProps} />;
     case 'statement': return <MessageSquare {...iconProps} />;
     case 'section_divider': return <Minus {...iconProps} />;
+    case 'time': return <Clock {...iconProps} />;
+    case 'url': return <Link2 {...iconProps} />;
+    case 'password': return <Lock {...iconProps} />;
+    case 'color': return <Palette {...iconProps} />;
+    case 'range': return <SlidersHorizontal {...iconProps} />;
+    case 'address': return <MapPin {...iconProps} />;
+    case 'postal_code': return <MapPin {...iconProps} />;
+    case 'national_id': return <CreditCard {...iconProps} />;
+    case 'iban': return <Landmark {...iconProps} />;
+    case 'website': return <Globe {...iconProps} />;
+    case 'country': return <Flag {...iconProps} />;
+    case 'city': return <Building2 {...iconProps} />;
+    case 'education': return <GraduationCap {...iconProps} />;
+    case 'gender': return <User {...iconProps} />;
+    case 'marital_status': return <Heart {...iconProps} />;
+    case 'job_title': return <Briefcase {...iconProps} />;
+    case 'company': return <Building {...iconProps} />;
+    case 'emoji_rating': return <SmilePlus {...iconProps} />;
+    case 'nps': return <TrendingUp {...iconProps} />;
+    case 'ranking': return <ArrowUpDown {...iconProps} />;
+    case 'thumbs_up_down': return <ThumbsUp {...iconProps} />;
+    case 'consent': return <ShieldCheck {...iconProps} />;
+    case 'signature': return <PenTool {...iconProps} />;
+    case 'captcha': return <ShieldQuestion {...iconProps} />;
+    case 'datetime': return <CalendarClock {...iconProps} />;
     default: return <MessageSquare {...iconProps} />;
   }
 }
@@ -958,6 +1033,854 @@ function StatementQuestion({ question }: { question: FormQuestion }) {
   );
 }
 
+/* ========== New Question Type Components ========== */
+
+function TimeQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Input
+      type="time"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+      dir="ltr"
+    />
+  );
+}
+
+function UrlQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Input
+      type="url"
+      placeholder={question.config.placeholder || 'https://'}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      dir="ltr"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-left text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+    />
+  );
+}
+
+function PasswordQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const [showPassword, setShowPassword] = useState(false);
+  return (
+    <div className="relative">
+      <Input
+        type={showPassword ? 'text' : 'password'}
+        placeholder={question.config.placeholder || 'رمز عبور...'}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900 pl-12"
+        dir="rtl"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+      >
+        {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+      </button>
+    </div>
+  );
+}
+
+function ColorQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <input
+        type="color"
+        value={value || '#7c3aed'}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-12 w-12 rounded-lg border border-gray-200 dark:border-zinc-700 cursor-pointer p-1"
+      />
+      <Input
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="#000000"
+        dir="ltr"
+        className="flex-1 h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-left text-base text-gray-900 dark:text-white"
+      />
+    </div>
+  );
+}
+
+function RangeQuestion({
+  question,
+  value,
+  onChange,
+  themeColor,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+  themeColor: string;
+}) {
+  const min = question.config.min ?? 0;
+  const max = question.config.max ?? 100;
+  const step = question.config.step || 1;
+  const unit = question.config.unit || '';
+  const numericValue = value ? parseFloat(value) : min;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-gray-500 dark:text-zinc-400">
+          {toPersianDigit(numericValue)} {unit}
+        </span>
+        <span className="text-gray-400 dark:text-zinc-500 text-xs">
+          {toPersianDigit(min)} - {toPersianDigit(max)}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={numericValue}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full h-2 rounded-full appearance-none cursor-pointer accent-current"
+        style={{ accentColor: themeColor }}
+      />
+    </div>
+  );
+}
+
+function AddressQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Textarea
+      placeholder={question.config.placeholder || 'آدرس کامل خود را وارد کنید...'}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      rows={3}
+      className="rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white resize-none focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+      dir="rtl"
+    />
+  );
+}
+
+function PostalCodeQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Input
+      placeholder={question.config.placeholder || 'کد پستی ۱۰ رقمی'}
+      value={value}
+      onChange={(e) => onChange(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
+      maxLength={10}
+      dir="ltr"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-left text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900 tracking-widest"
+    />
+  );
+}
+
+function NationalIdQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Input
+      placeholder={question.config.placeholder || 'کد ملی ۱۰ رقمی'}
+      value={value}
+      onChange={(e) => onChange(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
+      maxLength={10}
+      dir="ltr"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-left text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900 tracking-widest"
+    />
+  );
+}
+
+function IbanQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const formatted = value || 'IR';
+  return (
+    <Input
+      placeholder="IRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      value={formatted}
+      onChange={(e) => {
+        let v = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+        if (!v.startsWith('IR')) v = 'IR' + v.replace(/^IR/, '');
+        onChange(v);
+      }}
+      maxLength={26}
+      dir="ltr"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-left text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900 tracking-wider font-mono"
+    />
+  );
+}
+
+function WebsiteQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Input
+      type="url"
+      placeholder={question.config.placeholder || 'https://example.com'}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      dir="ltr"
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-left text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+    />
+  );
+}
+
+function CountryQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const provinces = question.config.provinces || [];
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-gray-900 dark:text-white">
+        <SelectValue placeholder="استان خود را انتخاب کنید..." />
+      </SelectTrigger>
+      <SelectContent>
+        {provinces.map((prov, i) => (
+          <SelectItem key={i} value={prov}>{prov}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+function CityQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Input
+      placeholder="نام شهر..."
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+      dir="rtl"
+    />
+  );
+}
+
+function EducationQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const educations = question.config.educations || [];
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-gray-900 dark:text-white">
+        <SelectValue placeholder="سطح تحصیلات خود را انتخاب کنید..." />
+      </SelectTrigger>
+      <SelectContent>
+        {educations.map((edu, i) => (
+          <SelectItem key={i} value={edu}>{edu}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+function GenderQuestion({
+  question,
+  value,
+  onChange,
+  themeColor,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+  themeColor: string;
+}) {
+  const genders = question.config.genders || ['مرد', 'زن', 'سایر'];
+  return (
+    <RadioGroup value={value} onValueChange={onChange} className="space-y-3">
+      {genders.map((g) => (
+        <motion.label
+          key={g}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.99 }}
+          htmlFor={`gender-${question.id}-${g}`}
+          className={`flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-all duration-200 ${
+            value === g
+              ? 'border-violet-300 bg-violet-50 dark:bg-violet-950/40 dark:border-violet-700 shadow-sm'
+              : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:border-gray-300 dark:hover:border-zinc-600'
+          }`}
+          style={value === g ? { borderColor: themeColor, backgroundColor: `${themeColor}0d` } : undefined}
+        >
+          <RadioGroupItem value={g} id={`gender-${question.id}-${g}`} />
+          <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">{g}</span>
+        </motion.label>
+      ))}
+    </RadioGroup>
+  );
+}
+
+function MaritalStatusQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const statuses = question.config.maritalStatuses || ['مجرد', 'متأهل', 'مطلقه', 'همسر فوت‌شده'];
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-gray-900 dark:text-white">
+        <SelectValue placeholder="وضعیت تاهل خود را انتخاب کنید..." />
+      </SelectTrigger>
+      <SelectContent>
+        {statuses.map((s, i) => (
+          <SelectItem key={i} value={s}>{s}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+function JobTitleQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Input
+      placeholder={question.config.placeholder || 'عنوان شغلی...'}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+      dir="rtl"
+    />
+  );
+}
+
+function CompanyQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  return (
+    <Input
+      placeholder={question.config.placeholder || 'نام شرکت یا سازمان...'}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+      dir="rtl"
+    />
+  );
+}
+
+function EmojiRatingQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const emojis = ['😢', '😐', '😊', '😄', '🤩'];
+  const labels = ['خیلی بد', 'بد', 'خوب', 'عالی', 'فوق‌العاده'];
+  const selectedIdx = value ? parseInt(value, 10) : -1;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex justify-center gap-3">
+        {emojis.map((emoji, i) => (
+          <motion.button
+            key={i}
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onChange(String(i))}
+            type="button"
+            className="flex flex-col items-center gap-1"
+          >
+            <span className={`text-3xl transition-transform ${selectedIdx === i ? 'scale-125 drop-shadow-md' : ''}`}>
+              {emoji}
+            </span>
+            <span className={`text-[10px] ${selectedIdx === i ? 'text-gray-900 dark:text-white font-medium' : 'text-gray-400 dark:text-zinc-500'}`}>
+              {labels[i]}
+            </span>
+          </motion.button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function NpsQuestion({
+  question,
+  value,
+  onChange,
+  themeColor,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+  themeColor: string;
+}) {
+  const selectedValue = value ? parseInt(value, 10) : null;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-1.5 justify-center flex-wrap">
+        {Array.from({ length: 11 }, (_, i) => (
+          <motion.button
+            key={i}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onChange(String(i))}
+            type="button"
+            className={`flex size-10 sm:size-11 items-center justify-center rounded-xl text-sm font-bold transition-all duration-200 ${
+              selectedValue === i
+                ? 'text-white shadow-lg scale-110'
+                : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700'
+            }`}
+            style={selectedValue === i ? { backgroundColor: themeColor, boxShadow: `0 10px 15px -3px ${themeColor}33` } : undefined}
+          >
+            {i}
+          </motion.button>
+        ))}
+      </div>
+      <div className="flex justify-between text-xs text-gray-400 dark:text-zinc-500 px-1">
+        <span>احتمالاً دیر</span>
+        <span>قطعاً محتمل است</span>
+      </div>
+    </div>
+  );
+}
+
+function RankingQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const items = question.config.rankItems || ['آیتم ۱', 'آیتم ۲', 'آیتم ۳', 'آیتم ۴'];
+  const [rankOrder, setRankOrder] = useState<string[]>(() => {
+    try {
+      return value ? JSON.parse(value) : items;
+    } catch {
+      return items;
+    }
+  });
+
+  useEffect(() => {
+    if (JSON.stringify(rankOrder) !== JSON.stringify(items) && rankOrder.length > 0) {
+      onChange(JSON.stringify(rankOrder));
+    }
+  }, [rankOrder]);
+
+  const moveItem = (fromIdx: number, toIdx: number) => {
+    if (toIdx < 0 || toIdx >= rankOrder.length) return;
+    const newOrder = [...rankOrder];
+    const [moved] = newOrder.splice(fromIdx, 1);
+    newOrder.splice(toIdx, 0, moved);
+    setRankOrder(newOrder);
+  };
+
+  return (
+    <div className="space-y-2">
+      {rankOrder.map((item, idx) => (
+        <motion.div
+          key={`${item}-${idx}`}
+          layout
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-3"
+        >
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-zinc-800 text-xs font-bold text-gray-500 dark:text-zinc-400">
+            {toPersianDigit(idx + 1)}
+          </span>
+          <span className="flex-1 text-sm text-gray-700 dark:text-zinc-300">{item}</span>
+          <div className="flex flex-col gap-0.5">
+            <button
+              type="button"
+              onClick={() => moveItem(idx, idx - 1)}
+              disabled={idx === 0}
+              className="flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:text-gray-600 dark:hover:text-zinc-300 disabled:opacity-20"
+            >
+              <ChevronDown className="h-3 w-3 rotate-180" />
+            </button>
+            <button
+              type="button"
+              onClick={() => moveItem(idx, idx + 1)}
+              disabled={idx === rankOrder.length - 1}
+              className="flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:text-gray-600 dark:hover:text-zinc-300 disabled:opacity-20"
+            >
+              <ChevronDown className="h-3 w-3" />
+            </button>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function ThumbsUpDownQuestion({
+  question,
+  value,
+  onChange,
+  themeColor,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+  themeColor: string;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => onChange('up')}
+        type="button"
+        className={`flex items-center justify-center gap-2 rounded-2xl border-2 p-5 text-base font-bold transition-all duration-200 ${
+          value === 'up'
+            ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 shadow-md shadow-emerald-100 dark:shadow-emerald-900/30'
+            : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-600 dark:text-zinc-400 hover:border-gray-300 dark:hover:border-zinc-600'
+        }`}
+        style={value === 'up' ? { borderColor: themeColor, backgroundColor: `${themeColor}0d` } : undefined}
+      >
+        <span className="text-2xl">👍</span>
+        موافقم
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => onChange('down')}
+        type="button"
+        className={`flex items-center justify-center gap-2 rounded-2xl border-2 p-5 text-base font-bold transition-all duration-200 ${
+          value === 'down'
+            ? 'border-red-400 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 shadow-md shadow-red-100 dark:shadow-red-900/30'
+            : 'border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-600 dark:text-zinc-400 hover:border-gray-300 dark:hover:border-zinc-600'
+        }`}
+      >
+        <span className="text-2xl">👎</span>
+        مخالفم
+      </motion.button>
+    </div>
+  );
+}
+
+function ConsentQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const isChecked = value === 'true' || value === '1';
+  const consentText = question.config.consentText || 'من شرایط و ضوابط را می‌پذیرم.';
+
+  return (
+    <div className="flex items-start gap-3 rounded-xl border border-gray-200 dark:border-zinc-700 p-4 bg-gray-50 dark:bg-zinc-800/30">
+      <Checkbox
+        id={`consent-${question.id}`}
+        checked={isChecked}
+        onCheckedChange={(checked) => onChange(checked ? 'true' : 'false')}
+        className="mt-0.5"
+      />
+      <label
+        htmlFor={`consent-${question.id}`}
+        className="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed cursor-pointer"
+        dir="rtl"
+      >
+        {consentText}
+      </label>
+    </div>
+  );
+}
+
+function SignatureQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.strokeStyle = '#1f2937';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (value) {
+      const img = new Image();
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = value;
+    }
+  }, [value]);
+
+  const startDrawing = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.beginPath();
+    ctx.moveTo((e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY);
+    setIsDrawing(true);
+  }, []);
+
+  const draw = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    ctx.lineTo((e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY);
+    ctx.stroke();
+  }, [isDrawing]);
+
+  const stopDrawing = useCallback(() => {
+    if (!isDrawing) return;
+    setIsDrawing(false);
+    const canvas = canvasRef.current;
+    if (canvas) {
+      onChange(canvas.toDataURL());
+    }
+  }, [isDrawing, onChange]);
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (canvas && ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      onChange('');
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <canvas
+        ref={canvasRef}
+        width={400}
+        height={150}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
+        className="w-full h-[150px] rounded-xl border-2 border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 cursor-crosshair"
+      />
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={clearCanvas}
+        type="button"
+        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-950/60 transition-colors mx-auto"
+      >
+        <RotateCcw className="size-3.5" />
+        پاک کردن امضا
+      </motion.button>
+    </div>
+  );
+}
+
+function CaptchaQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const [captchaA, setCaptchaA] = useState(0);
+  const [captchaB, setCaptchaB] = useState(0);
+  const [captchaAnswer, setCaptchaAnswer] = useState(0);
+
+  useEffect(() => {
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    setCaptchaA(a);
+    setCaptchaB(b);
+    setCaptchaAnswer(a + b);
+  }, []);
+
+  const isCorrect = value && parseInt(value) === captchaAnswer;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-3">
+        <div className="rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800/30 px-4 py-3 text-center">
+          <span className="text-lg font-bold text-gray-800 dark:text-zinc-200 font-mono" dir="ltr">
+            {captchaA} + {captchaB} = ?
+          </span>
+        </div>
+        <Input
+          placeholder="پاسخ را وارد کنید"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          maxLength={4}
+          dir="ltr"
+          className="w-28 h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-center text-lg font-mono focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+        />
+      </div>
+      {value && (
+        <p className={`text-xs ${isCorrect ? 'text-emerald-500' : 'text-red-500'}`}>
+          {isCorrect ? '✓ پاسخ صحیح است' : '✗ پاسخ اشتباه است'}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function DatetimeQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const [dateVal, setDateVal] = useState('');
+  const [timeVal, setTimeVal] = useState('');
+
+  useEffect(() => {
+    if (value) {
+      const parts = value.split('T');
+      setDateVal(parts[0] || '');
+      setTimeVal(parts[1] || '');
+    }
+  }, [value]);
+
+  const handleDateChange = (d: string) => {
+    setDateVal(d);
+    onChange(d ? `${d}T${timeVal}` : '');
+  };
+
+  const handleTimeChange = (t: string) => {
+    setTimeVal(t);
+    onChange(timeVal ? `${dateVal}T${t}` : '');
+  };
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <Input
+        type="date"
+        value={dateVal}
+        onChange={(e) => handleDateChange(e.target.value)}
+        className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+        dir="ltr"
+      />
+      <Input
+        type="time"
+        value={timeVal}
+        onChange={(e) => handleTimeChange(e.target.value)}
+        className="h-12 rounded-xl border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-right text-base text-gray-900 dark:text-white focus:border-violet-400 focus:ring-violet-100 dark:focus:ring-violet-900"
+        dir="ltr"
+      />
+    </div>
+  );
+}
+
 function MatrixQuestion({
   question,
   value,
@@ -1117,6 +2040,56 @@ function QuestionRenderer({
       return <MatrixQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
     case 'statement':
       return <StatementQuestion question={question} />;
+    case 'time':
+      return <TimeQuestion question={question} value={value} onChange={onChange} />;
+    case 'url':
+      return <UrlQuestion question={question} value={value} onChange={onChange} />;
+    case 'password':
+      return <PasswordQuestion question={question} value={value} onChange={onChange} />;
+    case 'color':
+      return <ColorQuestion question={question} value={value} onChange={onChange} />;
+    case 'range':
+      return <RangeQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
+    case 'address':
+      return <AddressQuestion question={question} value={value} onChange={onChange} />;
+    case 'postal_code':
+      return <PostalCodeQuestion question={question} value={value} onChange={onChange} />;
+    case 'national_id':
+      return <NationalIdQuestion question={question} value={value} onChange={onChange} />;
+    case 'iban':
+      return <IbanQuestion question={question} value={value} onChange={onChange} />;
+    case 'website':
+      return <WebsiteQuestion question={question} value={value} onChange={onChange} />;
+    case 'country':
+      return <CountryQuestion question={question} value={value} onChange={onChange} />;
+    case 'city':
+      return <CityQuestion question={question} value={value} onChange={onChange} />;
+    case 'education':
+      return <EducationQuestion question={question} value={value} onChange={onChange} />;
+    case 'gender':
+      return <GenderQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
+    case 'marital_status':
+      return <MaritalStatusQuestion question={question} value={value} onChange={onChange} />;
+    case 'job_title':
+      return <JobTitleQuestion question={question} value={value} onChange={onChange} />;
+    case 'company':
+      return <CompanyQuestion question={question} value={value} onChange={onChange} />;
+    case 'emoji_rating':
+      return <EmojiRatingQuestion question={question} value={value} onChange={onChange} />;
+    case 'nps':
+      return <NpsQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
+    case 'ranking':
+      return <RankingQuestion question={question} value={value} onChange={onChange} />;
+    case 'thumbs_up_down':
+      return <ThumbsUpDownQuestion question={question} value={value} onChange={onChange} themeColor={themeColor} />;
+    case 'consent':
+      return <ConsentQuestion question={question} value={value} onChange={onChange} />;
+    case 'signature':
+      return <SignatureQuestion question={question} value={value} onChange={onChange} />;
+    case 'captcha':
+      return <CaptchaQuestion question={question} value={value} onChange={onChange} />;
+    case 'datetime':
+      return <DatetimeQuestion question={question} value={value} onChange={onChange} />;
     case 'section_divider':
       return (
         <div className="py-4">
