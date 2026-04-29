@@ -151,7 +151,7 @@ const categoryColorMap: Record<string, { bg: string; text: string; border: strin
   other: { bg: 'bg-gray-100', text: 'text-gray-700', border: 'border-gray-200', darkBg: 'dark:bg-gray-800', darkText: 'dark:text-gray-400' },
 };
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 24;
 
 /* ─── Animation variants ─────────────────────────────────────────────────── */
 
@@ -657,6 +657,19 @@ function TemplateCard({
 type SortOption = 'default' | 'most-questions' | 'least-questions' | 'alpha-asc' | 'alpha-desc';
 type QuestionFilterOption = 'all' | '1-3' | '4-6' | '7+';
 
+const categoryDescriptions: Record<string, string> = {
+  survey: 'فرم‌های نظرسنجی و پرسشنامه برای جمع‌آوری دیدگاه‌ها',
+  registration: 'فرم‌های ثبت‌نام و ثبت‌نام.event برای رویدادها و خدمات',
+  feedback: 'فرم‌های بازخورد و نظرات مشتریان',
+  evaluation: 'فرم‌های ارزیابی عملکرد و رضایت‌سنجی',
+  order: 'فرم‌های سفارش و خرید آنلاین',
+  education: 'فرم‌های آموزشی و دانشگاهی',
+  health: 'فرم‌های پزشکی و سلامت',
+  event: 'فرم‌های رویداد و مراسم',
+  hr: 'فرم‌های منابع انسانی و استخدام',
+  other: 'سایر فرم‌های تخصصی و عمومی',
+};
+
 export default function TemplateLibraryPage() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -669,6 +682,8 @@ export default function TemplateLibraryPage() {
   const [usedCount, setUsedCount] = useState(0);
   const [allTemplates, setAllTemplates] = useState<AnyTemplate[]>(templatesData);
   const [metaLoaded, setMetaLoaded] = useState(false);
+  const [isLoadingMeta, setIsLoadingMeta] = useState(true);
+  const [metaRetryCount, setMetaRetryCount] = useState(0);
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
 
   // Load favorites & used count from localStorage
@@ -677,22 +692,38 @@ export default function TemplateLibraryPage() {
     setUsedCount(getUsedTemplatesCount());
   }, []);
 
-  // Fetch specialized forms metadata from API
+  // Fetch specialized forms metadata from API with retry
   useEffect(() => {
     if (metaLoaded) return;
     let cancelled = false;
-    fetch('/api/templates/list')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (cancelled || !data?.data) return;
+
+    async function fetchMeta() {
+      try {
+        setIsLoadingMeta(true);
+        const res = await fetch('/api/templates/list');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (cancelled || !data?.data) throw new Error('No data');
         const existingIds = new Set(templatesData.map(t => t.id));
         const uniqueMeta = (data.data as FormMeta[]).filter(t => !existingIds.has(t.id));
         setAllTemplates([...templatesData, ...uniqueMeta]);
         setMetaLoaded(true);
-      })
-      .catch(() => setMetaLoaded(true));
+        setIsLoadingMeta(false);
+      } catch (err) {
+        console.error('Failed to load specialized templates:', err);
+        if (!cancelled && metaRetryCount < 3) {
+          setMetaRetryCount(prev => prev + 1);
+          setTimeout(() => fetchMeta(), 1500 * (metaRetryCount + 1));
+        } else {
+          setIsLoadingMeta(false);
+          setMetaLoaded(true);
+        }
+      }
+    }
+
+    fetchMeta();
     return () => { cancelled = true; };
-  }, [metaLoaded]);
+  }, [metaLoaded, metaRetryCount]);
 
   const toggleFavorite = useCallback((templateId: string) => {
     setFavorites((prev) => {
@@ -893,7 +924,14 @@ export default function TemplateLibraryPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-4 backdrop-blur-sm">
               <Sparkles className="size-4 text-yellow-300" />
-              {allTemplates.length} الگوی آماده
+              {isLoadingMeta ? (
+                <span className="flex items-center gap-1.5">
+                  <Loader2 className="size-3.5 animate-spin" />
+                  در حال بارگذاری الگوها...
+                </span>
+              ) : (
+                <>{allTemplates.length} الگوی آماده</>
+              )}
               {favCount > 0 && (
                 <>
                   <span className="text-white/30 mx-1">|</span>
@@ -973,10 +1011,11 @@ export default function TemplateLibraryPage() {
                 <button
                   key={tab.value}
                   onClick={() => handleTabChange(tab.value)}
+                  title={categoryDescriptions[tab.value] || ''}
                   className={cn(
                     'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all shrink-0',
                     isActive
-                      ? 'bg-gray-900 text-white shadow-md dark:bg-white dark:text-gray-900'
+                      ? 'bg-gradient-to-l from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-500/20'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
                   )}
                 >
@@ -1101,6 +1140,27 @@ export default function TemplateLibraryPage() {
           </motion.div>
         )}
       </div>
+
+      {/* ─── Load More Button ─── */}
+      {currentPage < totalPages && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex justify-center mt-8"
+        >
+          <Button
+            onClick={() => setCurrentPage(p => p + 1)}
+            variant="outline"
+            className="px-8 py-3 rounded-xl border-violet-200 dark:border-violet-800 hover:bg-violet-50 dark:hover:bg-violet-950/30 text-violet-600 dark:text-violet-400 gap-2"
+          >
+            <Layers className="size-4" />
+            مشاهده بیشتر
+            <Badge variant="secondary" className="bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 text-xs">
+              {Math.min((currentPage + 1) * ITEMS_PER_PAGE, filteredTemplates.length)} از {filteredTemplates.length}
+            </Badge>
+          </Button>
+        </motion.div>
+      )}
 
       {/* ─── Pagination ─── */}
       {totalPages > 1 && (

@@ -672,6 +672,17 @@ function ShareFormDialog({
   );
 }
 
+function handleExportForm(form: any) {
+  const json = JSON.stringify(form, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${form.title || 'form'}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // ─── Form Quick Preview Dialog ─────────────────────────────────────────────
 
 function FormQuickPreview({
@@ -867,6 +878,17 @@ function FormQuickPreview({
           >
             <Eye className="size-3.5 ml-1.5" />
             مشاهده کامل فرم
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              if (form) handleExportForm(form);
+            }}
+            className="w-full rounded-xl border-gray-200 dark:border-gray-700 text-sm hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 dark:hover:bg-amber-950/50 dark:hover:text-amber-400 dark:hover:border-amber-800 transition-colors"
+          >
+            <FileJson className="size-3.5 ml-1.5" />
+            خروجی JSON
           </Button>
         </DialogFooter>
       </DialogContent>

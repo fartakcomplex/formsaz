@@ -917,7 +917,7 @@ export default function FormBuilder() {
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 gap-1.5 text-xs sm:text-sm"
+                className="h-8 gap-1.5 text-xs sm:text-sm border-violet-200 dark:border-violet-800 hover:bg-violet-50 dark:hover:bg-violet-950/30"
                 onClick={handleSave}
                 disabled={isSaving}
               >
@@ -932,7 +932,7 @@ export default function FormBuilder() {
             <TooltipTrigger asChild>
               <Button
                 size="sm"
-                className="h-8 gap-1.5 text-xs sm:text-sm bg-purple-600 hover:bg-purple-700 text-white shadow-sm"
+                className="h-8 gap-1.5 text-xs sm:text-sm bg-gradient-to-l from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-sm"
                 disabled={!hasQuestions || isPublishing}
                 onClick={handlePublish}
               >
@@ -981,6 +981,7 @@ export default function FormBuilder() {
             {/* Center Panel - Form Preview */}
             <ResizablePanel defaultSize={56} minSize={40}>
               <div className="h-full bg-muted/30 relative">
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '24px 24px'}} />
                 <FormPreview
                   formTitle={formTitle}
                   formDescription={formDescription}
@@ -1032,7 +1033,7 @@ export default function FormBuilder() {
               onCollapse={() => setRightCollapsed(true)}
               onExpand={() => setRightCollapsed(false)}
             >
-              <div className="h-full border-r bg-white dark:bg-zinc-950">
+              <div className="h-full border-r bg-gradient-to-b from-gray-50/80 via-white to-white dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-950">
                 <PropertiesPanel />
               </div>
             </ResizablePanel>
