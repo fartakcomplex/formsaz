@@ -2133,3 +2133,25 @@ Stage Summary:
 - Template gallery shows 1199 templates (100 base + 1099 specialized)
 - All form types working: national_id, gender, date, phone, consent, captcha, signature, etc.
 - Server stability: needs keepalive mechanism in sandbox
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix gallery showing only 100 templates instead of 1100+ and start the site
+
+Work Log:
+- Investigated the codebase to find root cause of 100-template cap
+- Found `templates-data.ts` has exactly 100 base templates (292KB)
+- Found `data/specialized-forms-meta.json` has 1099 specialized form records (289KB)
+- Found `data/specialized-forms.json` has 1099 forms with full questions (2.7MB)
+- API `/api/templates/list` correctly reads and returns all 1099 meta records
+- The gallery (template-gallery.tsx and template-library-page.tsx) properly fetches and merges both datasets
+- Root cause: Next.js dev mode (Turbopack) was consuming too much memory (~2GB) and getting killed by the sandbox OOM killer before the API could respond
+- Solution: Built production standalone bundle and set up auto-restart keepalive loop
+- Verified API returns all 1099 records consistently in production mode
+- Total templates = 100 (base) + 1099 (specialized) = 1199 templates
+
+Stage Summary:
+- Bug was NOT a code issue - it was a server stability issue in sandbox environment
+- Production build uses ~64ms startup vs 673ms in dev mode
+- Keepalive script auto-restarts server within 3 seconds if it crashes
+- All 1199 templates are now accessible through both the gallery dialog and template library page
