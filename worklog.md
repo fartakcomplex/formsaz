@@ -1,6 +1,42 @@
 # Worklog
 
 ---
+## Task ID: 32 (Generate ~1000 Specialized Multi-Step Form Templates)
+## Agent: specialized-forms-generator
+## Date: 2026-04-29
+
+### Session Overview
+Generated ~1099 specialized multi-step form templates for the Persian (Farsi) RTL form builder "formsaz". Each form uses a multi-step structure with `section_divider` questions marking step transitions. The forms span 12 categories covering medical, education, business, events, government, real estate, automotive, food, technology, sports, finance, and arts/culture.
+
+### Work Log
+- Created generator script (`/home/z/my-project/generate-forms.js`) with 42 question type helpers
+- Generated 1099 forms across 12 categories with realistic Persian content
+- Each form uses 2-3 `section_divider` steps with descriptive titles
+- Integrated all new specialized question types (national_id, iban, postal_code, country, city, education, gender, marital_status, job_title, company, address, range, color, time, datetime, url, password, website, emoji_rating, nps, ranking, thumbs_up_down, consent, signature, captcha)
+- Output file validated with TypeScript transpilation — SUCCESS
+- File written to `/home/z/my-project/src/lib/specialized-forms.ts`
+
+### Stage Summary
+- Total forms: 1099
+- Categories (12):
+  - پزشکی و سلامت (Medical/Health): 124
+  - حکومتی و اداری (Government): 106
+  - کسب‌وکار و بازرگانی (Business): 99
+  - آموزش و دانشگاه (Education): 92
+  - رویداد و مراسم (Events): 92
+  - خودرو و حمل‌ونقل (Automotive): 91
+  - مالی و بانکی (Finance): 90
+  - فناوری و IT (Technology): 88
+  - غذا و رستوران (Food): 86
+  - ورزش و تفریح (Sports): 86
+  - مسکن و املاک (Real Estate): 84
+  - هنر و فرهنگ (Arts & Culture): 61
+- File size: 213,149 lines (~8 MB)
+- Total questions across all forms: 17,479
+- Average questions per form: 15.9
+- Question types used (37 of 42): section_divider, short_text, multiple_choice, phone, long_text, consent, date, number, file_upload, captcha, email, national_id, multiple_select, address, gender, yes_no, rating, dropdown, company, signature, job_title, range, website, scale, emoji_rating, nps, time, postal_code, marital_status, thumbs_up_down, city, url, education, color, iban, password, datetime, country
+
+---
 ## Task ID: 31 (Fix Blank White Panel - Critical Bug)
 ## Agent: main-agent
 ## Date: 2026-04-29

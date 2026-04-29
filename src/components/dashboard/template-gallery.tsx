@@ -12,6 +12,7 @@ import {
   Star,
   Sparkles,
   Eye,
+  Heart,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import {
@@ -25,6 +26,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { templatesData, type TemplateData, type TemplateCategory } from '@/lib/templates-data';
+import { specializedFormsMeta, type FormMeta } from '@/lib/specialized-forms-meta';
 import { useAppStore } from '@/lib/store';
 
 // ── Category configuration ────────────────────────────────────────────────────
@@ -56,7 +58,12 @@ const categoryColorMap: Record<TemplateCategory, string> = {
   other: 'bg-gray-100 text-gray-700',
 };
 
-const ITEMS_PER_PAGE = 12;
+// Merge base templates + specialized form metadata
+const existingIds = new Set(templatesData.map((t) => t.id));
+const uniqueMeta = specializedFormsMeta.filter((t) => !existingIds.has(t.id));
+const allTemplatesMeta: (TemplateData | FormMeta)[] = [...templatesData, ...uniqueMeta];
+
+const ITEMS_PER_PAGE = 24;
 
 // ── Question type helpers ─────────────────────────────────────────────────────
 
@@ -64,23 +71,34 @@ function getQuestionTypeLabel(type: string): string {
   const map: Record<string, string> = {
     short_text: 'متن کوتاه', long_text: 'متن بلند', multiple_choice: 'چند گزینه‌ای',
     multiple_select: 'چک‌باکس', dropdown: 'دراپ‌داون', rating: 'امتیازدهی',
-    scale: 'مقیاس', yes_no: 'بله/خیر', date: 'تاریخ', time: 'زمان',
-    file_upload: 'آپلود فایل', phone: 'شماره تلفن', email: 'ایمیل',
+    scale: 'مقیاس', yes_no: 'بله/خیر', date: 'تاریخ', time: 'ساعت',
+    file_upload: 'آپلود فایل', phone: 'تلفن', email: 'ایمیل',
     number: 'عدد', statement: 'بیان', section_divider: 'بخش',
-    matrix: 'ماتریسی', slider: 'اسلایدر',
+    matrix: 'ماتریسی', slider: 'اسلایدر', url: 'آدرس وب', password: 'رمز عبور',
+    color: 'انتخاب رنگ', range: 'نوار لغزان', address: 'آدرس',
+    postal_code: 'کد پستی', national_id: 'کد ملی', iban: 'شماره شبا',
+    website: 'وب‌سایت', country: 'استان', city: 'شهر',
+    education: 'تحصیلات', gender: 'جنسیت', marital_status: 'وضعیت تاهل',
+    job_title: 'شغل', company: 'شرکت', emoji_rating: 'امتیاز ایموجی',
+    nps: 'شاخص NPS', ranking: 'رتبه‌بندی', thumbs_up_down: 'موافق/مخالف',
+    consent: 'تاییدیه', signature: 'امضا', captcha: 'کد امنیتی',
+    datetime: 'تاریخ و ساعت', image_choice: 'انتخاب تصویری', map: 'نقشه',
   };
   return map[type] || type;
 }
 
 function getQuestionTypeColor(type: string): string {
-  const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown'];
-  const textTypes = ['short_text', 'long_text', 'email', 'phone', 'number'];
-  const ratingTypes = ['rating', 'scale', 'yes_no'];
+  const choiceTypes = ['multiple_choice', 'multiple_select', 'dropdown', 'country', 'city', 'education', 'gender', 'marital_status', 'image_choice'];
+  const textTypes = ['short_text', 'long_text', 'email', 'phone', 'number', 'url', 'password', 'website', 'address', 'job_title', 'company'];
+  const ratingTypes = ['rating', 'scale', 'yes_no', 'emoji_rating', 'nps', 'thumbs_up_down', 'ranking'];
   if (choiceTypes.includes(type)) return 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300';
   if (textTypes.includes(type)) return 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300';
   if (ratingTypes.includes(type)) return 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300';
   if (type === 'file_upload') return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300';
-  if (type === 'date' || type === 'time') return 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300';
+  if (type === 'date' || type === 'time' || type === 'datetime') return 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300';
+  if (type === 'range' || type === 'color') return 'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300';
+  if (type === 'postal_code' || type === 'national_id' || type === 'iban') return 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300';
+  if (type === 'consent' || type === 'signature' || type === 'captcha') return 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300';
   return 'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-300';
 }
 
@@ -116,11 +134,17 @@ function TemplateCard({
   onUse,
   isUsing,
   onPreview,
+  isFavorite,
+  onToggleFavorite,
+  isRecent,
 }: {
   template: TemplateData;
   onUse: () => void;
   isUsing: boolean;
   onPreview: () => void;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+  isRecent: boolean;
 }) {
   return (
     <motion.div
@@ -144,6 +168,27 @@ function TemplateCard({
           <div className="absolute -top-6 -right-6 size-20 rounded-full bg-white/10" />
           <div className="absolute -bottom-8 -left-8 size-28 rounded-full bg-white/8" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-14 rounded-full bg-white/10" />
+
+          {/* Favorite button */}
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
+            className="absolute top-2 left-2 z-10 p-1.5 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
+          >
+            <Heart className={`size-3.5 transition-colors ${isFavorite ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
+          </button>
+
+          {/* New badge for recent templates */}
+          {isRecent && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute top-2 right-2 z-10"
+            >
+              <span className="px-2 py-0.5 rounded-full bg-gradient-to-l from-emerald-400 to-teal-500 text-white text-[9px] font-bold shadow-sm">
+                جدید
+              </span>
+            </motion.div>
+          )}
 
           <div className="relative flex size-14 items-center justify-center rounded-xl bg-white/90 backdrop-blur-sm shadow-lg">
             <TemplateIcon name={template.icon} className="size-7 text-gray-700" />
@@ -217,11 +262,42 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [usingTemplateId, setUsingTemplateId] = useState<string | null>(null);
-  const [previewTemplate, setPreviewTemplate] = useState<TemplateData | null>(null);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [previewTemplate, setPreviewTemplate] = useState<TemplateData | FormMeta | null>(null);
+  const [previewQuestions, setPreviewQuestions] = useState<TemplateData['questions'] | null>(null);
+  const [loadingPreview, setLoadingPreview] = useState(false);
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
 
+  // Load questions for preview (lazy for specialized forms)
+  React.useEffect(() => {
+    if (!previewTemplate) {
+      setPreviewQuestions(null);
+      return;
+    }
+    // If it's a TemplateData with questions already
+    if ('questions' in previewTemplate && previewTemplate.questions && previewTemplate.questions.length > 0) {
+      setPreviewQuestions(previewTemplate.questions);
+      return;
+    }
+    // Fetch from API for specialized forms
+    let cancelled = false;
+    setLoadingPreview(true);
+    fetch(`/api/templates?id=${previewTemplate.id}`)
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!cancelled && data?.data?.questions) {
+          setPreviewQuestions(data.data.questions);
+        } else if (!cancelled) {
+          setPreviewQuestions([]);
+        }
+      })
+      .catch(() => { if (!cancelled) setPreviewQuestions([]); })
+      .finally(() => { if (!cancelled) setLoadingPreview(false); });
+    return () => { cancelled = true; };
+  }, [previewTemplate]);
+
   const filteredTemplates = useMemo(() => {
-    let result = templatesData;
+    let result = allTemplatesMeta;
     if (activeTab !== 'all') {
       result = result.filter((t) => t.category === activeTab);
     }
@@ -248,16 +324,37 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
     setCurrentPage(1);
   }, []);
 
+  const toggleFavorite = (id: string) => {
+    setFavorites(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
     setCurrentPage(1);
   }, []);
 
-  const handleUseTemplate = async (template: TemplateData) => {
+  const handleUseTemplate = async (template: TemplateData | FormMeta) => {
     try {
       setUsingTemplateId(template.id);
 
-      const questionsPayload = template.questions.map((q, i) => ({
+      // For specialized forms (FormMeta), fetch full data from API
+      let questions: TemplateData['questions'] = ('questions' in template && template.questions)
+        ? template.questions
+        : [];
+
+      if (!('questions' in template) || !template.questions) {
+        const res = await fetch(`/api/templates?id=${template.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          questions = data.data?.questions || [];
+        }
+      }
+
+      const questionsPayload = questions.map((q, i) => ({
         ...q,
         id: `q-${Date.now()}-${i}`,
         order: i,
@@ -306,7 +403,7 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
                   گالری الگوها
                 </DialogTitle>
                 <DialogDescription className="text-xs text-gray-500 mt-0.5">
-                  {templatesData.length} الگوی آماده برای شروع سریع
+                  {allTemplatesMeta.length} الگوی آماده (شامل فرم‌های تخصصی)
                 </DialogDescription>
               </div>
             </div>
@@ -330,6 +427,27 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
               className="pr-10 h-9 rounded-xl border-gray-200 bg-white text-sm focus:border-purple-300 focus:ring-purple-100"
             />
           </div>
+
+          {/* Category stats */}
+          <div className="flex gap-2 mt-3 overflow-x-auto pb-1 scrollbar-none">
+            {categoryTabs.filter(t => t.value !== 'all').map((cat) => {
+              const count = allTemplatesMeta.filter(t => t.category === cat.value).length;
+              if (count === 0) return null;
+              return (
+                <motion.div
+                  key={cat.value}
+                  whileHover={{ scale: 1.05 }}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm text-[10px] text-gray-500 dark:text-gray-400 whitespace-nowrap cursor-pointer hover:border-violet-200 dark:hover:border-violet-800 transition-colors"
+                  onClick={() => handleTabChange(cat.value)}
+                >
+                  {cat.label}
+                  <span className="font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-full px-1.5 min-w-[20px] text-center">
+                    {count}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Category tabs */}
@@ -337,8 +455,8 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
           <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {categoryTabs.map((tab) => {
               const count = tab.value === 'all'
-                ? templatesData.length
-                : templatesData.filter((t) => t.category === tab.value).length;
+                ? allTemplatesMeta.length
+                : allTemplatesMeta.filter((t) => t.category === tab.value).length;
               return (
                 <button
                   key={tab.value}
@@ -391,6 +509,9 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
                     onUse={() => handleUseTemplate(template)}
                     isUsing={usingTemplateId === template.id}
                     onPreview={() => setPreviewTemplate(template)}
+                    isFavorite={favorites.has(template.id)}
+                    onToggleFavorite={() => toggleFavorite(template.id)}
+                    isRecent={/health-\d{2,}$/.test(template.id) && parseInt(template.id.replace('health-', ''), 10) >= 80}
                   />
                 ))}
               </motion.div>
@@ -472,7 +593,7 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-              onClick={() => setPreviewTemplate(null)}
+              onClick={() => { setPreviewTemplate(null); setPreviewQuestions(null); }}
             />
 
             {/* Dialog content */}
@@ -531,7 +652,7 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
                       className="text-[10px] px-1.5 py-0.5 rounded-full border-0 font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
                     >
                       <Layers className="size-3 ml-1" />
-                      {previewTemplate.questions.length} سؤال
+                      {previewTemplate.questionCount} سؤال
                     </Badge>
                   </div>
                 </div>
@@ -539,8 +660,14 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
 
               {/* Questions list */}
               <div className="flex-1 overflow-y-auto p-5">
+                {loadingPreview ? (
+                  <div className="flex flex-col items-center justify-center py-12 gap-3">
+                    <div className="size-8 border-2 border-violet-200 border-t-violet-500 rounded-full animate-spin" />
+                    <p className="text-sm text-gray-400">در حال بارگذاری...</p>
+                  </div>
+                ) : previewQuestions && previewQuestions.length > 0 ? (
                 <div className="space-y-2.5">
-                  {previewTemplate.questions.map((question, index) => (
+                  {previewQuestions.map((question, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, x: 20 }}
@@ -606,19 +733,26 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
                     </motion.div>
                   ))}
                 </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <Layers className="size-8 text-gray-300 mb-2" />
+                    <p className="text-sm text-gray-400">سؤالات این الگو هنگام انتخاب بارگذاری می‌شود</p>
+                  </div>
+                )}
               </div>
 
               {/* Footer action */}
               <div className="p-5 pt-3 border-t border-gray-100 dark:border-gray-800 shrink-0">
                 <Button
                   onClick={() => {
-                    handleUseTemplate(previewTemplate);
+                    handleUseTemplate(previewTemplate!);
                     setPreviewTemplate(null);
+                    setPreviewQuestions(null);
                   }}
-                  disabled={usingTemplateId === previewTemplate.id}
+                  disabled={usingTemplateId === previewTemplate?.id}
                   className="w-full rounded-xl bg-gradient-to-l from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-md text-sm font-medium h-10 transition-all"
                 >
-                  {usingTemplateId === previewTemplate.id ? (
+                  {usingTemplateId === previewTemplate?.id ? (
                     <Loader2 className="size-4 ml-2 animate-spin" />
                   ) : (
                     <Sparkles className="size-4 ml-2" />

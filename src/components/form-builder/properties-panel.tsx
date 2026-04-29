@@ -776,6 +776,12 @@ function TypeConfigSection({ question }: { question: FormQuestion }) {
           </div>
         </div>
       );
+    case 'map':
+      return (
+        <div className="text-sm text-muted-foreground text-center py-4">
+          تنظیمات خاصی برای این نوع سؤال وجود ندارد.
+        </div>
+      );
     default:
       return null;
   }

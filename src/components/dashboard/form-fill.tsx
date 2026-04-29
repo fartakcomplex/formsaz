@@ -61,6 +61,8 @@ import {
   ShieldQuestion,
   CalendarClock,
   ThumbsDown,
+  Clock,
+  Lock,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -133,6 +135,7 @@ function getQuestionTypeIcon(type: string) {
     signature: PenTool,
     captcha: ShieldQuestion,
     datetime: CalendarClock,
+    map: MapPin,
   };
   return icons[type] || MessageSquare;
 }
@@ -202,6 +205,7 @@ function QuestionTypeIconDisplay({ type, color }: { type: string; color: string 
     case 'signature': return <PenTool {...iconProps} />;
     case 'captcha': return <ShieldQuestion {...iconProps} />;
     case 'datetime': return <CalendarClock {...iconProps} />;
+    case 'map': return <MapPin {...iconProps} />;
     default: return <MessageSquare {...iconProps} />;
   }
 }
@@ -1877,6 +1881,81 @@ function DatetimeQuestion({
   );
 }
 
+function MapQuestion({
+  question,
+  value,
+  onChange,
+}: {
+  question: FormQuestion;
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const [position, setPosition] = useState<{ lat: number; lng: number }>(
+    value ? JSON.parse(value as string) : { lat: 35.6892, lng: 51.3890 }
+  );
+
+  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    // Convert pixel position to approximate lat/lng (simplified for demo)
+    const lat = 35.5 + (1 - y) * 0.4;
+    const lng = 51.0 + x * 0.8;
+    const newPos = { lat: Math.round(lat * 10000) / 10000, lng: Math.round(lng * 10000) / 10000 };
+    setPosition(newPos);
+    onChange(JSON.stringify(newPos));
+  };
+
+  return (
+    <div className="space-y-2">
+      <div
+        className="relative w-full h-48 rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 cursor-crosshair bg-gradient-to-br from-green-100 via-blue-50 to-green-100 dark:from-green-950/30 dark:via-blue-950/20 dark:to-green-950/30"
+        onClick={handleMapClick}
+      >
+        {/* Map background simulation */}
+        <div className="absolute inset-0 opacity-30">
+          {/* Grid lines to simulate map */}
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div key={`h-${i}`} className="absolute w-full h-px bg-gray-400" style={{ top: `${(i + 1) * 10}%` }} />
+          ))}
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div key={`v-${i}`} className="absolute h-full w-px bg-gray-400" style={{ left: `${(i + 1) * 10}%` }} />
+          ))}
+        </div>
+
+        {/* Center marker */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-300 dark:text-gray-600">
+          <MapPin className="size-8" />
+        </div>
+
+        {/* Selected position marker */}
+        <motion.div
+          className="absolute z-10"
+          animate={{
+            top: `${(1 - (position.lat - 35.5) / 0.4) * 100}%`,
+            left: `${((position.lng - 51.0) / 0.8) * 100}%`,
+          }}
+          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        >
+          <div className="relative -translate-x-1/2 -translate-y-full">
+            <MapPin className="size-7 text-red-500 drop-shadow-lg" fill="currentColor" />
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 size-2 rounded-full bg-red-500/30" />
+          </div>
+        </motion.div>
+
+        {/* Tehran label */}
+        <div className="absolute bottom-2 right-2 bg-white/90 dark:bg-gray-800/90 rounded-lg px-2 py-1 text-[10px] text-gray-600 dark:text-gray-400 shadow-sm backdrop-blur-sm">
+          <MapPin className="size-3 inline ml-1" />
+          تهران، ایران
+        </div>
+      </div>
+      <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+        عرض: {position.lat} | طول: {position.lng}
+      </p>
+    </div>
+  );
+}
+
 function MatrixQuestion({
   question,
   value,
@@ -2086,6 +2165,8 @@ function QuestionRenderer({
       return <CaptchaQuestion question={question} value={value} onChange={onChange} />;
     case 'datetime':
       return <DatetimeQuestion question={question} value={value} onChange={onChange} />;
+    case 'map':
+      return <MapQuestion question={question} value={value} onChange={onChange} />;
     case 'section_divider':
       return (
         <div className="py-4">

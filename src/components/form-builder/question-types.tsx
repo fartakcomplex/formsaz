@@ -189,6 +189,7 @@ const questionTypes: QuestionTypeItem[] = [
   { type: 'signature', label: 'امضا', description: 'پد امضا', icon: <PenTool className="h-4 w-4" />, category: 'متفرقه' },
   { type: 'captcha', label: 'کد امنیتی', description: 'کپچای ریاضی', icon: <ShieldQuestion className="h-4 w-4" />, category: 'متفرقه' },
   { type: 'datetime', label: 'تاریخ و ساعت', description: 'تاریخ و ساعت با هم', icon: <CalendarClock className="h-4 w-4" />, category: 'متفرقه' },
+  { type: 'map', label: 'نقشه', description: 'انتخاب مکان روی نقشه', icon: <MapPin className="h-4 w-4" />, category: 'ورودی' },
 ];
 
 function getDefaultConfig(type: string): FormQuestion['config'] {
@@ -318,6 +319,8 @@ function getDefaultConfig(type: string): FormQuestion['config'] {
       return {};
     case 'datetime':
       return {};
+    case 'map':
+      return { lat: 35.6892, lng: 51.3890, zoom: 13, mapType: 'street' };
     default:
       return {};
   }
@@ -367,6 +370,7 @@ function getDefaultTitle(type: string): string {
     signature: 'امضا',
     captcha: 'کد امنیتی',
     datetime: 'تاریخ و ساعت',
+    map: 'انتخاب مکان روی نقشه',
   };
   return titles[type] || 'سؤال جدید';
 }

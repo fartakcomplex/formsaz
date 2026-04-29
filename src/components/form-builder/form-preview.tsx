@@ -138,6 +138,7 @@ function getQuestionTypeLabel(type: string): string {
     signature: 'امضا',
     captcha: 'کد امنیتی',
     datetime: 'تاریخ و ساعت',
+    map: 'نقشه',
   };
   return labels[type] || type;
 }
@@ -529,6 +530,15 @@ function QuestionAnswerPreview({ question }: { question: FormQuestion }) {
         <div className="mt-3 flex h-10 w-full items-center gap-2 rounded-lg border-2 border-muted-foreground/30 px-3">
           <CalendarClock className="h-4 w-4 text-muted-foreground/50" />
           <span className="text-sm text-muted-foreground/60">تاریخ و ساعت</span>
+        </div>
+      );
+    case 'map':
+      return (
+        <div className="mt-3 h-32 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-gradient-to-br from-green-100/50 via-blue-50/50 to-green-100/50 dark:from-green-950/20 dark:via-blue-950/10 dark:to-green-950/20 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-1">
+            <MapPin className="h-6 w-6 text-muted-foreground/30" />
+            <span className="text-xs text-muted-foreground/50">انتخاب مکان روی نقشه</span>
+          </div>
         </div>
       );
     default:

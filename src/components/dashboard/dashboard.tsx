@@ -55,6 +55,7 @@ import {
   Lightbulb,
   RefreshCw,
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -1103,6 +1104,13 @@ function useAnimatedCounter(target: number, duration: number = 1200) {
   return count;
 }
 
+// ─── TemplateIcon Helper ────────────────────────────────────────────────────
+
+function TemplateIcon({ name, className }: { name: string; className?: string }) {
+  const IconComponent = (LucideIcons as Record<string, React.ComponentType<{ className?: string }>>)[name] || LucideIcons.FileText;
+  return <IconComponent className={className} />;
+}
+
 // ─── Stat Card ──────────────────────────────────────────────────────────────
 
 function MiniSparkline({ trend = 'up', color = '#8b5cf6' }: { trend?: 'up' | 'down'; color?: string }) {
@@ -1184,6 +1192,8 @@ function StatCard({
       whileHover={{ y: -4 }}
       className="relative flex flex-col gap-3 rounded-2xl border bg-white/60 dark:bg-gray-900/60 p-4 shadow-sm hover:shadow-xl transition-all duration-300 border-gray-200/80 dark:border-gray-800/80 backdrop-blur-xl group cursor-default"
     >
+      {/* Gradient border glow on hover */}
+      <div className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.3), rgba(236,72,153,0.3))' }} />
       {/* Top row: icon + value + change badge */}
       <div className="flex items-center gap-3">
         {/* Gradient icon background */}
@@ -3921,6 +3931,7 @@ export default function Dashboard() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [batchDeleteConfirmOpen, setBatchDeleteConfirmOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [showTemplateQuick, setShowTemplateQuick] = useState(true);
 
   const fetchForms = useCallback(async () => {
     try {
@@ -4355,6 +4366,61 @@ export default function Dashboard() {
         <div className="mb-6 sm:mb-8">
           <AIInsightsWidget forms={forms} />
         </div>
+
+        {/* Templates Quick Access */}
+        <AnimatePresence>
+          {showTemplateQuick && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="rounded-2xl bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-gray-200/60 dark:border-gray-800/60 p-4 mb-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                    <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 shadow-sm">
+                      <Sparkles className="size-3.5 text-white" />
+                    </div>
+                    الگوهای پرطرفدار
+                  </h3>
+                  <button onClick={() => setShowTemplateQuick(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <X className="size-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                  {[
+                    { name: 'ثبت‌نام کاربر', icon: 'UserPlus', gradient: 'from-violet-400 to-purple-500', count: 8 },
+                    { name: 'نظرسنجی', icon: 'BarChart3', gradient: 'from-rose-400 to-pink-500', count: 15 },
+                    { name: 'فرم استخدام', icon: 'Briefcase', gradient: 'from-blue-400 to-indigo-500', count: 12 },
+                    { name: 'بازخورد مشتری', icon: 'MessageCircle', gradient: 'from-amber-400 to-orange-500', count: 10 },
+                    { name: 'فرم سفارش', icon: 'ShoppingCart', gradient: 'from-emerald-400 to-teal-500', count: 8 },
+                    { name: 'فرم رویداد', icon: 'Calendar', gradient: 'from-fuchsia-400 to-purple-500', count: 7 },
+                    { name: 'فرم آموزشی', icon: 'GraduationCap', gradient: 'from-indigo-400 to-blue-500', count: 10 },
+                    { name: 'فرم پزشکی', icon: 'Heart', gradient: 'from-red-400 to-pink-500', count: 15 },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={item.name}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      whileHover={{ y: -2, scale: 1.02 }}
+                      className="group flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-violet-200 dark:hover:border-violet-800/50 hover:shadow-sm cursor-pointer transition-all"
+                    >
+                      <div className={`flex size-8 items-center justify-center rounded-lg bg-gradient-to-br ${item.gradient} shadow-sm shrink-0`}>
+                        <TemplateIcon name={item.icon} className="size-4 text-white" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-medium text-gray-700 dark:text-gray-300 truncate">{item.name}</p>
+                        <p className="text-[9px] text-gray-400">{item.count} الگو</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
