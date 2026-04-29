@@ -15,33 +15,15 @@ import { ScrollToTop } from '@/components/ui/scroll-to-top';
 const AdminPanel = dynamic(() => import('@/components/admin/admin-panel'), { ssr: false });
 const UserPanel = dynamic(() => import('@/components/user-panel/user-panel'), { ssr: false });
 
-const pageVariants = {
-  initial: { opacity: 0, y: 20 },
-  in: { opacity: 1, y: 0 },
-  out: { opacity: 0, y: -20 },
-};
-
-const pageTransition = {
-  type: 'tween' as const,
-  ease: 'anticipate' as const,
-  duration: 0.3,
-};
+const pageVariants = { initial: { opacity: 0, y: 20 }, in: { opacity: 1, y: 0 }, out: { opacity: 0, y: -20 } };
+const pageTransition = { type: 'tween' as const, ease: 'anticipate' as const, duration: 0.3 };
 
 export default function Home() {
   const { currentView } = useAppStore();
-
   return (
     <div className="min-h-screen flex flex-col">
       <AnimatePresence mode="sync">
-        <motion.div
-          key={currentView}
-          initial="initial"
-          animate="in"
-          exit="out"
-          variants={pageVariants}
-          transition={pageTransition}
-          className="flex-1 flex flex-col"
-        >
+        <motion.div key={currentView} initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition} className="flex-1 flex flex-col">
           <div>
             {currentView === 'landing' && <LandingPage />}
             {currentView !== 'landing' && currentView !== 'admin' && currentView !== 'user-panel' && <AppHeader />}
