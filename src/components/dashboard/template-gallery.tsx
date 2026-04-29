@@ -26,8 +26,19 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { templatesData, type TemplateData, type TemplateCategory } from '@/lib/templates-data';
-import { specializedFormsMeta, type FormMeta } from '@/lib/specialized-forms-meta';
 import { useAppStore } from '@/lib/store';
+
+// ── Form metadata type (same shape as specialized-forms-meta) ────────────────
+type FormMeta = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  categoryLabel: string;
+  icon: string;
+  gradient: string;
+  questionCount: number;
+};
 
 // ── Category configuration ────────────────────────────────────────────────────
 
@@ -58,10 +69,8 @@ const categoryColorMap: Record<TemplateCategory, string> = {
   other: 'bg-gray-100 text-gray-700',
 };
 
-// Merge base templates + specialized form metadata
-const existingIds = new Set(templatesData.map((t) => t.id));
-const uniqueMeta = specializedFormsMeta.filter((t) => !existingIds.has(t.id));
-const allTemplatesMeta: (TemplateData | FormMeta)[] = [...templatesData, ...uniqueMeta];
+// Base templates are imported directly (small), specialized forms loaded via API
+const baseTemplatesOnly: (TemplateData | FormMeta)[] = [...templatesData];
 
 const ITEMS_PER_PAGE = 24;
 
@@ -266,7 +275,29 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
   const [previewTemplate, setPreviewTemplate] = useState<TemplateData | FormMeta | null>(null);
   const [previewQuestions, setPreviewQuestions] = useState<TemplateData['questions'] | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
+  const [allTemplatesMeta, setAllTemplatesMeta] = useState<(TemplateData | FormMeta)[]>(baseTemplatesOnly);
+  const [loadingMeta, setLoadingMeta] = useState(false);
+  const [metaLoaded, setMetaLoaded] = useState(false);
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
+
+  // Load specialized forms metadata from API (lazy, only once when dialog opens)
+  React.useEffect(() => {
+    if (!open || metaLoaded) return;
+    let cancelled = false;
+    setLoadingMeta(true);
+    fetch('/api/templates/list')
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (cancelled || !data?.data) return;
+        const existingIds = new Set(templatesData.map((t) => t.id));
+        const uniqueMeta = (data.data as FormMeta[]).filter((t) => !existingIds.has(t.id));
+        setAllTemplatesMeta([...templatesData, ...uniqueMeta]);
+        setMetaLoaded(true);
+      })
+      .catch(() => setMetaLoaded(true))
+      .finally(() => setLoadingMeta(false));
+    return () => { cancelled = true; };
+  }, [open, metaLoaded]);
 
   // Load questions for preview (lazy for specialized forms)
   React.useEffect(() => {
@@ -403,7 +434,10 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
                   گالری الگوها
                 </DialogTitle>
                 <DialogDescription className="text-xs text-gray-500 mt-0.5">
-                  {allTemplatesMeta.length} الگوی آماده (شامل فرم‌های تخصصی)
+                  {loadingMeta
+                    ? 'در حال بارگذاری...'
+                    : `${allTemplatesMeta.length} الگوی آماده (شامل فرم‌های تخصصی)`
+                  }
                 </DialogDescription>
               </div>
             </div>

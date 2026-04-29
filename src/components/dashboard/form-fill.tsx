@@ -1791,17 +1791,9 @@ function CaptchaQuestion({
   value: string;
   onChange: (val: string) => void;
 }) {
-  const [captchaA, setCaptchaA] = useState(0);
-  const [captchaB, setCaptchaB] = useState(0);
-  const [captchaAnswer, setCaptchaAnswer] = useState(0);
-
-  useEffect(() => {
-    const a = Math.floor(Math.random() * 10) + 1;
-    const b = Math.floor(Math.random() * 10) + 1;
-    setCaptchaA(a);
-    setCaptchaB(b);
-    setCaptchaAnswer(a + b);
-  }, []);
+  const [captchaA, setCaptchaA] = useState(() => Math.floor(Math.random() * 10) + 1);
+  const [captchaB, setCaptchaB] = useState(() => Math.floor(Math.random() * 10) + 1);
+  const [captchaAnswer, setCaptchaAnswer] = useState(() => captchaA + captchaB);
 
   const isCorrect = value && parseInt(value) === captchaAnswer;
 
@@ -1840,14 +1832,25 @@ function DatetimeQuestion({
   value: string;
   onChange: (val: string) => void;
 }) {
-  const [dateVal, setDateVal] = useState('');
-  const [timeVal, setTimeVal] = useState('');
+  const [dateVal, setDateVal] = useState(() => {
+    if (question.defaultValue) {
+      return String(question.defaultValue).split('T')[0] || '';
+    }
+    return '';
+  });
+  const [timeVal, setTimeVal] = useState(() => {
+    if (question.defaultValue) {
+      return String(question.defaultValue).split('T')[1] || '';
+    }
+    return '';
+  });
 
+  // Sync date/time from external value (e.g. form fill prefill)
   useEffect(() => {
     if (value) {
       const parts = value.split('T');
-      setDateVal(parts[0] || '');
-      setTimeVal(parts[1] || '');
+      setDateVal(parts[0] || ''); // eslint-disable-line react-hooks/set-state-in-effect
+      setTimeVal(parts[1] || ''); // eslint-disable-line react-hooks/set-state-in-effect
     }
   }, [value]);
 
