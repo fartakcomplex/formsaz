@@ -1,6 +1,42 @@
 # Worklog
 
 ---
+## Task ID: 34 (Fix TemplateLibraryPage to load all 1200 templates)
+## Agent: template-fix-agent
+## Date: 2026-04-30
+
+### Session Overview
+Fixed the TemplateLibraryPage component to load all 1200 templates (101 base + 1099 specialized) instead of only showing the 101 base templates. The specialized forms metadata is fetched from `/api/templates/list` API on mount and merged with base templates. Updated TemplateCard, TemplatePreviewOverlay, and handleUseTemplate to handle both base templates (with inline questions) and specialized forms (metadata-only with lazy question loading).
+
+### Work Log
+- Added `FormMeta` interface and `AnyTemplate` union type for unified template handling
+- Added `isBaseTemplate()` type guard to distinguish between base and specialized templates
+- Changed `categoryColorMap` key type from `TemplateCategory` to `string` for flexible category lookup
+- Added `allTemplates` state initialized with `templatesData`, plus `metaLoaded` flag
+- Added `useEffect` to fetch from `/api/templates/list` on mount, deduplicating against base template IDs
+- Updated `filteredTemplates` useMemo to use `allTemplates` instead of `templatesData`
+- Updated hero header count badge to show `allTemplates.length`
+- Updated category tab counts to use `allTemplates` for filtering
+- Updated `TemplateCard` to accept `AnyTemplate` — shows "X سؤال تخصصی" badge for specialized forms instead of inline question type chips
+- Updated `TemplatePreviewOverlay` to accept `AnyTemplate` — lazy-loads questions from `/api/templates?id=` API for specialized forms, shows loading spinner, then renders question list
+- Updated `handleUseTemplate` to accept `AnyTemplate` — fetches questions from API for specialized forms before creating the form
+- Fixed admin-panel.tsx: template count stats 100 → 1200 (line 459 and line 668)
+- Lint: 0 errors, 1 pre-existing warning
+- Dev log confirms API endpoint returns 200
+
+### Files Modified
+1. `src/components/dashboard/template-library-page.tsx` — Unified types, API fetch, updated all components
+2. `src/components/admin/admin-panel.tsx` — Template count 100 → 1200
+
+### Stage Summary
+- TemplateLibraryPage now loads all ~1200 templates (101 base + 1099 specialized)
+- Hero badge dynamically shows total count after API fetch
+- Category tab counts include specialized forms
+- Template preview lazily loads questions for specialized forms
+- Using a specialized template fetches questions from API then creates the form
+- Admin panel stats updated to reflect 1,200 templates
+
+---
 ## Task ID: 33 (Map Type, Template Quality Fix, Gallery Enhancements, v1.2.1 Release)
 ## Agent: main-agent
 ## Date: 2026-04-30

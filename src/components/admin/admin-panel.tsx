@@ -456,7 +456,7 @@ function AdminWelcomeState({ onCreateUser, onGoTemplates }: { onCreateUser: () =
           </div>
           <div className="text-right">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white">مشاهده الگوها</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">۱۰۰ الگوی آماده</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">۱,۲۰۰ الگوی آماده</p>
           </div>
         </motion.button>
       </div>
@@ -665,7 +665,7 @@ function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
         { label: 'کل پاسخ‌ها', value: stats.submissions, animatedValue: animatedSubmissions, formattedValue: formatNumber(animatedSubmissions), icon: <Send className="size-6" />, gradient: 'from-amber-500 to-orange-600', shadowColor: 'shadow-amber-200/50 dark:shadow-amber-500/20' },
         { label: 'کل بازدیدها', value: stats.totalViews, animatedValue: animatedViews, formattedValue: formatNumber(animatedViews), icon: <Eye className="size-6" />, gradient: 'from-fuchsia-500 to-pink-600', shadowColor: 'shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20' },
         { label: 'فرم‌های منتشر شده', value: stats.publishedForms, animatedValue: animatedPublished, formattedValue: formatNumber(animatedPublished), icon: <Activity className="size-6" />, gradient: 'from-cyan-500 to-blue-600', shadowColor: 'shadow-cyan-200/50 dark:shadow-cyan-500/20' },
-        { label: 'الگوهای آماده', value: 100, animatedValue: 100, formattedValue: '۱۰۰', icon: <LayoutTemplate className="size-6" />, gradient: 'from-rose-500 to-red-600', shadowColor: 'shadow-rose-200/50 dark:shadow-rose-500/20' },
+        { label: 'الگوهای آماده', value: 1200, animatedValue: 1200, formattedValue: '۱,۲۰۰', icon: <LayoutTemplate className="size-6" />, gradient: 'from-rose-500 to-red-600', shadowColor: 'shadow-rose-200/50 dark:shadow-rose-500/20' },
       ]
     : [];
 

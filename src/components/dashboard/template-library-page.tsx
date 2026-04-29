@@ -65,6 +65,25 @@ import {
 import { useAppStore, type FormQuestion } from '@/lib/store';
 import { cn } from '@/lib/utils';
 
+/* ─── Unified template type ────────────────────────────────────────────── */
+
+export interface FormMeta {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  categoryLabel: string;
+  icon: string;
+  gradient: string;
+  questionCount: number;
+}
+
+export type AnyTemplate = TemplateData | FormMeta;
+
+export function isBaseTemplate(t: AnyTemplate): t is TemplateData {
+  return 'questions' in t && Array.isArray((t as TemplateData).questions) && (t as TemplateData).questions.length > 0;
+}
+
 /* ─── Favorites storage ─────────────────────────────────────────────────── */
 
 const FAVORITES_KEY = 'formbuilder-favorite-templates';
@@ -119,7 +138,7 @@ const categoryTabs: { value: string; label: string; icon: React.ReactNode }[] = 
   { value: 'other', label: 'سایر', icon: <HelpCircle className="size-4" /> },
 ];
 
-const categoryColorMap: Record<TemplateCategory, { bg: string; text: string; border: string; darkBg: string; darkText: string }> = {
+const categoryColorMap: Record<string, { bg: string; text: string; border: string; darkBg: string; darkText: string }> = {
   survey: { bg: 'bg-rose-100', text: 'text-rose-700', border: 'border-rose-200', darkBg: 'dark:bg-rose-900/30', darkText: 'dark:text-rose-400' },
   registration: { bg: 'bg-violet-100', text: 'text-violet-700', border: 'border-violet-200', darkBg: 'dark:bg-violet-900/30', darkText: 'dark:text-violet-400' },
   feedback: { bg: 'bg-emerald-100', text: 'text-emerald-700', border: 'border-emerald-200', darkBg: 'dark:bg-emerald-900/30', darkText: 'dark:text-emerald-400' },
@@ -292,14 +311,31 @@ function TemplatePreviewOverlay({
   isUsing,
   isFavorite,
 }: {
-  template: TemplateData;
+  template: AnyTemplate;
   onClose: () => void;
   onUse: () => void;
   onToggleFavorite: () => void;
   isUsing: boolean;
   isFavorite: boolean;
 }) {
-  const colors = categoryColorMap[template.category];
+  const colors = categoryColorMap[template.category] || categoryColorMap['other'];
+  const [loadedQuestions, setLoadedQuestions] = useState<Omit<FormQuestion, 'id'>[] | null>(null);
+  const [loadingQuestions, setLoadingQuestions] = useState(!isBaseTemplate(template));
+
+  // Lazy-load questions for specialized forms
+  useEffect(() => {
+    if (isBaseTemplate(template)) return;
+    let cancelled = false;
+    fetch(`/api/templates?id=${template.id}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (cancelled || !data?.data?.questions) return;
+        setLoadedQuestions(data.data.questions);
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoadingQuestions(false); });
+    return () => { cancelled = true; };
+  }, [template.id]);
 
   return (
     <motion.div
@@ -405,11 +441,30 @@ function TemplatePreviewOverlay({
             سؤالات این الگو:
           </p>
           <ScrollArea className="max-h-[45vh]">
-            <div className="space-y-2 pr-1">
-              {template.questions.map((q, idx) => (
-                <QuestionPreviewRow key={idx} question={q} index={idx} />
-              ))}
-            </div>
+            {isBaseTemplate(template) ? (
+              <div className="space-y-2 pr-1">
+                {template.questions.map((q, idx) => (
+                  <QuestionPreviewRow key={idx} question={q} index={idx} />
+                ))}
+              </div>
+            ) : loadingQuestions ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <Loader2 className="size-6 animate-spin text-violet-500 mb-3" />
+                <p className="text-sm text-gray-400">در حال بارگذاری سؤالات...</p>
+              </div>
+            ) : loadedQuestions && loadedQuestions.length > 0 ? (
+              <div className="space-y-2 pr-1">
+                {loadedQuestions.map((q, idx) => (
+                  <QuestionPreviewRow key={idx} question={q} index={idx} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12">
+                <Layers className="size-8 text-gray-300 dark:text-gray-600 mb-3" />
+                <p className="text-sm text-gray-400">سؤالات این الگو هنگام انتخاب بارگذاری می‌شود</p>
+                <p className="text-xs text-gray-400 mt-1">این الگو شامل {template.questionCount} سؤال تخصصی است</p>
+              </div>
+            )}
           </ScrollArea>
         </div>
 
@@ -457,14 +512,15 @@ function TemplateCard({
   isFavorite,
   onToggleFavorite,
 }: {
-  template: TemplateData;
+  template: AnyTemplate;
   onPreview: () => void;
   onUse: () => void;
   isUsing: boolean;
   isFavorite: boolean;
   onToggleFavorite: (e: React.MouseEvent) => void;
 }) {
-  const colors = categoryColorMap[template.category];
+  const colors = categoryColorMap[template.category] || categoryColorMap['other'];
+  const hasQuestions = isBaseTemplate(template);
 
   return (
     <motion.div variants={cardVariants} layout className="group relative">
@@ -534,17 +590,23 @@ function TemplateCard({
 
           {/* Mini question type indicators */}
           <div className="flex flex-wrap gap-1 mt-0.5">
-            {template.questions.slice(0, 4).map((q, i) => (
-              <span
-                key={i}
-                className="text-[10px] text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-1.5 py-0.5 rounded"
-              >
-                {getQuestionTypeLabel(q.type)}
+            {hasQuestions ? (
+              (template as TemplateData).questions.slice(0, 4).map((q, i) => (
+                <span
+                  key={i}
+                  className="text-[10px] text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-1.5 py-0.5 rounded"
+                >
+                  {getQuestionTypeLabel(q.type)}
+                </span>
+              ))
+            ) : (
+              <span className="text-[10px] text-violet-400 dark:text-violet-500 bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800/30 px-1.5 py-0.5 rounded">
+                {template.questionCount} سؤال تخصصی
               </span>
-            ))}
-            {template.questions.length > 4 && (
+            )}
+            {hasQuestions && (template as TemplateData).questions.length > 4 && (
               <span className="text-[10px] text-gray-400 dark:text-gray-500 px-1.5 py-0.5">
-                +{template.questions.length - 4}
+                +{(template as TemplateData).questions.length - 4}
               </span>
             )}
           </div>
@@ -600,11 +662,13 @@ export default function TemplateLibraryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [usingTemplateId, setUsingTemplateId] = useState<string | null>(null);
-  const [previewTemplate, setPreviewTemplate] = useState<TemplateData | null>(null);
+  const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>('default');
   const [questionFilter, setQuestionFilter] = useState<QuestionFilterOption>('all');
   const [usedCount, setUsedCount] = useState(0);
+  const [allTemplates, setAllTemplates] = useState<AnyTemplate[]>(templatesData);
+  const [metaLoaded, setMetaLoaded] = useState(false);
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
 
   // Load favorites & used count from localStorage
@@ -612,6 +676,23 @@ export default function TemplateLibraryPage() {
     setFavorites(getFavorites());
     setUsedCount(getUsedTemplatesCount());
   }, []);
+
+  // Fetch specialized forms metadata from API
+  useEffect(() => {
+    if (metaLoaded) return;
+    let cancelled = false;
+    fetch('/api/templates/list')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (cancelled || !data?.data) return;
+        const existingIds = new Set(templatesData.map(t => t.id));
+        const uniqueMeta = (data.data as FormMeta[]).filter(t => !existingIds.has(t.id));
+        setAllTemplates([...templatesData, ...uniqueMeta]);
+        setMetaLoaded(true);
+      })
+      .catch(() => setMetaLoaded(true));
+    return () => { cancelled = true; };
+  }, [metaLoaded]);
 
   const toggleFavorite = useCallback((templateId: string) => {
     setFavorites((prev) => {
@@ -624,7 +705,7 @@ export default function TemplateLibraryPage() {
   }, []);
 
   const filteredTemplates = useMemo(() => {
-    let result = templatesData;
+    let result = allTemplates;
 
     // Filter by tab
     if (activeTab === 'favorites') {
@@ -670,7 +751,7 @@ export default function TemplateLibraryPage() {
     }
 
     return result;
-  }, [activeTab, searchQuery, sortBy, favorites, questionFilter]);
+  }, [activeTab, searchQuery, sortBy, favorites, questionFilter, allTemplates]);
 
   const totalPages = Math.ceil(filteredTemplates.length / ITEMS_PER_PAGE);
   const paginatedTemplates = filteredTemplates.slice(
@@ -698,15 +779,26 @@ export default function TemplateLibraryPage() {
     setCurrentPage(1);
   }, []);
 
-  const handleUseTemplate = async (template: TemplateData) => {
+  const handleUseTemplate = async (template: AnyTemplate) => {
     try {
       setUsingTemplateId(template.id);
 
-      const questionsPayload = template.questions.map((q, i) => ({
-        ...q,
-        id: `q-${Date.now()}-${i}`,
-        order: i,
-      }));
+      let questionsPayload: Record<string, unknown>[];
+
+      if (isBaseTemplate(template)) {
+        questionsPayload = template.questions.map((q, i) => ({
+          ...q,
+          id: `q-${Date.now()}-${i}`,
+          order: i,
+        }));
+      } else {
+        // Fetch questions from API for specialized forms
+        const tplRes = await fetch(`/api/templates?id=${template.id}`);
+        if (!tplRes.ok) throw new Error('Failed to fetch template');
+        const tplData = await tplRes.json();
+        if (!tplData?.data?.questions) throw new Error('No questions found');
+        questionsPayload = tplData.data.questions;
+      }
 
       const res = await fetch('/api/forms', {
         method: 'POST',
@@ -801,7 +893,7 @@ export default function TemplateLibraryPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-4 backdrop-blur-sm">
               <Sparkles className="size-4 text-yellow-300" />
-              {templatesData.length} الگوی آماده
+              {allTemplates.length} الگوی آماده
               {favCount > 0 && (
                 <>
                   <span className="text-white/30 mx-1">|</span>
@@ -872,10 +964,10 @@ export default function TemplateLibraryPage() {
           <div className="flex gap-1.5 overflow-x-auto py-3 scrollbar-none -mx-1 px-1">
             {categoryTabs.map((tab) => {
               const count = tab.value === 'all'
-                ? templatesData.length
+                ? allTemplates.length
                 : tab.value === 'favorites'
                 ? favCount
-                : templatesData.filter((t) => t.category === tab.value).length;
+                : allTemplates.filter((t) => t.category === tab.value).length;
               const isActive = activeTab === tab.value;
               return (
                 <button
