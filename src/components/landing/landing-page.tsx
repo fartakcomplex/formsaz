@@ -31,6 +31,7 @@ import {
   Palette,
   GitBranch,
   BarChart3,
+  LayoutTemplate,
   Download,
   Smartphone,
   ClipboardList,
@@ -301,8 +302,9 @@ function Navbar() {
             </Button>
             <Button
               onClick={() => setCurrentView('dashboard')}
-              className="bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all"
+              className="relative overflow-hidden bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
             >
+              <Sparkles className="h-3.5 w-3.5 ml-1" />
               شروع رایگان
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -545,13 +547,35 @@ function HeroSection() {
         >
           <div className="relative group">
             {/* Pulsing ring animation */}
-            <div className="absolute -inset-1 rounded-xl bg-gradient-to-l from-indigo-500 to-violet-500 opacity-40 blur-md group-hover:opacity-60 transition-opacity duration-300 animate-ping" style={{ animationDuration: '2s' }} />
-            <div className="absolute -inset-[2px] rounded-xl bg-gradient-to-l from-indigo-500/0 via-violet-500/0 to-fuchsia-500/0 group-hover:from-indigo-500/60 group-hover:via-violet-500/60 group-hover:to-fuchsia-500/60 blur-sm transition-all duration-500 opacity-0 group-hover:opacity-100" />
+            <div className="absolute -inset-1.5 rounded-xl bg-gradient-to-l from-indigo-500 to-violet-500 opacity-30 blur-lg group-hover:opacity-50 transition-opacity duration-300 animate-ping" style={{ animationDuration: '2.5s' }} />
+            {/* Animated gradient border (moving) */}
+            <div className="absolute -inset-[2px] rounded-xl overflow-hidden opacity-70 group-hover:opacity-100 transition-opacity duration-500">
+              <motion.div
+                className="absolute inset-[-100%]"
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+                style={{
+                  background: 'conic-gradient(from 0deg, transparent, #6366f1, #8b5cf6, #a855f7, #d946ef, #8b5cf6, transparent)',
+                }}
+              />
+            </div>
+            {/* Shimmer overlay */}
+            <div className="absolute inset-0 rounded-xl overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <motion.div
+                className="absolute inset-0"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 1, ease: 'easeInOut' }}
+                style={{
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
+                }}
+              />
+            </div>
             <Button
               size="lg"
               onClick={() => setCurrentView('dashboard')}
-              className="relative w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all rounded-xl px-8"
+              className="relative w-full sm:w-auto min-w-[200px] h-13 text-base font-semibold bg-gradient-to-l from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:shadow-2xl hover:-translate-y-1 active:translate-y-0 transition-all duration-300 rounded-xl px-8"
             >
+              <Sparkles className="h-4 w-4 ml-1.5 animate-pulse" />
               شروع رایگان
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -949,6 +973,16 @@ const featuresData = [
       'طراحی واکنش‌گرا با تست روی بیش از ۵۰ دستگاه، پشتیبانی از حالت آفلاین و بهینه‌سازی سرعت بارگذاری.',
     gradient: 'from-rose-500 to-red-600',
     shadowColor: 'shadow-rose-500/25',
+  },
+  {
+    icon: LayoutTemplate,
+    title: 'بیش از ۱,۱۹۹ الگوی آماده',
+    description:
+      'از الگوهای تخصصی نظرسنجی، ثبت‌نام، سلامت، آموزش و بسیاری حوزه‌های دیگر استفاده کنید.',
+    extraDescription:
+      'بیش از ۱,۱۹۹ الگو در ۱۰ دسته‌بندی مختلف شامل نظرسنجی، ثبت‌نام، بازخورد، ارزیابی، سفارش، آموزش، سلامت، رویداد، منابع انسانی و سایر. هر الگو شامل سوالات از پیش طراحی‌شده.',
+    gradient: 'from-indigo-500 to-blue-600',
+    shadowColor: 'shadow-indigo-500/25',
   },
 ];
 

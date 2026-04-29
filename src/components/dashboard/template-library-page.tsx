@@ -62,6 +62,7 @@ import {
   type TemplateData,
   type TemplateCategory,
 } from '@/lib/templates-data';
+import { specializedFormsMeta } from '@/lib/specialized-forms-meta-client';
 import { useAppStore, type FormQuestion } from '@/lib/store';
 import { cn } from '@/lib/utils';
 
@@ -680,10 +681,14 @@ export default function TemplateLibraryPage() {
   const [sortBy, setSortBy] = useState<SortOption>('default');
   const [questionFilter, setQuestionFilter] = useState<QuestionFilterOption>('all');
   const [usedCount, setUsedCount] = useState(0);
-  const [allTemplates, setAllTemplates] = useState<AnyTemplate[]>(templatesData);
-  const [metaLoaded, setMetaLoaded] = useState(false);
-  const [isLoadingMeta, setIsLoadingMeta] = useState(true);
-  const [metaRetryCount, setMetaRetryCount] = useState(0);
+  // Merge base templates with specialized forms directly from client-side import
+  // (no server API call needed — avoids OOM in constrained environments)
+  const [allTemplates, setAllTemplates] = useState<AnyTemplate[]>(() => {
+    const existingIds = new Set(templatesData.map(t => t.id));
+    const uniqueMeta = specializedFormsMeta.filter((t) => !existingIds.has(t.id));
+    return [...templatesData, ...uniqueMeta];
+  });
+  const [isLoadingMeta] = useState(false);
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
 
   // Load favorites & used count from localStorage
@@ -691,39 +696,6 @@ export default function TemplateLibraryPage() {
     setFavorites(getFavorites());
     setUsedCount(getUsedTemplatesCount());
   }, []);
-
-  // Fetch specialized forms metadata from API with retry
-  useEffect(() => {
-    if (metaLoaded) return;
-    let cancelled = false;
-
-    async function fetchMeta() {
-      try {
-        setIsLoadingMeta(true);
-        const res = await fetch('/api/templates/list');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (cancelled || !data?.data) throw new Error('No data');
-        const existingIds = new Set(templatesData.map(t => t.id));
-        const uniqueMeta = (data.data as FormMeta[]).filter(t => !existingIds.has(t.id));
-        setAllTemplates([...templatesData, ...uniqueMeta]);
-        setMetaLoaded(true);
-        setIsLoadingMeta(false);
-      } catch (err) {
-        console.error('Failed to load specialized templates:', err);
-        if (!cancelled && metaRetryCount < 3) {
-          setMetaRetryCount(prev => prev + 1);
-          setTimeout(() => fetchMeta(), 1500 * (metaRetryCount + 1));
-        } else {
-          setIsLoadingMeta(false);
-          setMetaLoaded(true);
-        }
-      }
-    }
-
-    fetchMeta();
-    return () => { cancelled = true; };
-  }, [metaLoaded, metaRetryCount]);
 
   const toggleFavorite = useCallback((templateId: string) => {
     setFavorites((prev) => {

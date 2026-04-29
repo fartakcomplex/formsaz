@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { templatesData, type TemplateData, type TemplateCategory } from '@/lib/templates-data';
+import { specializedFormsMeta } from '@/lib/specialized-forms-meta-client';
 import { useAppStore } from '@/lib/store';
 
 // ── Form metadata type (same shape as specialized-forms-meta) ────────────────
@@ -69,9 +70,7 @@ const categoryColorMap: Record<TemplateCategory, string> = {
   other: 'bg-gray-100 text-gray-700',
 };
 
-// Base templates are imported directly (small), specialized forms loaded via API
-const baseTemplatesOnly: (TemplateData | FormMeta)[] = [...templatesData];
-
+// Base templates are imported directly (small), specialized forms loaded via client import
 const ITEMS_PER_PAGE = 24;
 
 // ── Question type helpers ─────────────────────────────────────────────────────
@@ -275,29 +274,15 @@ export default function TemplateGallery({ open, onOpenChange }: TemplateGalleryP
   const [previewTemplate, setPreviewTemplate] = useState<TemplateData | FormMeta | null>(null);
   const [previewQuestions, setPreviewQuestions] = useState<TemplateData['questions'] | null>(null);
   const [loadingPreview, setLoadingPreview] = useState(false);
-  const [allTemplatesMeta, setAllTemplatesMeta] = useState<(TemplateData | FormMeta)[]>(baseTemplatesOnly);
-  const [loadingMeta, setLoadingMeta] = useState(false);
-  const [metaLoaded, setMetaLoaded] = useState(false);
+  // Merge base templates with specialized forms directly from client-side import
+  // (no server API call needed — avoids OOM in constrained environments)
+  const [allTemplatesMeta] = useState<(TemplateData | FormMeta)[]>(() => {
+    const existingIds = new Set(templatesData.map((t) => t.id));
+    const uniqueMeta = specializedFormsMeta.filter((t) => !existingIds.has(t.id));
+    return [...templatesData, ...uniqueMeta];
+  });
+  const [loadingMeta] = useState(false);
   const { setCurrentForm, setCurrentView, setForms, forms } = useAppStore();
-
-  // Load specialized forms metadata from API (lazy, only once when dialog opens)
-  React.useEffect(() => {
-    if (!open || metaLoaded) return;
-    let cancelled = false;
-    setLoadingMeta(true);
-    fetch('/api/templates/list')
-      .then((res) => res.ok ? res.json() : null)
-      .then((data) => {
-        if (cancelled || !data?.data) return;
-        const existingIds = new Set(templatesData.map((t) => t.id));
-        const uniqueMeta = (data.data as FormMeta[]).filter((t) => !existingIds.has(t.id));
-        setAllTemplatesMeta([...templatesData, ...uniqueMeta]);
-        setMetaLoaded(true);
-      })
-      .catch(() => setMetaLoaded(true))
-      .finally(() => setLoadingMeta(false));
-    return () => { cancelled = true; };
-  }, [open, metaLoaded]);
 
   // Load questions for preview (lazy for specialized forms)
   React.useEffect(() => {

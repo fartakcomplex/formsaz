@@ -114,6 +114,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useAppStore } from '@/lib/store';
+import { specializedFormsMeta } from '@/lib/specialized-forms-meta-client';
 
 // ─── Types ─────────────────────────────────────────────────────────────
 
@@ -167,19 +168,54 @@ interface ActivityItem {
   time: string;
 }
 
-// ─── Template Categories (static) ──────────────────────────────────────
+// ─── Template Categories (dynamic) ─────────────────────────────────────
+
+// Base template counts per category (from @/lib/templates-data)
+const BASE_CATEGORY_COUNTS: Record<string, number> = {
+  survey: 15,
+  registration: 15,
+  feedback: 15,
+  evaluation: 10,
+  education: 10,
+  order: 8,
+  health: 8,
+  event: 7,
+  hr: 7,
+  other: 5,
+};
+
+// Map specialized form categories to admin category keys
+const SPECIALIZED_CATEGORY_MAP: Record<string, string> = {
+  health: 'health',
+  education: 'education',
+  hr: 'hr',
+  event: 'event',
+  order: 'order',
+  other: 'other',
+};
+
+// Compute specialized counts per category
+const specializedCounts: Record<string, number> = {};
+for (const meta of specializedFormsMeta) {
+  const catKey = SPECIALIZED_CATEGORY_MAP[meta.category];
+  if (catKey) {
+    specializedCounts[catKey] = (specializedCounts[catKey] || 0) + 1;
+  }
+}
+
+const TOTAL_TEMPLATES = specializedFormsMeta.length + Object.values(BASE_CATEGORY_COUNTS).reduce((a, b) => a + b, 0);
 
 const TEMPLATE_CATEGORIES = [
-  { name: 'نظرسنجی', count: 15, icon: <BarChart3 className="size-5" />, color: 'from-violet-500 to-purple-600' },
-  { name: 'ثبت‌نام', count: 15, icon: <ClipboardList className="size-5" />, color: 'from-emerald-500 to-teal-600' },
-  { name: 'بازخورد', count: 15, icon: <MessageIcon />, color: 'from-blue-500 to-cyan-600' },
-  { name: 'ارزیابی', count: 10, icon: <Star className="size-5" />, color: 'from-amber-500 to-orange-600' },
-  { name: 'سفارش', count: 8, icon: <Globe className="size-5" />, color: 'from-rose-500 to-pink-600' },
-  { name: 'آموزش', count: 10, icon: <BookIcon />, color: 'from-fuchsia-500 to-purple-600' },
-  { name: 'سلامت', count: 8, icon: <HeartIcon />, color: 'from-red-500 to-rose-600' },
-  { name: 'رویداد', count: 7, icon: <Calendar className="size-5" />, color: 'from-teal-500 to-emerald-600' },
-  { name: 'منابع انسانی', count: 7, icon: <Users className="size-5" />, color: 'from-cyan-500 to-blue-600' },
-  { name: 'سایر', count: 5, icon: <LayoutTemplate className="size-5" />, color: 'from-gray-500 to-slate-600' },
+  { name: 'نظرسنجی', count: BASE_CATEGORY_COUNTS.survey, icon: <BarChart3 className="size-5" />, color: 'from-violet-500 to-purple-600' },
+  { name: 'ثبت‌نام', count: BASE_CATEGORY_COUNTS.registration, icon: <ClipboardList className="size-5" />, color: 'from-emerald-500 to-teal-600' },
+  { name: 'بازخورد', count: BASE_CATEGORY_COUNTS.feedback, icon: <MessageIcon />, color: 'from-blue-500 to-cyan-600' },
+  { name: 'ارزیابی', count: BASE_CATEGORY_COUNTS.evaluation, icon: <Star className="size-5" />, color: 'from-amber-500 to-orange-600' },
+  { name: 'سفارش', count: (BASE_CATEGORY_COUNTS.order || 0) + (specializedCounts.order || 0), icon: <Globe className="size-5" />, color: 'from-rose-500 to-pink-600' },
+  { name: 'آموزش', count: (BASE_CATEGORY_COUNTS.education || 0) + (specializedCounts.education || 0), icon: <BookIcon />, color: 'from-fuchsia-500 to-purple-600' },
+  { name: 'سلامت', count: (BASE_CATEGORY_COUNTS.health || 0) + (specializedCounts.health || 0), icon: <HeartIcon />, color: 'from-red-500 to-rose-600' },
+  { name: 'رویداد', count: (BASE_CATEGORY_COUNTS.event || 0) + (specializedCounts.event || 0), icon: <Calendar className="size-5" />, color: 'from-teal-500 to-emerald-600' },
+  { name: 'منابع انسانی', count: (BASE_CATEGORY_COUNTS.hr || 0) + (specializedCounts.hr || 0), icon: <Users className="size-5" />, color: 'from-cyan-500 to-blue-600' },
+  { name: 'سایر', count: (BASE_CATEGORY_COUNTS.other || 0) + (specializedCounts.other || 0), icon: <LayoutTemplate className="size-5" />, color: 'from-gray-500 to-slate-600' },
 ];
 
 const SYSTEM_HEALTH = [
@@ -456,7 +492,7 @@ function AdminWelcomeState({ onCreateUser, onGoTemplates }: { onCreateUser: () =
           </div>
           <div className="text-right">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white">مشاهده الگوها</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">۱,۲۰۰ الگوی آماده</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{formatNumber(TOTAL_TEMPLATES)} الگوی آماده</p>
           </div>
         </motion.button>
       </div>
@@ -665,7 +701,7 @@ function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
         { label: 'کل پاسخ‌ها', value: stats.submissions, animatedValue: animatedSubmissions, formattedValue: formatNumber(animatedSubmissions), icon: <Send className="size-6" />, gradient: 'from-amber-500 to-orange-600', shadowColor: 'shadow-amber-200/50 dark:shadow-amber-500/20' },
         { label: 'کل بازدیدها', value: stats.totalViews, animatedValue: animatedViews, formattedValue: formatNumber(animatedViews), icon: <Eye className="size-6" />, gradient: 'from-fuchsia-500 to-pink-600', shadowColor: 'shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20' },
         { label: 'فرم‌های منتشر شده', value: stats.publishedForms, animatedValue: animatedPublished, formattedValue: formatNumber(animatedPublished), icon: <Activity className="size-6" />, gradient: 'from-cyan-500 to-blue-600', shadowColor: 'shadow-cyan-200/50 dark:shadow-cyan-500/20' },
-        { label: 'الگوهای آماده', value: 1200, animatedValue: 1200, formattedValue: '۱,۲۰۰', icon: <LayoutTemplate className="size-6" />, gradient: 'from-rose-500 to-red-600', shadowColor: 'shadow-rose-200/50 dark:shadow-rose-500/20' },
+        { label: 'الگوهای آماده', value: TOTAL_TEMPLATES, animatedValue: TOTAL_TEMPLATES, formattedValue: formatNumber(TOTAL_TEMPLATES), icon: <LayoutTemplate className="size-6" />, gradient: 'from-rose-500 to-red-600', shadowColor: 'shadow-rose-200/50 dark:shadow-rose-500/20' },
       ]
     : [];
 
@@ -1907,7 +1943,7 @@ export default function AdminPanel() {
   const renderContent = () => {
     switch (activeTab) {
       case 'overview':
-        return <OverviewSection />;
+        return <OverviewSection onSwitchTab={setActiveTab} onCreateUser={() => setActiveTab('users')} onGoTemplates={() => setActiveTab('templates')} />;
       case 'users':
         return <UsersSection />;
       case 'forms':

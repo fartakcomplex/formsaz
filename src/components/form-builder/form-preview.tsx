@@ -560,6 +560,7 @@ function EditableDescription({
   const [isEditing, setIsEditing] = useState(false);
   const [draftValue, setDraftValue] = useState(description);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const MAX_LENGTH = 500;
 
   useEffect(() => {
     setDraftValue(description);
@@ -574,7 +575,9 @@ function EditableDescription({
   }, [isEditing]);
 
   const handleSave = () => {
-    onChange(draftValue);
+    const trimmed = draftValue.slice(0, MAX_LENGTH);
+    onChange(trimmed);
+    setDraftValue(trimmed);
     setIsEditing(false);
   };
 
@@ -595,26 +598,45 @@ function EditableDescription({
         <Textarea
           ref={textareaRef}
           value={draftValue}
-          onChange={(e) => setDraftValue(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            if (val.length <= MAX_LENGTH) {
+              setDraftValue(val);
+            }
+          }}
           onKeyDown={handleKeyDown}
           placeholder="توضیحات فرم را وارد کنید..."
-          className="text-sm text-white/90 placeholder:text-white/40 bg-white/10 border-white/20 resize-none min-h-[60px]"
+          className="text-sm text-white/90 placeholder:text-white/40 bg-white/10 border-white/20 backdrop-blur-sm resize-none min-h-[60px]"
           dir="rtl"
+          maxLength={MAX_LENGTH}
         />
-        <div className="flex items-center gap-2 mt-2">
-          <button
-            onClick={handleSave}
-            className="flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium bg-white/20 text-white hover:bg-white/30 transition-colors"
-          >
-            <CheckIcon className="h-3 w-3" />
-            ذخیره
-          </button>
-          <button
-            onClick={handleCancel}
-            className="rounded-md px-2.5 py-1 text-xs text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors"
-          >
-            انصراف
-          </button>
+        {/* Character counter */}
+        <div className="flex items-center justify-between mt-1.5">
+          <span className={cn(
+            'text-[10px] tabular-nums transition-colors',
+            draftValue.length > MAX_LENGTH
+              ? 'text-red-300'
+              : draftValue.length > MAX_LENGTH * 0.9
+                ? 'text-amber-300'
+                : 'text-white/40'
+          )}>
+            {toPersianDigits(String(draftValue.length))} / {toPersianDigits(String(MAX_LENGTH))}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleSave}
+              className="flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium bg-white/20 text-white hover:bg-white/30 transition-colors backdrop-blur-sm"
+            >
+              <CheckIcon className="h-3 w-3" />
+              ذخیره
+            </button>
+            <button
+              onClick={handleCancel}
+              className="rounded-md px-2.5 py-1 text-xs text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors"
+            >
+              انصراف
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -627,7 +649,17 @@ function EditableDescription({
       className="group/desc flex items-start gap-2 mt-2 w-full max-w-lg text-right"
     >
       {description ? (
-        <p className="text-sm text-white/70 leading-relaxed">{description}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-white/70 leading-relaxed">{description}</p>
+          <span className={cn(
+            'text-[10px] tabular-nums mt-1 block transition-colors opacity-0 group-hover/desc:opacity-100',
+            description.length > MAX_LENGTH * 0.9
+              ? 'text-amber-300'
+              : 'text-white/30'
+          )}>
+            {toPersianDigits(String(description.length))} / {toPersianDigits(String(MAX_LENGTH))}
+          </span>
+        </div>
       ) : (
         <p className="text-sm text-white/40 flex items-center gap-1.5">
           <Pencil className="h-3 w-3" />

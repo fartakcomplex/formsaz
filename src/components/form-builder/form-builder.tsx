@@ -639,6 +639,16 @@ export default function FormBuilder() {
   const hasQuestions = questions.length > 0;
   const hasSelection = selectedQuestionId !== null;
 
+  // Status bar metrics
+  const requiredCount = questions.filter((q) => q.required).length;
+  const configuredQuestions = questions.filter(
+    (q) => q.title && q.title !== 'سؤال متنی کوتاه' && q.title !== 'عبارت توضیحی'
+  ).length;
+  const completionPercent =
+    questions.length > 0
+      ? Math.round((configuredQuestions / questions.length) * 100)
+      : 0;
+
   return (
     <div className="flex h-screen flex-col bg-muted/30 overflow-hidden" dir="rtl">
       {/* ============ TOOLBAR ============ */}
@@ -753,7 +763,7 @@ export default function FormBuilder() {
         {/* Left section (RTL - actions) */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Undo/Redo */}
-          <div className="hidden lg:flex items-center gap-0.5">
+          <div className="flex items-center gap-0.5">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -1071,6 +1081,52 @@ export default function FormBuilder() {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+      </div>
+
+      {/* ============ STATUS BAR ============ */}
+      <div className="relative shrink-0 z-10">
+        <div className="h-px bg-gradient-to-l from-transparent via-violet-300/30 dark:via-violet-700/20 to-transparent" />
+        <div className="flex items-center justify-center gap-2 sm:gap-3 px-4 py-1.5 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border-t border-gray-200/40 dark:border-gray-800/40">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.35 }}
+            className="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-center"
+          >
+            {/* Question count pill */}
+            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium bg-gradient-to-l from-violet-100/80 to-purple-100/80 dark:from-violet-900/40 dark:to-purple-900/40 text-violet-700 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800/40 shadow-sm backdrop-blur-sm">
+              <CircleHelp className="size-3 sm:size-3.5" />
+              {toPersianDigits(String(questions.length))} سؤال
+            </span>
+
+            {/* Required count pill */}
+            <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium bg-gradient-to-l from-amber-100/80 to-orange-100/80 dark:from-amber-900/40 dark:to-orange-900/40 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40 shadow-sm backdrop-blur-sm">
+              <span className="text-amber-500 dark:text-amber-400 text-[10px] sm:text-xs">*</span>
+              {toPersianDigits(String(requiredCount))} الزامی
+            </span>
+
+            {/* Completion percentage pill */}
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={completionPercent}
+                initial={{ scale: 0.95, opacity: 0.7 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0.7 }}
+                transition={{ duration: 0.2 }}
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium shadow-sm backdrop-blur-sm border',
+                  completionPercent >= 80
+                    ? 'bg-emerald-100/80 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/40'
+                    : completionPercent >= 50
+                      ? 'bg-amber-100/80 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/40'
+                      : 'bg-red-100/80 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200/60 dark:border-red-800/40'
+                )}
+              >
+                تکمیل: {toPersianDigits(String(completionPercent))}%
+              </motion.span>
+            </AnimatePresence>
+          </motion.div>
         </div>
       </div>
 
