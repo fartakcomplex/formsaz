@@ -1,6 +1,52 @@
 # Worklog
 
 ---
+## Task ID: 36 (Critical Fix: Gallery Shows Only 100 Templates - OOM Root Cause)
+## Agent: main-agent
+## Date: 2026-04-30
+
+### Session Overview
+Fixed the critical and persistent bug where the template gallery showed only 100 templates instead of 1199. Root cause was OOM - the large `.ts` data files (8.7MB + 348KB) in `src/lib/` caused Turbopack to crash during compilation, preventing the API from responding. The fix involved removing the old `.ts` files and moving JSON data to `data/` directory outside of Turbopack's analysis scope.
+
+### Root Cause Analysis
+1. `specialized-forms.ts` (8.7MB, 1099 forms with questions) was in `src/lib/`
+2. `specialized-forms-meta.ts` (348KB, 1099 form metadata entries) was in `src/lib/`
+3. Turbopack tried to analyze ALL files in `src/` during compilation
+4. The 8.7MB file caused OOM → server crashed → API never responded → gallery stayed at 100 base templates
+5. Previous sessions had created JSON versions but kept the `.ts` files as fallbacks
+
+### Fix Applied
+1. **Deleted** `src/lib/specialized-forms.ts` (8.7MB) - no longer needed
+2. **Deleted** `src/lib/specialized-forms-meta.ts` (348KB) - no longer needed
+3. **Moved** `src/lib/specialized-forms.json` (2.7MB) → `data/specialized-forms.json`
+4. **Moved** `src/lib/specialized-forms-meta.json` (289KB) → `data/specialized-forms-meta.json`
+5. **Updated** `src/app/api/templates/list/route.ts` - reads from `data/` instead of `src/lib/`
+6. **Updated** `src/app/api/templates/route.ts` - reads from `data/`, removed `await import('@/lib/specialized-forms-meta')` fallback
+
+### Verification
+- API `/api/templates/list` returns `success: true, total: 1099` ✅
+- API `/api/templates?id=doctor-visit` returns questions correctly ✅
+- Root page loads successfully ✅
+- 0 overlapping IDs between base templates (100) and specialized forms (1099)
+- Expected gallery total: **1199 templates** (100 base + 1099 specialized)
+
+### Files Changed
+1. `src/lib/specialized-forms.ts` — DELETED (was 8.7MB)
+2. `src/lib/specialized-forms-meta.ts` — DELETED (was 348KB)
+3. `src/lib/specialized-forms.json` → `data/specialized-forms.json` — MOVED
+4. `src/lib/specialized-forms-meta.json` → `data/specialized-forms-meta.json` — MOVED
+5. `src/app/api/templates/list/route.ts` — Updated path to `data/`
+6. `src/app/api/templates/route.ts` — Updated paths, removed .ts import fallback
+
+### Git Push
+- Commit: `e07205b` → pushed to `main` branch
+- Commit message: "fix: move data files to data/ dir, remove large .ts files to fix OOM"
+- 6 files changed, 30 insertions(+), 224,174 deletions(-)
+
+### Key Insight
+Using `npx next dev` works, while `bun run dev` (which pipes through `tee`) has issues with compilation output. The `.next` cache must be cleared when making structural changes to large data files.
+
+---
 ## Task ID: 35 (Fix Template Gallery 1199 Display + Styling + Features)
 ## Agent: main-agent
 ## Date: 2026-04-30
