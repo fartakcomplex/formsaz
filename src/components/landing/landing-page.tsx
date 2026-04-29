@@ -1312,8 +1312,12 @@ function HowItWorksSection() {
 function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const sectionInView = useInView(sectionRef, { once: true, margin: '-60px' });
+
+  // Defer animations until after hydration to prevent hydration mismatch
+  useEffect(() => { requestAnimationFrame(() => setMounted(true)); }, []);
 
   const testimonials = [
     {
@@ -1458,7 +1462,7 @@ function TestimonialsSection() {
             <div className="overflow-hidden rounded-2xl">
               <motion.div
                 className="flex"
-                animate={{ x: `-${currentIndex * (100 / itemsPerView)}%` }}
+                animate={mounted ? { x: `-${currentIndex * (100 / itemsPerView)}%` } : undefined}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
                 {testimonials.map((testimonial, i) => (
@@ -1536,7 +1540,7 @@ function TestimonialsSection() {
             </div>
 
             {/* Navigation Dots */}
-            <div className="flex justify-center items-center gap-2 mt-8">
+            <div className="flex justify-center items-center gap-2 mt-8" suppressHydrationWarning>
               {Array.from({ length: maxIndex + 1 }).map((_, dotIdx) => (
                 <button
                   key={dotIdx}
@@ -1550,11 +1554,12 @@ function TestimonialsSection() {
                 >
                   <motion.div
                     className="absolute inset-0 rounded-full"
-                    animate={{
+                    initial={false}
+                    animate={mounted ? {
                       backgroundColor: dotIdx === currentIndex
                         ? '#8b5cf6'
                         : 'rgba(156, 163, 175, 0.4)',
-                    }}
+                    } : undefined}
                     transition={{ duration: 0.3 }}
                   />
                 </button>

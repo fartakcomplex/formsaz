@@ -1,6 +1,46 @@
 # Worklog
 
 ---
+## Task ID: 29 (Panel Whitespace Fix)
+## Agent: main-agent
+## Date: 2026-04-29
+
+### Session Overview
+Fixed critical panel whitespace bug where admin and user panels showed a long white page before content appeared. Root cause was AnimatePresence mode="sync" causing height conflicts between exiting and entering views. Performed thorough QA with agent-browser + VLM analysis confirming both panels now render correctly.
+
+### Bug Fix: Panel Whitespace Issue
+
+**Root Cause Analysis**:
+- When navigating from a tall page (e.g., landing page ~9900px) to a panel (admin/user-panel), AnimatePresence `mode="sync"` kept BOTH views in the DOM simultaneously
+- The exiting view retained its original CSS classes (e.g., `flex-1 flex flex-col`) while the parent changed to `h-screen overflow-hidden`
+- This caused the exiting motion.div to take its content height (~9900px) instead of fitting the viewport
+- The entering panel view was positioned AFTER the exiting view in normal document flow, pushing it far below the visible area
+- Even `overflow-hidden` on the parent couldn't fully resolve this because the entering panel's own layout was broken by the height conflict
+- Changed to `mode="wait"` partially helped but the exit animation still blocked the enter because the motion.div's className was stale
+
+**Fix**: Completely bypassed AnimatePresence for full-height panel views (`admin`, `user-panel`):
+- **File**: `src/app/page.tsx`
+- When `isFullHeight` is true, panels render directly in a simple `h-screen overflow-hidden` wrapper without any animation
+- Non-panel views still use AnimatePresence with `mode="wait"` for smooth fade transitions
+- Removed `y: 20` / `y: -20` offsets from pageVariants (unnecessary vertical displacement)
+- Reduced transition duration from 0.3s to 0.25s for snappier non-panel transitions
+
+### QA Verification (agent-browser + VLM)
+- **Admin panel**: ✅ Renders correctly with sidebar + content, no white space (confirmed via VLM analysis)
+- **User panel**: ✅ Renders correctly with sidebar + profile, no white space (confirmed via VLM analysis)
+- **Dashboard**: ✅ Renders correctly after navigating back from panels
+- **Landing page**: ✅ Still renders correctly with all sections
+- `bun run lint`: ✅ 0 errors, 0 warnings
+
+### Files Modified
+1. `src/app/page.tsx` — Complete rewrite of view switching logic, bypassing AnimatePresence for panels
+
+### Current Project Status
+- Panel whitespace issue: ✅ RESOLVED
+- All views functional with proper layout
+- Build/lint: 0 errors
+
+---
 ## Task ID: 28 (Self-Directed Development Cycle)
 ## Agent: main-agent
 ## Date: 2026-04-29

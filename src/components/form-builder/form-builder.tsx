@@ -23,6 +23,10 @@ import {
   Circle,
   CircleHelp,
   Keyboard,
+  Sparkles,
+  X,
+  Lightbulb,
+  CirclePlus,
 } from 'lucide-react';
 import {
   ResizablePanelGroup,
@@ -45,6 +49,15 @@ import {
 } from '@/components/ui/sheet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
 import QuestionTypes from './question-types';
@@ -61,6 +74,284 @@ function toPersianDigits(str: string): string {
   return str.replace(/\d/g, (d) => persianDigits[parseInt(d)]);
 }
 
+/* ========== AI Suggestion Dialog ========== */
+interface AISuggestedQuestion {
+  type: string;
+  title: string;
+  required: boolean;
+  options?: string[] | null;
+}
+
+function AISuggestionDialog({
+  open,
+  onOpenChange,
+  formTitle,
+  questionCount,
+  onAddQuestion,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  formTitle: string;
+  questionCount: number;
+  onAddQuestion: (question: AISuggestedQuestion) => void;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<AISuggestedQuestion[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [addedIds, setAddedIds] = useState<Set<number>>(new Set());
+
+  const questionTypeLabels: Record<string, string> = {
+    short_text: 'متن کوتاه',
+    long_text: 'متن بلند',
+    multiple_choice: 'تک انتخابی',
+    multiple_select: 'چند انتخابی',
+    dropdown: 'لیست کشویی',
+    number: 'عدد',
+    email: 'ایمیل',
+    phone: 'تلفن',
+    date: 'تاریخ',
+    rating: 'امتیازدهی',
+    scale: 'مقیاس',
+    yes_no: 'بله/خیر',
+  };
+
+  const handleClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      setSuggestions([]);
+      setError(null);
+      setAddedIds(new Set());
+    }
+    onOpenChange(isOpen);
+  };
+
+  const fetchSuggestions = async () => {
+    setLoading(true);
+    setError(null);
+    setSuggestions([]);
+    setAddedIds(new Set());
+
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'suggest_questions',
+          context: {
+            title: formTitle || 'فرم جدید',
+            description: '',
+            existingQuestionCount: questionCount,
+          },
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success && data.data?.questions && Array.isArray(data.data.questions)) {
+        setSuggestions(data.data.questions);
+      } else {
+        setError(data.error || 'خطا در دریافت پیشنهادات');
+      }
+    } catch {
+      setError('خطا در ارتباط با سرور');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      fetchSuggestions();
+    }
+  }, [open]);
+
+  const handleAddSuggestion = (suggestion: AISuggestedQuestion, index: number) => {
+    onAddQuestion(suggestion);
+    setAddedIds((prev) => new Set(prev).add(index));
+    toast.success(`سؤال "${suggestion.title}" اضافه شد`);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent
+        dir="rtl"
+        className="sm:max-w-lg p-0 gap-0 overflow-hidden rounded-2xl border-gray-200 dark:border-gray-800"
+      >
+        {/* Header with glassmorphism */}
+        <DialogHeader className="relative p-6 pb-4 border-b border-gray-100 dark:border-gray-800 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-bl from-violet-50 via-purple-50 to-fuchsia-50 dark:from-violet-950/40 dark:via-purple-950/30 dark:to-fuchsia-950/30" />
+          <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/20 backdrop-blur-sm" />
+          <div className="absolute -top-6 -left-6 size-24 rounded-full bg-violet-200/40 dark:bg-violet-800/20 blur-2xl" />
+          <div className="absolute -bottom-4 -right-4 size-20 rounded-full bg-fuchsia-200/40 dark:bg-fuchsia-800/20 blur-2xl" />
+
+          <div className="relative z-10 flex items-center gap-3">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20"
+            >
+              <Sparkles className="size-5 text-white" />
+            </motion.div>
+            <div className="text-right flex-1 min-w-0">
+              <DialogTitle className="text-base font-extrabold text-gray-900 dark:text-white">
+                پیشنهاد هوشمند سؤال
+              </DialogTitle>
+              <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {formTitle} · {toPersianDigits(String(questionCount))} سؤال موجود
+              </DialogDescription>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground"
+              onClick={() => !loading && fetchSuggestions()}
+              disabled={loading}
+            >
+              <motion.div animate={loading ? { rotate: 360 } : {}} transition={loading ? { duration: 1, repeat: Infinity, ease: 'linear' } : {}}>
+                <Loader2 className={`h-4 w-4 ${loading ? 'text-violet-500' : ''}`} />
+              </motion.div>
+            </Button>
+          </div>
+        </DialogHeader>
+
+        <div className="p-6 min-h-[200px]">
+          {/* Loading state */}
+          {loading && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-3"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <motion.div
+                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="size-2 rounded-full bg-violet-400"
+                />
+                <span className="text-xs text-violet-600 dark:text-violet-400 font-medium">
+                  هوش مصنوعی در حال فکر کردن...
+                </span>
+              </div>
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="rounded-xl border border-gray-200/80 dark:border-gray-700/80 p-3">
+                  <Skeleton className="h-4 w-3/4 rounded-md mb-2" />
+                  <Skeleton className="h-3 w-1/2 rounded-md" />
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Error state */}
+          {!loading && error && (
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center py-8 text-center"
+            >
+              <div className="flex size-12 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-950/30 mb-3">
+                <AlertCircle className="size-6 text-red-500" />
+              </div>
+              <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-3 rounded-xl text-xs"
+                onClick={fetchSuggestions}
+              >
+                تلاش مجدد
+              </Button>
+            </motion.div>
+          )}
+
+          {/* Suggestions list */}
+          {!loading && !error && suggestions.length > 0 && (
+            <ScrollArea className="max-h-[360px] pr-1">
+              <div className="space-y-2">
+                {suggestions.map((suggestion, index) => {
+                  const isAdded = addedIds.has(index);
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 * index, duration: 0.25 }}
+                      className={cn(
+                        'group relative rounded-xl border border-gray-200/80 dark:border-gray-700/80 bg-white/80 dark:bg-gray-800/80 p-3 transition-all duration-200',
+                        isAdded
+                          ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-950/20 opacity-60'
+                          : 'hover:border-violet-200 dark:hover:border-violet-800/50 hover:shadow-sm'
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/50 text-xs font-bold text-violet-600 dark:text-violet-400">
+                          {toPersianDigits(String(index + 1))}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-1">
+                            {suggestion.title}
+                          </p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] font-medium px-2 py-0.5 h-5 border-0 bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400"
+                            >
+                              {questionTypeLabels[suggestion.type] || suggestion.type}
+                            </Badge>
+                            {suggestion.required && (
+                              <Badge
+                                variant="secondary"
+                                className="text-[10px] font-medium px-2 py-0.5 h-5 border-0 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400"
+                              >
+                                الزامی
+                              </Badge>
+                            )}
+                            {suggestion.options && (
+                              <span className="text-[10px] text-gray-400 dark:text-gray-500 truncate max-w-[200px]">
+                                {suggestion.options.join(' · ')}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="shrink-0">
+                          {isAdded ? (
+                            <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-medium">
+                              <CheckCircle2 className="size-4" />
+                            </div>
+                          ) : (
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => handleAddSuggestion(suggestion, index)}
+                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-medium bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-400 hover:bg-violet-100 dark:hover:bg-violet-900/60 transition-colors border border-violet-200/60 dark:border-violet-800/40"
+                            >
+                              <CirclePlus className="size-3" />
+                              افزودن
+                            </motion.button>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          )}
+
+          {/* Empty suggestions */}
+          {!loading && !error && suggestions.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <div className="flex size-12 items-center justify-center rounded-2xl bg-violet-100/60 dark:bg-violet-900/30 mb-3">
+                <Lightbulb className="size-6 text-violet-400" />
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">پیشنهادی یافت نشد</p>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function FormBuilder() {
   const { questions, selectedQuestionId, currentForm, setCurrentForm, setFillForm, formTheme, setFormTheme, setCurrentView, canUndo, canRedo, undo, redo, addQuestion, removeQuestion, setSelectedQuestionId, moveQuestionUp, moveQuestionDown } = useAppStore();
   const [leftCollapsed, setLeftCollapsed] = useState(false);
@@ -71,6 +362,7 @@ export default function FormBuilder() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'dirty' | 'saving' | 'saved' | 'error'>('idle');
   const [importOpen, setImportOpen] = useState(false);
+  const [aiSuggestionOpen, setAiSuggestionOpen] = useState(false);
   const [formTitle, setFormTitle] = useState(currentForm?.title || 'فرم بدون عنوان');
   const [formDescription, setFormDescription] = useState(currentForm?.description || '');
   const [showFab, setShowFab] = useState(false);
@@ -252,6 +544,28 @@ export default function FormBuilder() {
       required: false,
       order: questions.length,
       config: { placeholder: '' },
+    };
+    addQuestion(newQuestion);
+  };
+
+  const handleAddAISuggestion = (suggestion: AISuggestedQuestion) => {
+    const newQuestion = {
+      id: crypto.randomUUID(),
+      type: suggestion.type || 'short_text',
+      title: suggestion.title,
+      required: suggestion.required || false,
+      order: questions.length,
+      config: {
+        ...(suggestion.options
+          ? {
+              options: suggestion.options.map((opt) => ({
+                id: crypto.randomUUID(),
+                text: opt,
+              })),
+            }
+          : {}),
+        placeholder: '',
+      },
     };
     addQuestion(newQuestion);
   };
@@ -543,6 +857,26 @@ export default function FormBuilder() {
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-8 gap-1.5 text-xs sm:text-sm bg-gradient-to-l from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/40 text-violet-700 dark:text-violet-400 hover:from-violet-100 hover:to-purple-100 dark:hover:from-violet-950/60 dark:hover:to-purple-950/60 border border-violet-200/60 dark:border-violet-800/40"
+                onClick={() => setAiSuggestionOpen(true)}
+              >
+                <motion.div
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 4, ease: 'easeInOut' }}
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                </motion.div>
+                <span className="hidden sm:inline">پیشنهاد هوشمند</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>پیشنهاد سؤال با هوش مصنوعی</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
                 className="h-8 gap-1.5 text-xs sm:text-sm text-muted-foreground hover:text-foreground"
                 onClick={handlePreview}
               >
@@ -741,6 +1075,15 @@ export default function FormBuilder() {
 
       {/* ============ IMPORT QUESTIONS DIALOG ============ */}
       <ImportQuestionsDialog open={importOpen} onOpenChange={setImportOpen} />
+
+      {/* AI Suggestion Dialog */}
+      <AISuggestionDialog
+        open={aiSuggestionOpen}
+        onOpenChange={setAiSuggestionOpen}
+        formTitle={formTitle}
+        questionCount={questions.length}
+        onAddQuestion={handleAddAISuggestion}
+      />
 
       {/* ============ MOBILE SHEETS ============ */}
       {/* Left sheet - Question types */}

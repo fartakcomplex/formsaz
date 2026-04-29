@@ -17,18 +17,18 @@ const AdminPanel = dynamic(() => import('@/components/admin/admin-panel'), { ssr
 const UserPanel = dynamic(() => import('@/components/user-panel/user-panel'), { ssr: false });
 
 const pageVariants = {
-  initial: { opacity: 0, y: 20 },
-  in: { opacity: 1, y: 0 },
-  out: { opacity: 0, y: -20 },
+  initial: { opacity: 0 },
+  in: { opacity: 1 },
+  out: { opacity: 0 },
 };
 
 const pageTransition = {
   type: 'tween' as const,
   ease: 'anticipate' as const,
-  duration: 0.3,
+  duration: 0.25,
 };
 
-// Full-height panel views that should fill exactly the viewport
+// Full-height panel views that fill the viewport without page-level animation
 const fullHeightViews = ['admin', 'user-panel'];
 
 export default function Home() {
@@ -40,9 +40,22 @@ export default function Home() {
     (window as unknown as Record<string, unknown>).__nav = setCurrentView;
   }, [setCurrentView]);
 
+  // Full-height panels render without AnimatePresence to avoid
+  // height conflicts between exiting/entering views of very different sizes
+  if (isFullHeight) {
+    return (
+      <div className="h-screen overflow-hidden">
+        <div className="h-full overflow-hidden">
+          {currentView === 'admin' && <AdminPanel />}
+          {currentView === 'user-panel' && <UserPanel />}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={isFullHeight ? 'h-screen overflow-hidden' : 'min-h-screen flex flex-col'}>
-      <AnimatePresence mode="sync">
+    <div className="min-h-screen flex flex-col">
+      <AnimatePresence mode="wait">
         <motion.div
           key={currentView}
           initial="initial"
@@ -50,22 +63,18 @@ export default function Home() {
           exit="out"
           variants={pageVariants}
           transition={pageTransition}
-          className={isFullHeight ? 'h-full' : 'flex-1 flex flex-col'}
+          className="flex-1 flex flex-col"
         >
-          <div className={isFullHeight ? 'h-full' : ''}>
-            {currentView === 'landing' && <LandingPage />}
-            {currentView !== 'landing' && !isFullHeight && <AppHeader />}
-            {currentView === 'builder' && <FormBuilder />}
-            {currentView === 'dashboard' && <Dashboard />}
-            {currentView === 'fill' && <FormFill />}
-            {currentView === 'results' && <ResultsView />}
-            {currentView === 'templates' && <TemplateLibraryPage />}
-            {currentView === 'admin' && <AdminPanel />}
-            {currentView === 'user-panel' && <UserPanel />}
-          </div>
+          {currentView === 'landing' && <LandingPage />}
+          {currentView !== 'landing' && <AppHeader />}
+          {currentView === 'builder' && <FormBuilder />}
+          {currentView === 'dashboard' && <Dashboard />}
+          {currentView === 'fill' && <FormFill />}
+          {currentView === 'results' && <ResultsView />}
+          {currentView === 'templates' && <TemplateLibraryPage />}
         </motion.div>
       </AnimatePresence>
-      {!isFullHeight && <ScrollToTop />}
+      <ScrollToTop />
     </div>
   );
 }

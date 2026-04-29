@@ -26,6 +26,10 @@ import {
   Check,
   Filter,
   Printer,
+  Brain,
+  Sparkles,
+  Lightbulb,
+  BarChart2,
 } from 'lucide-react';
 import {
   BarChart,
@@ -118,6 +122,12 @@ interface AnalyticsData {
   totalViews: number;
   completionRate: number;
   avgPerDay: number;
+}
+
+interface AIAnalysis {
+  summary: string;
+  patterns: { question: string; insight: string }[];
+  recommendations: string[];
 }
 
 function formatPersianDate(dateStr: string): string {
@@ -1166,6 +1176,221 @@ function MiniPieCard({
   );
 }
 
+// ── AI Analysis Panel Component ──────────────────────────────────────────────
+function AIAnalysisPanel({
+  formId,
+  formTitle,
+  questions,
+  submissions,
+}: {
+  formId: string;
+  formTitle: string;
+  questions: FormQuestion[];
+  submissions: Submission[];
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleAnalyze = async () => {
+    if (isAnalyzing) return;
+    if (analysis) { setIsOpen(!isOpen); return; }
+    setIsAnalyzing(true);
+    setError(null);
+    setIsOpen(true);
+    try {
+      const payload = {
+        formId, formTitle,
+        questions: questions.map((q) => ({ id: q.id, type: q.type, title: q.title })),
+        responses: submissions.map((sub) => sub.responses),
+      };
+      const res = await fetch('/api/ai/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) { const errData = await res.json(); throw new Error(errData.error || 'خطا در تحلیل'); }
+      const data = await res.json();
+      setAnalysis(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'خطای ناشناخته');
+    } finally { setIsAnalyzing(false); }
+  };
+
+  const handleCopy = async () => {
+    if (!analysis) return;
+    const parts: string[] = ['تحلیل هوشمند فرم: ' + formTitle, '', 'خلاصه کلی:', analysis.summary];
+    if (analysis.patterns.length > 0) {
+      parts.push('', 'الگوهای پاسخ:');
+      analysis.patterns.forEach(function(p, i) { parts.push((i+1) + '. ' + p.question + ': ' + p.insight); });
+    }
+    if (analysis.recommendations.length > 0) {
+      parts.push('', 'پیشنهادات:');
+      analysis.recommendations.forEach(function(r, i) { parts.push((i+1) + '. ' + r); });
+    }
+    try {
+      await navigator.clipboard.writeText(parts.join('\n'));
+      setCopied(true);
+      setTimeout(function() { setCopied(false); }, 2000);
+      toast.success('تحلیل کپی شد');
+    } catch (_e) { /* fallback */ }
+  };
+
+  return (
+    <motion.div variants={staggerItem} className="mb-6 sm:mb-8">
+      <button
+        type="button"
+        onClick={handleAnalyze}
+        disabled={submissions.length === 0}
+        className={cn(
+          'w-full flex items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed p-4 transition-all duration-300 group',
+          isOpen || isAnalyzing
+            ? 'border-violet-300 dark:border-violet-700 bg-gradient-to-br from-violet-50/80 via-purple-50/60 to-fuchsia-50/40 dark:from-violet-950/30 dark:via-purple-950/20 dark:to-fuchsia-950/10'
+            : 'border-gray-200 dark:border-gray-700 bg-white/40 dark:bg-gray-900/40 hover:border-violet-300 dark:hover:border-violet-700 hover:bg-gradient-to-br hover:from-violet-50/60 hover:via-purple-50/40 hover:to-fuchsia-50/30 dark:hover:from-violet-950/20 dark:hover:via-purple-950/15 dark:hover:to-fuchsia-950/10',
+          submissions.length === 0 && 'opacity-50 cursor-not-allowed'
+        )}
+      >
+        {isAnalyzing && (
+          <>
+            <motion.div animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+              <Brain className="size-5 text-violet-500" />
+            </motion.div>
+            <span className="text-sm font-medium text-violet-600 dark:text-violet-400">در حال تحلیل پاسخ‌ها...</span>
+          </>
+        )}
+        {!isAnalyzing && analysis && (
+          <ChevronDown className={cn('size-5 text-violet-500 transition-transform duration-300', isOpen && 'rotate-180')} />
+        )}
+        {!isAnalyzing && !analysis && <Sparkles className="size-5 text-violet-500" />}
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">تحلیل هوشمند پاسخ‌ها</span>
+      </button>
+
+      <AnimatePresence>
+        {(isOpen || isAnalyzing) && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
+            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="overflow-hidden"
+          >
+            {isAnalyzing && (
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl p-6 animate-pulse">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="size-8 rounded-lg bg-violet-100 dark:bg-violet-900/40" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-4/6" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl p-5 animate-pulse">
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3" />
+                    <div className="space-y-2"><div className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded w-full" /><div className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded w-4/5" /></div>
+                  </div>
+                  <div className="rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl p-5 animate-pulse">
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-20 mb-3" />
+                    <div className="space-y-2"><div className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded w-full" /><div className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded w-3/4" /></div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {!isAnalyzing && error && (
+              <div className="rounded-2xl border border-red-200 dark:border-red-800 bg-red-50/60 dark:bg-red-950/30 backdrop-blur-xl p-5">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="size-5 text-red-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-red-700 dark:text-red-300">خطا در تحلیل</p>
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">{error}</p>
+                    <button type="button" onClick={handleAnalyze} className="text-xs text-red-600 dark:text-red-400 hover:underline mt-2">تلاش مجدد</button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {!isAnalyzing && !error && analysis && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-end">
+                  <button type="button" onClick={handleCopy} className="flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30">
+                    {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                    {copied ? 'کپی شد!' : 'کپی تحلیل'}
+                  </button>
+                </div>
+                <div className="relative overflow-hidden rounded-2xl border border-white/30 dark:border-white/10 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg">
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-fuchsia-500/10 dark:from-violet-500/5 dark:via-purple-500/3 dark:to-fuchsia-500/5 pointer-events-none" />
+                  <div className="relative p-5">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                        <BarChart2 className="size-4 text-white" />
+                      </div>
+                      <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">خلاصه کلی</h3>
+                    </div>
+                    <p className="text-sm leading-7 text-gray-700 dark:text-gray-300 whitespace-pre-line">{analysis.summary}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {analysis.patterns && analysis.patterns.length > 0 && (
+                    <div className="relative overflow-hidden rounded-2xl border border-white/30 dark:border-white/10 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg">
+                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-cyan-500/10 dark:from-emerald-500/5 dark:via-teal-500/3 dark:to-cyan-500/5 pointer-events-none" />
+                      <div className="relative p-5">
+                        <div className="flex items-center gap-2.5 mb-4">
+                          <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                            <TrendingUp className="size-4 text-white" />
+                          </div>
+                          <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">الگوهای پاسخ</h3>
+                        </div>
+                        <div className="space-y-3">
+                          {analysis.patterns.map(function(pattern, idx) {
+                            return (
+                              <motion.div key={idx} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} className="space-y-1">
+                                <p className="text-xs font-semibold bg-gradient-to-l from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">{pattern.question}</p>
+                                <p className="text-xs leading-6 text-gray-600 dark:text-gray-400">{pattern.insight}</p>
+                                {idx < analysis.patterns.length - 1 && <Separator className="mt-2 bg-gray-200/50 dark:bg-gray-700/50" />}
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {analysis.recommendations && analysis.recommendations.length > 0 && (
+                    <div className="relative overflow-hidden rounded-2xl border border-white/30 dark:border-white/10 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg">
+                      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-rose-500/10 dark:from-amber-500/5 dark:via-orange-500/3 dark:to-rose-500/5 pointer-events-none" />
+                      <div className="relative p-5">
+                        <div className="flex items-center gap-2.5 mb-4">
+                          <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+                            <Lightbulb className="size-4 text-white" />
+                          </div>
+                          <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">پیشنهادات</h3>
+                        </div>
+                        <div className="space-y-3">
+                          {analysis.recommendations.map(function(rec, idx) {
+                            return (
+                              <motion.div key={idx} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 + 0.2 }} className="flex items-start gap-2.5">
+                                <span className="flex size-5 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/50 dark:to-orange-900/50 text-[10px] font-bold text-amber-700 dark:text-amber-300 shrink-0 mt-0.5">{idx + 1}</span>
+                                <p className="text-xs leading-6 text-gray-600 dark:text-gray-400">{rec}</p>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 function CompletionProgressRing({ percent, size = 36 }: { percent: number; size?: number }) {
   const strokeWidth = 3;
   const radius = (size - strokeWidth) / 2;
@@ -1966,6 +2191,14 @@ export default function ResultsView() {
                 delay={0.2}
               />
             </motion.div>
+
+            {/* AI Analysis Panel */}
+            <AIAnalysisPanel
+              formId={currentForm.id}
+              formTitle={currentForm.title}
+              questions={inputQuestions}
+              submissions={submissions}
+            />
 
             {/* Submission Timeline Chart */}
             {analytics?.dailyCounts && analytics.dailyCounts.length > 0 && (

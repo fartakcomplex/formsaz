@@ -51,6 +51,9 @@ import {
   FileUp,
   Star,
   Tag,
+  Sparkles,
+  Lightbulb,
+  RefreshCw,
 } from 'lucide-react';
 import {
   BarChart,
@@ -2634,6 +2637,367 @@ function FormCardSkeleton() {
   );
 }
 
+// ─── AI Insights Widget ────────────────────────────────────────────────────────
+
+function AIInsightsWidget({ forms }: { forms: Form[] }) {
+  const [expanded, setExpanded] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [activeAction, setActiveAction] = useState<string | null>(null);
+  const [response, setResponse] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const publishedForms = forms.filter((f) => f.status === 'published' || f.status === 'closed');
+  const totalSubmissions = forms.reduce((sum, f) => sum + (f._count?.submissions || 0), 0);
+
+  const actions = [
+    {
+      id: 'smart_summary',
+      label: 'تحلیل فرم‌ها',
+      icon: <BarChart3 className="size-3.5" />,
+      color: 'from-violet-500 to-purple-600',
+      hoverBg: 'hover:bg-violet-50 dark:hover:bg-violet-950/30',
+      disabled: publishedForms.length === 0,
+    },
+    {
+      id: 'improve_form',
+      label: 'بهبود فرم',
+      icon: <Lightbulb className="size-3.5" />,
+      color: 'from-amber-500 to-orange-600',
+      hoverBg: 'hover:bg-amber-50 dark:hover:bg-amber-950/30',
+      disabled: publishedForms.length === 0,
+    },
+    {
+      id: 'suggest_questions',
+      label: 'پیشنهاد سؤال',
+      icon: <FilePlus className="size-3.5" />,
+      color: 'from-emerald-500 to-teal-600',
+      hoverBg: 'hover:bg-emerald-50 dark:hover:bg-emerald-950/30',
+      disabled: false,
+    },
+  ];
+
+  const buildContext = (actionId: string) => {
+    const targetForm = publishedForms[0] || forms[0];
+    switch (actionId) {
+      case 'smart_summary':
+        return {
+          action: 'smart_summary',
+          context: {
+            formTitle: targetForm?.title || 'فرم بدون عنوان',
+            totalResponses: totalSubmissions,
+            questions: (targetForm?.questions || []).map((q) => ({
+              title: q.title,
+              type: q.type,
+            })),
+            recentResponses: [],
+          },
+        };
+      case 'improve_form':
+        return {
+          action: 'improve_form',
+          context: {
+            title: targetForm?.title || 'فرم بدون عنوان',
+            questions: (targetForm?.questions || []).map((q) => ({
+              type: q.type,
+              title: q.title,
+              required: q.required,
+            })),
+          },
+        };
+      case 'suggest_questions':
+        return {
+          action: 'suggest_questions',
+          context: {
+            title: targetForm?.title || 'فرم جدید',
+            description: targetForm?.description || '',
+            existingQuestionCount: targetForm?.questions?.length || 0,
+          },
+        };
+      default:
+        return null;
+    }
+  };
+
+  const handleAction = async (actionId: string) => {
+    const payload = buildContext(actionId);
+    if (!payload) return;
+
+    setLoading(true);
+    setActiveAction(actionId);
+    setResponse(null);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        if (data.data?.text) {
+          setResponse(data.data.text);
+        } else if (data.data?.questions) {
+          const qs = data.data.questions;
+          if (Array.isArray(qs)) {
+            setResponse(
+              qs
+                .map(
+                  (q: Record<string, unknown>, i: number) =>
+                    `${i + 1}. **${q.title}**\n   نوع: ${q.type} | ${q.required ? 'الزامی' : 'اختیاری'}${q.options ? '\n   گزینه‌ها: ' + (q.options as string[]).join('، ') : ''}`
+                )
+                .join('\n\n')
+            );
+          } else {
+            setResponse(JSON.stringify(qs, null, 2));
+          }
+        } else if (data.data?.themes) {
+          const ts = data.data.themes;
+          if (Array.isArray(ts)) {
+            setResponse(
+              ts
+                .map(
+                  (t: Record<string, unknown>, i: number) =>
+                    `${i + 1}. **${t.name}**\n   رنگ اصلی: ${t.primaryColor}\n   رنگ پس‌زمینه: ${t.backgroundColor}\n   ${t.description}`
+                )
+                .join('\n\n')
+            );
+          } else {
+            setResponse(JSON.stringify(ts, null, 2));
+          }
+        } else {
+          setResponse(JSON.stringify(data.data, null, 2));
+        }
+      } else {
+        setError(data.error || 'خطا در دریافت پاسخ هوش مصنوعی');
+      }
+    } catch {
+      setError('خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.');
+    } finally {
+      setLoading(false);
+      setActiveAction(null);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (!response) return;
+    try {
+      await navigator.clipboard.writeText(response);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+      toast.success('متن با موفقیت کپی شد!');
+    } catch {
+      toast.error('خطا در کپی متن');
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.15 }}
+    >
+      <div className="relative overflow-hidden rounded-2xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-gray-200/60 dark:border-gray-800/60 shadow-sm">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 bg-gradient-to-bl from-violet-50/40 via-purple-50/20 to-fuchsia-50/30 dark:from-violet-950/15 dark:via-purple-950/10 dark:to-fuchsia-950/10 pointer-events-none" />
+        <div className="absolute -top-6 -right-6 size-28 rounded-full bg-violet-200/25 dark:bg-violet-800/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-4 -left-4 size-20 rounded-full bg-purple-200/25 dark:bg-purple-800/10 blur-3xl pointer-events-none" />
+
+        {/* Header toggle */}
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="relative w-full flex items-center gap-3 p-4 sm:p-5 text-right hover:bg-violet-50/40 dark:hover:bg-violet-950/20 transition-colors duration-200"
+        >
+          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20 shrink-0">
+            <motion.div
+              animate={{ rotate: [0, 15, -15, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' }}
+            >
+              <Sparkles className="size-5 text-white" />
+            </motion.div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              بینش هوشمند
+              <motion.span
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, type: 'spring' }}
+                className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-gradient-to-l from-violet-100 to-purple-100 dark:from-violet-900/50 dark:to-purple-900/50 text-[9px] font-bold text-violet-700 dark:text-violet-300"
+              >
+                AI
+              </motion.span>
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              تحلیل و بهبود فرم‌ها با هوش مصنوعی
+            </p>
+          </div>
+          <motion.div
+            animate={{ rotate: expanded ? 180 : 0 }}
+            transition={{ duration: 0.25 }}
+            className="shrink-0"
+          >
+            <ChevronDown className="size-5 text-gray-400 dark:text-gray-500" />
+          </motion.div>
+        </button>
+
+        {/* Collapsible content */}
+        <AnimatePresence initial={false}>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="px-5 pb-5 pt-2 border-t border-gray-100 dark:border-gray-800">
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {actions.map((action) => (
+                    <motion.button
+                      key={action.id}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => handleAction(action.id)}
+                      disabled={loading || action.disabled}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border border-gray-200/80 dark:border-gray-700/80 bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 transition-all duration-200 ${
+                        action.hoverBg
+                      } ${
+                        activeAction === action.id
+                          ? 'ring-2 ring-violet-300 dark:ring-violet-600 bg-violet-50 dark:bg-violet-950/30'
+                          : ''
+                      } ${
+                        action.disabled
+                          ? 'opacity-40 cursor-not-allowed'
+                          : 'hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
+                      }`}
+                    >
+                      {activeAction === action.id ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        >
+                          <RefreshCw className="size-3.5" />
+                        </motion.div>
+                      ) : (
+                        action.icon
+                      )}
+                      {action.label}
+                    </motion.button>
+                  ))}
+                </div>
+
+                {/* Loading skeleton */}
+                {loading && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="space-y-3"
+                  >
+                    <div className="rounded-xl border border-violet-100/80 dark:border-violet-900/40 bg-gradient-to-br from-violet-50/50 to-purple-50/50 dark:from-violet-950/20 dark:to-purple-950/20 p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <motion.div
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                          className="size-2 rounded-full bg-violet-400"
+                        />
+                        <span className="text-xs text-violet-600 dark:text-violet-400 font-medium">
+                          در حال تحلیل با هوش مصنوعی...
+                        </span>
+                      </div>
+                      <Skeleton className="h-3 w-full rounded-md mb-2" />
+                      <Skeleton className="h-3 w-4/5 rounded-md mb-2" />
+                      <Skeleton className="h-3 w-3/5 rounded-md" />
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Error state */}
+                {!loading && error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-start gap-2 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/50 p-3"
+                  >
+                    <AlertTriangle className="size-4 text-red-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-red-700 dark:text-red-400 leading-relaxed">{error}</p>
+                  </motion.div>
+                )}
+
+                {/* Response card */}
+                {!loading && response && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <div className="relative rounded-xl border border-violet-200/60 dark:border-violet-800/40 bg-gradient-to-br from-white to-violet-50/30 dark:from-gray-900 dark:to-violet-950/20 p-4 overflow-hidden">
+                      {/* Gradient border accent */}
+                      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-l from-violet-400 via-purple-500 to-fuchsia-500" />
+
+                      {/* Copy button */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-1.5">
+                          <Sparkles className="size-3.5 text-violet-500" />
+                          <span className="text-[10px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-wide">
+                            نتیجه هوش مصنوعی
+                          </span>
+                        </div>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={handleCopy}
+                          className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        >
+                          {copied ? (
+                            <>
+                              <Check className="size-3 text-emerald-500" />
+                              کپی شد
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="size-3" />
+                              کپی
+                            </>
+                          )}
+                        </motion.button>
+                      </div>
+
+                      {/* Response text */}
+                      <div
+                        dir="rtl"
+                        className="text-sm text-gray-800 dark:text-gray-200 leading-7 whitespace-pre-wrap max-h-72 overflow-y-auto pr-1 custom-scrollbar"
+                      >
+                        {response}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Empty state */}
+                {!loading && !response && !error && (
+                  <div className="flex flex-col items-center justify-center py-4 text-center">
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-violet-100/60 dark:bg-violet-900/30 mb-2">
+                      <Sparkles className="size-5 text-violet-400 dark:text-violet-500" />
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      یکی از گزینه‌های بالا را انتخاب کنید
+                    </p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Mini Sparkline for Form Card ────────────────────────────────────────────
 
 function MiniResponseSparkline({ formId, count }: { formId: string; count: number }) {
@@ -3985,6 +4349,11 @@ export default function Dashboard() {
         {/* Response Timeline Widget */}
         <div className="mb-6 sm:mb-8">
           <ResponseTimelineWidget forms={forms} />
+        </div>
+
+        {/* AI Insights Widget */}
+        <div className="mb-6 sm:mb-8">
+          <AIInsightsWidget forms={forms} />
         </div>
 
         {/* Toolbar */}
