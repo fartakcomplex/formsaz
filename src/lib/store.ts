@@ -229,16 +229,6 @@ interface AppState {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 
-  // Notifications
-  notifications: NotificationItem[];
-  addNotification: (notification: Omit<NotificationItem, 'id' | 'createdAt' | 'read'>) => void;
-  markNotificationAsRead: (id: string) => void;
-  clearAllNotifications: () => void;
-
-  // Quick search
-  quickSearchOpen: boolean;
-  setQuickSearchOpen: (open: boolean) => void;
-
   // Favorites
   favoriteFormIds: string[];
   toggleFavoriteForm: (id: string) => void;

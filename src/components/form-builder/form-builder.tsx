@@ -94,6 +94,7 @@ export default function FormBuilder() {
           required: q.required,
           order: i,
           config: q.config,
+          logic: q.logic || undefined,
         })),
       };
 
@@ -190,6 +191,7 @@ export default function FormBuilder() {
           required: q.required,
           order: i,
           config: q.config,
+          logic: q.logic || undefined,
         })),
       };
 

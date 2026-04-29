@@ -40,6 +40,7 @@ import {
   Tooltip,
   Cell,
   ResponsiveContainer,
+  LabelList,
 } from 'recharts';
 import {
   ChartContainer,
@@ -135,6 +136,54 @@ function formatDate(dateStr: string): string {
   }
 }
 
+// ── Micro Sparkline SVG ──────────────────────────────────────────────────
+const SPARKLINE_COLORS: Record<number, string> = {
+  0: '#8b5cf6',
+  0.05: '#10b981',
+  0.1: '#3b82f6',
+  0.15: '#d946ef',
+  0.2: '#f59e0b',
+};
+
+function MicroSparkline({ delay }: { delay: number }) {
+  const sparkColor = SPARKLINE_COLORS[delay] || '#8b5cf6';
+  const data: number[] = [];
+  let current = 30 + Math.abs(Math.sin(delay * 10)) * 40;
+  for (let i = 0; i < 8; i++) {
+    current += Math.sin(delay * 30 + i * 1.7) * 12;
+    current = Math.max(5, Math.min(95, current));
+    data.push(current);
+  }
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const w = 56;
+  const h = 16;
+  const points = data
+    .map((v, i) => {
+      const x = (i / (data.length - 1)) * w;
+      const y = h - ((v - min) / range) * (h - 2) - 1;
+      return `${x},${y}`;
+    })
+    .join(' ');
+  const areaPoints = `0,${h} ${points} ${w},${h}`;
+
+  return (
+    <svg width={w} height={h} className="mt-1 block" viewBox={`0 0 ${w} ${h}`}>
+      <polygon points={areaPoints} fill={sparkColor} opacity="0.1" />
+      <polyline
+        points={points}
+        fill="none"
+        stroke={sparkColor}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.35"
+      />
+    </svg>
+  );
+}
+
 // ── Empty State SVG Illustration ──────────────────────────────────────────────
 function EmptyStateIllustration() {
   return (
@@ -228,7 +277,7 @@ function StatCard({
   return (
     <motion.div
       variants={staggerItem}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -3 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       className="group relative flex items-center gap-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 sm:p-5 shadow-sm hover:shadow-xl overflow-hidden"
     >
@@ -244,6 +293,7 @@ function StatCard({
       </div>
       <div className="relative flex-1 min-w-0">
         <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{value}</p>
+        <MicroSparkline delay={delay} />
         <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
         {subtitle && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{subtitle}</p>}
       </div>
@@ -310,7 +360,7 @@ function ChoiceQuestionChart({
   }));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 sm:p-5">
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
         <div className="flex items-center gap-3">
@@ -337,7 +387,7 @@ function ChoiceQuestionChart({
               </ToggleGroupItem>
             </ToggleGroup>
           )}
-          <span className="text-xs text-gray-400 dark:text-gray-500">{totalResponses} پاسخ</span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">{toPersianDigits(totalResponses)} پاسخ</span>
         </div>
       </div>
       {totalResponses === 0 ? (
@@ -390,12 +440,15 @@ function ChoiceQuestionChart({
       ) : (
         <>
           <ChartContainer config={chartConfig} className="h-56 w-full">
-            <BarChart data={chartData} layout="vertical" margin={{ right: 0, left: 0, top: 5, bottom: 5 }}>
+            <BarChart data={chartData} layout="vertical" margin={{ right: 40, left: 0, top: 5, bottom: 5 }}>
               <defs>
-                <linearGradient id="choiceBarGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9} />
-                  <stop offset="100%" stopColor="#a78bfa" stopOpacity={1} />
-                </linearGradient>
+                {chartData.map((entry, index) => (
+                  <linearGradient key={`choiceGrad-${index}`} id={`choiceGrad-${index}`} x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor={entry.fill} stopOpacity={0.5} />
+                    <stop offset="50%" stopColor={entry.fill} stopOpacity={0.85} />
+                    <stop offset="100%" stopColor={entry.fill} stopOpacity={1} />
+                  </linearGradient>
+                ))}
               </defs>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} />
               <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} style={{ fontFamily: 'Vazirmatn, sans-serif' }} />
@@ -407,10 +460,15 @@ function ChoiceQuestionChart({
                 style={{ fontFamily: 'Vazirmatn, sans-serif' }}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={24} animationDuration={800} animationEasing="ease-out">
+              <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={28} animationDuration={800} animationEasing="ease-out">
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} fillOpacity={0.85} />
+                  <Cell key={`cell-${index}`} fill={`url(#choiceGrad-${index})`} />
                 ))}
+                <LabelList
+                  dataKey="count"
+                  position="right"
+                  style={{ fontSize: 11, fill: '#6b7280', fontFamily: 'Vazirmatn, sans-serif' }}
+                />
               </Bar>
             </BarChart>
           </ChartContainer>
@@ -428,6 +486,7 @@ function ChoiceQuestionChart({
                     : 0}
                   %
                 </span>
+                <span className="text-gray-400 dark:text-gray-500">({toPersianDigits(entry.count)})</span>
               </div>
             ))}
           </div>
@@ -468,14 +527,14 @@ function RatingQuestionChart({
       : 0;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 sm:p-5">
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{question.title}</h4>
         <span className="text-xs text-gray-400 dark:text-gray-500">{totalResponses} پاسخ</span>
       </div>
-      <div className="flex items-center gap-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-100 dark:border-amber-900/50">
+      <div className="flex items-center gap-4 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 p-4 border border-amber-100/60 dark:border-amber-900/40 backdrop-blur-sm">
         <div className="text-center">
-          <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">{avgRating.toFixed(1)}</div>
+          <div className="text-4xl font-bold text-amber-600 dark:text-amber-400">{avgRating.toFixed(1)}</div>
           <div className="flex items-center gap-0.5 mt-1 justify-center">
             {Array.from({ length: maxRating }, (_, i) => (
               <Star
@@ -501,7 +560,8 @@ function RatingQuestionChart({
                     initial={{ width: 0 }}
                     animate={{ width: `${percent}%` }}
                     transition={{ duration: 0.5, delay: 0.1 }}
-                    className="h-full bg-amber-400 rounded-full"
+                    className="h-full rounded-full"
+                    style={{ background: 'linear-gradient(90deg, #f59e0b, #f97316)' }}
                   />
                 </div>
                 <span className="text-xs text-gray-400 dark:text-gray-500 w-6 text-left">{count}</span>
@@ -1495,6 +1555,88 @@ function ResponsesDataTable({
   );
 }
 
+// ── Question Comparison Widget ──────────────────────────────────────────
+const COMPARISON_FORMS = [
+  { id: 'f1', name: 'فرم رضایت مشتری', color: '#8b5cf6' },
+  { id: 'f2', name: 'فرم نظرسنجی خدمات', color: '#10b981' },
+  { id: 'f3', name: 'فرم بازخورد محصول', color: '#f59e0b' },
+];
+
+const COMPARISON_QUESTIONS = [
+  { title: 'کیفیت خدمات', data: { f1: 78, f2: 65, f3: 82 } },
+  { title: 'سرعت پاسخ‌دهی', data: { f1: 55, f2: 72, f3: 60 } },
+  { title: 'رضایت کلی', data: { f1: 88, f2: 70, f3: 75 } },
+];
+
+function QuestionComparisonWidget() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <div className="flex size-8 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/40">
+          <BarChart3 className="size-4 text-violet-600 dark:text-violet-400" />
+        </div>
+        <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">مقایسه فرم‌ها</h3>
+        <Badge variant="outline" className="text-[10px] font-medium text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-950/30 mr-auto">
+          داده نمونه
+        </Badge>
+      </div>
+
+      {/* Legend */}
+      <div className="flex flex-wrap gap-4 mb-5">
+        {COMPARISON_FORMS.map((form) => (
+          <div key={form.id} className="flex items-center gap-1.5">
+            <div
+              className="size-2.5 rounded-full ring-2 ring-offset-1 dark:ring-offset-gray-900"
+              style={{ backgroundColor: form.color, ringColor: form.color }}
+            />
+            <span className="text-xs text-gray-600 dark:text-gray-400">{form.name}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Comparison Bars */}
+      <div className="space-y-5">
+        {COMPARISON_QUESTIONS.map((q, qIdx) => (
+          <motion.div
+            key={q.title}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, delay: 0.4 + qIdx * 0.1 }}
+          >
+            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">{q.title}</p>
+            <div className="space-y-1.5">
+              {COMPARISON_FORMS.map((form) => {
+                const percent = q.data[form.id as keyof typeof q.data] as number;
+                return (
+                  <div key={form.id} className="flex items-center gap-2.5">
+                    <div className="flex-1 h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${percent}%` }}
+                        transition={{ duration: 0.8, delay: 0.5 + qIdx * 0.1, ease: 'easeOut' }}
+                        className="h-full rounded-full"
+                        style={{ backgroundColor: form.color }}
+                      />
+                    </div>
+                    <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 w-8 text-left tabular-nums">
+                      {toPersianDigits(percent)}%
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function ResultsView() {
   const {
     currentForm,
@@ -1892,6 +2034,11 @@ export default function ResultsView() {
               </motion.div>
             )}
 
+            {/* Question Comparison Widget */}
+            <motion.div variants={staggerItem} className="mb-6 sm:mb-8">
+              <QuestionComparisonWidget />
+            </motion.div>
+
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="bg-gray-100 dark:bg-gray-800 rounded-xl p-1 h-10 mb-6">
@@ -1932,7 +2079,7 @@ export default function ResultsView() {
                           key={question.id}
                           variants={staggerItem}
                         >
-                          <Card className="border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                          <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                             <CardContent className="p-5 sm:p-6">
                               <QuestionSummary
                                 question={question}

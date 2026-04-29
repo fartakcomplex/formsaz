@@ -36,8 +36,12 @@ import {
   Clock,
   Share2,
   RotateCcw,
+  Eye,
+  EyeOff,
+  GitBranch,
   type LucideIcon,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -132,6 +136,9 @@ function QuestionTypeIconDisplay({ type, color }: { type: string; color: string 
 }
 
 function QuestionTitle({ question, index, themeColor, totalQuestions }: { question: FormQuestion; index: number; themeColor: string; totalQuestions?: number }) {
+  const hasConditionalLogic = question.logic?.enabled && question.logic?.conditions?.length > 0;
+  const isShowAction = question.logic?.action === 'show';
+
   const showBadge = question.type !== 'section_divider' && totalQuestions !== undefined && totalQuestions > 0;
   return (
     <div className="mb-4">
@@ -171,6 +178,21 @@ function QuestionTitle({ question, index, themeColor, totalQuestions }: { questi
                 className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
               >
                 سؤال {toPersianDigit(index + 1)} از {toPersianDigit(totalQuestions)}
+              </motion.span>
+            )}
+            {hasConditionalLogic && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.2 }}
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
+                  isShowAction
+                    ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
+                    : 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300'
+                }`}
+              >
+                <GitBranch className="size-3" />
+                {isShowAction ? 'نمایش شرطی' : 'مخفی‌سازی شرطی'}
               </motion.span>
             )}
           </motion.div>
@@ -1566,6 +1588,10 @@ export default function FormFill() {
   const [showValidationError, setShowValidationError] = useState(false);
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const validationErrorTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const prevVisibleIdsRef = useRef<Set<string>>(new Set());
+  const toastShownRef = useRef<Set<string>>(new Set());
+  const [appearedFromLogic, setAppearedFromLogic] = useState(false);
+  const prevCurrentQuestionIdRef = useRef<string | null>(null);
 
   // Cleanup timers on unmount
   useEffect(() => {
@@ -1574,6 +1600,61 @@ export default function FormFill() {
       if (validationErrorTimerRef.current) clearTimeout(validationErrorTimerRef.current);
     };
   }, []);
+
+  // Toast notification when questions become hidden by conditional logic
+  useEffect(() => {
+    const currentVisibleIds = new Set(visibleInputQuestions.map((q) => q.id));
+    const prevVisibleIds = prevVisibleIdsRef.current;
+
+    if (prevVisibleIds.size > 0) {
+      // Check for questions that were visible before but are now hidden
+      for (const id of prevVisibleIds) {
+        if (!currentVisibleIds.has(id) && !toastShownRef.current.has(id)) {
+          const hiddenQuestion = inputQuestions.find((q) => q.id === id);
+          if (hiddenQuestion && hiddenQuestion.title) {
+            toast(
+              <span className="flex items-center gap-2 text-sm">
+                <EyeOff className="size-4 text-sky-500" />
+                <span>سؤال «{hiddenQuestion.title}» مخفی شد</span>
+              </span>,
+              {
+                duration: 3000,
+                className: 'direction-rtl',
+              }
+            );
+            toastShownRef.current.add(id);
+          }
+        }
+      }
+
+      // Clear toast tracking for questions that become visible again
+      for (const id of currentVisibleIds) {
+        if (!prevVisibleIds.has(id)) {
+          toastShownRef.current.delete(id);
+        }
+      }
+    }
+
+    prevVisibleIdsRef.current = currentVisibleIds;
+
+    // Detect if current question appeared due to conditional logic
+    const currentQId = currentQuestion?.id || null;
+    const prevQId = prevCurrentQuestionIdRef.current;
+    if (currentQId && prevQId && currentQId !== prevQId) {
+      // Check if the new question was not in the previous visible set but is now
+      if (!prevVisibleIds.has(currentQId) || currentVisibleIds.has(currentQId)) {
+        // If the question changed not because of navigation (navDirection stays same)
+        // We can detect it by checking if the new question is at a different index
+        const prevIdx = visibleInputQuestions.findIndex((q) => q.id === prevQId);
+        const newIdx = visibleInputQuestions.findIndex((q) => q.id === currentQId);
+        if (Math.abs(newIdx - prevIdx) !== 1) {
+          setAppearedFromLogic(true);
+          setTimeout(() => setAppearedFromLogic(false), 500);
+        }
+      }
+    }
+    prevCurrentQuestionIdRef.current = currentQId;
+  }, [visibleInputQuestions, inputQuestions, currentQuestion]);
 
   const formThemeData = useFormTheme(fillForm);
   const themeColor = formThemeData.primaryColor;
@@ -2085,19 +2166,28 @@ export default function FormFill() {
                         document.getElementById(`question-card-${visibleInputQuestions[0]?.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }
                     }}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-3.5 text-sm font-bold text-white shadow-xl transition-all"
+                    className="relative inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-3.5 text-sm font-bold text-white shadow-xl transition-all"
                     style={{
                       background: 'linear-gradient(135deg, #7c3aed, #6d28d9, #a855f7)',
                       boxShadow: '0 8px 30px -4px rgba(124, 58, 237, 0.5)',
                     }}
                   >
+                    {/* Pulse ring animation */}
                     <motion.span
-                      animate={{ x: [0, 4, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                    >
-                      <ArrowLeft className="size-4" />
-                    </motion.span>
-                    شروع
+                      className="absolute inset-0 rounded-2xl"
+                      style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
+                      animate={{ scale: [1, 1.08, 1], opacity: [0.5, 0, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                    <span className="relative flex items-center gap-2">
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        <ArrowLeft className="size-4" />
+                      </motion.span>
+                      شروع
+                    </span>
                   </motion.button>
                 </motion.div>
               )}
@@ -2257,6 +2347,18 @@ export default function FormFill() {
                   </motion.div>
                 </div>
               ) : null}
+              {/* Visible questions count */}
+              <div className="flex items-center justify-center gap-1.5 mt-2">
+                <Eye className="size-3.5 text-gray-400 dark:text-zinc-500" />
+                <span className="text-xs text-gray-400 dark:text-zinc-500">
+                  {toPersianDigit(answeredCount)} از {toPersianDigit(visibleInputQuestions.length)} سؤال
+                </span>
+                {inputQuestions.length !== visibleInputQuestions.length && (
+                  <span className="text-[10px] text-gray-300 dark:text-zinc-600 mr-1">
+                    ({toPersianDigit(inputQuestions.length - visibleInputQuestions.length)} مخفی)
+                  </span>
+                )}
+              </div>
             </div>
           </motion.div>
         )}
@@ -2312,10 +2414,15 @@ export default function FormFill() {
             >
               {currentSectionQuestions.map((q, idx) => {
                 const globalIdx = (sectionOffsets[currentPage] || 0) + idx;
+                const questionHasLogic = q.logic?.enabled && q.logic?.conditions?.length > 0;
                 return (
-                <div
+                <motion.div
                   key={q.id}
                   id={`question-card-${q.id}`}
+                  initial={{ opacity: 0, height: questionHasLogic ? 0 : 'auto' }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                  style={{ overflow: 'hidden' }}
                   className={`rounded-2xl border bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-sm transition-all duration-300 ${
                     errors[q.id]
                       ? 'border-red-400 dark:border-red-600 shadow-red-200 dark:shadow-red-900/30 ring-2 ring-red-400/30 dark:ring-red-600/30 shake'
@@ -2340,7 +2447,7 @@ export default function FormFill() {
                       {errors[q.id]}
                     </motion.div>
                   )}
-                </div>
+                </motion.div>
                 );
               })}
               {currentSectionQuestions.length === 0 && (
@@ -2354,10 +2461,11 @@ export default function FormFill() {
             currentQuestion && (
               <motion.div
                 key={currentQuestion.id}
-                initial={{ opacity: 0, x: navDirection === 'forward' ? 40 : -40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: navDirection === 'forward' ? -40 : 40 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                initial={appearedFromLogic ? { opacity: 0, height: 0 } : { opacity: 0, x: navDirection === 'forward' ? 40 : -40 }}
+                animate={appearedFromLogic ? { opacity: 1, height: 'auto' } : { opacity: 1, x: 0 }}
+                exit={appearedFromLogic ? { opacity: 0, height: 0 } : { opacity: 0, x: navDirection === 'forward' ? -40 : 40 }}
+                transition={appearedFromLogic ? { duration: 0.4, ease: 'easeOut' } : { type: 'spring', stiffness: 300, damping: 28 }}
+                style={appearedFromLogic ? { overflow: 'hidden' } : undefined}
               >
                 <div
                   id={`question-card-${currentQuestion.id}`}

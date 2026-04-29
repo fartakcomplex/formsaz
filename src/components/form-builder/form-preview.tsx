@@ -41,6 +41,9 @@ import {
   ImageIcon,
   Pencil,
   CheckIcon,
+  GitBranch,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppStore, FormQuestion, FormTheme, FormSection } from '@/lib/store';
@@ -535,6 +538,22 @@ function SortableQuestionCard({
                 {question.title}
                 {question.required && (
                   <span className="text-[11px] font-medium text-red-500 dark:text-red-400">(الزامی)</span>
+                )}
+                {question.logic && question.logic.enabled && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium mr-1"
+                    style={{
+                      backgroundColor: question.logic.action === 'show' ? '#ecfdf5' : '#fef2f2',
+                      color: question.logic.action === 'show' ? '#059669' : '#dc2626',
+                    }}
+                    title={question.logic.action === 'show' ? 'نمایش شرطی فعال' : 'مخفی‌سازی شرطی فعال'}
+                  >
+                    {question.logic.action === 'show' ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                    شرطی
+                    <span className="hidden sm:inline">({question.logic.conditions?.length || 0})</span>
+                  </motion.span>
                 )}
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-[10px] text-gray-500 dark:text-gray-400 mr-2">
                   {getQuestionTypeLabel(question.type)}

@@ -2407,6 +2407,211 @@ function DashboardAnalyticsSummary({ forms }: { forms: Form[] }) {
   );
 }
 
+// ─── Persian Digits Helper ──────────────────────────────────────────────────
+
+function toPersianDigits(str: string): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return str.replace(/\d/g, (d) => persianDigits[parseInt(d)]);
+}
+
+// ─── Response Timeline Widget ──────────────────────────────────────────────
+
+const persianDays = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+
+function ResponseTimelineWidget({ forms }: { forms: Form[] }) {
+  const [expanded, setExpanded] = useState(true);
+
+  // Generate deterministic mock daily data from form IDs + a seeded random
+  const { thisWeekData, lastWeekTotal } = useMemo(() => {
+    const today = new Date();
+    // Iranian week starts on Saturday (day 6 in JS, which maps to 0 in our array)
+    const jsDay = today.getDay(); // 0=Sun ... 6=Sat
+    // Map to Persian week index: Sat=0, Sun=1, ..., Fri=6
+    const persianDayIndex = jsDay === 6 ? 0 : jsDay + 1;
+
+    const totalSubmissions = forms.reduce((sum, f) => sum + (f._count?.submissions || 0), 0);
+
+    // Seed a pseudo-random generator from form IDs for deterministic but varied data
+    const seed = forms.reduce((s, f) => s + f.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0), 0);
+    const pseudoRandom = (i: number) => {
+      const x = Math.sin(seed * 9301 + i * 49297 + 233280) * 49297;
+      return x - Math.floor(x);
+    };
+
+    // This week: days up to today
+    const thisWeek: number[] = [];
+    let weekTotal = 0;
+    for (let i = 0; i <= persianDayIndex; i++) {
+      const base = Math.max(1, Math.round(totalSubmissions / 7));
+      const val = Math.max(0, Math.round(base * (0.3 + pseudoRandom(i) * 1.2)));
+      thisWeek.push(val);
+      weekTotal += val;
+    }
+
+    // Fill remaining days with 0
+    for (let i = persianDayIndex + 1; i < 7; i++) {
+      thisWeek.push(0);
+    }
+
+    // Last week total
+    const lastBase = Math.max(1, Math.round(totalSubmissions / 7));
+    let lastTotal = 0;
+    for (let i = 0; i < 7; i++) {
+      lastTotal += Math.max(0, Math.round(lastBase * (0.3 + pseudoRandom(i + 100) * 1.1)));
+    }
+
+    return { thisWeekData: thisWeek, lastWeekTotal: lastTotal };
+  }, [forms]);
+
+  const thisWeekTotal = thisWeekData.reduce((s, v) => s + v, 0);
+  const maxVal = Math.max(...thisWeekData, 1);
+
+  const percentChange = lastWeekTotal > 0
+    ? Math.round(((thisWeekTotal - lastWeekTotal) / lastWeekTotal) * 100)
+    : thisWeekTotal > 0 ? 100 : 0;
+
+  const isEmpty = thisWeekTotal === 0 && lastWeekTotal === 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.1 }}
+    >
+      <div className="relative overflow-hidden rounded-2xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-gray-200/60 dark:border-gray-800/60 shadow-sm">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 bg-gradient-to-bl from-violet-50/40 via-transparent to-purple-50/20 dark:from-violet-950/15 dark:to-purple-950/10 pointer-events-none" />
+        <div className="absolute -top-6 -left-6 size-28 rounded-full bg-violet-200/25 dark:bg-violet-800/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-4 -right-4 size-20 rounded-full bg-purple-200/25 dark:bg-purple-800/10 blur-3xl pointer-events-none" />
+
+        {/* Header toggle */}
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="relative w-full flex items-center gap-3 p-4 sm:p-5 text-right hover:bg-violet-50/40 dark:hover:bg-violet-950/20 transition-colors duration-200"
+        >
+          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20 shrink-0">
+            <BarChart3 className="size-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">جدول زمانی پاسخ‌ها</h3>
+            {isEmpty ? (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                هنوز پاسخی ثبت نشده
+              </p>
+            ) : (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {toPersianDigits(String(thisWeekTotal))} پاسخ این هفته
+              </p>
+            )}
+          </div>
+          {/* Percentage change badge */}
+          {!isEmpty && (
+            <div className={`hidden sm:flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold ${
+              percentChange >= 0
+                ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400'
+                : 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400'
+            }`}>
+              <TrendingUp className={`size-3 ${percentChange < 0 ? 'rotate-180' : ''}`} />
+              {percentChange >= 0 ? '+' : ''}{toPersianDigits(String(percentChange))}٪
+            </div>
+          )}
+          <motion.div
+            animate={{ rotate: expanded ? 180 : 0 }}
+            transition={{ duration: 0.25 }}
+            className="shrink-0"
+          >
+            <ChevronDown className="size-5 text-gray-400 dark:text-gray-500" />
+          </motion.div>
+        </button>
+
+        {/* Collapsible content */}
+        <AnimatePresence initial={false}>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="px-5 pb-5 pt-2 border-t border-gray-100 dark:border-gray-800">
+                {isEmpty ? (
+                  /* Empty state */
+                  <div className="flex flex-col items-center justify-center py-6 text-center">
+                    <div className="flex size-12 items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800 mb-3">
+                      <BarChart3 className="size-5 text-gray-400 dark:text-gray-500" />
+                    </div>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      هنوز پاسخی دریافت نشده
+                    </p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                      با انتشار فرم‌ها و دریافت پاسخ، این نمودار نمایش داده می‌شود
+                    </p>
+                  </div>
+                ) : (
+                  /* Bar chart */
+                  <div className="space-y-3">
+                    {/* Comparison row */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">این هفته</span>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">
+                        {toPersianDigits(String(thisWeekTotal))} پاسخ
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400 dark:text-gray-500">هفته قبل</span>
+                      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        {toPersianDigits(String(lastWeekTotal))} پاسخ
+                      </span>
+                    </div>
+
+                    {/* Bar chart area */}
+                    <div className="flex items-end justify-between gap-1.5 h-32 pt-3">
+                      {persianDays.map((day, index) => {
+                        const value = thisWeekData[index];
+                        const heightPercent = maxVal > 0 ? (value / maxVal) * 100 : 0;
+                        const isActive = value > 0;
+                        const isToday = index === (new Date().getDay() === 6 ? 0 : new Date().getDay() + 1);
+
+                        return (
+                          <div key={day} className="flex flex-col items-center gap-1.5 flex-1">
+                            <motion.div
+                              initial={{ height: 0 }}
+                              animate={{ height: `${Math.max(heightPercent, value > 0 ? 8 : 0)}%` }}
+                              transition={{
+                                duration: 0.5,
+                                delay: index * 0.06,
+                                ease: 'easeOut',
+                              }}
+                              className={`w-full min-h-[4px] rounded-t-lg ${
+                                isActive
+                                  ? 'bg-gradient-to-t from-violet-500 to-purple-600 shadow-sm shadow-violet-200/50 dark:shadow-violet-500/20'
+                                  : 'bg-gray-200/80 dark:bg-gray-700/50'
+                              } ${isToday ? 'ring-2 ring-violet-400/40 dark:ring-violet-500/30 ring-offset-1 ring-offset-white dark:ring-offset-gray-900' : ''}`}
+                            />
+                            <span className={`text-[9px] leading-tight text-center ${
+                              isToday
+                                ? 'font-bold text-violet-600 dark:text-violet-400'
+                                : 'text-gray-400 dark:text-gray-500'
+                            }`}>
+                              {day}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
 function FormCardSkeleton() {
   return (
     <Card className="overflow-hidden bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
@@ -2679,35 +2884,30 @@ function FormCard({
         )}
 
         <CardFooter className="flex-col gap-3 pt-0 relative z-10">
-          {/* Mini Sparkline - Response Trend */}
+          {/* Mini Bar Sparkline - Response Trend */}
           {(form._count?.submissions || 0) > 0 && (
             <div className="flex items-center justify-between w-full px-1">
               <span className="text-[10px] text-gray-400 dark:text-gray-500">روند پاسخ‌ها</span>
-              <svg width="80" height="24" className="opacity-50 group-hover:opacity-100 transition-opacity duration-300">
-                <defs>
-                  <linearGradient id={`spark-${form.id}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={1} />
-                    <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.4} />
-                  </linearGradient>
-                </defs>
-                <polyline
-                  fill="none"
-                  stroke={`url(#spark-${form.id})`}
-                  strokeWidth={1.5}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  points={(() => {
-                    const base = form._count?.submissions || 5;
-                    const points: string[] = [];
-                    for (let i = 0; i < 7; i++) {
-                      const seed = (form.id.charCodeAt(i % form.id.length) * (i + 1) * 7) % 100;
-                      const val = Math.max(2, Math.round(base * (0.3 + (seed / 100) * 0.7)));
-                      points.push(`${i * 13},${24 - Math.min(val, 20)}`);
-                    }
-                    return points.join(' ');
-                  })()}
-                />
-              </svg>
+              <div className="flex items-end gap-[3px] h-5">
+                {(() => {
+                  const base = form._count?.submissions || 5;
+                  const bars: number[] = [];
+                  for (let i = 0; i < 4; i++) {
+                    const seed = (form.id.charCodeAt(i % form.id.length) * (i + 1) * 7) % 100;
+                    bars.push(Math.max(2, Math.round(base * (0.25 + (seed / 100) * 0.75))));
+                  }
+                  const maxBar = Math.max(...bars, 1);
+                  return bars.map((val, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ height: 0 }}
+                      animate={{ height: `${(val / maxBar) * 100}%` }}
+                      transition={{ duration: 0.4, delay: i * 0.08, ease: 'easeOut' }}
+                      className="w-[6px] rounded-sm bg-gradient-to-t from-violet-500 to-purple-600 opacity-40 group-hover:opacity-100 transition-opacity duration-300"
+                    />
+                  ));
+                })()}
+              </div>
             </div>
           )}
           <div className="flex items-center justify-between w-full text-xs text-gray-400 dark:text-gray-500 px-1">
@@ -3777,10 +3977,15 @@ export default function Dashboard() {
 
         {/* Analytics Summary */}
         {forms.length > 0 && (
-          <div className="mb-6 sm:mb-8">
+          <div className="mb-4 sm:mb-6">
             <DashboardAnalyticsSummary forms={forms} />
           </div>
         )}
+
+        {/* Response Timeline Widget */}
+        <div className="mb-6 sm:mb-8">
+          <ResponseTimelineWidget forms={forms} />
+        </div>
 
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">

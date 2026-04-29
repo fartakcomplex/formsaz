@@ -332,8 +332,9 @@ const pageVariants = {
 
 function StatCardSkeleton() {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm">
-      <div className="absolute -top-6 -left-6 size-24 rounded-full bg-gray-200 dark:bg-gray-700" />
+    <div className="relative overflow-hidden rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-5 shadow-sm">
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-l from-violet-500 to-purple-500 opacity-40" />
+      <div className="absolute -top-6 -left-6 size-24 rounded-full bg-gray-200/60 dark:bg-gray-700/60" />
       <div className="flex items-center gap-4">
         <Skeleton className="size-12 rounded-xl shrink-0" />
         <div className="space-y-2">
@@ -347,7 +348,7 @@ function StatCardSkeleton() {
 
 function ChartSkeleton() {
   return (
-    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
+    <div className="rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-6">
       <div className="flex items-center gap-3 mb-6">
         <Skeleton className="size-9 rounded-lg" />
         <div className="space-y-2">
@@ -431,7 +432,7 @@ function AdminWelcomeState({ onCreateUser, onGoTemplates }: { onCreateUser: () =
           whileHover={{ y: -3 }}
           whileTap={{ scale: 0.98 }}
           onClick={onCreateUser}
-          className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-lg transition-all cursor-pointer"
+          className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl hover:border-violet-200/80 dark:hover:border-violet-800/80 hover:shadow-lg transition-all cursor-pointer"
         >
           <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
             <UserPlus className="size-5 text-white" />
@@ -448,7 +449,7 @@ function AdminWelcomeState({ onCreateUser, onGoTemplates }: { onCreateUser: () =
           whileHover={{ y: -3 }}
           whileTap={{ scale: 0.98 }}
           onClick={onGoTemplates}
-          className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-fuchsia-200 dark:hover:border-fuchsia-800 hover:shadow-lg transition-all cursor-pointer"
+          className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl hover:border-fuchsia-200/80 dark:hover:border-fuchsia-800/80 hover:shadow-lg transition-all cursor-pointer"
         >
           <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-600 shadow-lg shadow-fuchsia-200/50 dark:shadow-fuchsia-500/20">
             <LayoutTemplate className="size-5 text-white" />
@@ -479,8 +480,8 @@ function QuickActionsWidget({ onCreateUser, onSwitchTab, onGoTemplates }: {
 
   return (
     <motion.div variants={itemVariants}>
-      <Card className="border-gray-200 dark:border-gray-800">
-        <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-3">
+      <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl">
+        <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-3">
           <div className="flex items-center gap-3">
             <div className="flex size-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
               <Zap className="size-4 text-violet-600 dark:text-violet-400" />
@@ -534,8 +535,8 @@ function ActivityFeedWidget() {
   if (loading) {
     return (
       <motion.div variants={itemVariants}>
-        <Card className="border-gray-200 dark:border-gray-800">
-          <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-3">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl">
+          <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-3">
             <div className="flex items-center gap-3">
               <div className="flex size-9 items-center justify-center rounded-lg bg-fuchsia-100 dark:bg-fuchsia-900/30">
                 <Activity className="size-4 text-fuchsia-600 dark:text-fuchsia-400" />
@@ -570,8 +571,8 @@ function ActivityFeedWidget() {
 
   return (
     <motion.div variants={itemVariants}>
-      <Card className="border-gray-200 dark:border-gray-800">
-        <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-3">
+      <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl">
+        <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-3">
           <div className="flex items-center gap-3">
             <div className="flex size-9 items-center justify-center rounded-lg bg-fuchsia-100 dark:bg-fuchsia-900/30">
               <Activity className="size-4 text-fuchsia-600 dark:text-fuchsia-400" />
@@ -736,8 +737,8 @@ function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
           {loading ? (
             <ChartSkeleton />
           ) : (
-            <Card className="border-gray-200 dark:border-gray-800 overflow-hidden">
-              <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
+            <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl overflow-hidden">
+              <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex size-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
@@ -816,8 +817,8 @@ function OverviewSection({ onSwitchTab, onCreateUser, onGoTemplates }: {
 
         {/* System Health */}
         <motion.div variants={itemVariants}>
-          <Card className="border-gray-200 dark:border-gray-800 h-full">
-            <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
+          <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl h-full">
+            <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-4">
               <div className="flex items-center gap-3">
                 <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
                   <Activity className="size-4 text-emerald-600 dark:text-emerald-400" />
@@ -1104,11 +1105,11 @@ function UsersSection() {
 
       {/* Table */}
       <motion.div variants={itemVariants}>
-        <Card className="border-gray-200 dark:border-gray-800 overflow-hidden">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl overflow-hidden">
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <TableRow className="bg-violet-50/40 dark:bg-violet-950/10 hover:bg-violet-50/40 dark:hover:bg-violet-950/10">
                   <TableHead className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 py-3 px-4">کاربر</TableHead>
                   <TableHead className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 py-3 px-4 hidden md:table-cell">ایمیل</TableHead>
                   <TableHead className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 py-3 px-4">نقش</TableHead>
@@ -1143,7 +1144,7 @@ function UsersSection() {
                   users.map((user, index) => (
                     <TableRow
                       key={user.id}
-                      className="border-gray-100 dark:border-gray-800 hover:bg-violet-50/30 dark:hover:bg-violet-950/10 transition-colors"
+                      className={`border-gray-100/60 dark:border-gray-800/60 transition-all duration-200 hover:bg-violet-50/50 dark:hover:bg-violet-950/20 hover:shadow-sm ${index % 2 === 0 ? 'bg-white/40 dark:bg-gray-900/20' : 'bg-gray-50/50 dark:bg-gray-800/20'}`}
                     >
                       <TableCell className="py-3 px-4">
                         <div className="flex items-center gap-3">
@@ -1359,11 +1360,11 @@ function FormsSection() {
 
       {/* Table */}
       <motion.div variants={itemVariants}>
-        <Card className="border-gray-200 dark:border-gray-800 overflow-hidden">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl overflow-hidden">
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <TableRow className="bg-emerald-50/40 dark:bg-emerald-950/10 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/10">
                   <TableHead className="py-3 px-4 w-10">
                     <input
                       type="checkbox"
@@ -1404,7 +1405,7 @@ function FormsSection() {
                   forms.map((form) => (
                     <TableRow
                       key={form.id}
-                      className="border-gray-100 dark:border-gray-800 hover:bg-violet-50/30 dark:hover:bg-violet-950/10 transition-colors"
+                      className="border-gray-100/60 dark:border-gray-800/60 transition-all duration-200 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 hover:shadow-sm"
                     >
                       <TableCell className="py-3 px-4">
                         <input
@@ -1503,7 +1504,7 @@ function TemplatesSection() {
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <motion.div variants={itemVariants} className="flex items-center gap-4 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+        <motion.div variants={itemVariants} className="flex items-center gap-4 p-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm whileHover={{ y: -2 }}">
           <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
             <LayoutTemplate className="size-5 text-white" />
           </div>
@@ -1512,7 +1513,7 @@ function TemplatesSection() {
             <p className="text-xs text-gray-500 dark:text-gray-400">کل الگوها</p>
           </div>
         </motion.div>
-        <motion.div variants={itemVariants} className="flex items-center gap-4 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+        <motion.div variants={itemVariants} className="flex items-center gap-4 p-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm whileHover={{ y: -2 }}">
           <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-200/50 dark:shadow-emerald-500/20">
             <BarChart3 className="size-5 text-white" />
           </div>
@@ -1521,7 +1522,7 @@ function TemplatesSection() {
             <p className="text-xs text-gray-500 dark:text-gray-400">دسته‌بندی</p>
           </div>
         </motion.div>
-        <motion.div variants={itemVariants} className="flex items-center gap-4 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+        <motion.div variants={itemVariants} className="flex items-center gap-4 p-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm whileHover={{ y: -2 }}">
           <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg shadow-amber-200/50 dark:shadow-amber-500/20">
             <Star className="size-5 text-white" />
           </div>
@@ -1547,7 +1548,7 @@ function TemplatesSection() {
               key={cat.name}
               variants={itemVariants}
               whileHover={{ y: -3, transition: { duration: 0.2 } }}
-              className="group p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm hover:shadow-lg transition-all cursor-pointer"
+              className="group p-4 rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm hover:shadow-lg transition-all cursor-pointer"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${cat.color} shadow-md transition-transform group-hover:scale-110`}>
@@ -1614,10 +1615,10 @@ function SettingsSection() {
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
       {/* General Settings */}
       <motion.div variants={itemVariants}>
-        <Card className="border-gray-200 dark:border-gray-800">
-          <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl">
+          <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/40 dark:to-purple-900/30">
                 <Globe className="size-4 text-violet-600 dark:text-violet-400" />
               </div>
               <div>
@@ -1626,7 +1627,7 @@ function SettingsSection() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4 pt-4">
+          <CardContent className="space-y-5 pt-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">نام سایت</Label>
@@ -1647,11 +1648,11 @@ function SettingsSection() {
 
       {/* Email Settings */}
       <motion.div variants={itemVariants}>
-        <Card className="border-gray-200 dark:border-gray-800">
-          <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl">
+          <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                <Mail className="size-4 text-blue-600 dark:text-blue-400" />
+              <div className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-sky-100 to-blue-100 dark:from-sky-900/40 dark:to-blue-900/30">
+                <Mail className="size-4 text-sky-600 dark:text-sky-400" />
               </div>
               <div>
                 <CardTitle className="text-base">تنظیمات ایمیل</CardTitle>
@@ -1659,7 +1660,7 @@ function SettingsSection() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4 pt-4">
+          <CardContent className="space-y-5 pt-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">سرور SMTP</Label>
@@ -1686,10 +1687,10 @@ function SettingsSection() {
 
       {/* Limits */}
       <motion.div variants={itemVariants}>
-        <Card className="border-gray-200 dark:border-gray-800">
-          <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl">
+          <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/40 dark:to-orange-900/30">
                 <BarChart3 className="size-4 text-amber-600 dark:text-amber-400" />
               </div>
               <div>
@@ -1698,7 +1699,7 @@ function SettingsSection() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4 pt-4">
+          <CardContent className="space-y-5 pt-5">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 dark:text-gray-300">حداکثر فرم در هر کاربر</Label>
@@ -1719,10 +1720,10 @@ function SettingsSection() {
 
       {/* Maintenance Mode */}
       <motion.div variants={itemVariants}>
-        <Card className="border-gray-200 dark:border-gray-800">
-          <CardHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
+        <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl">
+          <CardHeader className="border-b border-gray-100/60 dark:border-gray-800/60 pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/30">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/40 dark:to-rose-900/30">
                 <AlertTriangle className="size-4 text-red-600 dark:text-red-400" />
               </div>
               <div>
@@ -1731,7 +1732,7 @@ function SettingsSection() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-4">
+          <CardContent className="pt-5">
             <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-3">
                 <AlertTriangle className="size-5 text-amber-500" />
@@ -1850,8 +1851,7 @@ function ReportsSection() {
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                  <TableHead className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 py-3 px-4">زمان</TableHead>
+                <TableRow className="bg-rose-50/40 dark:bg-rose-950/10 hover:bg-rose-50/40 dark:hover:bg-rose-950/10">
                   <TableHead className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 py-3 px-4">کاربر</TableHead>
                   <TableHead className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 py-3 px-4">عملیات</TableHead>
                   <TableHead className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 py-3 px-4 hidden md:table-cell">جزئیات</TableHead>
@@ -1860,7 +1860,7 @@ function ReportsSection() {
               </TableHeader>
               <TableBody>
                 {filteredReports.map((report) => (
-                  <TableRow key={report.id} className="border-gray-100 dark:border-gray-800 hover:bg-violet-50/30 dark:hover:bg-violet-950/10 transition-colors">
+                  <TableRow key={report.id} className="border-gray-100/60 dark:border-gray-800/60 transition-all duration-200 hover:bg-violet-50/50 dark:hover:bg-violet-950/20 hover:shadow-sm">
                     <TableCell className="py-3 px-4">
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                         <Clock className="size-3" />
@@ -1937,13 +1937,13 @@ export default function AdminPanel() {
     <div className="flex h-full overflow-hidden bg-gray-50 dark:bg-gray-950" dir="rtl">
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden lg:flex flex-col border-l border-gray-200/80 dark:border-gray-800/80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl transition-all duration-300 ease-in-out shrink-0 ${
+        className={`hidden lg:flex flex-col border-l border-gray-200/60 dark:border-gray-800/60 bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl transition-all duration-300 ease-in-out shrink-0 ${
           sidebarOpen ? 'w-64' : 'w-20'
         }`}
       >
         {/* Brand with gradient header */}
-        <div className="relative overflow-hidden border-b border-gray-100 dark:border-gray-800">
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-purple-600 to-fuchsia-600 opacity-5" />
+        <div className="relative overflow-hidden border-b border-gray-100/60 dark:border-gray-800/60">
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-purple-600 to-fuchsia-600 opacity-[0.07]" />
           <div className="relative flex items-center gap-3 p-5">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-200/50 dark:shadow-violet-500/20">
               <Shield className="size-5 text-white" />
@@ -1974,13 +1974,13 @@ export default function AdminPanel() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab(item.id)}
                 whileHover={{ x: -4 }}
-                className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
                   activeTab === item.id
-                    ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-gradient-to-l from-violet-100 to-purple-50 dark:from-violet-900/40 dark:to-purple-900/20 text-violet-700 dark:text-violet-300 shadow-sm shadow-violet-100/50 dark:shadow-violet-900/20'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
-                <span className={`shrink-0 transition-colors ${activeTab === item.id ? 'text-violet-500' : 'text-gray-400 dark:text-gray-500'}`}>
+                <span className={`shrink-0 transition-colors duration-300 ${activeTab === item.id ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400 dark:text-gray-500'}`}>
                   {item.icon}
                 </span>
                 <AnimatePresence>
@@ -1999,7 +1999,7 @@ export default function AdminPanel() {
                 {activeTab === item.id && sidebarOpen && (
                   <motion.div
                     layoutId="admin-nav-indicator"
-                    className="mr-auto w-1 h-6 rounded-full bg-gradient-to-b from-violet-500 to-fuchsia-500"
+                    className="mr-auto w-1.5 h-6 rounded-full bg-gradient-to-b from-violet-500 via-purple-500 to-fuchsia-500 shadow-sm shadow-violet-500/50"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
@@ -2069,13 +2069,13 @@ export default function AdminPanel() {
                         setActiveTab(item.id);
                         setMobileSidebarOpen(false);
                       }}
-                      className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                      className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
                         activeTab === item.id
-                          ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 shadow-sm'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white'
+                          ? 'bg-gradient-to-l from-violet-100 to-purple-50 dark:from-violet-900/40 dark:to-purple-900/20 text-violet-700 dark:text-violet-300 shadow-sm shadow-violet-100/50 dark:shadow-violet-900/20'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white'
                       }`}
                     >
-                      <span className={activeTab === item.id ? 'text-violet-500' : 'text-gray-400 dark:text-gray-500'}>
+                      <span className={`transition-colors duration-300 ${activeTab === item.id ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400 dark:text-gray-500'}`}>
                         {item.icon}
                       </span>
                       {item.label}
@@ -2104,7 +2104,7 @@ export default function AdminPanel() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Bar with System Status */}
-        <header className="flex items-center gap-4 px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0">
+        <header className="flex items-center gap-4 px-4 sm:px-6 py-4 border-b border-gray-200/60 dark:border-gray-800/60 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shrink-0">
           <Button
             variant="ghost"
             size="sm"

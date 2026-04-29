@@ -440,7 +440,7 @@ export default function UserPanel() {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation - Enhanced glassmorphism tab container */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
             <button
@@ -449,28 +449,28 @@ export default function UserPanel() {
                 setActiveTab(item.id);
                 setSidebarOpen(false);
               }}
-              className={`relative w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`relative w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                 activeTab === item.id
-                  ? 'bg-violet-50/80 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300 shadow-sm backdrop-blur-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50/80 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200 hover:backdrop-blur-sm'
+                  ? 'bg-gradient-to-l from-violet-500/10 to-fuchsia-500/10 dark:from-violet-500/20 dark:to-fuchsia-500/20 text-violet-700 dark:text-violet-300 shadow-lg shadow-violet-500/5 dark:shadow-violet-500/10 backdrop-blur-xl border border-violet-200/50 dark:border-violet-700/50'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200 hover:backdrop-blur-sm border border-transparent hover:border-gray-200/40 dark:hover:border-gray-700/30'
               }`}
             >
               {activeTab === item.id && (
                 <motion.div
-                  layoutId="sidebar-active"
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full bg-gradient-to-b from-violet-500 to-fuchsia-500"
+                  layoutId="sidebar-active-indicator"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-8 rounded-full bg-gradient-to-b from-violet-500 via-purple-500 to-fuchsia-500 shadow-lg shadow-violet-500/30 dark:shadow-violet-500/20"
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
-              <span className={activeTab === item.id ? 'text-violet-600 dark:text-violet-400' : ''}>
+              <span className={`relative z-10 transition-colors duration-300 ${activeTab === item.id ? 'text-violet-600 dark:text-violet-400' : ''}`}>
                 {item.icon}
               </span>
-              <span>{item.label}</span>
+              <span className="relative z-10">{item.label}</span>
               {item.id === 'notifications' && unreadCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="mr-auto flex size-5 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-rose-500 text-white text-[10px] font-bold shadow-sm"
+                  className="mr-auto relative z-10 flex size-5 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-rose-500 text-white text-[10px] font-bold shadow-sm shadow-red-200/40 dark:shadow-red-500/20"
                 >
                   {unreadCount > 9 ? '۹+' : unreadCount}
                 </motion.span>
@@ -744,44 +744,47 @@ function ProfileSection({ profile, onProfileUpdate }: { profile: UserProfile | n
               <p className="text-sm text-gray-400 dark:text-gray-500 italic">بیوگرافی اضافه نشده است</p>
             )}
 
-            {/* Animated Stats Row */}
+            {/* Animated Stats Row - Enhanced with gradient icons + glassmorphism */}
             <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-gray-200/60 dark:border-gray-800/60">
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100/60 dark:border-gray-700/40 backdrop-blur-sm"
+                whileHover={{ y: -2, scale: 1.03 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-center gap-1.5 p-3.5 rounded-xl bg-white/50 dark:bg-gray-800/30 border border-gray-200/60 dark:border-gray-700/40 backdrop-blur-xl shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex items-center gap-1.5">
-                  <FileText className="size-4 text-violet-500" />
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedFormCount}</span>
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md shadow-violet-200/40 dark:shadow-violet-500/20">
+                  <FileText className="size-4" />
                 </div>
+                <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedFormCount}</span>
                 <span className="text-[11px] text-gray-500 dark:text-gray-400">فرم</span>
               </motion.div>
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100/60 dark:border-gray-700/40 backdrop-blur-sm"
+                whileHover={{ y: -2, scale: 1.03 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-center gap-1.5 p-3.5 rounded-xl bg-white/50 dark:bg-gray-800/30 border border-gray-200/60 dark:border-gray-700/40 backdrop-blur-xl shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex items-center gap-1.5">
-                  <Bell className="size-4 text-amber-500" />
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedNotifCount}</span>
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-200/40 dark:shadow-amber-500/20">
+                  <Bell className="size-4" />
                 </div>
+                <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedNotifCount}</span>
                 <span className="text-[11px] text-gray-500 dark:text-gray-400">اعلان</span>
               </motion.div>
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/40 border border-gray-100/60 dark:border-gray-700/40 backdrop-blur-sm"
+                whileHover={{ y: -2, scale: 1.03 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-center gap-1.5 p-3.5 rounded-xl bg-white/50 dark:bg-gray-800/30 border border-gray-200/60 dark:border-gray-700/40 backdrop-blur-xl shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex items-center gap-1.5">
-                  <CalendarDays className="size-4 text-emerald-500" />
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedDays}</span>
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-200/40 dark:shadow-emerald-500/20">
+                  <CalendarDays className="size-4" />
                 </div>
+                <span className="text-lg font-bold text-gray-900 dark:text-white">{animatedDays}</span>
                 <span className="text-[11px] text-gray-500 dark:text-gray-400">روز فعالیت</span>
               </motion.div>
             </div>
 
-            {/* Member since */}
-            <div className="flex items-center justify-center gap-1.5 mt-3 text-xs text-gray-400 dark:text-gray-500">
-              <Clock className="size-3" />
-              <span>عضویت از {formatDate(profile.createdAt)}</span>
+            {/* Member since - enhanced badge */}
+            <div className="flex items-center justify-center gap-1.5 mt-3 px-3 py-1.5 mx-auto w-fit rounded-full bg-gray-100/60 dark:bg-gray-800/40 backdrop-blur-sm border border-gray-200/40 dark:border-gray-700/30">
+              <Clock className="size-3 text-violet-400" />
+              <span className="text-[11px] text-gray-500 dark:text-gray-400">عضویت از {formatDate(profile.createdAt)}</span>
             </div>
           </div>
         </motion.div>
@@ -1005,26 +1008,28 @@ function MyFormsSection() {
   };
 
   const statsCards = [
-    { label: 'کل فرم‌ها', value: animTotalForms, icon: <FileText className="size-5" />, color: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400', gradient: 'from-violet-500 to-purple-500' },
-    { label: 'منتشر شده', value: animPublished, icon: <CircleDot className="size-5" />, color: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400', gradient: 'from-emerald-500 to-teal-500' },
-    { label: 'پیش‌نویس', value: animDraft, icon: <ClipboardList className="size-5" />, color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400', gradient: 'from-amber-500 to-orange-500' },
-    { label: 'کل پاسخ‌ها', value: animSubmissions, icon: <Send className="size-5" />, color: 'bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-600 dark:text-fuchsia-400', gradient: 'from-fuchsia-500 to-pink-500' },
+    { label: 'کل فرم‌ها', value: animTotalForms, icon: <FileText className="size-5" />, gradient: 'from-violet-500 to-purple-500', shadowColor: 'shadow-violet-200/40 dark:shadow-violet-500/20' },
+    { label: 'منتشر شده', value: animPublished, icon: <CircleDot className="size-5" />, gradient: 'from-emerald-500 to-teal-500', shadowColor: 'shadow-emerald-200/40 dark:shadow-emerald-500/20' },
+    { label: 'پیش‌نویس', value: animDraft, icon: <ClipboardList className="size-5" />, gradient: 'from-amber-500 to-orange-500', shadowColor: 'shadow-amber-200/40 dark:shadow-amber-500/20' },
+    { label: 'کل پاسخ‌ها', value: animSubmissions, icon: <Send className="size-5" />, gradient: 'from-fuchsia-500 to-pink-500', shadowColor: 'shadow-fuchsia-200/40 dark:shadow-fuchsia-500/20' },
   ];
 
   return (
     <motion.div variants={staggerContainer} initial="initial" animate="animate" className="max-w-5xl mx-auto space-y-6">
-      {/* Stats - Glassmorphism cards */}
+      {/* Stats - Glassmorphism cards with gradient icon backgrounds */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         {statsCards.map((stat, i) => (
           <motion.div
             key={i}
             variants={staggerItem}
-            whileHover={{ y: -2, transition: { duration: 0.2 } }}
-            className="relative overflow-hidden rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 shadow-sm transition-shadow hover:shadow-md"
+            whileHover={{ y: -4, transition: { duration: 0.25 } }}
+            className="relative overflow-hidden rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300"
           >
-            {/* Gradient accent */}
+            {/* Gradient accent bar */}
             <div className={`absolute top-0 inset-x-0 h-0.5 bg-gradient-to-l ${stat.gradient}`} />
-            <div className={`flex size-10 items-center justify-center rounded-lg ${stat.color} mb-3`}>
+            {/* Subtle gradient glow behind icon */}
+            <div className={`absolute top-3 right-3 size-11 rounded-xl bg-gradient-to-br ${stat.gradient} opacity-10 blur-md`} />
+            <div className={`relative flex size-11 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg ${stat.shadowColor} mb-3`}>
               {stat.icon}
             </div>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
@@ -1109,9 +1114,9 @@ function MyFormsSection() {
                 animate="animate"
                 exit="exit"
                 transition={{ delay: i * 0.05, duration: 0.3 }}
-                whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                whileHover={{ y: -5, scale: 1.01, transition: { duration: 0.25 } }}
               >
-                <Card className="h-full overflow-hidden border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl hover:shadow-lg transition-all duration-200 hover:border-gray-300/60 dark:hover:border-gray-700/60">
+                <Card className="h-full overflow-hidden border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl hover:shadow-xl hover:border-violet-300/50 dark:hover:border-violet-700/50 transition-all duration-300 group">
                   {/* Status stripe */}
                   <div className={`h-1 bg-gradient-to-l ${
                     form.status === 'published' ? 'from-emerald-400 to-emerald-500' :
@@ -1140,9 +1145,11 @@ function MyFormsSection() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex items-center gap-1.5 mb-4">
-                      <Send className="size-3.5 text-gray-400" />
-                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">{form._count.submissions}</span>
+                    <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-gray-50/60 dark:bg-gray-800/30 border border-gray-100/50 dark:border-gray-700/30 backdrop-blur-sm">
+                      <div className="flex size-6 items-center justify-center rounded-md bg-gradient-to-br from-fuchsia-500 to-pink-500 text-white shadow-sm">
+                        <Send className="size-3" />
+                      </div>
+                      <span className="text-sm text-gray-900 dark:text-white font-bold">{form._count.submissions}</span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">پاسخ</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -1291,22 +1298,24 @@ function ActivitySection() {
         <div className="relative">
           {Array.from(grouped.entries()).map(([dateKey, items]) => (
             <div key={dateKey} className="mb-6 last:mb-0">
-              {/* Date Header */}
+              {/* Date Header - Enhanced glassmorphism badge */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex items-center gap-2 mb-3"
               >
-                <CalendarDays className="size-4 text-gray-400" />
-                <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                  {getDateLabel(dateKey)}
-                </span>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/60 dark:bg-gray-800/40 border border-gray-200/60 dark:border-gray-700/40 backdrop-blur-xl shadow-sm">
+                  <CalendarDays className="size-4 text-violet-500" />
+                  <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                    {getDateLabel(dateKey)}
+                  </span>
+                </div>
               </motion.div>
 
-              {/* Timeline */}
+              {/* Timeline - Enhanced glassmorphism */}
               <div className="relative">
-                <div className="absolute right-[19px] top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-800" />
-                <div className="space-y-1">
+                <div className="absolute right-[19px] top-0 bottom-0 w-px bg-gradient-to-b from-violet-200 via-gray-200 to-gray-200 dark:from-violet-800 dark:via-gray-800 dark:to-gray-800" />
+                <div className="space-y-2">
                   <AnimatePresence mode="popLayout">
                     {items.map((activity, i) => {
                       const config = activityConfig[activity.type] || activityConfig.new_form;
@@ -1318,18 +1327,20 @@ function ActivitySection() {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, scale: 0.95 }}
                           transition={{ delay: i * 0.04 }}
-                          className="relative flex gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors group"
+                          className="relative flex gap-4 p-3.5 rounded-xl bg-white/50 dark:bg-gray-800/20 border border-gray-100/50 dark:border-gray-700/30 backdrop-blur-xl hover:bg-white/80 dark:hover:bg-gray-800/40 hover:shadow-md hover:border-gray-200/60 dark:hover:border-gray-700/50 transition-all duration-200 group"
                         >
-                          <div className={`relative z-10 flex size-10 shrink-0 items-center justify-center rounded-xl ${config.bgColor} ${config.color} shadow-sm`}>
+                          <div className={`relative z-10 flex size-10 shrink-0 items-center justify-center rounded-xl ${config.bgColor} ${config.color} shadow-sm ring-1 ring-inset ring-gray-900/5 dark:ring-white/5`}>
                             {config.icon}
                           </div>
-                          <div className="flex-1 min-w-0 pt-1">
-                            <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+                          <div className="flex-1 min-w-0 pt-0.5">
+                            <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed font-medium">
                               {getActivityDescription(activity)}
                             </p>
-                            <div className="flex items-center gap-2 mt-1.5">
-                              <Clock className="size-3 text-gray-400" />
-                              <span className="text-xs text-gray-500 dark:text-gray-400">{timeAgo(activity.createdAt)}</span>
+                            <div className="flex items-center gap-2 mt-2">
+                              <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100/60 dark:bg-gray-800/40">
+                                <Clock className="size-3 text-gray-400" />
+                                <span className="text-[11px] text-gray-500 dark:text-gray-400">{timeAgo(activity.createdAt)}</span>
+                              </div>
                               <Badge variant="outline" className={`text-[10px] ${config.color} border-current/20`}>
                                 {config.label}
                               </Badge>
@@ -1611,8 +1622,11 @@ function SettingsSection() {
         <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400">
-                <Shield className="size-5" />
+              <div className="relative">
+                <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 opacity-15 blur-sm" />
+                <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-200/40 dark:shadow-violet-500/20">
+                  <Shield className="size-5" />
+                </div>
               </div>
               <div>
                 <CardTitle className="text-base">تنظیمات حساب</CardTitle>
@@ -1624,7 +1638,9 @@ function SettingsSection() {
             {/* Change Password */}
             <div className="space-y-4">
               <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <KeyRound className="size-4 text-gray-500" />
+                <div className="flex size-6 items-center justify-center rounded-md bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-sm">
+                  <KeyRound className="size-3" />
+                </div>
                 تغییر رمز عبور
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1731,13 +1747,16 @@ function SettingsSection() {
         </Card>
       </motion.div>
 
-      {/* Notification Settings */}
+      {/* Notification Settings - Enhanced with gradient icons */}
       <motion.div variants={staggerItem}>
         <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400">
-                <Megaphone className="size-5" />
+              <div className="relative">
+                <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 opacity-15 blur-sm" />
+                <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-200/40 dark:shadow-amber-500/20">
+                  <Megaphone className="size-5" />
+                </div>
               </div>
               <div>
                 <CardTitle className="text-base">تنظیمات اعلان‌ها</CardTitle>
@@ -1747,16 +1766,18 @@ function SettingsSection() {
           </CardHeader>
           <CardContent className="space-y-1">
             {[
-              { label: 'اعلان پاسخ جدید', desc: 'اطلاع از دریافت پاسخ جدید در فرم‌ها', value: notifSubmission, onChange: setNotifSubmission, icon: <Send className="size-4" /> },
-              { label: 'گزارش هفتگی', desc: 'دریافت خلاصه فعالیت‌ها در ایمیل', value: notifWeekly, onChange: setNotifWeekly, icon: <TrendingUp className="size-4" /> },
-              { label: 'به‌روزرسانی‌های سیستم', desc: 'اطلاع از امکانات و بروزرسانی‌های جدید', value: notifSystem, onChange: setNotifSystem, icon: <Globe className="size-4" /> },
+              { label: 'اعلان پاسخ جدید', desc: 'اطلاع از دریافت پاسخ جدید در فرم‌ها', value: notifSubmission, onChange: setNotifSubmission, icon: <Send className="size-4" />, gradient: 'from-emerald-500 to-teal-500', shadow: 'shadow-emerald-200/40 dark:shadow-emerald-500/20' },
+              { label: 'گزارش هفتگی', desc: 'دریافت خلاصه فعالیت‌ها در ایمیل', value: notifWeekly, onChange: setNotifWeekly, icon: <TrendingUp className="size-4" />, gradient: 'from-violet-500 to-purple-500', shadow: 'shadow-violet-200/40 dark:shadow-violet-500/20' },
+              { label: 'به‌روزرسانی‌های سیستم', desc: 'اطلاع از امکانات و بروزرسانی‌های جدید', value: notifSystem, onChange: setNotifSystem, icon: <Globe className="size-4" />, gradient: 'from-fuchsia-500 to-pink-500', shadow: 'shadow-fuchsia-200/40 dark:shadow-fuchsia-500/20' },
             ].map((item, i) => (
-              <div
+              <motion.div
                 key={i}
-                className="flex items-center justify-between py-3 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
+                whileHover={{ x: 2 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-between py-3.5 px-3 rounded-xl hover:bg-gray-50/80 dark:hover:bg-gray-800/30 border border-transparent hover:border-gray-200/50 dark:hover:border-gray-700/30 transition-all duration-200"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                  <div className={`flex size-8 items-center justify-center rounded-lg bg-gradient-to-br ${item.gradient} text-white shadow-md ${item.shadow}`}>
                     {item.icon}
                   </div>
                   <div>
@@ -1765,7 +1786,7 @@ function SettingsSection() {
                   </div>
                 </div>
                 <Switch checked={item.value} onCheckedChange={item.onChange} />
-              </div>
+              </motion.div>
             ))}
             <div className="pt-3">
               <Button
@@ -1781,13 +1802,16 @@ function SettingsSection() {
         </Card>
       </motion.div>
 
-      {/* Display Settings */}
+      {/* Display Settings - Enhanced with gradient icons */}
       <motion.div variants={staggerItem}>
         <Card className="border-gray-200/60 dark:border-gray-800/60 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-600 dark:text-fuchsia-400">
-                <Globe className="size-5" />
+              <div className="relative">
+                <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-600 opacity-15 blur-sm" />
+                <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-600 text-white shadow-lg shadow-fuchsia-200/40 dark:shadow-fuchsia-500/20">
+                  <Globe className="size-5" />
+                </div>
               </div>
               <div>
                 <CardTitle className="text-base">تنظیمات نمایش</CardTitle>

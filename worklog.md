@@ -1,6 +1,150 @@
 # Worklog
 
 ---
+## Task ID: 28 (Self-Directed Development Cycle)
+## Agent: main-agent
+## Date: 2026-04-29
+
+### Session Overview
+Self-directed development cycle for the Persian RTL form builder project (Job ID 116305). Reviewed worklog, verified build/lint (0 errors), performed QA testing with agent-browser, then fixed 2 data-layer bugs and implemented extensive styling improvements and new features across 6 components.
+
+### 1. QA Testing & Bug Fixes
+
+**a) QA Testing (agent-browser)**:
+- Landing page: Loads correctly, all sections render (HTTP 200)
+- Dashboard: Loads correctly with all widgets
+- All 6 views tested via agent-browser screenshots — 0 runtime errors
+
+**b) Bug Fix: Conditional Logic Not Persisted**:
+- **File**: `src/components/form-builder/form-builder.tsx`
+- **Issue**: Save payload (both `handleSave` and `handlePublish`) omitted the `logic` field from `FormQuestion`, causing conditional logic rules to be lost on save
+- **Fix**: Added `logic: q.logic || undefined` to both `questions.map()` calls in save/publish payloads
+
+**c) Bug Fix: Duplicate Store Interface Declarations**:
+- **File**: `src/lib/store.ts`
+- **Issue**: `AppState` interface had `notifications`, `addNotification`, `markNotificationAsRead`, `clearAllNotifications`, `quickSearchOpen`, `setQuickSearchOpen` declared twice (lines 163-170 and 232-240)
+- **Fix**: Removed the duplicate declaration block (lines 232-240)
+
+### 2. New Features
+
+**a) Conditional Logic Indicator on Question Cards** (`src/components/form-builder/form-preview.tsx`):
+- Added `GitBranch`, `Eye`, `EyeOff` icon imports
+- When a question has `logic.enabled`, a colored badge appears:
+  - Green badge with Eye icon: "نمایش شرطی (N)" — for show action
+  - Red badge with EyeOff icon: "شرطی (N)" — for hide action
+  - N = number of conditions
+- Framer Motion entrance animation on the badge
+
+**b) Dashboard Response Timeline Widget** (`src/components/dashboard/dashboard.tsx`):
+- New `ResponseTimelineWidget` collapsible component
+- Shows last 7 days of submission activity as animated bar chart
+- Persian day labels (شنبه through جمعه) with today highlighted
+- Gradient bars (violet→purple) with staggered entrance animation
+- This week vs last week comparison with percentage change badge
+- Collapsed state shows summary text
+- Empty state when no submissions exist
+- Placed after DashboardAnalyticsSummary in the layout
+
+**c) Dashboard Form Card Mini Sparkline Bars** (`src/components/dashboard/dashboard.tsx`):
+- Replaced SVG polyline sparkline with 4 animated `motion.div` bars
+- Gradient bars (violet→purple) with `opacity-40` → `opacity-100` on card hover
+- Deterministic values from form ID for consistent rendering
+
+**d) Results View — Micro Sparklines on Stat Cards** (`src/components/dashboard/results-view.tsx`):
+- New `MicroSparkline` SVG component with area fill + polyline
+- Color mapped from stat card's color scheme
+- Added to each StatCard below the value number
+
+**e) Results View — Question Comparison Widget** (`src/components/dashboard/results-view.tsx`):
+- New `QuestionComparisonWidget` component
+- Side-by-side comparison of response distribution across forms (placeholder data)
+- 3 forms × 3 comparison dimensions with animated bars
+- Glassmorphism card with color-coded legend
+- Staggered entrance animations
+
+**f) Form Fill — Conditional Logic Visual Feedback** (`src/components/dashboard/form-fill.tsx`):
+- Added `Eye`, `EyeOff`, `GitBranch` icon imports + `toast` from sonner
+- Conditional logic badge on QuestionTitle: amber "نمایش شرطی" or sky "مخفی‌سازی شرطی"
+- Toast notification when a question becomes hidden: "سؤال «{title}» مخفی شد"
+- Smooth appear/disappear animation for conditional questions (height + opacity)
+- Enhanced progress bar: shows "X از Y سؤال (Z مخفی)" below the bar
+- Pulse animation on شروع (Start) button
+
+### 3. Styling Improvements
+
+**a) Admin Panel Glassmorphism Overhaul** (`src/components/admin/admin-panel.tsx`):
+- Stat cards: Glassmorphism (`bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl`), gradient icon backgrounds, hover lift
+- User table: Alternating row backgrounds, enhanced hover (`hover:bg-violet-50/50`), smooth transitions
+- Forms table: Green-tinted header, enhanced hover effects
+- Reports table: Rose-tinted header
+- Settings section: Glassmorphism cards, gradient icon backgrounds per section
+- Sidebar navigation: `backdrop-blur-2xl`, wider gradient indicator (w-1.5), stronger active state
+- Header/Top bar: Glassmorphism with semi-transparent borders
+- Templates section: Glassmorphism stat cards + category cards
+- System health card: Glassmorphism styling
+- Skeleton loading states: Glassmorphism + gradient highlight
+
+**b) Results View Chart Enhancements** (`src/components/dashboard/results-view.tsx`):
+- Choice question chart: Animated gradient bar fills, percentage labels, total count display, glassmorphism wrapper
+- Rating question chart: Gradient progress bars (amber→orange), larger average rating font, glassmorphism wrapper
+- Stat cards: Micro sparkline SVGs, reduced hover lift to y:-3
+- Summary tab cards: Glassmorphism borders
+
+**c) User Panel Glassmorphism Overhaul** (`src/components/user-panel/user-panel.tsx`):
+- Profile section: Gradient avatar ring, animated stat items with glassmorphism + hover effects
+- My Forms stat cards: Gradient icon backgrounds with glow, enhanced hover (y:-4, scale:1.01)
+- Forms listing: Enhanced hover with scale + shadow + violet border
+- Activity section: Glassmorphism timeline items, gradient timeline line, date header pills
+- Settings section: Gradient icon backgrounds per setting, glassmorphism cards
+- Sidebar tabs: Gradient active state, wider indicator, smoother transitions
+
+### Build Verification
+- `npx next build` — SUCCESS, 0 errors, 19 routes compile
+- `bun run lint` — SUCCESS, 0 errors, 0 warnings
+- Landing page verified via agent-browser — loads correctly
+
+### Files Modified in This Session
+1. `src/lib/store.ts` — Removed duplicate interface declarations
+2. `src/components/form-builder/form-builder.tsx` — Added logic field to save/publish payloads
+3. `src/components/form-builder/form-preview.tsx` — Conditional logic indicator badge on question cards
+4. `src/components/dashboard/dashboard.tsx` — Response timeline widget, mini sparkline bars on form cards
+5. `src/components/dashboard/results-view.tsx` — Micro sparklines, gradient bars, comparison widget, glassmorphism
+6. `src/components/admin/admin-panel.tsx` — Full glassmorphism overhaul across all sections
+7. `src/components/user-panel/user-panel.tsx` — Full glassmorphism overhaul across all sections
+8. `src/components/dashboard/form-fill.tsx` — Conditional logic visual feedback, toast notifications, pulse animation
+
+### Current Project Status Assessment
+- Application is fully functional with 0 build/lint errors across all 8 views
+- All previous features intact: 17 question types, form sections, activity log, dark mode, notifications, quick search, form builder, QR codes, social sharing, import/export, favorites, tags, welcome banner, template preview, form status badge, keyboard shortcuts, conditional logic builder, conditional logic evaluation, analytics summary, response timeline, etc.
+- NEW: Conditional logic indicator badges on builder question cards
+- NEW: Dashboard response timeline widget (7-day bar chart with weekly comparison)
+- NEW: Dashboard form card mini sparkline bars (animated gradient bars)
+- NEW: Results view micro sparklines on stat cards
+- NEW: Results view question comparison widget
+- NEW: Form fill conditional logic visual feedback (toast + animation)
+- NEW: Admin panel full glassmorphism overhaul
+- NEW: User panel full glassmorphism overhaul
+- NEW: Results view chart enhancements (gradient bars, glassmorphism)
+- FIXED: Conditional logic rules now persist on save/publish
+- FIXED: Duplicate store interface declarations removed
+- Build passes: 0 errors
+- ESLint passes: 0 errors, 0 warnings
+
+### Unresolved Issues / Recommendations for Next Phase
+1. File upload is UI-only (no actual file handling backend)
+2. Email notifications on form submission
+3. Custom domain/branding for published forms
+4. Real-time collaborative form editing (websocket)
+5. Form analytics export to PDF
+6. Multi-language support (currently Persian only)
+7. Form section drag-and-drop reordering
+8. Section-level logic (show/hide entire section based on conditions)
+9. Form versioning / revision history
+10. Mobile responsive testing on actual devices recommended
+11. A/B testing for form variants
+12. Results view export to Excel/CSV real implementation
+
+---
 ## Task ID: 27 (Self-Directed Development Cycle)
 ## Agent: main-agent
 ## Date: 2026-04-29
