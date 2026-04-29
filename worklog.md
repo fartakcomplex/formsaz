@@ -1935,3 +1935,26 @@ Stage Summary:
 - Template gallery shows 1200+ forms (101 base + 1099 specialized)
 - API endpoint generates questions dynamically by category (prevents OOM)
 - GitHub Release: v1.3.0
+
+---
+Task ID: 34
+Agent: main-agent
+Task: Fix 1099 specialized forms integration and API
+
+Work Log:
+- Verified 1099 specialized forms exist in specialized-forms-meta.ts (11K lines) and specialized-forms.ts (213K lines, 8.7MB)
+- Found that specialized-forms.ts was NEVER imported - dead code. All 1099 forms had real questions but they were never used
+- API route was generating generic questions per category instead of using actual form data
+- Converted specialized-forms.ts (8.7MB TypeScript) to specialized-forms.json (2.7MB) for efficient server-side loading
+- Rewrote /api/templates route to use fs.readFileSync with lazy-loaded cache instead of category generators
+- API now returns actual specialized form questions (e.g., doctor-visit returns 18 real medical questions)
+- Template gallery already correctly merges 100 base + 1099 specialized = 1199 total templates
+- Server stability issue persists in sandbox environment (Next.js Turbopack dev server dies between requests)
+
+Stage Summary:
+- 1099 specialized forms with full question data now accessible via API
+- specialized-forms.json (2.7MB) created for efficient server-side loading
+- /api/templates?id={formId} returns real questions instead of generic ones
+- Template gallery shows 1199 templates (100 base + 1099 specialized)
+- All form types working: national_id, gender, date, phone, consent, captcha, signature, etc.
+- Server stability: needs keepalive mechanism in sandbox
