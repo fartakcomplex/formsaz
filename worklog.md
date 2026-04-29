@@ -1,6 +1,56 @@
 # Worklog
 
 ---
+## Task ID: 31 (Fix Blank White Panel - Critical Bug)
+## Agent: main-agent
+## Date: 2026-04-29
+
+### Session Overview
+Fixed the critical bug where navigating from landing page to dashboard/admin/user panel resulted in a completely blank white page. Root cause was AnimatePresence mode="wait" blocking the new view render.
+
+### Critical Bug Fix: Blank White Panel
+
+**Root Cause**:
+- `AnimatePresence` with `mode="wait"` in `page.tsx` waited for the exit animation of the leaving view before rendering the entering view
+- The Landing Page has many continuous animations (carousel auto-advance every 5s, floating shapes with infinite loops, etc.)
+- These child animations prevented the exit animation from completing
+- The entering view (dashboard/panel) was stuck at `opacity: 0` — invisible/blank
+- Confirmed via browser: `document.querySelector('div').style.opacity === "0"` after navigation
+
+**Symptoms**:
+- Clicking "شروع رایگان" → blank white page
+- Navigating to admin panel via header → blank white page
+- Navigating to user panel via header → blank white page
+- The `window.__nav('dashboard')` function ran but the UI didn't update visually
+
+**Fix** (File: `src/app/page.tsx`):
+- Removed `AnimatePresence mode="wait"` wrapper entirely
+- Replaced with simple `motion.div` with only fade-in animation (0.2s)
+- No exit animation — the leaving view is instantly replaced
+- Full-height panels (admin/user-panel) already bypass animation entirely (unchanged)
+- Removed unused imports (`AnimatePresence`, `useTransition`)
+
+**Also fixed** (File: `src/components/landing/landing-page.tsx`):
+- Hydration error in TestimonialsSection: replaced `window.innerWidth` with `useState` + `useEffect`
+
+### QA Verification (agent-browser)
+- Landing → Dashboard: ✅ Dashboard renders correctly with all content
+- Dashboard → Admin Panel: ✅ Admin panel with sidebar + stats + charts
+- Admin → Dashboard → User Panel: ✅ User panel with profile + forms
+- User Panel → Landing: ✅ Landing page renders correctly
+- All navigation paths tested: ✅ No blank screens
+- `opacity` after navigation: ✅ "1" (was "0" before fix)
+- `bun run lint`: ✅ 0 errors
+- Build: ✅ 0 errors
+
+### Files Modified
+1. `src/app/page.tsx` — Removed AnimatePresence, replaced with simple fade-in
+2. `src/components/landing/landing-page.tsx` — Fixed hydration error (previous fix)
+
+### GitHub Release
+- v1.1.2 pushed and released
+
+---
 ## Task ID: 30 (Hydration Error Fix + QA)
 ## Agent: main-agent
 ## Date: 2026-04-29
