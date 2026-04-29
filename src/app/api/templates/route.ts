@@ -7,7 +7,7 @@ let formsCache: Record<string, { questions: unknown[] }> | null = null;
 
 function getFormsCache(): Record<string, { questions: unknown[] }> {
   if (!formsCache) {
-    const jsonPath = join(process.cwd(), 'src', 'lib', 'specialized-forms.json');
+    const jsonPath = join(process.cwd(), 'data', 'specialized-forms.json');
     const raw = readFileSync(jsonPath, 'utf-8');
     const allForms = JSON.parse(raw) as { id: string; questions: unknown[] }[];
     formsCache = {};
@@ -49,6 +49,18 @@ function generateDefaultQuestions(): FormQuestion[] {
   ];
 }
 
+// ── Metadata cache (for fallback info) ──────────────────────────────────────
+let metaCache: Array<{ id: string; name: string; description: string; category: string; categoryLabel: string; icon: string; gradient: string; questionCount: number }> | null = null;
+
+function getMetaCache() {
+  if (!metaCache) {
+    const metaPath = join(process.cwd(), 'data', 'specialized-forms-meta.json');
+    const raw = readFileSync(metaPath, 'utf-8');
+    metaCache = JSON.parse(raw);
+  }
+  return metaCache;
+}
+
 // ── API handler ────────────────────────────────────────────────────────────────
 
 export async function GET(request: NextRequest) {
@@ -86,10 +98,9 @@ export async function GET(request: NextRequest) {
     // Fallback to metadata + generated questions
   }
 
-  // Fallback: Load metadata and generate generic questions
+  // Fallback: Load metadata from JSON (not .ts) and generate generic questions
   try {
-    const { specializedFormsMeta } = await import('@/lib/specialized-forms-meta');
-    const meta = specializedFormsMeta.find((f: { id: string }) => f.id === id);
+    const meta = getMetaCache().find((f: { id: string }) => f.id === id);
 
     if (meta) {
       const questions = generateDefaultQuestions();
