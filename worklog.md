@@ -1,6 +1,99 @@
 # Worklog
 
 ---
+## Task ID: 35 (Fix Template Gallery 1199 Display + Styling + Features)
+## Agent: main-agent
+## Date: 2026-04-30
+
+### Session Overview
+Fixed the critical bug where template gallery showed only 100 templates instead of 1199. The API correctly returned 1099 specialized templates, but the frontend had no loading indicator and silently failed when the fetch didn't complete. Added loading state with retry logic, styling improvements across form builder and template gallery, and new features (JSON export, show more button, category tooltips).
+
+### 1. Critical Bug Fix: Template Gallery Shows 100 Instead of 1199
+
+**Root Cause**:
+- The `TemplateLibraryPage` component initialized `allTemplates` with 100 base templates from `templatesData`
+- On mount, it fetched 1099 specialized templates from `/api/templates/list` and merged them
+- The fetch used `.then()` chains with no retry logic and silent error handling
+- When the fetch failed (server instability, network issues), `metaLoaded` was set to `true` and the component stayed at 100 templates
+- No loading indicator was shown, so users saw "100 الگوی آماده" without knowing more were loading
+
+**Fix** (File: `src/components/dashboard/template-library-page.tsx`):
+- Added `isLoadingMeta` state (initialized to `true`)
+- Added `metaRetryCount` state for retry tracking
+- Rewrote fetch logic to use `async/await` with try/catch
+- Added retry logic: up to 3 retries with exponential backoff (1.5s, 3s, 4.5s)
+- Added `console.error` logging for failed fetches
+- Hero badge now shows loading spinner ("در حال بارگذاری الگوها...") while fetching
+- After successful fetch, displays actual total count (1199)
+
+**Verification** (agent-browser):
+- Opened site → navigated to templates → confirmed "1199 الگوی آماده" displayed
+- Category tabs showed correct counts: سفارش 94, آموزش 102, سلامت 132, رویداد 99, منابع انسانی 106, etc.
+- API endpoint `/api/templates/list` confirmed returning 1099 entries
+
+### 2. Styling Improvements
+
+**a) Form Builder Right Panel** (`src/components/form-builder/form-builder.tsx`):
+- Changed from flat `bg-white dark:bg-zinc-950` to gradient `bg-gradient-to-b from-gray-50/80 via-white to-white dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-950`
+
+**b) Form Builder Save/Publish Buttons** (`src/components/form-builder/form-builder.tsx`):
+- Save button: Added `border-violet-200 dark:border-violet-800 hover:bg-violet-50 dark:hover:bg-violet-950/30`
+- Publish button: Changed to gradient `bg-gradient-to-l from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700`
+
+**c) Template Gallery Category Tabs** (`src/components/dashboard/template-library-page.tsx`):
+- Active tab: Changed from flat `bg-gray-900` to gradient `bg-gradient-to-l from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-500/20`
+
+**d) Form Builder Center Panel** (`src/components/form-builder/form-builder.tsx`):
+- Added subtle dot pattern overlay at 3% opacity using `radial-gradient`
+
+**e) Items Per Page** (`src/components/dashboard/template-library-page.tsx`):
+- Increased from 12 to 24 for better UX with 1199 templates
+
+### 3. New Features
+
+**a) Category Description Tooltips** (`src/components/dashboard/template-library-page.tsx`):
+- Added `categoryDescriptions` Record with Persian descriptions for all 10 categories
+- Category tab buttons now have `title` attribute with description tooltip
+
+**b) "Show More" Button** (`src/components/dashboard/template-library-page.tsx`):
+- Added "مشاهده بیشتر" button below template grid
+- Shows progress counter badge: "X از Y"
+- Animated entrance with Framer Motion
+
+**c) Export Form to JSON** (`src/components/dashboard/dashboard.tsx`):
+- Added `handleExportForm` utility function
+- Serializes form data to formatted JSON and triggers browser download
+- Added "خروجی JSON" button with `FileJson` icon in FormQuickPreview footer
+
+### 4. Build & Deploy
+- Build: `npx next build` — 0 errors, 16.0s compile time
+- Git push to `main` successful
+- Commit: `300b538`
+
+### Files Modified
+1. `src/components/dashboard/template-library-page.tsx` — Loading state, retry logic, category tooltips, show more button, gradient tabs, items per page
+2. `src/components/form-builder/form-builder.tsx` — Right panel gradient, save/publish buttons gradient, center panel dot pattern
+3. `src/components/dashboard/dashboard.tsx` — Export form to JSON feature
+
+### Current Project Status Assessment
+- Template gallery correctly displays all 1199 templates (100 base + 1099 specialized) with loading indicator
+- API `/api/templates/list` returns 1099 specialized templates correctly
+- API `/api/templates?id=xxx` returns full question data for specialized forms
+- All styling improvements applied and build passes
+- All 3 new features functional
+- Build: 0 errors
+- GitHub: pushed to main
+
+### Unresolved Issues / Recommendations for Next Phase
+1. Server instability in sandbox environment (OOM/memory limits kill standalone server)
+2. File upload is UI-only (no actual file handling backend)
+3. Email notifications on form submission
+4. Real-time collaborative form editing (websocket)
+5. Form analytics export to PDF
+6. Multi-language support (currently Persian only)
+7. Form section drag-and-drop reordering
+
+---
 ## Task ID: 34 (Fix TemplateLibraryPage to load all 1200 templates)
 ## Agent: template-fix-agent
 ## Date: 2026-04-30
