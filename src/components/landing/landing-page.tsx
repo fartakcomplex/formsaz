@@ -1383,7 +1383,17 @@ function TestimonialsSection() {
     { label: 'پاسخ', value: '۱M+', icon: MessageCircle, gradient: 'from-amber-500 to-orange-600' },
   ];
 
-  const itemsPerView = typeof window !== 'undefined' && window.innerWidth >= 1024 ? 3 : 1;
+  const [itemsPerView, setItemsPerView] = useState(1);
+
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      setItemsPerView(window.innerWidth >= 1024 ? 3 : 1);
+    };
+    updateItemsPerView();
+    window.addEventListener('resize', updateItemsPerView);
+    return () => window.removeEventListener('resize', updateItemsPerView);
+  }, []);
+
   const maxIndex = Math.max(0, testimonials.length - itemsPerView);
 
   // Auto-advance carousel

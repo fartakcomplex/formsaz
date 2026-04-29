@@ -1,6 +1,45 @@
 # Worklog
 
 ---
+## Task ID: 30 (Hydration Error Fix + QA)
+## Agent: main-agent
+## Date: 2026-04-29
+
+### Session Overview
+Fixed React hydration error in TestimonialsSection that showed "Recoverable Error" overlay in development. Performed comprehensive QA with agent-browser confirming all views render correctly with 0 errors.
+
+### Bug Fix: Hydration Mismatch in TestimonialsSection
+
+**Root Cause**:
+- `TestimonialsSection` in `landing-page.tsx` line 1386 used `window.innerWidth` directly during component render
+- `const itemsPerView = typeof window !== 'undefined' && window.innerWidth >= 1024 ? 3 : 1;`
+- During SSR: `typeof window` is 'undefined' → `itemsPerView = 1` → `maxIndex = 5` → 6 navigation dots
+- During client hydration (wide screen): `itemsPerView = 3` → `maxIndex = 3` → 4 navigation dots
+- This mismatch caused React hydration error: "server rendered HTML didn't match the client"
+
+**Fix**:
+- Replaced direct `window.innerWidth` check with `useState(1)` + `useEffect` pattern
+- Initial state: `itemsPerView = 1` (matches SSR)
+- `useEffect` reads `window.innerWidth >= 1024` and updates state after mount
+- Added resize event listener for responsive updates
+- Server and client now render identical initial HTML
+
+### QA Verification (agent-browser)
+- **Landing page**: ✅ 0 errors, 0 warnings in console, all sections render
+- **Admin panel**: ✅ Proper viewport containment (height = scrollHeight = 577px, no whitespace)
+- **User panel**: ✅ Proper viewport containment (height = scrollHeight = 577px, no whitespace)
+- **Panel whitespace**: ✅ Previously fixed, still working correctly
+- `bun run lint`: ✅ 0 errors
+
+### Files Modified
+1. `src/components/landing/landing-page.tsx` — Replaced `window.innerWidth` with `useState` + `useEffect` for responsive carousel
+
+### Current Project Status
+- Hydration error: ✅ FIXED
+- Panel whitespace: ✅ Previously fixed, still working
+- All views functional with proper layout
+
+---
 ## Task ID: 29 (Panel Whitespace Fix)
 ## Agent: main-agent
 ## Date: 2026-04-29
