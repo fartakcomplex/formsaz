@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The admin panel on mobile is **not blank/white**—it displays a structured list of items (likely menu options or data entries) with:  \n\n- A top bar (purple “1” icon, “الرئيسية” text, grid/list icons, and a menu button).  \n- Multiple rows, each with a colored icon, a number (e.g., “1”, “9”, “۳”, “۰”, “۰”, “۱۰۰”), and Persian text (e.g., “تمام کاربران”, “تمام پست‌ها”, etc.).  \n- A bottom section with a “N” icon and more Persian text.  \n\n\nThe background is white, but the panel contains organized content (icons, text, numbers) rather than being blank.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1777472091,
+  "id": "20260429221449b8d484bfe0e2496a",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260429221449b8d484bfe0e2496a",
+  "usage": {
+    "completion_tokens": 160,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 404,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 564
+  }
+}

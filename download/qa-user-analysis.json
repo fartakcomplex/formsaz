@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The panel is **not blank/white**. Here’s the exact breakdown:  \n\n### Sidebar (Right Side):  \n- A vertical sidebar with a **purple header** (containing “فرم ساز من” / “My Form Builder” and a user icon).  \n- Below the header: A list of menu items (each with an icon and Persian text):  \n  - “فرم های من” (My Forms)  \n  - “پروفایل من” (My Profile)  \n  - “داده ها” (Data)  \n  - “اعلان ها” (Notifications)  \n  - “تنظیمات” (Settings)  \n  - “پشتیبانی” (Support)  \n- At the bottom: A button labeled “راهنمای استفاده از فرم ساز” (Form Builder Usage Guide) with a right arrow.  \n\n\n### Main Content Area (Left Side):  \n- A **purple gradient header** (with “50% تخفیف ویژه” / “Special 50% Discount” in a small badge, and abstract purple shapes).  \n- Below the header: A user profile section with:  \n  - A purple avatar (with a white “S” icon).  \n  - Text: “فرم ساز من” (My Form Builder), “کاربر ویژه” (Special User), and “user@formsaz.ir” (email).  \n  - A small green dot (likely an online status indicator).  \n  - A note: “برای شروع، فرم بسازید” (To start, create a form).  \n- Three white cards (with colored icons and numbers):  \n  - Green icon + “6” + “فرم ساخته شده” (Forms Created).  \n  - Orange icon + “0” + “لایک” (Likes).  \n  - Purple icon + “0” + “پاسخ” (Responses).  \n- At the bottom: A small text: “آخرین بروزرسانی ۲ روز پیش” (Last Updated 2 Days Ago) with a clock icon.  \n\n\n### Empty Space:  \n- The main content area has **white background** with padding/margins around elements (e.g., between the purple header, profile section, and cards).  \n- The sidebar has a white background with spacing between menu items.  \n\n\nNo large blank/white sections dominate the panel—both the sidebar and main content contain structured elements.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1777471799,
+  "id": "20260429220949a4305b0523b1447c",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260429220949a4305b0523b1447c",
+  "usage": {
+    "completion_tokens": 506,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 999,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 1505
+  }
+}

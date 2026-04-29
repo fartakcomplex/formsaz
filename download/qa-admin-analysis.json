@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The panel is **not blank/white**—it contains content. Here’s a detailed breakdown:  \n\n### Overall Layout:  \n- The interface has a **sidebar** on the right (purple-themed, with menu items like “داشبورد”/Dashboard, “کاربران”/Users, “پروژه‌ها”/Projects, etc.).  \n- The main content area (left/center) displays various UI elements.  \n\n\n### Main Content (Left/Central Area):  \n1. **Top Row (3 Cards):**  \n   - Card 1: Purple icon (user silhouette) + “۱ کاربر” (1 User).  \n   - Card 2: Green icon (document) + “۹ پروژه” (9 Projects).  \n   - Card 3: Orange icon (paper plane) + “۳ کاربر” (3 Users).  \n\n2. **Middle Row (3 Cards):**  \n   - Card 1: Pink icon (eye) + “۰ بازدید” (0 Views).  \n   - Card 2: Blue icon (wave graph) + “۰ درآمد امروز” (0 Today’s Income).  \n   - Card 3: Red icon (grid) + “۱۰۰ کاربر” (100 Users).  \n\n3. **Bottom Section (2 Panels):**  \n   - Left Panel: “نمایش فعالیت‌ها” (Activity Display) + “تازه‌ترین فعالیت‌ها” (Latest Activities) + two smaller cards (purple icon: “افزودن کاربر جدید”/Add New User; green icon: “مشاهده پروژه‌ها”/View Projects).  \n   - Right Panel: “آخرین فعالیت‌ها” (Latest Activities) + two list items (purple document icons with Persian text, e.g., “پروژه جدیدی برای شما ایجاد شد”/A new project was created for you).  \n\n\n### Sidebar (Right):  \n- Contains menu items (icons + text) like “داشبورد”/Dashboard, “کاربران”/Users, “پروژه‌ها”/Projects, “گزارش‌ها”/Reports, “تنظیمات حساب”/Account Settings, “خروج”/Logout.  \n\n\nIn short: The panel is **not blank**—it has a sidebar and rich content (cards, panels, lists) in Persian.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1777471768,
+  "id": "2026042922091203fff0ddead94830",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "2026042922091203fff0ddead94830",
+  "usage": {
+    "completion_tokens": 497,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1000,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 1497
+  }
+}

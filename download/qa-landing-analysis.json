@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The image shows a webpage with a light purple/white gradient background. At the top, there’s Persian text (e.g., \"پلتفرم جامع\" and \"سفارش و تحویل\"), a navigation bar with menu items, and a user profile icon. Below, there’s a central section with a form-like interface (including star ratings, input fields, and a purple button). The rest of the page is mostly empty space with a purple gradient at the bottom.  \n\n- **Errors?** No obvious errors are visible (content loads, UI elements are present).  \n- **Is page blank?** No—there’s content (text, UI elements) at the top/center; the rest is empty space (likely intentional design or loading state, not a blank error).",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1777471729,
+  "id": "20260429220839f1f397ff10b043da",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260429220839f1f397ff10b043da",
+  "usage": {
+    "completion_tokens": 164,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 6156,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 6320
+  }
+}

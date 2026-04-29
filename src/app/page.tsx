@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppStore } from '@/lib/store';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import LandingPage from '@/components/landing/landing-page';
 import FormBuilder from '@/components/form-builder/form-builder';
 import Dashboard from '@/components/dashboard/dashboard';
@@ -11,24 +11,12 @@ import TemplateLibraryPage from '@/components/dashboard/template-library-page';
 import dynamic from 'next/dynamic';
 import AppHeader from '@/components/app-header';
 import { ScrollToTop } from '@/components/ui/scroll-to-top';
-import { useEffect } from 'react';
+import { useEffect, useTransition } from 'react';
 
 const AdminPanel = dynamic(() => import('@/components/admin/admin-panel'), { ssr: false });
 const UserPanel = dynamic(() => import('@/components/user-panel/user-panel'), { ssr: false });
 
-const pageVariants = {
-  initial: { opacity: 0 },
-  in: { opacity: 1 },
-  out: { opacity: 0 },
-};
-
-const pageTransition = {
-  type: 'tween' as const,
-  ease: 'anticipate' as const,
-  duration: 0.25,
-};
-
-// Full-height panel views that fill the viewport without page-level animation
+// Full-height panel views that fill the viewport
 const fullHeightViews = ['admin', 'user-panel'];
 
 export default function Home() {
@@ -40,8 +28,7 @@ export default function Home() {
     (window as unknown as Record<string, unknown>).__nav = setCurrentView;
   }, [setCurrentView]);
 
-  // Full-height panels render without AnimatePresence to avoid
-  // height conflicts between exiting/entering views of very different sizes
+  // Full-height panels render without any animation wrapper
   if (isFullHeight) {
     return (
       <div className="h-screen overflow-hidden">
@@ -55,25 +42,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentView}
-          initial="initial"
-          animate="in"
-          exit="out"
-          variants={pageVariants}
-          transition={pageTransition}
-          className="flex-1 flex flex-col"
-        >
-          {currentView === 'landing' && <LandingPage />}
-          {currentView !== 'landing' && <AppHeader />}
-          {currentView === 'builder' && <FormBuilder />}
-          {currentView === 'dashboard' && <Dashboard />}
-          {currentView === 'fill' && <FormFill />}
-          {currentView === 'results' && <ResultsView />}
-          {currentView === 'templates' && <TemplateLibraryPage />}
-        </motion.div>
-      </AnimatePresence>
+      {/* Simple fade-in on view change — no AnimatePresence to avoid
+          exit-blocking issues with heavy animated pages like the landing page */}
+      <motion.div
+        key={currentView}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        className="flex-1 flex flex-col"
+      >
+        {currentView === 'landing' && <LandingPage />}
+        {currentView !== 'landing' && <AppHeader />}
+        {currentView === 'builder' && <FormBuilder />}
+        {currentView === 'dashboard' && <Dashboard />}
+        {currentView === 'fill' && <FormFill />}
+        {currentView === 'results' && <ResultsView />}
+        {currentView === 'templates' && <TemplateLibraryPage />}
+      </motion.div>
       <ScrollToTop />
     </div>
   );
